@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2007-2021   EDF R&D
+# Copyright (C) 2007-2024   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -22,9 +22,9 @@ from Noyau import N_REGLE
 from Validation import V_MEME_NOMBRE
 from Ihm import I_REGLE
 
-class MEME_NOMBRE(V_MEME_NOMBRE.MEME_NOMBRE,I_REGLE.REGLE,N_REGLE.REGLE):
+
+class MEME_NOMBRE(V_MEME_NOMBRE.MEME_NOMBRE, I_REGLE.REGLE, N_REGLE.REGLE):
     """
-        La classe utilise l'initialiseur de REGLE. Il n'est pas
-        necessaire d'expliciter son initialiseur car
-        seule N_REGLE.REGLE en a un
+    Accas class for catalog rule MEME_NOMBRE
     """
+    pass

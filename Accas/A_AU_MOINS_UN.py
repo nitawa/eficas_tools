@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2007-2021   EDF R&D
+# Copyright (C) 2007-2024   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -17,14 +17,14 @@
 #
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
-from __future__ import absolute_import
 from Noyau import N_REGLE
 from Validation import V_AU_MOINS_UN
 from Ihm import I_REGLE
 
-class AU_MOINS_UN(V_AU_MOINS_UN.AU_MOINS_UN,I_REGLE.REGLE,N_REGLE.REGLE):
+
+class AU_MOINS_UN(V_AU_MOINS_UN.AU_MOINS_UN, I_REGLE.REGLE, N_REGLE.REGLE):
     """
-        La classe utilise l'initialiseur de REGLE. Il n'est pas
-        necessaire d'expliciter son initialiseur car
-        seule N_REGLE.REGLE en a un
+    Accas class for catalog rule AU_MOINS_UN
+    __init__ is in N_REGLE.REGLE
     """
+    pass

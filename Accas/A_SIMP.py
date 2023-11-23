@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2007-2021   EDF R&D
+# Copyright (C) 2007-2024   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -17,16 +17,20 @@
 #
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
-from __future__ import absolute_import
 from Noyau import N_SIMP
 from Ihm import I_ENTITE
 from Accas import A_MCSIMP
 from Efi2Xsd.AccasXsd import X_SIMP
 
-class SIMP(N_SIMP.SIMP,X_SIMP,I_ENTITE.ENTITE):
-    class_instance=A_MCSIMP.MCSIMP
-    def __init__(self,*tup,**args):
-        #print tup
-        #print args
+
+class SIMP(N_SIMP.SIMP, X_SIMP, I_ENTITE.ENTITE):
+    """ 
+    Accas class for catalog definition keyword SIMP
+    """
+    class_instance = A_MCSIMP.MCSIMP
+
+    def __init__(self, *tup, **args):
+        # print (tup)
+        # print (args)
         I_ENTITE.ENTITE.__init__(self)
-        N_SIMP.SIMP.__init__(self,*tup,**args)
+        N_SIMP.SIMP.__init__(self, *tup, **args)

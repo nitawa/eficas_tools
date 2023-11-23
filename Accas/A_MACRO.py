@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2007-2021   EDF R&D
+# Copyright (C) 2007-2024   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -22,8 +22,14 @@ from Noyau import N_MACRO
 from Ihm import I_ENTITE
 from . import A_MACRO_ETAPE
 
-class MACRO(N_MACRO.MACRO,I_ENTITE.ENTITE):
-    class_instance=A_MACRO_ETAPE.MACRO_ETAPE
-    def __init__(self,*tup,**args):
+
+class MACRO(N_MACRO.MACRO, I_ENTITE.ENTITE):
+    """
+    parent class of MACRO definition
+    unused class that could/should be reactivated
+    """
+    class_instance = A_MACRO_ETAPE.MACRO_ETAPE
+
+    def __init__(self, *tup, **args):
         I_ENTITE.ENTITE.__init__(self)
-        N_MACRO.MACRO.__init__(self,*tup,**args)
+        N_MACRO.MACRO.__init__(self, *tup, **args)

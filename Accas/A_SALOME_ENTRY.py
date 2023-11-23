@@ -1,4 +1,5 @@
-# Copyright (C) 2007-2021   EDF R&D
+# -*- coding: utf-8 -*-
+# Copyright (C) 2007-2024   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -17,10 +18,13 @@
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
 
-# This empty class is replaced by the class eficas.SalomeEntry
-# (defined in Salome EFICAS module) when Eficas is launched in Salome context.
-# It handles the objects that can be selected from Salome object browser.
-#from builtins import object
-#class SalomeEntry(object):
+
 class SalomeEntry:
+    """
+     This empty class is replaced by the class eficas.SalomeEntry
+     (defined in Salome EFICAS module) when Eficas is launched in Salome context.
+     It handles the objects that can be selected from Salome object browser.
+     from builtins import object
+     class SalomeEntry(object):
+    """
     pass

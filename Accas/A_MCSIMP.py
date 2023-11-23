@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2007-2021   EDF R&D
+# Copyright (C) 2007-2024   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -17,14 +17,18 @@
 #
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
-from __future__ import absolute_import
 from Noyau import N_MCSIMP
 from Validation import V_MCSIMP
 from Ihm import I_MCSIMP
-from Efi2Xsd.MCAccasXML  import X_MCSIMP
+from Efi2Xsd.MCAccasXML import X_MCSIMP
 
-class MCSIMP(I_MCSIMP.MCSIMP,N_MCSIMP.MCSIMP,X_MCSIMP,V_MCSIMP.MCSIMP):
-    def __init__(self,val,definition,nom,parent,objPyxbDeConstruction=None):
-    #le defaut de objPyxbDeConstruction permet de lire les comm avec des modeles sans equivalent XSD
+
+class MCSIMP(I_MCSIMP.MCSIMP, N_MCSIMP.MCSIMP, X_MCSIMP, V_MCSIMP.MCSIMP):
+    """
+    class for SIMP object (MCSIMP = mot clef simp)
+    """
+    def __init__(self, val, definition, nom, parent, objPyxbDeConstruction=None):
+        # le defaut de objPyxbDeConstruction permet de lire les comm 
+        # avec des modeles sans equivalent XSD
         N_MCSIMP.MCSIMP.__init__(self,val,definition,nom,parent,objPyxbDeConstruction)
         V_MCSIMP.MCSIMP.__init__(self)

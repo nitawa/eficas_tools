@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2007-2021   EDF R&D
+# Copyright (C) 2007-2024   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -21,11 +21,16 @@ from __future__ import absolute_import
 from Noyau import N_OPER
 from Ihm import I_ENTITE
 from Accas import A_ETAPE
-from Efi2Xsd.AccasXsd  import X_OPER
+from Efi2Xsd.AccasXsd import X_OPER
 
 
-class OPER(N_OPER.OPER,X_OPER,I_ENTITE.ENTITE):
-    class_instance=A_ETAPE.ETAPE
-    def __init__(self,*tup,**args):
+class OPER(N_OPER.OPER, X_OPER, I_ENTITE.ENTITE):
+    """
+    Accas class for catalog definition keyword OPER
+    """
+
+    class_instance = A_ETAPE.ETAPE
+
+    def __init__(self, *tup, **args):
         I_ENTITE.ENTITE.__init__(self)
-        N_OPER.OPER.__init__(self,*tup,**args)
+        N_OPER.OPER.__init__(self, *tup, **args)

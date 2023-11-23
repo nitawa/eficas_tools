@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2007-2021   EDF R&D
+# Copyright (C) 2007-2024   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -22,10 +22,12 @@ from Noyau import N_REGLE
 from Validation import V_PRESENT_ABSENT
 from Ihm import I_PRESENT_ABSENT
 
-class PRESENT_ABSENT(I_PRESENT_ABSENT.PRESENT_ABSENT,V_PRESENT_ABSENT.PRESENT_ABSENT,
-                     N_REGLE.REGLE):
+
+class PRESENT_ABSENT( I_PRESENT_ABSENT.PRESENT_ABSENT, 
+                      V_PRESENT_ABSENT.PRESENT_ABSENT, 
+                      N_REGLE.REGLE
+                    ):
     """
-        La classe utilise l'initialiseur de REGLE. Il n'est pas
-        necessaire d'expliciter son initialiseur car
-        seule N_REGLE.REGLE.py en a un
+    Accas class for catalog rule PRESENT_ABSENT
     """
+    pass

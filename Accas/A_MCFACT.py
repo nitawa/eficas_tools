@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2007-2021   EDF R&D
+# Copyright (C) 2007-2024   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -21,9 +21,14 @@ from __future__ import absolute_import
 from Noyau import N_MCFACT
 from Validation import V_MCFACT
 from Ihm import I_MCFACT
-from Efi2Xsd.MCAccasXML  import X_MCFACT
+from Efi2Xsd.MCAccasXML import X_MCFACT
 
-class MCFACT(I_MCFACT.MCFACT,N_MCFACT.MCFACT,X_MCFACT,V_MCFACT.MCFACT):
-    def __init__(self,val,definition,nom,parent,dicoPyxbDeConstruction=None):
-        N_MCFACT.MCFACT.__init__(self,val,definition,nom,parent,dicoPyxbDeConstruction=dicoPyxbDeConstruction)
+
+class MCFACT(I_MCFACT.MCFACT, N_MCFACT.MCFACT, X_MCFACT, V_MCFACT.MCFACT):
+    """
+    class of FACT object (MCFACT = mot clef FACTEUR)
+    """
+    def __init__(self, val, definition, nom, parent, dicoPyxbDeConstruction=None):
+        N_MCFACT.MCFACT.__init__(self, val, definition, nom,
+                 parent, dicoPyxbDeConstruction=dicoPyxbDeConstruction)
         V_MCFACT.MCFACT.__init__(self)

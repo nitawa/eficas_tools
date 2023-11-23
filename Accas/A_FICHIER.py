@@ -1,4 +1,5 @@
-# Copyright (C) 2007-2021   EDF R&D
+# -*- coding: utf-8 -*-
+# Copyright (C) 2007-2024   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -16,14 +17,15 @@
 #
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
-
-# This empty class is replaced by the class eficas.SalomeEntry
-# (defined in Salome EFICAS module) when Eficas is launched in Salome context.
-# It handles the objects that can be selected from Salome object browser.
-
-from __future__ import absolute_import
 from Ihm import I_FICHIER
 
-class Fichier (I_FICHIER.Fichier):
-    def __init__(self,*tup,**args):
-        I_FICHIER.FICHIER.__init__(self,*tup,**args)
+
+class Fichier(I_FICHIER.Fichier):
+    """
+    This empty class is replaced by the class eficas.SalomeEntry
+    (defined in Salome EFICAS module) when Eficas is launched in Salome context.
+    It handles the objects that can be selected from Salome object browser.
+    """
+    def __init__(self, *tup, **args):
+        I_FICHIER.FICHIER.__init__(self, *tup, **args)
+    # To do --> a travailler pour ajouter tous les types de fichier (existant ou non, avec un chemin relatif pour etre vraiment utilise hors salome

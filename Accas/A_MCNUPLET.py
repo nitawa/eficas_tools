@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2007-2021   EDF R&D
+# Copyright (C) 2007-2024   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -17,10 +17,10 @@
 #
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
-from __future__ import absolute_import
 from Extensions import mcnuplet
 from Ihm import I_MCCOMPO
 
-class MCNUPLET(mcnuplet.MCNUPLET,I_MCCOMPO.MCCOMPO):
-    def __init__(self,*pos,**args):
-        mcnuplet.MCNUPLET.__init__(self,*pos,**args)
+
+class MCNUPLET(mcnuplet.MCNUPLET, I_MCCOMPO.MCCOMPO):
+    def __init__(self, *pos, **args):
+        mcnuplet.MCNUPLET.__init__(self, *pos, **args)

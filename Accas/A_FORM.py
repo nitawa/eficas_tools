@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2007-2021   EDF R&D
+# Copyright (C) 2007-2024   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -20,7 +20,11 @@
 from __future__ import absolute_import
 from Noyau import N_FORM
 from Ihm import I_ENTITE
-from . import A_FORM_ETAPE
+from Accas import A_FORM_ETAPE
 
-class FORM(N_FORM.FORM,I_ENTITE.ENTITE):
-    class_instance=A_FORM_ETAPE.FORM_ETAPE
+
+class FORM(N_FORM.FORM, I_ENTITE.ENTITE):
+    """
+    Accas class for catalog definition keyword FORMULE
+    """
+    class_instance = A_FORM_ETAPE.FORM_ETAPE

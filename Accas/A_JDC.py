@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2007-2021   EDF R&D
+# Copyright (C) 2007-2024   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -17,20 +17,23 @@
 #
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
-from __future__ import absolute_import
 from Noyau import N_JDC
 from Validation import V_JDC
 from Extensions import jdc
 from Ihm import I_JDC
-from Efi2Xsd.MCAccasXML  import X_JDC
+from Efi2Xsd.MCAccasXML import X_JDC
 
-class JDC(jdc.JDC,I_JDC.JDC,X_JDC,V_JDC.JDC,N_JDC.JDC):
-    from .A_ASSD import CO,assd
 
-    def __init__(self,*pos,**args):
-        N_JDC.JDC.__init__(self,*pos,**args)
+class JDC(jdc.JDC, I_JDC.JDC, X_JDC, V_JDC.JDC, N_JDC.JDC):
+    """
+    parent class for dataset object (JDC) 
+    """
+    from .A_ASSD import CO, assd
+
+    def __init__(self, *pos, **args):
+        N_JDC.JDC.__init__(self, *pos, **args)
         X_JDC.__init__(self)
         V_JDC.JDC.__init__(self)
         I_JDC.JDC.__init__(self)
         jdc.JDC.__init__(self)
-        self.icmd=0
+        self.icmd = 0

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2007-2021   EDF R&D
+# Copyright (C) 2007-2024   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -18,13 +18,17 @@
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
 
-from __future__ import absolute_import
 from Noyau import N_FORM_ETAPE
 from Validation import V_MACRO_ETAPE
 from Ihm import I_FORM_ETAPE
 
-class FORM_ETAPE(I_FORM_ETAPE.FORM_ETAPE,V_MACRO_ETAPE.MACRO_ETAPE,N_FORM_ETAPE.FORM_ETAPE):
-    def __init__(self,oper=None,reuse=None,args={}):
-        N_FORM_ETAPE.FORM_ETAPE.__init__(self,oper,reuse,args)
+
+class FORM_ETAPE( I_FORM_ETAPE.FORM_ETAPE, V_MACRO_ETAPE.MACRO_ETAPE, N_FORM_ETAPE.FORM_ETAPE):
+    """
+    specific class for Aster FORM_ETAPE 
+    most likely as MACRO
+    """
+    def __init__(self, oper=None, reuse=None, args={}):
+        N_FORM_ETAPE.FORM_ETAPE.__init__(self, oper, reuse, args)
         V_MACRO_ETAPE.MACRO_ETAPE.__init__(self)
         I_FORM_ETAPE.FORM_ETAPE.__init__(self)

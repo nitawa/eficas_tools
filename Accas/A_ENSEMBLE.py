@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2007-2021   EDF R&D
+# Copyright (C) 2007-2024   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -17,15 +17,14 @@
 #
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
-from __future__ import absolute_import
 from Noyau import N_REGLE
 from Validation import V_ENSEMBLE
 from Ihm import I_REGLE
 
-class ENSEMBLE(I_REGLE.REGLE,V_ENSEMBLE.ENSEMBLE,N_REGLE.REGLE):
+
+class ENSEMBLE(I_REGLE.REGLE, V_ENSEMBLE.ENSEMBLE, N_REGLE.REGLE):
     """
-        La classe utilise l'initialiseur de REGLE. Il n'est pas
-        necessaire d'expliciter son initialiseur car
-        seule N_REGLE.REGLE en a un
-    
+    Accas class for catalog rule ENSEMBLE
+    class instantiation automatically invokes REGLE.__init__()
     """
+    pass

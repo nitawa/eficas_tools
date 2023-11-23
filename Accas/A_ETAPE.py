@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2007-2021   EDF R&D
+# Copyright (C) 2007-2024   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -17,13 +17,17 @@
 #
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
-from __future__ import absolute_import
 from Noyau import N_ETAPE
 from Validation import V_ETAPE
 from Ihm import I_ETAPE
-from Efi2Xsd.MCAccasXML  import X_ETAPE
+from Efi2Xsd.MCAccasXML import X_ETAPE
 
-class ETAPE(I_ETAPE.ETAPE,V_ETAPE.ETAPE,X_ETAPE,N_ETAPE.ETAPE):
-    def __init__(self,oper=None,reuse=None,args={}):
-        N_ETAPE.ETAPE.__init__(self,oper,reuse,args)
+
+class ETAPE(I_ETAPE.ETAPE, V_ETAPE.ETAPE, X_ETAPE, N_ETAPE.ETAPE):
+    """
+    parent class for PROC, MACRO and OPER (JDD object)
+    """
+
+    def __init__(self, oper=None, reuse=None, args={}):
+        N_ETAPE.ETAPE.__init__(self, oper, reuse, args)
         V_ETAPE.ETAPE.__init__(self)

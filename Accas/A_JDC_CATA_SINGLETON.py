@@ -17,13 +17,21 @@
 #
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
-from Noyau import N_REGLE
-from Validation import V_UN_PARMI
-from Ihm import I_UN_PARMI
 
+from Noyau.N_utils import Singleton
+from Accas import JDC_CATA
 
-class UN_PARMI(I_UN_PARMI.UN_PARMI, V_UN_PARMI.UN_PARMI, N_REGLE.REGLE):
+class JDC_CATA_SINGLETON(Singleton, JDC_CATA):
     """
-    Accas class for catalog rule UN_PARMI
+    class used for defining catalogs which can be either standalone
+    either imported by another catalog
+    the steps are recorded in the correct JDC_CATA
     """
-    pass
+    def __init__(self, *pos, **kw):
+        if hasattr(self, "initialised"):
+            return
+        self.initialised = True
+        JDC_CATA.__init__(self, *pos, **kw)
+     # to do : reflechir pour les imports des drivers a utiliser le nom du code 
+     # de maniere a pour pourvoir utiliser n importe lequel des driver pour lire
+     # le XML

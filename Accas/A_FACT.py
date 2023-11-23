@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2007-2021   EDF R&D
+# Copyright (C) 2007-2024   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -17,23 +17,30 @@
 #
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
-from __future__ import absolute_import
 from Noyau import N_FACT
 from Ihm import I_ENTITE
 from Accas import A_MCFACT
 from Accas import A_MCLIST
-from Efi2Xsd.AccasXsd  import X_FACT
+from Efi2Xsd.AccasXsd import X_FACT
 
 
-class FACT(N_FACT.FACT,X_FACT,I_ENTITE.ENTITE):
+class FACT(N_FACT.FACT, X_FACT, I_ENTITE.ENTITE):
+    """
+    Accas class for catalog definition keyword FACT
+    """
     class_instance = A_MCFACT.MCFACT
-    list_instance  = A_MCLIST.MCList
-    def __init__(self,*tup,**args):
+    list_instance = A_MCLIST.MCList
+
+    def __init__(self, *tup, **args):
         I_ENTITE.ENTITE.__init__(self)
-        N_FACT.FACT.__init__(self,*tup,**args)
+        N_FACT.FACT.__init__(self, *tup, **args)
+
 
 from Noyau import N_OBJECT
 from Ihm import I_OBJECT
 
-class ErrorObj(I_OBJECT.ErrorObj,N_OBJECT.ErrorObj):pass
-N_OBJECT.ErrorObj=ErrorObj
+class ErrorObj(I_OBJECT.ErrorObj, N_OBJECT.ErrorObj):
+    pass
+
+
+N_OBJECT.ErrorObj = ErrorObj

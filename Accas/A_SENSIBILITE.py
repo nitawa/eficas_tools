@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2007-2021   EDF R&D
+# Copyright (C) 2007-2024   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -18,10 +18,26 @@
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
 
-from __future__ import absolute_import
 from Ihm import I_REGLE
 from Noyau import N_SENSIBILITE
 
-class REUSE_SENSIBLE(I_REGLE.REGLE,N_SENSIBILITE.REUSE_SENSIBLE):pass
-class CONCEPT_SENSIBLE(I_REGLE.REGLE,N_SENSIBILITE.CONCEPT_SENSIBLE):pass
-class DERIVABLE(I_REGLE.REGLE,N_SENSIBILITE.DERIVABLE):pass
+
+class REUSE_SENSIBLE(I_REGLE.REGLE, N_SENSIBILITE.REUSE_SENSIBLE):
+    """ 
+    obsolete class which was used by the supervisor
+    """
+    pass
+
+
+class CONCEPT_SENSIBLE(I_REGLE.REGLE, N_SENSIBILITE.CONCEPT_SENSIBLE):
+    """ 
+    obsolete class which was used by the supervisor
+    """
+    pass
+
+
+class DERIVABLE(I_REGLE.REGLE, N_SENSIBILITE.DERIVABLE):
+    """ 
+    obsolete class which was used by the supervisor
+    """
+    pass

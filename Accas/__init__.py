@@ -1,5 +1,5 @@
 # -*- coding: iso-8859-1 -*-
-# Copyright (C) 2007-2021   EDF R&D
+# Copyright (C) 2007-2024   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -30,22 +30,23 @@
 """
 
 
-from __future__ import absolute_import
 import warnings
-warnings.filterwarnings('error','Non-ASCII character.*pep-0263',DeprecationWarning)
+
+warnings.filterwarnings("error", "Non-ASCII character.*pep-0263", DeprecationWarning)
 
 from .A_JDC_CATA import JDC_CATA
-from .A_OPER     import OPER
-from .A_PROC     import PROC
-from .A_MACRO    import MACRO
-from .A_FORM     import FORM
-from .A_BLOC     import BLOC
-from .A_FACT     import FACT
-from .A_SIMP     import SIMP
-from .A_EVAL     import EVAL
-from .A_NUPLET   import NUPL
-from .A_TUPLE    import Tuple
-from .A_TUPLE    import Matrice
+from .A_JDC_CATA_SINGLETON import JDC_CATA_SINGLETON
+from .A_OPER import OPER
+from .A_PROC import PROC
+from .A_MACRO import MACRO
+from .A_FORM import FORM
+from .A_BLOC import BLOC
+from .A_FACT import FACT
+from .A_SIMP import SIMP
+from .A_EVAL import EVAL
+from .A_NUPLET import NUPL
+from .A_TUPLE import Tuple
+from .A_TUPLE import Matrice
 
 
 from .A_JDC import JDC
@@ -70,8 +71,9 @@ from .A_ENSEMBLE import ENSEMBLE
 from .A_A_CLASSER import A_CLASSER
 from .A_AVANT import AVANT
 
-from .A_ASSD import ASSD,assd, UserASSD, UserASSDMultiple
-from .A_ASSD import GEOM,geom
+from .A_ASSD import ASSD, assd, UserASSD, UserASSDMultiple
+from .A_ASSD import GEOM, geom
+
 # Pour le moment on laisse fonction (ceinture et bretelles)
 from .A_ASSD import FONCTION, fonction
 from .A_ASSD import formule
@@ -86,19 +88,22 @@ from Noyau.N_utils import AsType
 from Noyau.N_OPS import OPS, EMPTY_OPS
 from Noyau.N_ASSD import not_checked
 
-from .A_VALIDATOR import OrVal,AndVal,OnlyStr
-from .A_VALIDATOR import OrdList,NoRepeat,LongStr,Compulsory,Absent,Together
+from .A_VALIDATOR import OrVal, AndVal, OnlyStr
+from .A_VALIDATOR import OrdList, NoRepeat, LongStr, Compulsory, Absent, Together
 from .A_VALIDATOR import RangeVal, EnumVal, TypeVal, PairVal
 from .A_VALIDATOR import CardVal, InstanceVal
 from .A_VALIDATOR import VerifTypeTuple, VerifExiste
 from .A_VALIDATOR import FileExtVal, FunctionVal
 from .A_VALIDATOR import CreeMotClef
+from .A_VALIDATOR import compareAutreMC
+from .A_VALIDATOR import infFrereMC, supFrereMC
 
 # On remplace la factory des validateurs initialement dans Noyau par celle
 # de A_VALIDATOR
-from .A_VALIDATOR  import validatorFactory
+from .A_VALIDATOR import validatorFactory
 import Noyau.N_ENTITE
-Noyau.N_ENTITE.ENTITE.factories['validator']=validatorFactory
+
+Noyau.N_ENTITE.ENTITE.factories["validator"] = validatorFactory
 
 from .A_SENSIBILITE import CONCEPT_SENSIBLE, REUSE_SENSIBLE, DERIVABLE
 
