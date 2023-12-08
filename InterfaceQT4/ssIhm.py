@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2007-2021   EDF R&D
+# Copyright (C) 2007-2024   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -18,41 +18,42 @@
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
 #    permet de lancer  EFICAS en n affichant rien
-try :
+try:
     from builtins import object
-except : pass
+except:
+    pass
+
 
 class appliEficasSSIhm(object):
-    def __init__ (self,code):
-        self.VERSION_EFICAS="Sans Ihm"
-        self.code=code
-        self.ssCode=None
-        self.salome=None
-        self.top=None
-        self.indice=0
-        self.dict_reels={}
-        self.listeAEnlever=[]
+    def __init__(self, code):
+        self.VERSION_EFICAS = "Sans Ihm"
+        self.code = code
+        self.ssCode = None
+        self.salome = None
+        self.top = None
+        self.indice = 0
+        self.dict_reels = {}
+        self.listeAEnlever = []
 
+        name = "prefs_" + self.code
+        try:
+            prefsCode = __import__(name)
+        except:
+            name = "prefs_" + self.code.upper()
+            self.code = self.code.upper()
+            prefsCode = __import__(name)
 
-        name='prefs_'+self.code
-        try :
-            prefsCode=__import__(name)
-        except :
-            name='prefs_'+self.code.upper()
-            self.code=self.code.upper()
-            prefsCode=__import__(name)
+        self.repIni = prefsCode.repIni
+        self.format_fichier = "python"  # par defaut
 
+        nameConf = "configuration_" + self.code
+        configuration = __import__(nameConf)
+        self.CONFIGURATION = configuration.make_config(self, prefsCode.repIni)
 
-        self.repIni=prefsCode.repIni
-        self.format_fichier="python" #par defaut
-
-        nameConf='configuration_'+self.code
-        configuration=__import__(nameConf)
-        self.CONFIGURATION = configuration.make_config(self,prefsCode.repIni)
 
 class QWParentSSIhm(object):
-    def __init__(self,code,version_code):
-        self.ihm="QT"
-        self.code=code
-        self.version_code=version_code
-        self.format_fichier="python" #par defaut
+    def __init__(self, code, version_code):
+        self.ihm = "QT"
+        self.code = code
+        self.version_code = version_code
+        self.format_fichier = "python"  # par defaut

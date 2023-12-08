@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2007-2021   EDF R&D
+# Copyright (C) 2007-2024   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -17,44 +17,45 @@
 #
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
-# Modules Python
-from __future__ import absolute_import
-import types,os
 
 # Modules Eficas
 from PyQt5.QtWidgets import QRadioButton
 from Extensions.i18n import tr
 
-from .feuille               import Feuille
-from desWidgetSimpBool     import Ui_WidgetSimpBool
-from .politiquesValidation  import PolitiqueUnique
-from .qtSaisie              import SaisieValeur
+from .feuille import Feuille
+from desWidgetSimpBool import Ui_WidgetSimpBool
+from .politiquesValidation import PolitiqueUnique
+from .qtSaisie import SaisieValeur
 
 
-class MonWidgetSimpBool (Ui_WidgetSimpBool,Feuille):
-
-    def __init__(self,node,monSimpDef,nom,objSimp,parentQt,commande):
-        Feuille.__init__(self,node,monSimpDef,nom,objSimp,parentQt,commande)
-        self.politique=PolitiqueUnique(self.node,self.editor)
+class MonWidgetSimpBool(Ui_WidgetSimpBool, Feuille):
+    def __init__(self, node, monSimpDef, nom, objSimp, parentQt, commande):
+        Feuille.__init__(self, node, monSimpDef, nom, objSimp, parentQt, commande)
+        self.politique = PolitiqueUnique(self.node, self.editor)
         self.RBTrue.clicked.connect(self.boutonTrueClic)
         self.RBFalse.clicked.connect(self.boutonFalseClic)
-        self.parentQt.commandesLayout.insertWidget(-1,self)
+        self.parentQt.commandesLayout.insertWidget(-1, self)
         self.maCommande.listeAffichageWidget.append(self.RBTrue)
-        self.AAfficher=self.RBTrue
+        self.AAfficher = self.RBTrue
 
     def setValeurs(self):
-        valeur=self.node.item.getValeur()
-        if valeur == None  : return
-        if valeur == True  : self.RBTrue.setChecked(True)
-        if valeur == False : self.RBFalse.setChecked(True)
-        if self.monSimpDef.homo == 'constant' :
-            if valeur == True  : self.RBFalse.setDisabled(True)
-            else :               self.RBTrue.setDisabled(True)
+        valeur = self.node.item.getValeur()
+        if valeur == None:
+            return
+        if valeur == True:
+            self.RBTrue.setChecked(True)
+        if valeur == False:
+            self.RBFalse.setChecked(True)
+        if self.monSimpDef.homo == "constant":
+            if valeur == True:
+                self.RBFalse.setDisabled(True)
+            else:
+                self.RBTrue.setDisabled(True)
 
     def boutonTrueClic(self):
-        SaisieValeur.LEvaleurPressed(self,True)
+        SaisieValeur.LEvaleurPressed(self, True)
         self.reaffiche()
 
     def boutonFalseClic(self):
-        SaisieValeur.LEvaleurPressed(self,False)
+        SaisieValeur.LEvaleurPressed(self, False)
         self.reaffiche()

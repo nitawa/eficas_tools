@@ -1,4 +1,4 @@
-# Copyright (C) 2007-2021   EDF R&D
+# Copyright (C) 2007-2024   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -19,21 +19,20 @@
 # Modules Python
 # Modules Eficas
 
-from __future__ import absolute_import
+
 from desWidgetBloc import Ui_WidgetBloc
 from .groupe import Groupe
 from Extensions.i18n import tr
+
 # Import des panels
+class MonWidgetBloc(Ui_WidgetBloc, Groupe):
+    """ """
 
-class MonWidgetBloc(Ui_WidgetBloc,Groupe):
-    """
-    """
-    def __init__(self,node,editor,parentQt,definition, obj, niveau,commande):
-        #print ("bloc : ",node.item.nom)
-        Groupe.__init__(self,node,editor,parentQt, definition,obj,niveau,commande)
-        #if self.editor.maConfiguration.afficheCommandesPliees ==True:  self.node.plieToutEtReaffiche()
-        self.parentQt.commandesLayout.insertWidget(-1,self,1)
-
+    def __init__(self, node, editor, parentQt, definition, obj, niveau, commande):
+        # print ("bloc : ",node.item.nom)
+        Groupe.__init__(self, node, editor, parentQt, definition, obj, niveau, commande)
+        # if self.editor.maConfiguration.afficheCommandesPliees ==True:  self.node.plieToutEtReaffiche()
+        self.parentQt.commandesLayout.insertWidget(-1, self, 1)
 
     def afficheOptionnel(self):
         return

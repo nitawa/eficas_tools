@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2007-2021   EDF R&D
+# Copyright (C) 2007-2024   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -17,19 +17,19 @@
 #
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
-# Modules Python
-from __future__ import absolute_import
-import types,os
+
+import types, os
 
 # Modules Eficas
 from Extensions.i18n import tr
 
-from .feuille               import Feuille
-from .monWidgetSimpBase     import MonWidgetSimpBase
-from desWidgetHeure       import Ui_WidgetHeure
+from .feuille import Feuille
+from .monWidgetSimpBase import MonWidgetSimpBase
+from desWidgetHeure import Ui_WidgetHeure
 
 
-class MonWidgetHeure (Ui_WidgetHeure,MonWidgetSimpBase):
-
-    def __init__(self,node,monSimpDef,nom,objSimp,parentQt,commande):
-        MonWidgetSimpBase.__init__(self,node,monSimpDef,nom,objSimp,parentQt,commande)
+class MonWidgetHeure(Ui_WidgetHeure, MonWidgetSimpBase):
+    def __init__(self, node, monSimpDef, nom, objSimp, parentQt, commande):
+        MonWidgetSimpBase.__init__(
+            self, node, monSimpDef, nom, objSimp, parentQt, commande
+        )

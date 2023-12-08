@@ -1,4 +1,4 @@
-# Copyright (C) 2007-2021   EDF R&D
+# Copyright (C) 2007-2024   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -19,13 +19,8 @@
 # Modules Python
 # Modules Eficas
 
-from __future__ import absolute_import
-try :
-    from builtins import str
-except : pass
-
 from PyQt5.QtWidgets import QWidget
-from PyQt5.QtCore    import Qt
+from PyQt5.QtCore import Qt
 
 from desWidgetCommentaire import Ui_WidgetCommentaire
 from .gereIcones import FacultatifOuOptionnel
@@ -36,32 +31,34 @@ import os
 
 # Import des panels
 
-class MonWidgetCommentaire(QWidget,Ui_WidgetCommentaire,FacultatifOuOptionnel):
-    """
-    """
-    def __init__(self,node,editor,commentaire):
-        QWidget.__init__(self,None)
-        self.node=node
-        self.node.fenetre=self
+
+class MonWidgetCommentaire(QWidget, Ui_WidgetCommentaire, FacultatifOuOptionnel):
+    """ """
+
+    def __init__(self, node, editor, commentaire):
+        QWidget.__init__(self, None)
+        self.node = node
+        self.node.fenetre = self
         self.setupUi(self)
-        self.editor=editor
-        self.appliEficas=self.editor.appliEficas
-        self.repIcon=self.appliEficas.repIcon
+        self.editor = editor
+        self.appliEficas = self.editor.appliEficas
+        self.repIcon = self.appliEficas.repIcon
         self.setIconePoubelle()
         self.remplitTexte()
-        self.monOptionnel=None
+        self.monOptionnel = None
 
         self.commentaireTE.textChanged.connect(self.TexteCommentaireEntre)
-        if self.editor.code in ['MAP','CARMELCND'] : self.bCatalogue.close()
-        else : self.bCatalogue.clicked.connect(self.afficheCatalogue)
-        if self.editor.code in ['Adao','MAP','ADAO'] :
+        if self.editor.code in ["MAP", "CARMELCND"]:
+            self.bCatalogue.close()
+        else:
+            self.bCatalogue.clicked.connect(self.afficheCatalogue)
+        if self.editor.code in ["Adao", "MAP", "ADAO"]:
             self.bAvant.close()
             self.bApres.close()
-        else :
+        else:
             self.bAvant.clicked.connect(self.afficheAvant)
             self.bApres.clicked.connect(self.afficheApres)
         self.editor.fermeOptionnel()
-
 
     def afficheApres(self):
         self.node.selectApres()
@@ -69,28 +66,30 @@ class MonWidgetCommentaire(QWidget,Ui_WidgetCommentaire,FacultatifOuOptionnel):
     def afficheAvant(self):
         self.node.selectAvant()
 
-
     def afficheCatalogue(self):
         self.node.tree.racine.affichePanneau()
-        if self.node : self.node.select()
-        else : self.node.tree.racine.select()
+        if self.node:
+            self.node.select()
+        else:
+            self.node.tree.racine.select()
 
     def remplitTexte(self):
-        texte=self.node.item.getValeur()
+        texte = self.node.item.getValeur()
         self.commentaireTE.setText(texte)
-        if self.editor.code == "CARMELCND" and texte[0:16]=="Cree - fichier :" :
+        if self.editor.code == "CARMELCND" and texte[0:16] == "Cree - fichier :":
             self.commentaireTE.setReadOnly(True)
-            self.commentaireTE.setStyleSheet("background:rgb(244,244,244);\n" "border:0px;\n")
+            self.commentaireTE.setStyleSheet(
+                "background:rgb(244,244,244);\n" "border:0px;\n"
+            )
             self.commentaireTE.setToolTip(tr("Valeur non modifiable"))
-        else :
+        else:
             self.commentaireTE.setReadOnly(False)
 
     def donnePremier(self):
         self.commentaireTE.setFocus(7)
 
-
     def TexteCommentaireEntre(self):
-        texte=str(self.commentaireTE.toPlainText())
+        texte = str(self.commentaireTE.toPlainText())
         self.editor.initModif()
         self.node.item.setValeur(texte)
         self.node.updateNodeTexte()

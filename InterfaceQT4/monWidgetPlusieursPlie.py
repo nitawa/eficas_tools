@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2007-2021   EDF R&D
+# Copyright (C) 2007-2024   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -17,55 +17,51 @@
 #
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
-# Modules Python
-from __future__ import absolute_import
-try :
-    from builtins import str
-except : pass
+import types, re
 
-import types,os,sys,re
-
-from PyQt5.QtWidgets  import   QFrame
+from PyQt5.QtWidgets import QFrame
 from PyQt5.QtCore import QTimer, QSize, Qt
-from PyQt5.QtGui  import QIcon, QBrush, QColor
+from PyQt5.QtGui import QIcon, QBrush, QColor
 
 from Extensions.i18n import tr
 
-from .feuille                import Feuille
+from .feuille import Feuille
 from desWidgetPlusieursPlie import Ui_WidgetPlusieursPlie
 
-from .politiquesValidation   import PolitiquePlusieurs
-from .qtSaisie               import SaisieValeur
+from .politiquesValidation import PolitiquePlusieurs
+from .qtSaisie import SaisieValeur
 
 pattern_blanc = re.compile(r"^\s*$")
 
 
-class MonWidgetPlusieursPlie (Ui_WidgetPlusieursPlie,Feuille):
-
-    def __init__(self,node,monSimpDef,nom,objSimp,parentQt,commande):
-        #print ("MonWidgetPlusieursBase", nom)
-        Feuille.__init__(self,node,monSimpDef,nom,objSimp,parentQt,commande)
-        self.parentQt.commandesLayout.insertWidget(-1,self)
-        self.AAfficher=self.lineEditVal
+class MonWidgetPlusieursPlie(Ui_WidgetPlusieursPlie, Feuille):
+    def __init__(self, node, monSimpDef, nom, objSimp, parentQt, commande):
+        # print ("MonWidgetPlusieursBase", nom)
+        Feuille.__init__(self, node, monSimpDef, nom, objSimp, parentQt, commande)
+        self.parentQt.commandesLayout.insertWidget(-1, self)
+        self.AAfficher = self.lineEditVal
         self.maCommande.listeAffichageWidget.append(self.lineEditVal)
-        if self.node.item.hasInto() :
+        if self.node.item.hasInto():
             self.lineEditVal.setReadOnly(True)
             self.lineEditVal.setStyleSheet("background:rgb(235,235,235);\n")
-            self.lineEditVal.setToolTip("Ensemble discret de valeurs possibles, pas de Saisie Manuelle")
-            #self.lineEditVal.setPen(QtGui.QColor(0,0,200))
-            #b=QBrush(Qt.DiagCrossPattern)
-            #b.setColor(QColor(255,100,0))
-            #self.lineEditVal.setBrush(b)
-        else :
+            self.lineEditVal.setToolTip(
+                "Ensemble discret de valeurs possibles, pas de Saisie Manuelle"
+            )
+            # self.lineEditVal.setPen(QtGui.QColor(0,0,200))
+            # b=QBrush(Qt.DiagCrossPattern)
+            # b.setColor(QColor(255,100,0))
+            # self.lineEditVal.setBrush(b)
+        else:
             self.lineEditVal.returnPressed.connect(self.valeurEntree)
         self.BVisuListe.clicked.connect(self.selectWidgetDeplie)
 
-
     def setValeurs(self):
-        self.listeValeursCourantes=self.node.item.getListeValeurs()
-        if self.listeValeursCourantes != []  :  self.lineEditVal.setText(str(self.listeValeursCourantes))
-        else : self.lineEditVal.setText("")
-        self.politique=PolitiquePlusieurs(self.node,self.editor)
+        self.listeValeursCourantes = self.node.item.getListeValeurs()
+        if self.listeValeursCourantes != []:
+            self.lineEditVal.setText(str(self.listeValeursCourantes))
+        else:
+            self.lineEditVal.setText("")
+        self.politique = PolitiquePlusieurs(self.node, self.editor)
         return
 
     def selectWidgetDeplie(self):
@@ -73,49 +69,61 @@ class MonWidgetPlusieursPlie (Ui_WidgetPlusieursPlie,Feuille):
         self.reaffichePourDeplier()
 
     def valeurEntree(self):
-        valeurTexte=self.lineEditVal.text()
-        #print (valeurTexte[0])
-        #print (valeurTexte[-1])
-        if valeurTexte[0] == '[' or valeurTexte[0] == '('   : valeurTexte = valeurTexte[1:]
-        if valeurTexte[-1] == ']' or valeurTexte[-1] == ')' : valeurTexte = valeurTexte[:-1]
-        #print (valeurTexte)
-        listeValeursBrutes=valeurTexte.split(',')
-        if listeValeursBrutes == [] or listeValeursBrutes == None :
+        valeurTexte = self.lineEditVal.text()
+        # print (valeurTexte[0])
+        # print (valeurTexte[-1])
+        if valeurTexte[0] == "[" or valeurTexte[0] == "(":
+            valeurTexte = valeurTexte[1:]
+        if valeurTexte[-1] == "]" or valeurTexte[-1] == ")":
+            valeurTexte = valeurTexte[:-1]
+        # print (valeurTexte)
+        listeValeursBrutes = valeurTexte.split(",")
+        if listeValeursBrutes == [] or listeValeursBrutes == None:
             self.lineEditVal.setText(str(self.listeValeursCourantes))
             return
-        listeValeur=[]
+        listeValeur = []
         for v in listeValeursBrutes:
-            if v == None or pattern_blanc.match(v) :
-                self.editor.afficheInfos(str(listeValeur)+'   Valeurs saisies incorrectes',Qt.red)
+            if v == None or pattern_blanc.match(v):
+                self.editor.afficheInfos(
+                    str(listeValeur) + "   Valeurs saisies incorrectes", Qt.red
+                )
                 return
-            liste,validite=SaisieValeur.TraiteLEValeur(self,str(v))
-            if not validite :
-                self.editor.afficheInfos(str(listeValeur) +'   Valeurs saisies incorrectes',Qt.red)
+            liste, validite = SaisieValeur.TraiteLEValeur(self, str(v))
+            if not validite:
+                self.editor.afficheInfos(
+                    str(listeValeur) + "   Valeurs saisies incorrectes", Qt.red
+                )
                 return
             listeValeur.append(liste[0])
-        validite,comm,comm2,listeRetour=self.politique.ajoutValeurs(listeValeur,-1,[])
-        if validite :
+        validite, comm, comm2, listeRetour = self.politique.ajoutValeurs(
+            listeValeur, -1, []
+        )
+        if validite:
             self.node.item.setValeur(listeValeur)
             self.node.item.isValid()
             self.setValeurs()
-        else :
-            self.editor.afficheInfos(str(listeValeur) + '   ' +comm,Qt.red)
-            self.lineEditVal.setText('')
+        else:
+            self.editor.afficheInfos(str(listeValeur) + "   " + comm, Qt.red)
+            self.lineEditVal.setText("")
 
-class MonWidgetPlusieursPlieASSD (MonWidgetPlusieursPlie):
 
-    def __init__(self,node,monSimpDef,nom,objSimp,parentQt,commande):
-        MonWidgetPlusieursPlie.__init__(self,node,monSimpDef,nom,objSimp,parentQt,commande)
+class MonWidgetPlusieursPlieASSD(MonWidgetPlusieursPlie):
+    def __init__(self, node, monSimpDef, nom, objSimp, parentQt, commande):
+        MonWidgetPlusieursPlie.__init__(
+            self, node, monSimpDef, nom, objSimp, parentQt, commande
+        )
         self.lineEditVal.setReadOnly(True)
 
     def setValeurs(self):
-        self.listeValeursCourantes=self.node.item.getListeValeurs()
-        self.politique=PolitiquePlusieurs(self.node,self.editor)
-        if self.listeValeursCourantes == []  :  self.lineEditVal.setText(""); return
-        txt="["
-        for elt in self.listeValeursCourantes :
-            txt= txt+ (str(elt)) + ","
-        txt= txt + "]"
+        self.listeValeursCourantes = self.node.item.getListeValeurs()
+        self.politique = PolitiquePlusieurs(self.node, self.editor)
+        if self.listeValeursCourantes == []:
+            self.lineEditVal.setText("")
+            return
+        txt = "["
+        for elt in self.listeValeursCourantes:
+            txt = txt + (str(elt)) + ","
+        txt = txt + "]"
         self.lineEditVal.setText(txt)
 
     def valeurEntree(self):

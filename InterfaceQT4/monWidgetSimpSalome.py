@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2007-2021   EDF R&D
+# Copyright (C) 2007-2024   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -17,47 +17,37 @@
 #
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
-# Modules Python
-from __future__ import absolute_import
-try :
-    from builtins import str
-except : pass
-
-import types,os
-
-
 
 from PyQt5.QtWidgets import QLineEdit
 from PyQt5.QtCore import Qt
 
 from Extensions.i18n import tr
 
-from .feuille               import Feuille
-from desWidgetSimpSalome   import Ui_WidgetSimpSalome
-from .politiquesValidation  import PolitiqueUnique
-from .qtSaisie              import SaisieValeur
+from .feuille import Feuille
+from desWidgetSimpSalome import Ui_WidgetSimpSalome
+from .politiquesValidation import PolitiqueUnique
+from .qtSaisie import SaisieValeur
 
 
-class MonWidgetSimpSalome (Ui_WidgetSimpSalome,Feuille):
-
-    def __init__(self,node,monSimpDef,nom,objSimp,parentQt,commande):
-        Feuille.__init__(self,node,monSimpDef,nom,objSimp,parentQt,commande)
-        self.parentQt.commandesLayout.insertWidget(-1,self,1)
+class MonWidgetSimpSalome(Ui_WidgetSimpSalome, Feuille):
+    def __init__(self, node, monSimpDef, nom, objSimp, parentQt, commande):
+        Feuille.__init__(self, node, monSimpDef, nom, objSimp, parentQt, commande)
+        self.parentQt.commandesLayout.insertWidget(-1, self, 1)
         self.setFocusPolicy(Qt.StrongFocus)
-        self.politique=PolitiqueUnique(self.node,self.editor)
+        self.politique = PolitiqueUnique(self.node, self.editor)
         self.lineEditVal.returnPressed.connect(self.LEvaleurPressed)
-        self.AAfficher=self.lineEditVal
+        self.AAfficher = self.lineEditVal
         self.maCommande.listeAffichageWidget.append(self.lineEditVal)
 
-
     def LEvaleurPressed(self):
-        if str(self.lineEditVal.text())=="" or str(self.lineEditVal.text())==None : return
+        if str(self.lineEditVal.text()) == "" or str(self.lineEditVal.text()) == None:
+            return
         SaisieValeur.LEvaleurPressed(self)
         self.parentQt.donneFocus()
         self.setValeurs()
         self.reaffiche()
 
-
     def setValeurs(self):
-        valeur=self.node.item.getValeur()
-        if valeur != None : self.lineEditVal.setText(str(valeur))
+        valeur = self.node.item.getValeur()
+        if valeur != None:
+            self.lineEditVal.setText(str(valeur))

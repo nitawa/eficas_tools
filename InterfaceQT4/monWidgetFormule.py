@@ -1,4 +1,4 @@
-# Copyright (C) 2007-2021   EDF R&D
+# Copyright (C) 2007-2024   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -16,18 +16,11 @@
 #
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
-# Modules Python
-# Modules Eficas
-
-from __future__ import absolute_import
-try :
-    from builtins import str
-except : pass
 
 from desWidgetFormule import Ui_WidgetFormule
 from .gereIcones import FacultatifOuOptionnel
 
-from PyQt5.QtWidgets  import QWidget
+from PyQt5.QtWidgets import QWidget
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import Qt
 
@@ -39,32 +32,33 @@ import os
 
 # Import des panels
 
-class MonWidgetFormule(QWidget,Ui_WidgetFormule,FacultatifOuOptionnel):
-    """
-    """
-    def __init__(self,node,editor,etape):
-        #print "MonWidgetFormule ", self
-        QWidget.__init__(self,None)
-        self.node=node
-        self.node.fenetre=self
-        self.editor=editor
-        self.appliEficas=self.editor.appliEficas
-        self.repIcon=self.appliEficas.repIcon
-        self.setupUi(self)
 
+class MonWidgetFormule(QWidget, Ui_WidgetFormule, FacultatifOuOptionnel):
+    """ """
+
+    def __init__(self, node, editor, etape):
+        # print "MonWidgetFormule ", self
+        QWidget.__init__(self, None)
+        self.node = node
+        self.node.fenetre = self
+        self.editor = editor
+        self.appliEficas = self.editor.appliEficas
+        self.repIcon = self.appliEficas.repIcon
+        self.setupUi(self)
 
         self.setIconePoubelle()
         self.setIconesGenerales()
         self.setValeurs()
         self.setValide()
 
-
-        if self.editor.code in ['MAP','CARMELCND'] : self.bCatalogue.close()
-        else : self.bCatalogue.clicked.connect(self.afficheCatalogue)
-        if self.editor.code in ['Adao','MAP','ADAO'] :
+        if self.editor.code in ["MAP", "CARMELCND"]:
+            self.bCatalogue.close()
+        else:
+            self.bCatalogue.clicked.connect(self.afficheCatalogue)
+        if self.editor.code in ["Adao", "MAP", "ADAO"]:
             self.bAvant.close()
             self.bApres.close()
-        else :
+        else:
             self.bAvant.clicked.connect(self.afficheAvant)
             self.bApres.clicked.connect(self.afficheApres)
         self.LENom.returnPressed.connect(self.nomChange)
@@ -72,40 +66,38 @@ class MonWidgetFormule(QWidget,Ui_WidgetFormule,FacultatifOuOptionnel):
         self.LENomsArgs.returnPressed.connect(self.argsSaisis)
         self.LECorpsFormule.returnPressed.connect(self.FormuleSaisie)
 
-
-
-        self.racine=self.node.tree.racine
-        self.monOptionnel=None
+        self.racine = self.node.tree.racine
+        self.monOptionnel = None
         self.editor.fermeOptionnel()
-        #print "fin init de widget Commande"
-
+        # print "fin init de widget Commande"
 
     def donnePremier(self):
         self.listeAffichageWidget[0].setFocus(7)
 
-
     def setValeurs(self):
         self.LENomFormule.setText(self.node.item.getNom())
         self.LECorpsFormule.setText(self.node.item.getCorps())
-        texte_args=""
-        if self.node.item.getArgs() != None :
-            for i in self.node.item.getArgs() :
-                if texte_args != "" : texte_args = texte_args +","
-                texte_args=texte_args + i
+        texte_args = ""
+        if self.node.item.getArgs() != None:
+            for i in self.node.item.getArgs():
+                if texte_args != "":
+                    texte_args = texte_args + ","
+                texte_args = texte_args + i
         self.LENomsArgs.setText(texte_args)
-
 
     def nomChange(self):
         nom = str(self.LENom.text())
         self.LENomFormule.setText(nom)
         self.nomFormuleSaisi()
 
-
     def afficheCatalogue(self):
-        if self.editor.widgetOptionnel != None : self.monOptionnel.hide()
+        if self.editor.widgetOptionnel != None:
+            self.monOptionnel.hide()
         self.racine.affichePanneau()
-        if self.node : self.node.select()
-        else : self.racine.select()
+        if self.node:
+            self.node.select()
+        else:
+            self.racine.select()
 
     def afficheApres(self):
         self.node.selectApres()
@@ -114,90 +106,107 @@ class MonWidgetFormule(QWidget,Ui_WidgetFormule,FacultatifOuOptionnel):
         self.node.selectAvant()
 
     def setValide(self):
-        if not(hasattr (self,'RBValide')) : return
+        if not (hasattr(self, "RBValide")):
+            return
         icon = QIcon()
-        if self.node.item.object.isValid() :
-            icon=QIcon(self.repIcon+"/ast-green-ball.png")
-        else :
-            icon=QIcon(self.repIcon+"/ast-red-ball.png")
-        if self.node.item.getIconName() == "ast-yellow-square" :
-            icon=QIcon(self.repIcon+"/ast-yel-ball.png")
+        if self.node.item.object.isValid():
+            icon = QIcon(self.repIcon + "/ast-green-ball.png")
+        else:
+            icon = QIcon(self.repIcon + "/ast-red-ball.png")
+        if self.node.item.getIconName() == "ast-yellow-square":
+            icon = QIcon(self.repIcon + "/ast-yel-ball.png")
         self.RBValide.setIcon(icon)
-
 
     def nomFormuleSaisi(self):
         nomFormule = str(self.LENomFormule.text())
-        if nomFormule == '' : return
-        self.LENom.setText(nomFormule)
-        test,erreur = self.node.item.verifNom(nomFormule)
-        if test :
-            commentaire=nomFormule+tr(" est un nom valide pour une FORMULE")
-            self.editor.afficheInfos(commentaire)
-        else :
-            commentaire=nomFormule+tr(" n'est pas un nom valide pour une FORMULE")
-            self.editor.afficheInfos(commentaire,Qt.red)
+        if nomFormule == "":
             return
-        if str(self.LENomsArgs.text()) != "" and  str(self.LECorpsFormule.text())!= "" : self.BOkPressedFormule()
+        self.LENom.setText(nomFormule)
+        test, erreur = self.node.item.verifNom(nomFormule)
+        if test:
+            commentaire = nomFormule + tr(" est un nom valide pour une FORMULE")
+            self.editor.afficheInfos(commentaire)
+        else:
+            commentaire = nomFormule + tr(" n'est pas un nom valide pour une FORMULE")
+            self.editor.afficheInfos(commentaire, Qt.red)
+            return
+        if str(self.LENomsArgs.text()) != "" and str(self.LECorpsFormule.text()) != "":
+            self.BOkPressedFormule()
         self.LENomsArgs.setFocus(7)
 
     def argsSaisis(self):
         arguments = str(self.LENomsArgs.text())
-        if arguments == '' : return
-        test,erreur = self.node.item.verifArguments(arguments)
+        if arguments == "":
+            return
+        test, erreur = self.node.item.verifArguments(arguments)
         if test:
-            commentaire=tr("Argument(s) valide(s) pour une FORMULE")
+            commentaire = tr("Argument(s) valide(s) pour une FORMULE")
             self.editor.afficheInfos(commentaire)
         else:
-            commentaire=tr("Argument(s) invalide(s) pour une FORMULE")
-            self.editor.afficheInfos(commentaire,Qt.red)
-        if str(self.LECorpsFormule.text()) != "" and  str(self.LENomFormule.text())!= "" : self.BOkPressedFormule()
+            commentaire = tr("Argument(s) invalide(s) pour une FORMULE")
+            self.editor.afficheInfos(commentaire, Qt.red)
+        if (
+            str(self.LECorpsFormule.text()) != ""
+            and str(self.LENomFormule.text()) != ""
+        ):
+            self.BOkPressedFormule()
         self.LECorpsFormule.setFocus(7)
 
     def FormuleSaisie(self):
         nomFormule = str(self.LENomFormule.text())
-        arguments  = str(self.LENomsArgs.text())
+        arguments = str(self.LENomsArgs.text())
         expression = str(self.LECorpsFormule.text())
-        if expression == '' : return
-        test,erreur = self.node.item.verifFormule_python((nomFormule,"REEL",arguments,expression))
+        if expression == "":
+            return
+        test, erreur = self.node.item.verifFormule_python(
+            (nomFormule, "REEL", arguments, expression)
+        )
 
         if test:
-            commentaire=tr("Corps de FORMULE valide")
+            commentaire = tr("Corps de FORMULE valide")
             self.editor.afficheInfos(commentaire)
         else:
-            commentaire=tr("Corps de FORMULE invalide")
-            self.editor.afficheInfos(commentaire,Qt.red)
-        if str(self.LENomsArgs.text()) != "" and  str(self.LENomFormule.text())!= "" : self.BOkPressedFormule()
+            commentaire = tr("Corps de FORMULE invalide")
+            self.editor.afficheInfos(commentaire, Qt.red)
+        if str(self.LENomsArgs.text()) != "" and str(self.LENomFormule.text()) != "":
+            self.BOkPressedFormule()
 
     def BOkPressedFormule(self):
-        #print dir(self)
-        #if self.parent.modified == 'n' : self.parent.initModif()
+        # print dir(self)
+        # if self.parent.modified == 'n' : self.parent.initModif()
 
         nomFormule = str(self.LENomFormule.text())
-        test,erreur = self.node.item.verifNom(nomFormule)
-        if not test :
-            self.editor.afficheInfos(erreur,Qt.red)
+        test, erreur = self.node.item.verifNom(nomFormule)
+        if not test:
+            self.editor.afficheInfos(erreur, Qt.red)
             return
 
-        arguments  = str(self.LENomsArgs.text())
-        test,erreur = self.node.item.verifArguments(arguments)
-        if not test :
-            self.editor.afficheInfos(erreur,Qt.red)
+        arguments = str(self.LENomsArgs.text())
+        test, erreur = self.node.item.verifArguments(arguments)
+        if not test:
+            self.editor.afficheInfos(erreur, Qt.red)
             return
 
         expression = str(self.LECorpsFormule.text())
-        test,erreur = self.node.item.verifFormule_python((nomFormule,"REEL",arguments,expression))
-        if not test :
-            self.editor.afficheInfos(erreur,Qt.red)
+        test, erreur = self.node.item.verifFormule_python(
+            (nomFormule, "REEL", arguments, expression)
+        )
+        if not test:
+            self.editor.afficheInfos(erreur, Qt.red)
             return
 
-        test=self.node.item.object.updateFormulePython(formule=(nomFormule,"REEL",arguments,expression))
-        test,erreur = self.node.item.saveFormule(nomFormule,"REEL",arguments,expression)
-        if test :
+        test = self.node.item.object.updateFormulePython(
+            formule=(nomFormule, "REEL", arguments, expression)
+        )
+        test, erreur = self.node.item.saveFormule(
+            nomFormule, "REEL", arguments, expression
+        )
+        if test:
             self.node.onValid()
             self.node.update_valid()
             commentaire = "Formule saisie"
             self.editor.afficheInfos(commentaire)
         else:
-            commentaire ="Formule incorrecte : " + erreur
-            self.editor.afficheInfos(commentaire,Qt.red)
+            commentaire = "Formule incorrecte : " + erreur
+            self.editor.afficheInfos(commentaire, Qt.red)
         self.editor.initModif()

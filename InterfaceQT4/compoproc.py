@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2007-2021   EDF R&D
+# Copyright (C) 2007-2024   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -17,27 +17,29 @@
 #
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
-from __future__ import absolute_import
-from Editeur     import Objecttreeitem
+
+from Editeur import Objecttreeitem
 from . import compooper
 from . import browser
 from . import typeNode
 
 
-class Node(browser.JDCNode,typeNode.PopUpMenuNode):
-
+class Node(browser.JDCNode, typeNode.PopUpMenuNode):
     def getPanel(self):
-        #print "getPanel de compoproc"
+        # print "getPanel de compoproc"
         from .monWidgetCommande import MonWidgetCommande
-        return MonWidgetCommande(self,self.editor,self.item.object)
+
+        return MonWidgetCommande(self, self.editor, self.item.object)
 
     def createPopUpMenu(self):
         typeNode.PopUpMenuNode.createPopUpMenu(self)
 
 
 class ProcEtapeTreeItem(compooper.EtapeTreeItem):
-    itemNode=Node
+    itemNode = Node
+
 
 import Accas
+
 treeitem = ProcEtapeTreeItem
 objet = Accas.PROC_ETAPE

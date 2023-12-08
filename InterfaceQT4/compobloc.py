@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2007-2021   EDF R&D
+# Copyright (C) 2007-2024   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -18,40 +18,41 @@
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
 
-
-from __future__ import absolute_import
-from Editeur     import Objecttreeitem
+from Editeur import Objecttreeitem
 
 from . import compofact
 from . import browser
 from . import typeNode
 
 
-class Node(browser.JDCNode,typeNode.PopUpMenuNodeMinimal):
-
-
+class Node(browser.JDCNode, typeNode.PopUpMenuNodeMinimal):
     def createPopUpMenu(self):
         typeNode.PopUpMenuNodeMinimal.createPopUpMenu(self)
 
-
-    def getPanelGroupe(self,parentQt,commande):
-        maDefinition=self.item.get_definition()
-        monObjet=self.item.object
-        monNom=self.item.nom
-        maCommande=commande
-        if hasattr(parentQt,'niveau'): self.niveau=parentQt.niveau+1
-        else : self.niveau=1
+    def getPanelGroupe(self, parentQt, commande):
+        maDefinition = self.item.get_definition()
+        monObjet = self.item.object
+        monNom = self.item.nom
+        maCommande = commande
+        if hasattr(parentQt, "niveau"):
+            self.niveau = parentQt.niveau + 1
+        else:
+            self.niveau = 1
         from .monWidgetBloc import MonWidgetBloc
-        widget=MonWidgetBloc(self,self.editor,parentQt,maDefinition,monObjet,self.niveau,maCommande)
+
+        widget = MonWidgetBloc(
+            self, self.editor, parentQt, maDefinition, monObjet, self.niveau, maCommande
+        )
 
 
 class BLOCTreeItem(compofact.FACTTreeItem):
-    itemNode=Node
+    itemNode = Node
 
     def isCopiable(self):
         return 0
 
 
 import Accas
+
 treeitem = BLOCTreeItem
 objet = Accas.MCBLOC

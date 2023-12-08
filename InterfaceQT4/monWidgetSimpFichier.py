@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2007-2021   EDF R&D
+# Copyright (C) 2007-2024   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -17,27 +17,27 @@
 #
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
-# Modules Python
-from __future__ import absolute_import
-import types,os,sys
+import  os, sys
 
 # Modules Eficas
-from PyQt5.QtGui  import QIcon
+from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import QSize
 from Extensions.i18n import tr
 
-from desWidgetSimpFichier  import Ui_WidgetSimpFichier
-from .monWidgetSimpBase     import MonWidgetSimpBase
+from desWidgetSimpFichier import Ui_WidgetSimpFichier
+from .monWidgetSimpBase import MonWidgetSimpBase
 
 
-class MonWidgetSimpFichier (Ui_WidgetSimpFichier,MonWidgetSimpBase):
-# c est juste la taille des differents widgets de base qui change
+class MonWidgetSimpFichier(Ui_WidgetSimpFichier, MonWidgetSimpBase):
+    # c est juste la taille des differents widgets de base qui change
 
-    def __init__(self,node,monSimpDef,nom,objSimp,parentQt,commande):
-        MonWidgetSimpBase.__init__(self,node,monSimpDef,nom,objSimp,parentQt,commande)
-        if sys.platform[0:5]!="linux" :
-            repIcon=self.node.editor.appliEficas.repIcon
-            fichier=os.path.join(repIcon, 'file-explorer.png')
+    def __init__(self, node, monSimpDef, nom, objSimp, parentQt, commande):
+        MonWidgetSimpBase.__init__(
+            self, node, monSimpDef, nom, objSimp, parentQt, commande
+        )
+        if sys.platform[0:5] != "linux":
+            repIcon = self.node.editor.appliEficas.repIcon
+            fichier = os.path.join(repIcon, "file-explorer.png")
             icon = QIcon(fichier)
             self.BFichier.setIcon(icon)
             self.BFichier.setIconSize(QSize(32, 32))

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2007-2021   EDF R&D
+# Copyright (C) 2007-2024   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -18,39 +18,64 @@
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
 
-from __future__ import absolute_import
 from InterfaceQT4 import browser
 from InterfaceQT4 import typeNode
 from Extensions.i18n import tr
-
 
 from Editeur import Objecttreeitem
 import traceback
 
 
-class Node(browser.JDCNode,typeNode.PopUpMenuNodePartiel):
-
-    def getPanelGroupe(self,parentQt,commande):
+class Node(browser.JDCNode, typeNode.PopUpMenuNodePartiel):
+    def getPanelGroupe(self, parentQt, commande):
     # ----------------------------------------
-        maDefinition=self.item.get_definition()
-        monObjet=self.item.object
-        monNom=self.item.nom
-        maCommande=commande
-        if hasattr(parentQt,'niveau'): self.niveau=parentQt.niveau+1
-        else : self.niveau=1
-        if  hasattr(self,'plie') and self.plie==True :
+        maDefinition = self.item.get_definition()
+        monObjet = self.item.object
+        monNom = self.item.nom
+        maCommande = commande
+        if hasattr(parentQt, "niveau"):
+            self.niveau = parentQt.niveau + 1
+        else:
+            self.niveau = 1
+        if hasattr(self, "plie") and self.plie == True:
             from InterfaceQT4.monWidgetFactPlie import MonWidgetFactPlie
-            widget=MonWidgetFactPlie(self,self.editor,parentQt,maDefinition,monObjet,self.niveau,maCommande)
+
+            widget = MonWidgetFactPlie(
+                self,
+                self.editor,
+                parentQt,
+                maDefinition,
+                monObjet,
+                self.niveau,
+                maCommande,
+            )
         elif self.editor.maConfiguration.afficheFirstPlies and self.firstAffiche:
             self.firstAffiche = False
             self.setPlie()
             from InterfaceQT4.monWidgetFactPlie import MonWidgetFactPlie
-            widget=MonWidgetFactPlie(self,self.editor,parentQt,maDefinition,monObjet,self.niveau,maCommande)
+
+            widget = MonWidgetFactPlie(
+                self,
+                self.editor,
+                parentQt,
+                maDefinition,
+                monObjet,
+                self.niveau,
+                maCommande,
+            )
         else:
             from InterfaceQT4.monWidgetFact import MonWidgetFact
-            widget=MonWidgetFact(self,self.editor,parentQt,maDefinition,monObjet,self.niveau,maCommande)
-        return widget
 
+            widget = MonWidgetFact(
+                self,
+                self.editor,
+                parentQt,
+                maDefinition,
+                monObjet,
+                self.niveau,
+                maCommande,
+            )
+        return widget
 
     def createPopUpMenu(self):
     # ------------------------
@@ -58,7 +83,7 @@ class Node(browser.JDCNode,typeNode.PopUpMenuNodePartiel):
 
 
 class FACTTreeItem(Objecttreeitem.ObjectTreeItem):
-    itemNode=Node
+    itemNode = Node
 
     def isExpandable(self):
     # ----------------------
@@ -66,18 +91,19 @@ class FACTTreeItem(Objecttreeitem.ObjectTreeItem):
 
     def getText(self):
     # ----------------
-        return  ''
+        return ""
 
     def getLabelText(self):
     # ----------------------
-        """ Retourne 3 valeurs :
-          - le texte à afficher dans le noeud representant l'item
-          - la fonte dans laquelle afficher ce texte
-          - la couleur du texte
+        """Retourne 3 valeurs :
+        - le texte à afficher dans le noeud representant l'item
+        - la fonte dans laquelle afficher ce texte
+        - la couleur du texte
         """
         # None --> fonte et couleur par defaut
-        if not(hasattr(self.object,'getLabelText')): return self.object.nom,None,None
-        return self.object.getLabelText(),None,None
+        if not (hasattr(self.object, "getLabelText")):
+            return self.object.nom, None, None
+        return self.object.getLabelText(), None, None
 
     def isValid(self):
     # ----------------
@@ -89,65 +115,73 @@ class FACTTreeItem(Objecttreeitem.ObjectTreeItem):
 
     def getIconName(self):
     # ----------------
-        if self.object.isValid()  : return "ast-green-los"
-        elif self.object.isOblig(): return "ast-red-los"
-        else                      : return "ast-yel-los"
+        if self.object.isValid():
+            return "ast-green-los"
+        elif self.object.isOblig():
+            return "ast-red-los"
+        else:
+            return "ast-yel-los"
 
-    #PNPN ????
-    #def keys(self):
+    # PNPN ????
+    # def keys(self):
     #  keys=self.object.mc_dict
     #  return keys
 
     def getSubList(self):
     # ----------------
         """
-           Reactualise la liste des items fils stockes dans self.sublist
+        Reactualise la liste des items fils stockes dans self.sublist
         """
-        liste=self.object.mcListe
-        sublist=[None]*len(liste)
+        liste = self.object.mcListe
+        sublist = [None] * len(liste)
         # suppression des items lies aux objets disparus
         for item in self.sublist:
-            old_obj=item.getObject()
+            old_obj = item.getObject()
             if old_obj in liste:
-                pos=liste.index(old_obj)
-                sublist[pos]=item
+                pos = liste.index(old_obj)
+                sublist[pos] = item
             else:
-                pass # objets supprimes ignores
+                pass  # objets supprimes ignores
         # ajout des items lies aux nouveaux objets
-        pos=0
+        pos = 0
         for obj in liste:
             if sublist[pos] is None:
                 # nouvel objet : on cree un nouvel item
                 def setFunction(value, object=obj):
                     object.setval(value)
-                item = self.makeObjecttreeitem(self.appliEficas, obj.nom + " : ", obj, setFunction)
-                sublist[pos]=item
-            pos=pos+1
 
-        self.sublist=sublist
+                item = self.makeObjecttreeitem(
+                    self.appliEficas, obj.nom + " : ", obj, setFunction
+                )
+                sublist[pos] = item
+            pos = pos + 1
+
+        self.sublist = sublist
         return self.sublist
 
-    def addItem(self,name,pos):
-        objet = self.object.addEntite(name,pos)
+    def addItem(self, name, pos):
+        objet = self.object.addEntite(name, pos)
         return objet
 
-    def suppItem(self,item) :
+    def suppItem(self, item):
         """
-           Cette methode a pour fonction de supprimer l'item passee en argument
-           des fils de l'item FACT qui est son pere
-             - item = item du MOCLE a supprimer du MOCLE pere
-             - item.getObject() = MCSIMP ou MCBLOC
+        Cette methode a pour fonction de supprimer l'item passee en argument
+        des fils de l'item FACT qui est son pere
+          - item = item du MOCLE a supprimer du MOCLE pere
+          - item.getObject() = MCSIMP ou MCBLOC
         """
-        itemobject=item.getObject()
-        if itemobject.isOblig() :
-            return (0, tr('Impossible de supprimer un mot-cle obligatoire '))
+        itemobject = item.getObject()
+        if itemobject.isOblig():
+            return (0, tr("Impossible de supprimer un mot-cle obligatoire "))
 
         if self.object.suppEntite(itemobject):
-            message = tr("Mot-cle %s supprime")+ itemobject.nom
+            message = tr("Mot-cle %s supprime") + itemobject.nom
             return (1, message)
         else:
-            return (0,tr('Pb interne : impossible de supprimer ce mot-cle'))
+            return (0, tr("Pb interne : impossible de supprimer ce mot-cle"))
+
 
 import Accas
+
 objet = Accas.MCFACT
 treeitem = FACTTreeItem

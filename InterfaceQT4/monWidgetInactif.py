@@ -1,4 +1,4 @@
-# Copyright (C) 2007-2021   EDF R&D
+# Copyright (C) 2007-2024   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -16,10 +16,8 @@
 #
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
-# Modules Python
-# Modules Eficas
 
-from __future__ import absolute_import
+
 from PyQt5.QtWidgets import QWidget
 
 from Extensions.i18n import tr
@@ -30,20 +28,22 @@ import os
 
 # Import des panels
 
-class MonWidgetInactif(QWidget,Ui_WidgetInactif):
-    """
-    """
-    def __init__(self,node,editor):
-        QWidget.__init__(self,None)
-        self.node=node
-        self.editor=editor
+
+class MonWidgetInactif(QWidget, Ui_WidgetInactif):
+    """ """
+
+    def __init__(self, node, editor):
+        QWidget.__init__(self, None)
+        self.node = node
+        self.editor = editor
         self.setupUi(self)
         from .monWidgetOptionnel import MonWidgetOptionnel
-        if self.editor.widgetOptionnel!= None :
-            self.monOptionnel=self.editor.widgetOptionnel
-        else :
-            self.monOptionnel=MonWidgetOptionnel(self)
-            self.editor.widgetOptionnel=self.monOptionnel
+
+        if self.editor.widgetOptionnel != None:
+            self.monOptionnel = self.editor.widgetOptionnel
+        else:
+            self.monOptionnel = MonWidgetOptionnel(self)
+            self.editor.widgetOptionnel = self.monOptionnel
             self.editor.splitter.addWidget(self.monOptionnel)
             self.editor.restoreSplitterSizes()
         self.afficheOptionnel()
@@ -64,17 +64,18 @@ class MonWidgetInactif(QWidget,Ui_WidgetInactif):
 
     def afficheOptionnel(self):
         # N a pas de parentQt. doit donc etre redefini
-        if self.editor.maConfiguration.closeOptionnel : return
-        liste=[]
-        #print "dans afficheOptionnel", self.monOptionnel
+        if self.editor.maConfiguration.closeOptionnel:
+            return
+        liste = []
+        # print "dans afficheOptionnel", self.monOptionnel
         # dans le cas ou l insertion n a pas eu leiu (souci d ordre par exemple)
-        #if self.monOptionnel == None : return
-        self.monOptionnel.parentMC=self
+        # if self.monOptionnel == None : return
+        self.monOptionnel.parentMC = self
         self.monOptionnel.afficheOptionnelVide()
 
-
     def afficheCatalogue(self):
-        if self.editor.widgetOptionnel != None : self.monOptionnel.hide()
+        if self.editor.widgetOptionnel != None:
+            self.monOptionnel.hide()
         self.node.tree.racine.affichePanneau()
         self.node.tree.racine.select()
 

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2007-2021   EDF R&D
+# Copyright (C) 2007-2024   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -17,47 +17,43 @@
 #
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
-
-from __future__ import absolute_import
-
-
-from Editeur     import Objecttreeitem
+from Editeur import Objecttreeitem
 from . import browser
 from . import typeNode
 from Extensions.i18n import tr
 from Extensions.eficas_exception import EficasException
 
 
-class Node(browser.JDCNode,typeNode.PopUpMenuNodePartiel):
-    def getPanel( self ):
-        """
-        """
+class Node(browser.JDCNode, typeNode.PopUpMenuNodePartiel):
+    def getPanel(self):
+        """ """
         from .monWidgetCommentaire import MonWidgetCommentaire
-        return MonWidgetCommentaire(self,self.editor,self.item.object)
+
+        return MonWidgetCommentaire(self, self.editor, self.item.object)
 
     def createPopUpMenu(self):
         typeNode.PopUpMenuNodePartiel.createPopUpMenu(self)
         from PyQt5.QtWidgets import QAction
-        self.Decommente = QAction(tr("decommenter"),self.tree)
+
+        self.Decommente = QAction(tr("decommenter"), self.tree)
         self.Decommente.triggered.connect(self.decommenter)
         self.Decommente.setStatusTip(tr("Decommente la commande "))
 
-        if hasattr(self.item,'unComment'):
+        if hasattr(self.item, "unComment"):
             self.menu.addAction(self.Decommente)
 
-    def decommenter(self) :
-        item= self.tree.currentItem()
+    def decommenter(self):
+        item = self.tree.currentItem()
         item.unCommentIt()
 
-    def updateNodeLabel(self) :
-        """
-        """
-        debComm=self.item.getText()
-        self.setText(1,tr(debComm))
+    def updateNodeLabel(self):
+        """ """
+        debComm = self.item.getText()
+        self.setText(1, tr(debComm))
 
 
 class COMMTreeItem(Objecttreeitem.ObjectTreeItem):
-    itemNode=Node
+    itemNode = Node
 
     def init(self):
         self.setFunction = self.setValeur
@@ -71,28 +67,28 @@ class COMMTreeItem(Objecttreeitem.ObjectTreeItem):
         return "ast-white-percent"
 
     def getLabelText(self):
-        """ Retourne 3 valeurs :
+        """Retourne 3 valeurs :
         - le texte a afficher dans le noeud representant l'item
         - la fonte dans laquelle afficher ce texte
         - la couleur du texte
         """
-        return tr('Commentaire'),None,None
+        return tr("Commentaire"), None, None
 
     def getValeur(self):
         """
         Retourne la valeur de l'objet Commentaire cad son texte
         """
-        return self.object.getValeur() or ''
+        return self.object.getValeur() or ""
 
     def getText(self):
         texte = self.object.valeur
-        texte = texte.split('\n')[0]
-        if len(texte) < 25 :
+        texte = texte.split("\n")[0]
+        if len(texte) < 25:
             return texte
-        else :
+        else:
             return texte[0:24]
 
-    def setValeur(self,valeur):
+    def setValeur(self, valeur):
         """
         Affecte valeur a l'objet COMMENTAIRE
         """
@@ -104,15 +100,16 @@ class COMMTreeItem(Objecttreeitem.ObjectTreeItem):
         """
         return []
 
-
     def getObjetCommentarise(self):
         """
-            La methode getObjetCommentarise() de la classe compocomm.COMMTreeItem
-            surcharge la methode getObjetCommentarise de la classe Objecttreeitem.ObjectTreeItem
-            elle a pour but d'empecher l'utilisateur final de commentariser un commentaire.
+        La methode getObjetCommentarise() de la classe compocomm.COMMTreeItem
+        surcharge la methode getObjetCommentarise de la classe Objecttreeitem.ObjectTreeItem
+        elle a pour but d'empecher l'utilisateur final de commentariser un commentaire.
         """
-        raise EficasException( 'Impossible de commentariser un commentaire' )
+        raise EficasException("Impossible de commentariser un commentaire")
+
 
 import Extensions
-treeitem =COMMTreeItem
+
+treeitem = COMMTreeItem
 objet = Extensions.commentaire.COMMENTAIRE

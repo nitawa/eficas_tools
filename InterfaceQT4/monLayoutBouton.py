@@ -1,4 +1,4 @@
-# Copyright (C) 2007-2021   EDF R&D
+# Copyright (C) 2007-2024   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -19,28 +19,23 @@
 # Modules Python
 # Modules Eficas
 
-from __future__ import absolute_import
-try :
-    from builtins import str
-except : pass
-
-from PyQt5.QtWidgets import  QButtonGroup, QToolButton
+from PyQt5.QtWidgets import QButtonGroup, QToolButton
 from PyQt5.QtGui import QIcon, QPixmap
 from Extensions.i18n import tr
 
 
-#----------------------
-class MonLayoutBouton :
-#----------------------
+# ----------------------
+class MonLayoutBouton:
+    # ----------------------
 
-#  -------------------------------
-    def __init__(self,appliEficas):
-#  -------------------------------
+    #  -------------------------------
+    def __init__(self, appliEficas):
+        #  -------------------------------
 
         self.appliEficas = appliEficas
         self.buttonGroup = QButtonGroup()
 
-        for etape in self.appliEficas.readercata.cata.JdC.commandes :
+        for etape in self.appliEficas.readercata.cata.JdC.commandes:
             nomEtape = etape.nom
             toolButton = QToolButton(self.appliEficas.toolBarCommande)
             icon = QIcon()
@@ -48,9 +43,11 @@ class MonLayoutBouton :
                 fichier = self.appliEficas.maConfiguration.dicoIcones[nomEtape]
                 icon.addPixmap(QPixmap(fichier), QIcon.Normal, QIcon.Off)
                 toolButton.setIcon(icon)
-            else :
-                try :    label = nomEtape[0:3]
-                except : label = nomEtape
+            else:
+                try:
+                    label = nomEtape[0:3]
+                except:
+                    label = nomEtape
                 toolButton.setText(label)
 
             action = self.appliEficas.toolBarCommande.addWidget(toolButton)
@@ -61,5 +58,5 @@ class MonLayoutBouton :
 
         self.buttonGroup.buttonClicked.connect(self.rbCliqueEtInsere)
 
-    def rbCliqueEtInsere(self,id):
+    def rbCliqueEtInsere(self, id):
         self.appliEficas.handleAjoutEtape(id.objectName())

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2007-2021   EDF R&D
+# Copyright (C) 2007-2024   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -20,27 +20,26 @@
 # Modules Python
 # Modules Eficas
 
-from __future__ import absolute_import
 from desChoixCata import Ui_DChoixCata
 from PyQt5.QtWidgets import QDialog
-
 from Extensions.i18n import tr
-# Import des panels
 
-class MonChoixCata(Ui_DChoixCata,QDialog):
-    """
-    """
-    def __init__(self, QWparent, listeCata, title = None):
+# Import des panels
+class MonChoixCata(Ui_DChoixCata, QDialog):
+    """ """
+
+    def __init__(self, QWparent, listeCata, title=None):
         QDialog.__init__(self, QWparent)
         self.setModal(True)
         self.setupUi(self)
         self.CBChoixCata.addItems(listeCata)
-        self.TLNb.setText(tr("%d versions du catalogue sont disponibles", len(listeCata)))
+        self.TLNb.setText(
+            tr("%d versions du catalogue sont disponibles", len(listeCata))
+        )
         if title is not None:
             self.setWindowTitle(tr(title))
         self.buttonOk.clicked.connect(self.cataChoisi)
         self.buttonCancel.clicked.connect(self.sortSansChoix)
-
 
     def sortSansChoix(self):
         QDialog.reject(self)

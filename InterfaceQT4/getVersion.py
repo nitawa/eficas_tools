@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2007-2021   EDF R&D
+# Copyright (C) 2007-2024   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -20,36 +20,30 @@
 # Management of EFICAS version numbering.
 # A version has at least major and minor numbers, for easier comparison.
 
-__version = {
-    'major': 9,
-    'minor': 11
-    }
+__version = {"major": 9, "minor": 11}
+
 
 def getEficasVersion():
     """
     Return the EFICAS current version number.
     """
-    return "%s.%s"%(getMajor(),getMinor())
-#
+    return "%s.%s" % (getMajor(), getMinor())
 
 def getSalomeVersion():
     """
     Return the SALOME version number to which current EFICAS version is related.
     """
     return getEficasVersion()
-#
 
 def getMajor():
-    return __version['major']
-#
+    return __version["major"]
 
 def getMinor():
-    return __version['minor']
-#
+    return __version["minor"]
 
 def getBaseVersion():
     """
     Returns [ major, minor ] array of integers.
     """
-    return [ getMajor(), getMinor() ]
-#
+    return [getMajor(), getMinor()]
+

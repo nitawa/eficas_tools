@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2007-2021   EDF R&D
+# Copyright (C) 2007-2024   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -24,18 +24,16 @@ representant un objet de type FORMULE, cad le panneau et l'item de l'arbre
 d'EFICAS
 """
 
-from __future__ import absolute_import
 from . import compooper
 from . import browser
 from . import typeNode
 
 
-class FormuleNode(browser.JDCNode,typeNode.PopUpMenuNode):
-
+class FormuleNode(browser.JDCNode, typeNode.PopUpMenuNode):
     def getPanel(self):
         from .monWidgetFormule import MonWidgetFormule
-        return MonWidgetFormule(self,self.editor,self.item.object)
 
+        return MonWidgetFormule(self, self.editor, self.item.object)
 
     def createPopUpMenu(self):
         typeNode.PopUpMenuNode.createPopUpMenu(self)
@@ -46,14 +44,15 @@ class FORMULETreeItem(compooper.EtapeTreeItem):
     Classe servant a definir l'item porte par le noeud de l'arbre d'EFICAS
     qui represente la FORMULE
     """
-    itemNode=FormuleNode
+
+    itemNode = FormuleNode
 
     def init(self):
         self.setFunction = self.setValeur
 
-# ---------------------------------------------------------------------------
-#                   API de FORMULE pour l'arbre
-# ---------------------------------------------------------------------------
+    # ---------------------------------------------------------------------------
+    #                   API de FORMULE pour l'arbre
+    # ---------------------------------------------------------------------------
     def getSubList(self):
         """
         Retourne la liste des fils de self
@@ -78,23 +77,23 @@ class FORMULETreeItem(compooper.EtapeTreeItem):
             return "ast-white-text"
 
     def getLabelText(self):
-        """ Retourne 3 valeurs :
+        """Retourne 3 valeurs :
         - le texte a afficher dans le noeud representant l'item
         - la fonte dans laquelle afficher ce texte
         - la couleur du texte
         """
-        return self.labeltext,None,None
-        #if self.object.isActif():
-            # None --> fonte et couleur par defaut
+        return self.labeltext, None, None
+        # if self.object.isActif():
+        # None --> fonte et couleur par defaut
         #  return tr(self.labeltext),None,None
-        #else:
+        # else:
         #   return tr(self.labeltext),None,None
-        #return self.labeltext,fontes.standard_italique,None
+        # return self.labeltext,fontes.standard_italique,None
 
-# ---------------------------------------------------------------------------
-#       Methodes permettant la modification et la lecture des attributs
-#       du parametre = API graphique de la FORMULE pour Panel et EFICAS
-# ---------------------------------------------------------------------------
+    # ---------------------------------------------------------------------------
+    #       Methodes permettant la modification et la lecture des attributs
+    #       du parametre = API graphique de la FORMULE pour Panel et EFICAS
+    # ---------------------------------------------------------------------------
 
     def getNom(self):
         """
@@ -112,18 +111,18 @@ class FORMULETreeItem(compooper.EtapeTreeItem):
         """
         Retourne les arguments de la FORMULE
         """
-        args=""
+        args = ""
         for mot in self.object.mcListe:
-            if mot.nom == 'NOM_PARA':
-                args=mot.valeur
+            if mot.nom == "NOM_PARA":
+                args = mot.valeur
                 break
-        if args :
-            if args[0] == "(" and args[-1] ==")":
-                args=args[1:-1]
+        if args:
+            if args[0] == "(" and args[-1] == ")":
+                args = args[1:-1]
             # transforme en tuple si ce n est pas deja le casa
-            try :
-                args=args.split(',')
-            except :
+            try:
+                args = args.split(",")
+            except:
                 pass
         return args
 
@@ -131,22 +130,21 @@ class FORMULETreeItem(compooper.EtapeTreeItem):
         """
         Retourne le corps de la FORMULE
         """
-        corps=""
+        corps = ""
         for mot in self.object.mcListe:
-            if mot.nom == 'VALE':
-                corps=mot.valeur
+            if mot.nom == "VALE":
+                corps = mot.valeur
                 break
         return corps
 
-
     def getListeTypesAutorises(self):
         """
-           Retourne la liste des types autorises pour les valeurs de sortie
-           d'une FORMULE
+        Retourne la liste des types autorises pour les valeurs de sortie
+        d'une FORMULE
         """
         return self.object.l_types_autorises
 
-    def saveFormule(self,new_nom,new_typ,new_arg,new_exp):
+    def saveFormule(self, new_nom, new_typ, new_arg, new_exp):
         """
         Verifie si (new_nom,new_typ,new_arg,new_exp) definit bien une FORMULE
         licite :
@@ -155,42 +153,46 @@ class FORMULETreeItem(compooper.EtapeTreeItem):
             - si non, laisse les parametres anciens de la FORMULE inchanges et
               retourne 0
         """
-        test,erreur = self.object.verifFormule_python(formule=(new_nom,new_typ,new_arg,
-                                                         new_exp))
-        if test :
+        test, erreur = self.object.verifFormule_python(
+            formule=(new_nom, new_typ, new_arg, new_exp)
+        )
+        if test:
             # la formule est bien correcte : on sauve les nouveaux parametres
-            test=self.object.updateFormulePython(formule=(new_nom,new_typ,new_exp,new_arg))
-        return test,erreur
+            test = self.object.updateFormulePython(
+                formule=(new_nom, new_typ, new_exp, new_arg)
+            )
+        return test, erreur
 
-# ---------------------------------------------------------------------------
-#          Acces aux methodes de verification de l'objet FORM_ETAPE
-# ---------------------------------------------------------------------------
+    # ---------------------------------------------------------------------------
+    #          Acces aux methodes de verification de l'objet FORM_ETAPE
+    # ---------------------------------------------------------------------------
 
-    def verifNom(self,nom):
+    def verifNom(self, nom):
         """
         Lance la verification du nom passe en argument
         """
         return self.object.verifNom(nom)
 
-    def verifArguments(self,arguments):
+    def verifArguments(self, arguments):
         """
         Lance la verification des arguments passes en argument
         """
-        return self.object.verifArguments('('+arguments+')')
+        return self.object.verifArguments("(" + arguments + ")")
 
-    def verifFormule(self,formule):
+    def verifFormule(self, formule):
         """
         Lance la verification de FORMULE passee en argument
         """
         return self.object.verifFormule(formule=formule)
 
-
-    def verifFormule_python(self,formule):
+    def verifFormule_python(self, formule):
         """
         Lance la verification de FORMULE passee en argument
         """
         return self.object.verifFormule_python(formule=formule)
 
+
 import Accas
-treeitem =FORMULETreeItem
+
+treeitem = FORMULETreeItem
 objet = Accas.FORM_ETAPE

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2007-2021   EDF R&D
+# Copyright (C) 2007-2024   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -17,15 +17,16 @@
 #
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
-from __future__ import absolute_import
+
 import traceback
 
 from Editeur import Objecttreeitem
 from Extensions.eficas_exception import EficasException
 from . import compocomm
 
+
 class COMMANDE_COMMTreeItem(Objecttreeitem.ObjectTreeItem):
-    itemNode=compocomm.Node
+    itemNode = compocomm.Node
 
     def init(self):
         self.setFunction = self.setValeur
@@ -42,28 +43,28 @@ class COMMANDE_COMMTreeItem(Objecttreeitem.ObjectTreeItem):
             return "ast-red-percent"
 
     def getLabelText(self):
-        """ Retourne 3 valeurs :
+        """Retourne 3 valeurs :
         - le texte a afficher dans le noeud representant l'item
         - la fonte dans laquelle afficher ce texte
         - la couleur du texte
         """
-        return 'commentaire'
+        return "commentaire"
 
     def getValeur(self):
         """
         Retourne la valeur de la commande commentarisee cad son texte
         """
-        return self.object.getValeur() or ''
+        return self.object.getValeur() or ""
 
     def getText(self):
         texte = self.object.valeur
-        texte = texte.split('\n')[0]
-        if len(texte) < 25 :
+        texte = texte.split("\n")[0]
+        if len(texte) < 25:
             return texte
-        else :
+        else:
             return texte[0:24]
 
-    def setValeur(self,valeur):
+    def setValeur(self, valeur):
         """
         Afefcte valeur a l'objet commande commentarisee
         """
@@ -82,13 +83,15 @@ class COMMANDE_COMMTreeItem(Objecttreeitem.ObjectTreeItem):
         et eventuellement le nom de la sd produite, sinon leve une exception
         """
         try:
-            commande,nom = self.object.unComment()
-            #self.parent.children[pos].select()
+            commande, nom = self.object.unComment()
+            # self.parent.children[pos].select()
         except Exception as e:
             traceback.print_exc()
             raise EficasException(e)
-        return commande,nom
+        return commande, nom
+
 
 import Accas
-treeitem =COMMANDE_COMMTreeItem
+
+treeitem = COMMANDE_COMMTreeItem
 objet = Accas.COMMANDE_COMM

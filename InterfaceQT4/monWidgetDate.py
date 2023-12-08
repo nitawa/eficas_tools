@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2007-2021   EDF R&D
+# Copyright (C) 2007-2024   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -17,34 +17,40 @@
 #
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
-# Modules Python
-from __future__ import absolute_import
-import types,os
+
+import types, os
 
 # Modules Eficas
 from Extensions.i18n import tr
 
-from .feuille               import Feuille
-from .monWidgetSimpTuple    import MonWidgetSimpTuple
-from desWidgetDate       import Ui_WidgetDate
+from .feuille import Feuille
+from .monWidgetSimpTuple import MonWidgetSimpTuple
+from desWidgetDate import Ui_WidgetDate
 
 
-class MonWidgetDate (Ui_WidgetDate,MonWidgetSimpTuple):
-
-    def __init__(self,node,monSimpDef,nom,objSimp,parentQt,commande):
-        self.nbValeurs=3
-        MonWidgetSimpTuple.__init__(self,node,monSimpDef,nom,objSimp,parentQt,commande)
-        if self.objSimp.isImmuable() :
+class MonWidgetDate(Ui_WidgetDate, MonWidgetSimpTuple):
+    def __init__(self, node, monSimpDef, nom, objSimp, parentQt, commande):
+        self.nbValeurs = 3
+        MonWidgetSimpTuple.__init__(
+            self, node, monSimpDef, nom, objSimp, parentQt, commande
+        )
+        if self.objSimp.isImmuable():
             self.lineEditVal1.setDisabled(True)
             self.lineEditVal2.setDisabled(True)
             self.lineEditVal3.setDisabled(True)
-            self.lineEditVal1.setStyleSheet(QString.fromUtf8("background:rgb(244,244,244);\n" "border:0px;\n"))
-            self.lineEditVal2.setStyleSheet(QString.fromUtf8("background:rgb(244,244,244);\n" "border:0px;\n"))
-            self.lineEditVal3.setStyleSheet(QString.fromUtf8("background:rgb(244,244,244);\n" "border:0px;\n"))
+            self.lineEditVal1.setStyleSheet(
+                QString.fromUtf8("background:rgb(244,244,244);\n" "border:0px;\n")
+            )
+            self.lineEditVal2.setStyleSheet(
+                QString.fromUtf8("background:rgb(244,244,244);\n" "border:0px;\n")
+            )
+            self.lineEditVal3.setStyleSheet(
+                QString.fromUtf8("background:rgb(244,244,244);\n" "border:0px;\n")
+            )
             self.lineEditVal1.setToolTip(tr("Valeur non modifiable"))
             self.lineEditVal2.setToolTip(tr("Valeur non modifiable"))
             self.lineEditVal3.setToolTip(tr("Valeur non modifiable"))
-        else :
+        else:
             self.maCommande.listeAffichageWidget.append(self.lineEditVal1)
-        #self.maCommande.listeAffichageWidget.append(self.lineEditVal2)
-        #self.maCommande.listeAffichageWidget.append(self.lineEditVal3)
+        # self.maCommande.listeAffichageWidget.append(self.lineEditVal2)
+        # self.maCommande.listeAffichageWidget.append(self.lineEditVal3)

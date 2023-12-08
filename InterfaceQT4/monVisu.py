@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2007-2021   EDF R&D
+# Copyright (C) 2007-2024   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -20,18 +20,17 @@
 # Modules Python
 # Modules Eficas
 
-from __future__ import absolute_import
+
 from desVisu import Ui_DVisu
 from PyQt5.QtWidgets import QDialog
 
 
 # Import des panels
-
 class DVisu(Ui_DVisu, QDialog):
-    """
-    """
-    def __init__(self,parent = None , name = None,fl = 0):
-        QDialog.__init__(self,parent)
+    """ """
+
+    def __init__(self, parent=None, name=None, fl=0):
+        QDialog.__init__(self, parent)
         self.setModal(True)
         self.setupUi(self)
 

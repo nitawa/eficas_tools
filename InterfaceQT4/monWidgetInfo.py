@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2007-2021   EDF R&D
+# Copyright (C) 2007-2024   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -17,30 +17,25 @@
 #
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
-# Modules Python
-from __future__ import absolute_import
-try :
-    from builtins import str
-except : pass
 
-import types,os
+import types, os
 
 # Modules Eficas
 from PyQt5.QtWidgets import QWidget
 from Extensions.i18n import tr
 
-from desWidgetInformation  import Ui_WidgetInformative
+from desWidgetInformation import Ui_WidgetInformative
 
 
-class MonWidgetInfo (Ui_WidgetInformative,QWidget):
-# c est juste la taille des differents widgets de base qui change
+class MonWidgetInfo(Ui_WidgetInformative, QWidget):
+    # c est juste la taille des differents widgets de base qui change
 
-    def __init__(self,node,monSimpDef,nom,objSimp,parentQt,commande):
-        QWidget.__init__(self,None)
+    def __init__(self, node, monSimpDef, nom, objSimp, parentQt, commande):
+        QWidget.__init__(self, None)
         self.setupUi(self)
-        valeur=node.item.getValeur()
+        valeur = node.item.getValeur()
         self.lineEditVal.setText(str(valeur))
         self.lineEditVal.setReadOnly(True)
-        parentQt.commandesLayout.insertWidget(-1,self)
+        parentQt.commandesLayout.insertWidget(-1, self)
 
         commande.listeAffichageWidget.append(self.lineEditVal)

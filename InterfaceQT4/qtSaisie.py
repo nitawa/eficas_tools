@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2007-2021   EDF R&D
+# Copyright (C) 2007-2024   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -17,14 +17,8 @@
 #
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
-# Modules Python
-from __future__ import absolute_import
-try :
-    from builtins import str
-    from builtins import range
-except : pass
 
-import types,os
+import types
 from Extensions.i18n import tr
 
 from PyQt5.QtCore import Qt
@@ -32,119 +26,127 @@ from PyQt5.QtCore import Qt
 
 # Import des panels
 
+
 class SaisieValeur(object):
     """
     Classe contenant les methodes communes aux  panels
     permettant de choisir des valeurs
     """
+
     def __init__(self):
         pass
 
+    def LEvaleurPressed(self, valeur=None):
+        # print('LEvaleurPressed', valeur, type(valeur))
+        if not hasattr(self, "inSaisieValeur"):
+            self.inSaisieValeur = False
+        if self.inSaisieValeur:
+            return
+        self.inSaisieValeur = True
 
-    def LEvaleurPressed(self,valeur=None):
-        #print('LEvaleurPressed', valeur, type(valeur))
-        if not hasattr(self, 'inSaisieValeur' ) : self.inSaisieValeur=False
-        if self.inSaisieValeur : return
-        self.inSaisieValeur=True
-
-        if valeur == None :
-            try :
-                nouvelleValeur=str(self.lineEditVal.text())
-            except UnicodeEncodeError as e :
+        if valeur == None:
+            try:
+                nouvelleValeur = str(self.lineEditVal.text())
+            except UnicodeEncodeError as e:
                 self.editor.afficheInfos("pb d encoding", Qt.red)
-                validite,commentaire=self.politique.recordValeur(None)
-                self.lineEditVal.setText('')
+                validite, commentaire = self.politique.recordValeur(None)
+                self.lineEditVal.setText("")
                 self.setValide()
-                self.inSaisieValeur=False
+                self.inSaisieValeur = False
                 return
-        else :
-            try :
+        else:
+            try:
                 # la 1 ligne est tres bizarre. remplacee par le 3nd le 01 10 19
-                #if hasattr(self,"lineEditVal"):self.lineEditVal.setText(tr(valeur.nom))
-                if hasattr(self,"lineEditVal") : self.lineEditVal.setText(tr(valeur))
-            except :
-                if hasattr(self,"lineEditVal"):self.lineEditVal.setText(valeur)
-            nouvelleValeur=valeur
+                # if hasattr(self,"lineEditVal"):self.lineEditVal.setText(tr(valeur.nom))
+                if hasattr(self, "lineEditVal"):
+                    self.lineEditVal.setText(tr(valeur))
+            except:
+                if hasattr(self, "lineEditVal"):
+                    self.lineEditVal.setText(valeur)
+            nouvelleValeur = valeur
 
-        if self.node.item.definition.validators != None :
-            if self.node.item.definition.validators.verifItem(nouvelleValeur) !=1 :
-                commentaire=self.node.item.definition.validators.infoErreurItem()
-                self.editor.afficheInfos(commentaire,Qt.red)
-                self.inSaisieValeur=False
+        if self.node.item.definition.validators != None:
+            if self.node.item.definition.validators.verifItem(nouvelleValeur) != 1:
+                commentaire = self.node.item.definition.validators.infoErreurItem()
+                self.editor.afficheInfos(commentaire, Qt.red)
+                self.inSaisieValeur = False
                 return
 
-        nouvelleValeurFormat=self.politique.getValeurTexte(nouvelleValeur)
-        validite,commentaire=self.politique.recordValeur(nouvelleValeurFormat)
-        if commentaire != "" :
-            if validite :
+        nouvelleValeurFormat = self.politique.getValeurTexte(nouvelleValeur)
+        validite, commentaire = self.politique.recordValeur(nouvelleValeurFormat)
+        if commentaire != "":
+            if validite:
                 self.editor.afficheCommentaire(commentaire)
-            else :
-                self.editor.afficheInfos(commentaire,Qt.red)
-        self.inSaisieValeur=False
+            else:
+                self.editor.afficheInfos(commentaire, Qt.red)
+        self.inSaisieValeur = False
         self.setValide()
 
-
-
-    def TraiteLEValeur(self,valeurTraitee=None) :
+    def TraiteLEValeur(self, valeurTraitee=None):
         # lit la chaine entree dans le line edit
         # et la tranforme en chaine de valeurs
         # a traiter. renvoie eventuellement des complexes
-        listeValeurs=[]
-        if valeurTraitee == None :
-            valeurBrute=str(self.LEValeur.text())
-        else :
-            valeurBrute=valeurTraitee
-        if valeurBrute == str("") : return listeValeurs,1
+        listeValeurs = []
+        if valeurTraitee == None:
+            valeurBrute = str(self.LEValeur.text())
+        else:
+            valeurBrute = valeurTraitee
+        if valeurBrute == str(""):
+            return listeValeurs, 1
 
-        try :
-            valeur=eval(valeurBrute,{})
-        except :
-            valeur=valeurBrute
+        try:
+            valeur = eval(valeurBrute, {})
+        except:
+            valeur = valeurBrute
 
         # pour traiter 11.0 - 30.0 pour le CIST
-        #if (valeurTraitee and (type(valeurTraitee) in types.StringTypes) and (self.node.item.waitTxm())) :
-        if (valeurTraitee and  isinstance(valeurTraitee, str)  and (self.node.item.waitTxm())) :
-            valeur=str(valeurTraitee)
+        # if (valeurTraitee and (type(valeurTraitee) in types.StringTypes) and (self.node.item.waitTxm())) :
+        if (
+            valeurTraitee
+            and isinstance(valeurTraitee, str)
+            and (self.node.item.waitTxm())
+        ):
+            valeur = str(valeurTraitee)
 
-
-        if type(valeur)  in (list,tuple) :
-            if self.node.item.waitComplex() :
+        if type(valeur) in (list, tuple):
+            if self.node.item.waitComplex():
                 indice = 0
-                while (indice < len(valeur)):
-                    v=valeur[indice]
+                while indice < len(valeur):
+                    v = valeur[indice]
 
-                    if (v== 'RI' or v == 'MP'):
-                        try :
-                            t=tuple([v,valeur[indice+1],valeur[indice+2]])
+                    if v == "RI" or v == "MP":
+                        try:
+                            t = tuple([v, valeur[indice + 1], valeur[indice + 2]])
                             listeValeurs.append(t)
-                            indice=indice+3
-                        except :
-                            commentaire = tr("Veuillez entrer le complexe sous forme aster ou sous forme python")
+                            indice = indice + 3
+                        except:
+                            commentaire = tr(
+                                "Veuillez entrer le complexe sous forme aster ou sous forme python"
+                            )
                             self.editor.afficheInfos(commentaire)
-                            return listeValeurs,0
+                            return listeValeurs, 0
 
-
-                    else :     # ce n'est pas un tuple a la mode aster
+                    else:  # ce n'est pas un tuple a la mode aster
                         listeValeurs.append(v)
                         indice = indice + 1
 
             else:  # on n'attend pas un complexe
-                listeValeurs=valeurBrute.split(',')
+                listeValeurs = valeurBrute.split(",")
 
         elif type(valeur) == bytes:
-            listeValeurs=valeur.split(',')
+            listeValeurs = valeur.split(",")
         else:
-            #listeValeurs.append(valeurBrute)
+            # listeValeurs.append(valeurBrute)
             listeValeurs.append(valeur)
 
-        return listeValeurs,1
+        return listeValeurs, 1
 
-class SaisieSDCO(object) :
 
+class SaisieSDCO(object):
     def LESDCOReturnPressed(self):
         """
-           Lit le nom donne par l'utilisateur au concept de type CO qui doit être
-           la valeur du MCS courant et stocke cette valeur
+        Lit le nom donne par l'utilisateur au concept de type CO qui doit être
+        la valeur du MCS courant et stocke cette valeur
         """
         self.editor.initModif()
         anc_val = self.node.item.getValeur()
@@ -156,12 +158,13 @@ class SaisieSDCO(object) :
             # et le recalcul du contexte
             self.node.item.object.etape.parent.resetContext()
         nomConcept = str(self.LESDCO.text())
-        if nomConcept == "" : return
+        if nomConcept == "":
+            return
 
-        test,commentaire=self.node.item.setValeurCo(nomConcept)
+        test, commentaire = self.node.item.setValeurCo(nomConcept)
         if test:
-            commentaire=tr("Valeur du mot-clef enregistree")
+            commentaire = tr("Valeur du mot-clef enregistree")
             self.node.updateNodeValid()
-        else :
+        else:
             cr = self.node.item.getCr()
-            commentaire = tr("Valeur du mot-clef non autorisee :")+cr.getMessFatal()
+            commentaire = tr("Valeur du mot-clef non autorisee :") + cr.getMessFatal()

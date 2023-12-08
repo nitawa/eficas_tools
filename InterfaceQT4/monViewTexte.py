@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2007-2021   EDF R&D
+# Copyright (C) 2007-2024   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -18,12 +18,8 @@
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
 # Modules Python
-from __future__ import absolute_import
-try :
-    from builtins import str
-except : pass
 
-import types,os
+import types, os
 import traceback
 
 from Extensions.i18n import tr
@@ -32,50 +28,61 @@ from PyQt5.QtWidgets import QDialog, QMessageBox, QFileDialog
 from PyQt5.QtCore import QSize
 from desViewTexte import Ui_dView
 
+
 # ------------------------------- #
-class ViewText(Ui_dView,QDialog):
-# ------------------------------- #
+class ViewText(Ui_dView, QDialog):
+    # ------------------------------- #
     """
     Classe permettant la visualisation de texte
     """
-    def __init__(self,parent,editor=None,entete=None,texte=None,largeur=600,hauteur=600):
-        QDialog.__init__(self,parent)
-        self.editor=editor
+
+    def __init__(
+        self, parent, editor=None, entete=None, texte=None, largeur=600, hauteur=600
+    ):
+        QDialog.__init__(self, parent)
+        self.editor = editor
         self.setupUi(self)
 
-        self.resize( QSize(largeur,hauteur).expandedTo(self.minimumSizeHint()) )
+        self.resize(QSize(largeur, hauteur).expandedTo(self.minimumSizeHint()))
         self.bclose.clicked.connect(self.close)
-        self.bsave.clicked.connect(self.saveFile )
+        self.bsave.clicked.connect(self.saveFile)
 
-        if entete != None : self.setWindowTitle (entete)
-        if entete != None : self.setText (texte)
+        if entete != None:
+            self.setWindowTitle(entete)
+        if entete != None:
+            self.setText(texte)
 
-
-    def setText(self, txt ):
+    def setText(self, txt):
         self.view.setText(txt)
 
     def saveFile(self):
-        #recuperation du nom du fichier
-        if self.editor != None :
-            dir=self.editor.appliEficas.maConfiguration.savedir
+        # recuperation du nom du fichier
+        if self.editor != None:
+            dir = self.editor.appliEficas.maConfiguration.savedir
         else:
-            dir='/tmp'
-        fn = QFileDialog.getSaveFileName(None,
-                tr("Sauvegarder le fichier"),
-                dir)
-        fn=fn[0]
-        if fn == ""  : return
-        if fn == None : return (0, None)
+            dir = "/tmp"
+        fn = QFileDialog.getSaveFileName(None, tr("Sauvegarder le fichier"), dir)
+        fn = fn[0]
+        if fn == "":
+            return
+        if fn == None:
+            return (0, None)
 
         ulfile = os.path.abspath(fn)
-        if self.editor != None :
-            self.editor.appliEficas.maConfiguration.savedir=os.path.split(ulfile)[0]
+        if self.editor != None:
+            self.editor.appliEficas.maConfiguration.savedir = os.path.split(ulfile)[0]
         try:
-            f = open(fn, 'w')
+            f = open(fn, "w")
             f.write(str(self.view.toPlainText()))
             f.close()
             return 1
         except IOError as why:
-            QMessageBox.critical(self, tr("Sauvegarder le fichier"),
-                  tr('Le fichier')+str(fn) + tr('n a pas pu etre sauvegarde : ') + str(why))
+            QMessageBox.critical(
+                self,
+                tr("Sauvegarder le fichier"),
+                tr("Le fichier")
+                + str(fn)
+                + tr("n a pas pu etre sauvegarde : ")
+                + str(why),
+            )
             return

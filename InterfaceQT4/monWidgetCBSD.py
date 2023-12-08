@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2007-2021   EDF R&D
+# Copyright (C) 2007-2024   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -18,60 +18,56 @@
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
 # Modules Python
-from __future__ import absolute_import
-try :
-    from builtins import str
-except : pass
 
-import types,os
+import types, os
 
 # Modules Eficas
 from Extensions.i18n import tr
 
-from .feuille               import Feuille
-from desWidgetCB           import Ui_WidgetCB
-from .politiquesValidation  import PolitiqueUnique
-from .qtSaisie              import SaisieValeur
+from .feuille import Feuille
+from desWidgetCB import Ui_WidgetCB
+from .politiquesValidation import PolitiqueUnique
+from .qtSaisie import SaisieValeur
 
 
 from PyQt5.QtWidgets import QComboBox, QCompleter
 
 
-class MonWidgetCB (Ui_WidgetCB,Feuille):
-
-    def __init__(self,node,monSimpDef,nom,objSimp,parentQt,commande):
-        Feuille.__init__(self,node,monSimpDef,nom,objSimp,parentQt,commande)
-        self.politique=PolitiqueUnique(self.node,self.editor)
+class MonWidgetCB(Ui_WidgetCB, Feuille):
+    def __init__(self, node, monSimpDef, nom, objSimp, parentQt, commande):
+        Feuille.__init__(self, node, monSimpDef, nom, objSimp, parentQt, commande)
+        self.politique = PolitiqueUnique(self.node, self.editor)
         self.determineChoix()
         self.setValeursApresBouton()
         self.CBChoix.currentIndexChanged.connect(self.choixSaisi)
 
-        self.parentQt.commandesLayout.insertWidget(-1,self)
+        self.parentQt.commandesLayout.insertWidget(-1, self)
         self.maCommande.listeAffichageWidget.append(self.CBChoix)
-        #print self.objSimp.isOblig()
-
+        # print self.objSimp.isOblig()
 
     def setValeursApresBouton(self):
-        if self.objSimp.getValeur()==None :
+        if self.objSimp.getValeur() == None:
             self.CBChoix.setCurrentIndex(-1)
             return
-        valeur=self.objSimp.getValeur()
-        if not(type(valeur) == str) : valeur=str(valeur)
+        valeur = self.objSimp.getValeur()
+        if not (type(valeur) == str):
+            valeur = str(valeur)
         self.CBChoix.setCurrentIndex(self.CBChoix.findText(valeur))
 
     def determineChoix(self):
         self.CBChoix.currentIndexChanged.connect(self.choixSaisi)
 
         for choix in self.monSimpDef.into:
-            if not(type(choix) == str) : choix=str(choix)
+            if not (type(choix) == str):
+                choix = str(choix)
             self.CBChoix.currentIndexChanged.connect(self.choixSaisi)
             self.CBChoix.addItem(choix)
         self.CBChoix.setEditable(True)
-        monCompleteur=QCompleter(listeChoix,self)
+        monCompleteur = QCompleter(listeChoix, self)
         monCompleteur.setCompletionMode(QCompleter.PopupCompletion)
         self.CBChoix.setCompleter(monCompleteur)
 
     def choixSaisi(self):
-        valeur=str(self.CBChoix.currentText())
-        SaisieValeur.LEvaleurPressed(self,valeur)
+        valeur = str(self.CBChoix.currentText())
+        SaisieValeur.LEvaleurPressed(self, valeur)
         self.reaffiche()

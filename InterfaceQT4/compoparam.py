@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2007-2021   EDF R&D
+# Copyright (C) 2007-2024   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -22,36 +22,29 @@
    representant un objet de type PARAMETRE, cad le panneau et l'item de l'arbre
    d'EFICAS
 """
-from __future__ import absolute_import
-try :
-    from builtins import str
-except : pass
-
-
 # import modules Python
-import  types
+import types
 from Extensions.i18n import tr
 
 # import modules EFICAS
-from Editeur     import Objecttreeitem
+from Editeur import Objecttreeitem
 from . import browser
 from . import typeNode
 
 
-class Node(browser.JDCNode,typeNode.PopUpMenuNodePartiel):
+class Node(browser.JDCNode, typeNode.PopUpMenuNodePartiel):
     def getPanel(self):
-        """
-        """
-        from .monWidgetParam  import MonWidgetParam
-        return MonWidgetParam(self, self.editor,self.item.object)
+        """ """
+        from .monWidgetParam import MonWidgetParam
+
+        return MonWidgetParam(self, self.editor, self.item.object)
 
     def createPopUpMenu(self):
         typeNode.PopUpMenuNodePartiel.createPopUpMenu(self)
         self.menu.removeAction(self.Documentation)
 
-    def doPaste(self,node_selected,pos='after'):
+    def doPaste(self, node_selected, pos="after"):
         return None
-
 
 
 class PARAMTreeItem(Objecttreeitem.ObjectTreeItem):
@@ -59,14 +52,15 @@ class PARAMTreeItem(Objecttreeitem.ObjectTreeItem):
     Classe servant a definir l'item porte par le noeud de l'arbre d'EFICAS
     qui represente le PARAMETRE
     """
-    itemNode=Node
+
+    itemNode = Node
 
     def init(self):
         self.setFunction = self.setValeur
 
-# ---------------------------------------------------------------------------
-#                   API du PARAMETRE pour l'arbre
-# ---------------------------------------------------------------------------
+    # ---------------------------------------------------------------------------
+    #                   API du PARAMETRE pour l'arbre
+    # ---------------------------------------------------------------------------
 
     def getIconName(self):
         """
@@ -83,29 +77,29 @@ class PARAMTreeItem(Objecttreeitem.ObjectTreeItem):
             return "ast-white-square"
 
     def getLabelText(self):
-        """ Retourne 3 valeurs :
+        """Retourne 3 valeurs :
         - le texte a afficher dans le noeud representant l'item
         - la fonte dans laquelle afficher ce texte
         - la couleur du texte
         """
-        return tr('PARAMETRE'),None,None
+        return tr("PARAMETRE"), None, None
 
     def getText(self):
         """
         Retourne le texte a afficher apres le nom de la commande (ici apres 'parametre')
         Ce texte est tronque a 25 caracteres
         """
-        texte=self.object.nom+"="+str(self.object.valeur)
-        if type(self.object.valeur) == list :
-            texte=self.nom+' = ['
-            for l in self.object.valeur :
-                texte=texte+str(l) +","
-            texte=texte[0:-1]+']'
-        texte = texte.split('\n')[0]
-        if len(texte) < 25 :
+        texte = self.object.nom + "=" + str(self.object.valeur)
+        if type(self.object.valeur) == list:
+            texte = self.nom + " = ["
+            for l in self.object.valeur:
+                texte = texte + str(l) + ","
+            texte = texte[0:-1] + "]"
+        texte = texte.split("\n")[0]
+        if len(texte) < 25:
             return texte
-        else :
-            return texte[0:24]+'...'
+        else:
+            return texte[0:24] + "..."
 
     def getSubList(self):
         """
@@ -113,17 +107,19 @@ class PARAMTreeItem(Objecttreeitem.ObjectTreeItem):
         """
         return []
 
-# ---------------------------------------------------------------------------
-#       Methodes permettant la modification et la lecture des attributs
-#       du parametre = API graphique du PARAMETRE pour Panel et EFICAS
-# ---------------------------------------------------------------------------
+    # ---------------------------------------------------------------------------
+    #       Methodes permettant la modification et la lecture des attributs
+    #       du parametre = API graphique du PARAMETRE pour Panel et EFICAS
+    # ---------------------------------------------------------------------------
 
     def getValeur(self):
         """
         Retourne la valeur de l'objet PARAMETRE cad son texte
         """
-        if self.object.valeur is None: return ''
-        else: return self.object.valeur
+        if self.object.valeur is None:
+            return ""
+        else:
+            return self.object.valeur
 
     def getNom(self):
         """
@@ -131,18 +127,18 @@ class PARAMTreeItem(Objecttreeitem.ObjectTreeItem):
         """
         return self.object.nom
 
-    def setValeur(self,new_valeur):
+    def setValeur(self, new_valeur):
         """
         Affecte valeur a l'objet PARAMETRE
         """
         self.object.setValeur(new_valeur)
 
-    def setNom(self,new_nom):
+    def setNom(self, new_nom):
         """
         Renomme le parametre
         """
         self.object.setNom(new_nom)
-        #self.object.setAttribut('nom',new_nom)
+        # self.object.setAttribut('nom',new_nom)
 
     def getFr(self):
         """
@@ -150,6 +146,8 @@ class PARAMTreeItem(Objecttreeitem.ObjectTreeItem):
         """
         return tr("Definition d'un parametre")
 
+
 import Extensions.parametre
-treeitem =PARAMTreeItem
+
+treeitem = PARAMTreeItem
 objet = Extensions.parametre.PARAMETRE
