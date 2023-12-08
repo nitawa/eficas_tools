@@ -24,7 +24,8 @@ from Ihm import I_REGLE
 
 class AU_PLUS_UN(V_AU_PLUS_UN.AU_PLUS_UN, I_REGLE.REGLE, N_REGLE.REGLE):
     """
-    Accas class for catalog rule AU_PLUS_UN 
-    class instantiation automatically invokes REGLE.__init__() 
+    Accas class for catalog rule AU_PLUS_UN
+    class instantiation automatically invokes REGLE.__init__()
     """
+
     pass

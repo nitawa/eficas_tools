@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2007-2021   EDF R&D
+# Copyright (C) 2007-2024   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -24,9 +24,8 @@
    Ces generateurs sont implementes sous forme de plugins
 """
 
-from __future__ import absolute_import
 from Extensions import pluginloader
 
 import generator
 
-plugins=pluginloader.PluginLoader(generator)
+plugins = pluginloader.PluginLoader(generator)

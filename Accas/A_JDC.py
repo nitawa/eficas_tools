@@ -26,8 +26,9 @@ from Efi2Xsd.MCAccasXML import X_JDC
 
 class JDC(jdc.JDC, I_JDC.JDC, X_JDC, V_JDC.JDC, N_JDC.JDC):
     """
-    parent class for dataset object (JDC) 
+    parent class for dataset object (JDC)
     """
+
     from .A_ASSD import CO, assd
 
     def __init__(self, *pos, **args):

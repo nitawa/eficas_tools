@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 2007-2024  EDF R&D                  
+# COPYRIGHT (C) 2007-2024  EDF R&D
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -17,35 +17,43 @@
 #
 #
 # ======================================================================
+from builtins import object
+
 
 class PRESENT_PRESENT(object):
 
     """
-       La regle verifie que si le premier mot-cle de self.mcs est present
-           parmi les elements de args les autres doivent l'etre aussi
+    La regle verifie que si le premier mot-cle de self.mcs est present
+        parmi les elements de args les autres doivent l'etre aussi
 
-       Ces arguments sont transmis a la regle pour validation sous la forme
-       d'une liste de noms de mots-cles ou d'un dictionnaire dont
-       les cles sont des noms de mots-cles.
+    Ces arguments sont transmis a la regle pour validation sous la forme
+    d'une liste de noms de mots-cles ou d'un dictionnaire dont
+    les cles sont des noms de mots-cles.
     """
 
     def verif(self, args):
         """
-            La methode verif effectue la verification specifique a la regle.
-            args peut etre un dictionnaire ou une liste. Les elements de args
-            sont soit les elements de la liste soit les cles du dictionnaire.
+        La methode verif effectue la verification specifique a la regle.
+        args peut etre un dictionnaire ou une liste. Les elements de args
+        sont soit les elements de la liste soit les cles du dictionnaire.
         """
         #  on verifie que si le premier de la liste est present,
         #    les autres le sont aussi
         mc0 = self.mcs[0]
-        text = ''
+        text = ""
         test = 1
         args = self.listeToDico(args)
-        if mc0 in args :
-            for mc in self.mcs[1:len(self.mcs)]:
-                if not mc in args :
-                    text = text + "- Le mot cle " + repr(mc0)+ \
-                        " etant present, il faut que : " + \
-                        mc + " soit present" + '\n'
+        if mc0 in args:
+            for mc in self.mcs[1 : len(self.mcs)]:
+                if not mc in args:
+                    text = (
+                        text
+                        + "- Le mot cle "
+                        + repr(mc0)
+                        + " etant present, il faut que : "
+                        + mc
+                        + " soit present"
+                        + "\n"
+                    )
                     test = 0
         return text, test

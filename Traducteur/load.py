@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2007-2017   EDF R&D
+# Copyright (C) 2007-2024   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -23,124 +23,129 @@ import re
 from Traducteur import parseur
 from Traducteur.mocles import parseKeywords
 
-jdcSet=set()
+jdcSet = set()
 
 
 class JDCTrad:
     """Cet objet conserve toutes les informations relatives a un fichier de commandes .comm"""
 
-    def __init__(self,src,atraiter):
-    #----------------------------------------
-        self.atraiter=atraiter
-        self.init(src,atraiter)
-        commands= self.root.childNodes[:]
+    def __init__(self, src, atraiter):
+    # ----------------------------------------
+        self.atraiter = atraiter
+        self.init(src, atraiter)
+        commands = self.root.childNodes[:]
         commands.reverse()
         for c in commands:
             jdcSet.add(c.name)
 
-    def init(self,src,atraiter):
-    #---------------------------
-    # construction de self.lines
-        self.root=parseur.parser(src,atraiter)
-        self.lines=src.splitlines(1)
+    def init(self, src, atraiter):
+    # ---------------------------
+        # construction de self.lines
+        self.root = parseur.parser(src, atraiter)
+        self.lines = src.splitlines(1)
 
     def parseKeywords(self):
-    #-----------------------
-    # construction de fils (cf mocles.py)
+    # -----------------------
+        # construction de fils (cf mocles.py)
         parseKeywords(self.root)
 
-    def reset(self,src):
-    #-----------------------
-    # reconstruction
-        self.init(src,self.atraiter)
+    def reset(self, src):
+    # -----------------------
+        # reconstruction
+        self.init(src, self.atraiter)
         self.parseKeywords()
 
     def getSource(self):
-    #-----------------------
-    # retourne la concatenation de
-    # toutes les lignes
-        return  "".join(self.getLines())
+    # -----------------------
+        # retourne la concatenation de
+        # toutes les lignes
+        return "".join(self.getLines())
 
-    def getLine(self,linenum):
-    #-----------------------
-    # retourne la linenumieme ligne
-        return self.getLines()[linenum-1]
+    def getLine(self, linenum):
+    # -----------------------
+        # retourne la linenumieme ligne
+        return self.getLines()[linenum - 1]
 
     def getLines(self):
-    #----------------------------
-    # retourne toutes les lignes
+    # ----------------------------
+        # retourne toutes les lignes
         return self.lines
 
-    def addLine(self,ligne,numero) :
-    #----------------------------
-    # insere le texte contenu dans ligne
-    # dans la liste self.lines au rang numero
-        Ldebut=self.lines[0:numero]
-        Lmilieu=[ligne,]
-        Lfin=self.lines[numero:]
-        self.lines=Ldebut+Lmilieu+Lfin
+    def addLine(self, ligne, numero):
+    # ----------------------------
+        # insere le texte contenu dans ligne
+        # dans la liste self.lines au rang numero
+        Ldebut = self.lines[0:numero]
+        Lmilieu = [
+            ligne,
+        ]
+        Lfin = self.lines[numero:]
+        self.lines = Ldebut + Lmilieu + Lfin
 
+    def splitLine(self, numeroLigne, numeroColonne):
+    # ----------------------------------------------
+        # coupe la ligne numeroLigne en 2 a numeroColonne
+        # ajoute des blancs en debut de 2nde Ligne pour
+        # aligner
+        numeroLigne = numeroLigne - 1
+        Ldebut = self.lines[0:numeroLigne]
+        if len(self.lines) > numeroLigne:
+            Lfin = self.lines[numeroLigne + 1 :]
+        else:
+            Lfin = []
+        Lsplit = self.lines[numeroLigne]
+        LigneSplitDebut = Lsplit[0:numeroColonne] + "\n"
+        LigneSplitFin = " " * numeroColonne + Lsplit[numeroColonne:]
+        Lmilieu = [LigneSplitDebut, LigneSplitFin]
 
-    def splitLine(self,numeroLigne,numeroColonne) :
-    #----------------------------------------------
-    # coupe la ligne numeroLigne en 2 a numeroColonne
-    # ajoute des blancs en debut de 2nde Ligne pour
-    # aligner
-        numeroLigne = numeroLigne -1
-        Ldebut=self.lines[0:numeroLigne]
-        if len(self.lines) > numeroLigne :
-            Lfin=self.lines[numeroLigne+1:]
-        else :
-            Lfin=[]
-        Lsplit=self.lines[numeroLigne]
-        LigneSplitDebut=Lsplit[0:numeroColonne]+"\n"
-        LigneSplitFin=" "*numeroColonne+Lsplit[numeroColonne:]
-        Lmilieu=[LigneSplitDebut,LigneSplitFin]
+        self.lines = Ldebut + Lmilieu + Lfin
 
-        self.lines=Ldebut+Lmilieu+Lfin
+    def joinLineandNext(self, numeroLigne):
+    # --------------------------------------
+        # concatene les lignes numeroLigne et numeroLigne +1
+        # enleve les blancs de debut de la ligne (numeroLigne +1)
+        Ldebut = self.lines[0 : numeroLigne - 1]
+        if len(self.lines) > numeroLigne:
+            Lfin = self.lines[numeroLigne + 1 :]
+        else:
+            Lfin = []
 
-    def joinLineandNext(self,numeroLigne) :
-    #--------------------------------------
-    # concatene les lignes numeroLigne et numeroLigne +1
-    # enleve les blancs de debut de la ligne (numeroLigne +1)
-        Ldebut=self.lines[0:numeroLigne-1]
-        if len(self.lines) > numeroLigne :
-            Lfin=self.lines[numeroLigne+1:]
-        else :
-            Lfin=[]
-
-        ligneMilieuDeb=self.lines[numeroLigne - 1 ]
-        ligneMilieuDeb=ligneMilieuDeb[0:-1]
-        ligneMilieuFin=self.lines[numeroLigne]
+        ligneMilieuDeb = self.lines[numeroLigne - 1]
+        ligneMilieuDeb = ligneMilieuDeb[0:-1]
+        ligneMilieuFin = self.lines[numeroLigne]
         for i in range(len(ligneMilieuFin)):
-            if ligneMilieuFin[i] != " " :
-                ligneMilieuFin=ligneMilieuFin[i:]
+            if ligneMilieuFin[i] != " ":
+                ligneMilieuFin = ligneMilieuFin[i:]
                 break
-        Lmilieu=[ligneMilieuDeb+ligneMilieuFin,]
+        Lmilieu = [
+            ligneMilieuDeb + ligneMilieuFin,
+        ]
 
-        self.lines=Ldebut+Lmilieu+Lfin
+        self.lines = Ldebut + Lmilieu + Lfin
 
-    def supLignes(self,debut,fin):
-    #------------------------
-        Ldebut=self.lines[0:debut-1]
-        Lfin=self.lines[fin:]
-        self.lines=Ldebut+Lfin
+    def supLignes(self, debut, fin):
+    # ------------------------
+        Ldebut = self.lines[0 : debut - 1]
+        Lfin = self.lines[fin:]
+        self.lines = Ldebut + Lfin
 
-    def remplaceLine(self,numeroLigne,nouveauTexte) :
-    #------------------------------------------------
-        self.lines[numeroLigne]=nouveauTexte
+    def remplaceLine(self, numeroLigne, nouveauTexte):
+    # ------------------------------------------------
+        self.lines[numeroLigne] = nouveauTexte
 
-def getJDC(filename,atraiter):
-#----------------------------
-# lit le JDC
-    f=open(filename)
-    src=f.read()
+
+def getJDC(filename, atraiter):
+    # ----------------------------
+    # lit le JDC
+    f = open(filename)
+    src = f.read()
     f.close()
-    jdc=JDCTrad(src,atraiter)
+    jdc = JDCTrad(src, atraiter)
     return jdc
 
-def getJDCFromTexte(texte,atraiter):
-#-----------------------------------
-# lit le JDC
-    jdc=JDCTrad(texte,atraiter)
+
+def getJDCFromTexte(texte, atraiter):
+    # -----------------------------------
+    # lit le JDC
+    jdc = JDCTrad(texte, atraiter)
     return jdc

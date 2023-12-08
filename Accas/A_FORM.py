@@ -17,7 +17,6 @@
 #
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
-from __future__ import absolute_import
 from Noyau import N_FORM
 from Ihm import I_ENTITE
 from Accas import A_FORM_ETAPE
@@ -27,4 +26,5 @@ class FORM(N_FORM.FORM, I_ENTITE.ENTITE):
     """
     Accas class for catalog definition keyword FORMULE
     """
+
     class_instance = A_FORM_ETAPE.FORM_ETAPE

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2007-2021   EDF R&D
+# Copyright (C) 2007-2024   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -20,61 +20,63 @@
 """
     Ce module contient le plugin generateur d une liste des GroupNo et GroupMA
 """
-from __future__ import absolute_import
 import traceback
-import types,re
+import types, re
 
 from .generator_python import PythonGenerator
+
+
 def entryPoint():
     """
-        Retourne les informations necessaires pour le chargeur de plugins
+    Retourne les informations necessaires pour le chargeur de plugins
 
-        Ces informations sont retournees dans un dictionnaire
+    Ces informations sont retournees dans un dictionnaire
     """
     return {
-         # Le nom du plugin
-           'name' : 'GroupMA',
-         # La factory pour creer une instance du plugin
-           'factory' : GroupMAGenerator,
-           }
+        # Le nom du plugin
+        "name": "GroupMA",
+        # La factory pour creer une instance du plugin
+        "factory": GroupMAGenerator,
+    }
 
 
 class GroupMAGenerator(PythonGenerator):
     """
-        Ce generateur parcourt un objet de type JDC et produit
-        un texte au format eficas et
-        un texte au format homard
+    Ce generateur parcourt un objet de type JDC et produit
+    un texte au format eficas et
+    un texte au format homard
 
     """
+
     # Les extensions de fichier preconisees
-    extensions=('.comm',)
+    extensions = (".comm",)
 
     def __init__(self):
         PythonGenerator.__init__(self)
-        self.listeMA=[]
-        self.listeNO=[]
+        self.listeMA = []
+        self.listeNO = []
 
-    def gener(self,obj,format='brut',config=None):
-        self.liste=[]
-        self.text=PythonGenerator.gener(self,obj,'brut',config=None)
-        return self.listeMA,self.listeNO
+    def gener(self, obj, format="brut", config=None):
+        self.liste = []
+        self.text = PythonGenerator.gener(self, obj, "brut", config=None)
+        return self.listeMA, self.listeNO
 
-    def generMCSIMP(self,obj) :
-        if 'grma' in repr(obj.definition.type) :
+    def generMCSIMP(self, obj):
+        if "grma" in repr(obj.definition.type):
             if not type(obj.valeur) in (list, tuple):
-                aTraiter=(obj.valeur,)
-            else :
-                aTraiter=obj.valeur
-            for group in aTraiter :
-                if group not in self.listeMA :
+                aTraiter = (obj.valeur,)
+            else:
+                aTraiter = obj.valeur
+            for group in aTraiter:
+                if group not in self.listeMA:
                     self.listeMA.append(group)
-        if 'grno' in repr(obj.definition.type) :
+        if "grno" in repr(obj.definition.type):
             if not type(obj.valeur) in (list, tuple):
-                aTraiter=(obj.valeur,)
-            else :
-                aTraiter=obj.valeur
-            for group in aTraiter :
-                if group not in self.listeNO :
+                aTraiter = (obj.valeur,)
+            else:
+                aTraiter = obj.valeur
+            for group in aTraiter:
+                if group not in self.listeNO:
                     self.listeNO.append(group)
-        s=PythonGenerator.generMCSIMP(self,obj)
+        s = PythonGenerator.generMCSIMP(self, obj)
         return s

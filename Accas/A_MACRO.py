@@ -17,7 +17,6 @@
 #
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
-from __future__ import absolute_import
 from Noyau import N_MACRO
 from Ihm import I_ENTITE
 from . import A_MACRO_ETAPE
@@ -28,6 +27,7 @@ class MACRO(N_MACRO.MACRO, I_ENTITE.ENTITE):
     parent class of MACRO definition
     unused class that could/should be reactivated
     """
+
     class_instance = A_MACRO_ETAPE.MACRO_ETAPE
 
     def __init__(self, *tup, **args):

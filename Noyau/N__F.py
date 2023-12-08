@@ -1,5 +1,5 @@
 # coding=utf-8
-# Copyright (C) 2007-2021   EDF R&D
+# Copyright (C) 2007-2024   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -17,37 +17,33 @@
 #
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 
-
-from __future__ import absolute_import
-try :
-    from past.builtins import cmp
-except :
-    pass
-try:
-    from UserDict import UserDict
-except ImportError:
-    from collections import UserDict
+from collections import UserDict
 
 
 class _F(UserDict):
 
     """
-        Cette classe a un comportement semblable à un
-        dictionnaire Python et permet de donner
-        la valeur d'un mot-clé facteur avec pour les sous
-        mots-clés la syntaxe motcle=valeur
+    Cette classe a un comportement semblable à un
+    dictionnaire Python et permet de donner
+    la valeur d'un mot-clé facteur avec pour les sous
+    mots-clés la syntaxe motcle=valeur
     """
 
     def __init__(self, *pos, **args):
         if len(pos) != 0:
-            raise SyntaxError("Valeur invalide pour '_F('. "
-                              "On attend cette syntaxe : _F(MOTCLE=valeur, ...)")
+            raise SyntaxError(
+                "Valeur invalide pour '_F('. "
+                "On attend cette syntaxe : _F(MOTCLE=valeur, ...)"
+            )
         self.data = args
 
     def supprime(self):
         self.data = {}
 
     def __cmp__(self, dict):
+        print("je passe ici ________________________ Attention cmp deprecated")
+        from past.builtins import cmp
+
         if type(dict) == type(self.data):
             return cmp(self.data, dict)
         elif hasattr(dict, "data"):
@@ -60,6 +56,7 @@ class _F(UserDict):
 
     def copy(self):
         import copy
+
         c = copy.copy(self)
         c.data = self.data.copy()
         return c

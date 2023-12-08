@@ -1,5 +1,5 @@
 # coding=utf-8
-# Copyright (C) 2007-2021   EDF R&D
+# Copyright (C) 2007-2024   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -34,11 +34,7 @@
 """
 
 # Modules Python
-from __future__ import absolute_import
-try :
-    from builtins import str
-except :
-    pass
+from builtins import str
 import re
 import linecache
 import sys
@@ -48,7 +44,7 @@ from functools import partial
 from . import N_utils
 from .strfunc import getEncoding
 
-regex1 = '=?\s*%s\s*\('
+regex1 = "=?\s*%s\s*\("
 # commentaire standard precede d'un nombre quelconque de blancs (pas
 # multiligne)
 pattern_comment = re.compile(r"^\s*#.*")
@@ -56,29 +52,30 @@ pattern_comment = re.compile(r"^\s*#.*")
 
 def _getNomConceptResultat(ope, level=2):
     """
-       Cette fonction recherche dans la pile des appels, l'appel à la commande
-       qui doit etre situé à 2 niveaux au-dessus (cur_frame(2)).
-       On retrouve d'abord la frame d'exécution f. Puis le numéro de la ligne
-       dans le source f.f_lineno et le nom du fichier source (f.f_code.co_filename).
-       A partir de là, on récupère la ligne de source avec linecache.getline
-       et on vérifie que cette ligne correspond véritablement à l'appel.
+    Cette fonction recherche dans la pile des appels, l'appel à la commande
+    qui doit etre situé à 2 niveaux au-dessus (cur_frame(2)).
+    On retrouve d'abord la frame d'exécution f. Puis le numéro de la ligne
+    dans le source f.f_lineno et le nom du fichier source (f.f_code.co_filename).
+    A partir de là, on récupère la ligne de source avec linecache.getline
+    et on vérifie que cette ligne correspond véritablement à l'appel.
 
-       En effet, lorsque les commandes tiennent sur plusieurs lignes, on retrouve
-       la dernière ligne. Il faut donc remonter dans le source jusqu'à la première
-       ligne.
+    En effet, lorsque les commandes tiennent sur plusieurs lignes, on retrouve
+    la dernière ligne. Il faut donc remonter dans le source jusqu'à la première
+    ligne.
 
-       Enfin la fonction evalnom forme un nom acceptable lorsque le concept est un
-       élément d'une liste, par exemple.
+    Enfin la fonction evalnom forme un nom acceptable lorsque le concept est un
+    élément d'une liste, par exemple.
 
     """
     f = N_utils.cur_frame(level)
-    lineno = f.f_lineno     # XXX Too bad if -O is used
+    lineno = f.f_lineno  # XXX Too bad if -O is used
     # lineno = f_lineno(f)  # Ne marche pas toujours
     co = f.f_code
-    if sys.version_info >= (3,0) :
+    if sys.version_info >= (3, 0):
         filename = co.co_filename
-    else :
+    else:
         import six
+
         filename = six.text_type(co.co_filename, getEncoding())
     name = co.co_name
     # pattern pour identifier le debut de la commande
@@ -101,37 +98,37 @@ def _getNomConceptResultat(ope, level=2):
             if m != []:
                 return m[-1]
             else:
-                return ''
+                return ""
     # print "appel inconnu"
     return ""
 
 
 def evalnom(text, d):
     """
-     Retourne un nom pour le concept resultat identifie par text
-     Pour obtenir ce nom il y a plusieurs possibilites :
-      1. text est un identificateur python c'est le nom du concept
-      2. text est un element d'une liste on construit le nom en
-        evaluant la partie indice dans le contexte de l'appelant d
+    Retourne un nom pour le concept resultat identifie par text
+    Pour obtenir ce nom il y a plusieurs possibilites :
+     1. text est un identificateur python c'est le nom du concept
+     2. text est un element d'une liste on construit le nom en
+       evaluant la partie indice dans le contexte de l'appelant d
     """
-    l = re.split('([\[\]]+)', text)
-    if l[-1] == '':
+    l = re.split("([\[\]]+)", text)
+    if l[-1] == "":
         l = l[:-1]
     lll = []
     i = 0
     while i < len(l):
         s = l[i]
-        ll = re.split('[ ,]+', s)
-        if ll[0] == '':
+        ll = re.split("[ ,]+", s)
+        if ll[0] == "":
             ll = ll[1:]
         if len(ll) == 1:
             id0 = ll[0]
         else:
             lll = lll + ll[0:-1]
             id0 = ll[-1]
-        if i + 1 < len(l) and l[i + 1] == '[':  # le nom est suivi d un subscript
+        if i + 1 < len(l) and l[i + 1] == "[":  # le nom est suivi d un subscript
             sub = l[i + 2]
-            nom = id0 + '_' + str(eval(sub, d))
+            nom = id0 + "_" + str(eval(sub, d))
             i = i + 4
         else:
             nom = id0
@@ -142,12 +139,12 @@ def evalnom(text, d):
 
 def f_lineno(f):
     """
-       Calcule le numero de ligne courant
-       Devrait marcher meme avec -O
-       Semble ne pas marcher en présence de tuples longs
+    Calcule le numero de ligne courant
+    Devrait marcher meme avec -O
+    Semble ne pas marcher en présence de tuples longs
     """
     c = f.f_code
-    if not hasattr(c, 'co_lnotab'):
+    if not hasattr(c, "co_lnotab"):
         return f.f_lineno
     tab = c.co_lnotab
     line = c.co_firstlineno
@@ -164,7 +161,8 @@ def f_lineno(f):
 class NamingSystem(N_utils.Singleton):
 
     """Cette classe définit un système de nommage dynamique des concepts."""
-    _singleton_id = 'nommage.NamingSystem'
+
+    _singleton_id = "nommage.NamingSystem"
 
     def __init__(self):
         """Initialisation"""
@@ -182,5 +180,6 @@ class NamingSystem(N_utils.Singleton):
     def __call__(self, *args):
         """Appel à la fonction de nommage."""
         return self.naming_func(*args)
+
 
 getNomConceptResultat = NamingSystem()

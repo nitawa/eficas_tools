@@ -1,5 +1,5 @@
 # coding=utf-8
-# Copyright (C) 2007-2021   EDF R&D
+# Copyright (C) 2007-2024   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -21,14 +21,8 @@
 """
    Ce module contient la classe JDC qui sert a interpreter un jeu de commandes
 """
-
-# Modules Python
-from __future__ import absolute_import
-from __future__ import print_function
-try :
-    from builtins import str
-    from builtins import range
-except : pass
+from builtins import str
+from builtins import range
 import os
 import traceback
 import types
@@ -43,37 +37,18 @@ from .N_ASSD import ASSD
 from .strfunc import getEncoding
 
 
-MemoryErrorMsg = """MemoryError :
-
-En general, cette erreur se produit car la memoire utilisee hors du fortran
-(jeveux) est importante.
-
-Causes possibles :
-   - le calcul produit de gros objets Python dans une macro-commande ou
-     dans le jeu de commande lui-meme,
-   - le calcul appelle un solveur (MUMPS par exemple) ou un outil externe
-     qui a besoin de memoire hors jeveux,
-   - utilisation de jeveux dynamique,
-   - ...
-
-Solution :
-   - distinguer la memoire limite du calcul (case "Memoire totale" de astk)
-     de la memoire reservee a jeveux (case "dont Aster"), le reste etant
-     disponible pour les allocations dynamiques.
-"""
-
-
 class JDC(N_OBJECT.OBJECT):
 
     """
-       Cette classe interprete un jeu de commandes fourni sous
-       la forme d'une chaine de caractères
+    Cette classe interprete un jeu de commandes fourni sous
+    la forme d'une chaine de caractères
 
-       Attributs de classe :
+    Attributs de classe :
 
-       Attributs d'instance :
+    Attributs d'instance :
 
     """
+
     nature = "JDC"
     CR = N_CR.CR
     exec_init = """
@@ -85,9 +60,18 @@ NONE = None
 
     from .N_utils import SEP
 
-    def __init__(self, definition=None, procedure=None, cata=None,
-                 cata_ord_dico=None, parent=None,
-                 nom='SansNom', appliEficas=None, context_ini=None, **args):
+    def __init__(
+        self,
+        definition=None,
+        procedure=None,
+        cata=None,
+        cata_ord_dico=None,
+        parent=None,
+        nom="SansNom",
+        appliEficas=None,
+        context_ini=None,
+        **args
+    ):
         self.procedure = procedure
         self.definition = definition
         self.cata = cata
@@ -108,7 +92,7 @@ NONE = None
         self.args.update(args)
         self.nstep = 0
         self.nsd = 0
-        self.parLot = 'OUI'
+        self.parLot = "OUI"
         self.parLot_user = None
         if definition:
             self.regles = definition.regles
@@ -119,11 +103,12 @@ NONE = None
         #
         #  Creation de l objet compte rendu pour collecte des erreurs
         #
-        self.cr = self.CR(debut="CR phase d'initialisation",
-                          fin="fin CR phase d'initialisation")
+        self.cr = self.CR(
+            debut="CR phase d'initialisation", fin="fin CR phase d'initialisation"
+        )
         # on met le jdc lui-meme dans le context global pour l'avoir sous
         # l'etiquette "jdc" dans le fichier de commandes
-        self.g_context = {'jdc': self}
+        self.g_context = {"jdc": self}
         CONTEXT.unsetCurrentJdC()
         CONTEXT.setCurrentJdC(self)
         # Dictionnaire pour stocker tous les concepts du JDC (acces rapide par
@@ -142,24 +127,21 @@ NONE = None
 
     def compile(self):
         """
-           Cette methode compile la chaine procedure
-           Si des erreurs se produisent, elles sont consignees dans le
-           compte-rendu self.cr
+        Cette methode compile la chaine procedure
+        Si des erreurs se produisent, elles sont consignees dans le
+        compte-rendu self.cr
         """
         try:
             # Python 2.7 compile function does not accept unicode filename, so we encode it
             # with the current locale encoding in order to have a correct
             # traceback
             encoded_filename = self.nom.encode(getEncoding())
-            self.proc_compile = compile(
-                self.procedure, encoded_filename, 'exec')
+            self.proc_compile = compile(self.procedure, encoded_filename, "exec")
         except SyntaxError as e:
             if CONTEXT.debug:
                 traceback.print_exc()
             l = traceback.format_exception_only(SyntaxError, e)
-            self.cr.exception("Compilation impossible : " + ''.join(l))
-        except MemoryError as e:
-            self.cr.exception(MemoryErrorMsg)
+            self.cr.exception("Compilation impossible : " + "".join(l))
         except SystemError as e:
             erreurs_connues = """
 Causes possibles :
@@ -169,7 +151,7 @@ Causes possibles :
 """
             l = traceback.format_exception_only(SystemError, e)
             l.append(erreurs_connues)
-            self.cr.exception("Compilation impossible : " + ''.join(l))
+            self.cr.exception("Compilation impossible : " + "".join(l))
         return
 
     def setCurrentContext(self):
@@ -180,8 +162,8 @@ Causes possibles :
 
     def execCompile(self):
         """
-           Cette methode execute le jeu de commandes compile dans le contexte
-           self.g_context de l'objet JDC
+        Cette methode execute le jeu de commandes compile dans le contexte
+        self.g_context de l'objet JDC
         """
 
         CONTEXT.setCurrentStep(self)
@@ -191,18 +173,19 @@ Causes possibles :
         # Dans le cas d'une chaine de caractères il faut acceder
         # aux commandes qui sont dans la chaine
         import linecache
-        linecache.cache[self.nom] = 0, 0, self.procedure.split('\n'), self.nom
+
+        linecache.cache[self.nom] = 0, 0, self.procedure.split("\n"), self.nom
         try:
             exec(self.exec_init, self.g_context)
             for obj_cata in (self.cata,):
                 if type(obj_cata) == types.ModuleType:
                     init2 = "from " + obj_cata.__name__ + " import *"
                     exec(init2, self.g_context)
-                else :
+                else:
                     # ici on a un catalogue en grammaire Eficas XML
                     # il faut ajouter ce qu on a construit au contexte
-                    for (k,v) in obj_cata.contexteXML.items() :
-                        self.g_context[k]=v
+                    for k, v in obj_cata.contexteXML.items():
+                        self.g_context[k] = v
             # Initialisation du contexte global pour l'evaluation des conditions de BLOC
             # On utilise une copie de l'initialisation du contexte du jdc
             self.condition_context = self.g_context.copy()
@@ -217,7 +200,7 @@ Causes possibles :
                     if isinstance(sd, ASSD):
                         self.sdsDict[sdnom] = sd
 
-            #if self.appliEficas != None:
+            # if self.appliEficas != None:
             #    self.appliEficas.afficheInfos(
             #        'Interpretation du fichier de commandes en cours ...')
 
@@ -242,7 +225,7 @@ Causes possibles :
             # erreur
             CONTEXT.unsetCurrentStep()
             self.afficheFinExec()
-            self.traiterFinExec('commande')
+            self.traiterFinExec("commande")
 
         except AsException as e:
             # une erreur a ete identifiee
@@ -251,26 +234,24 @@ Causes possibles :
             # l'exception a ete recuperee avant (ou, comment ?),
             # donc on cherche dans le texte
             txt = str(e)
-            if txt.find('MemoryError') >= 0:
-                txt = MemoryErrorMsg
             self.cr.exception(txt)
             CONTEXT.unsetCurrentStep()
 
         except NameError as e:
             etype, value, tb = sys.exc_info()
             l = traceback.extract_tb(tb)
-            s = traceback.format_exception_only(NameError,e)
+            s = traceback.format_exception_only(NameError, e)
             msg = "erreur de syntaxe,  %s ligne %d" % (s, l[-1][1])
             if CONTEXT.debug:
                 traceback.print_exc()
             self.cr.exception(msg)
             CONTEXT.unsetCurrentStep()
 
-       # except self.UserError as exc_val:
-       #     self.traiterUserException(exc_val)
-       #     CONTEXT.unsetCurrentStep()
-       #     self.afficheFinExec()
-       #     self.traiterFinExec('commande')
+        # except self.UserError as exc_val:
+        #     self.traiterUserException(exc_val)
+        #     CONTEXT.unsetCurrentStep()
+        #     self.afficheFinExec()
+        #     self.traiterFinExec('commande')
 
         except:
             # erreur inattendue
@@ -284,43 +265,46 @@ Causes possibles :
             exc_typ, exc_val, exc_fr = sys.exc_info()
             l = traceback.format_exception(exc_typ, exc_val, exc_fr)
             self.cr.exception(
-                "erreur non prevue et non traitee prevenir la maintenance " + '\n' + ''.join(l))
+                "erreur non prevue et non traitee prevenir la maintenance "
+                + "\n"
+                + "".join(l)
+            )
             del exc_typ, exc_val, exc_fr
             CONTEXT.unsetCurrentStep()
-        idx=0
+        idx = 0
         for e in self.etapes:
-            self.enregistreEtapePyxb(e,idx)
-            idx=idx+1
+            self.enregistreEtapePyxb(e, idx)
+            idx = idx + 1
 
     def afficheFinExec(self):
         """
-           Cette methode realise l'affichage final des statistiques de temps
-           apres l'execution de toutes
-           les commandes en mode commande par commande ou par lot
-           Elle doit etre surchargee pour en introduire un
+        Cette methode realise l'affichage final des statistiques de temps
+        apres l'execution de toutes
+        les commandes en mode commande par commande ou par lot
+        Elle doit etre surchargee pour en introduire un
         """
         return
 
     def traiterFinExec(self, mode, etape=None):
         """
-           Cette methode realise un traitement final apres l'execution de toutes
-           les commandes en mode commande par commande ou par lot
-           Par defaut il n'y a pas de traitement. Elle doit etre surchargee
-           pour en introduire un
+        Cette methode realise un traitement final apres l'execution de toutes
+        les commandes en mode commande par commande ou par lot
+        Par defaut il n'y a pas de traitement. Elle doit etre surchargee
+        pour en introduire un
         """
-        print ( "FIN D'EXECUTION %s %s" %s( mode, etape))
+        print("FIN D'EXECUTION %s %s" % s(mode, etape))
 
     def traiterUserException(self, exc_val):
         """Cette methode realise un traitement sur les exceptions utilisateur
-           Par defaut il n'y a pas de traitement. La methode doit etre
-           surchargee pour en introduire un.
+        Par defaut il n'y a pas de traitement. La methode doit etre
+        surchargee pour en introduire un.
         """
         return
 
     def register(self, etape):
         """
-           Cette methode ajoute etape dans la liste des etapes : self.etapes
-           et retourne un numero d'enregistrement
+        Cette methode ajoute etape dans la liste des etapes : self.etapes
+        et retourne un numero d'enregistrement
         """
         self.etapes.append(etape)
         self.index_etapes[etape] = len(self.etapes) - 1
@@ -328,7 +312,7 @@ Causes possibles :
 
     def o_register(self, sd):
         """
-           Retourne un identificateur pour concept
+        Retourne un identificateur pour concept
         """
         self.nsd = self.nsd + 1
         nom = sd.idracine + self.SEP + repr(self.nsd)
@@ -336,7 +320,7 @@ Causes possibles :
 
     def gRegister(self, etape):
         """
-            Retourne un identificateur pour etape
+        Retourne un identificateur pour etape
         """
         self.nstep = self.nstep + 1
         idetape = etape.idracine + self.SEP + repr(self.nstep)
@@ -344,45 +328,46 @@ Causes possibles :
 
     def createSdprod(self, etape, nomsd):
         """
-            Cette methode doit fabriquer le concept produit retourne
-            par l'etape etape et le nommer.
+        Cette methode doit fabriquer le concept produit retourne
+        par l'etape etape et le nommer.
 
-            Elle est appelee a l'initiative de l'etape
-            pendant le processus de construction de cette etape :
-            methode __call__ de la classe CMD (OPER ou MACRO)
+        Elle est appelee a l'initiative de l'etape
+        pendant le processus de construction de cette etape :
+        methode __call__ de la classe CMD (OPER ou MACRO)
 
-            Ce travail est realise par le contexte superieur
-            (etape.parent) car dans certains cas, le concept ne doit
-            pas etre fabrique mais l'etape doit simplement utiliser
-            un concept preexistant.
+        Ce travail est realise par le contexte superieur
+        (etape.parent) car dans certains cas, le concept ne doit
+        pas etre fabrique mais l'etape doit simplement utiliser
+        un concept preexistant.
 
-            Deux cas possibles :
-                    - Cas 1 : etape.reuse != None : le concept est reutilise
-                    - Cas 2 : l'etape appartient a une macro qui a declare un
-                            concept de sortie qui doit etre produit par cette
-                            etape.
-            Dans le cas du JDC, le deuxième cas ne peut pas se produire.
+        Deux cas possibles :
+                - Cas 1 : etape.reuse != None : le concept est reutilise
+                - Cas 2 : l'etape appartient a une macro qui a declare un
+                        concept de sortie qui doit etre produit par cette
+                        etape.
+        Dans le cas du JDC, le deuxième cas ne peut pas se produire.
         """
         sd = etape.getSdProd()
-        if sd != None and (etape.definition.reentrant == 'n' or etape.reuse is None):
+        if sd != None and (etape.definition.reentrant == "n" or etape.reuse is None):
             # ATTENTION : On ne nomme la SD que dans le cas de non reutilisation
             # d un concept. Commande non reentrante ou reuse absent.
             self.nommerSDProd(sd, nomsd)
         return sd
 
-    def nommerSDProd(self, sd, sdnom, restrict='non'):
+    def nommerSDProd(self, sd, sdnom, restrict="non"):
         """
-            Nomme la SD apres avoir verifie que le nommage est possible : nom
-            non utilise
-            Si le nom est deja utilise, leve une exception
-            Met le concept cree dans le concept global g_context
+        Nomme la SD apres avoir verifie que le nommage est possible : nom
+        non utilise
+        Si le nom est deja utilise, leve une exception
+        Met le concept cree dans le concept global g_context
         """
         o = self.sdsDict.get(sdnom, None)
         if isinstance(o, ASSD):
             raise AsException("Nom de concept deja defini : %s" % sdnom)
         if sdnom in self._reserved_kw:
             raise AsException(
-                "Nom de concept invalide. '%s' est un mot-cle reserve." % sdnom)
+                "Nom de concept invalide. '%s' est un mot-cle reserve." % sdnom
+            )
 
         # Ajoute a la creation (appel de regSD).
         self.sdsDict[sdnom] = sd
@@ -390,28 +375,27 @@ Causes possibles :
 
         # En plus si restrict vaut 'non', on insere le concept dans le contexte
         # du JDC
-        if restrict == 'non':
+        if restrict == "non":
             self.g_context[sdnom] = sd
 
-    def regUserSD(self,sd):
-    # utilisee pour creer les references
-    # se contente d appeler la methode equivalente sur le jdc
-        id=self.regSD(sd)
-        self.nommerSDProd(sd,sd.nom)
+    def regUserSD(self, sd):
+        # utilisee pour creer les references
+        # se contente d appeler la methode equivalente sur le jdc
+        id = self.regSD(sd)
+        self.nommerSDProd(sd, sd.nom)
         return id
-
 
     def regSD(self, sd):
         """
-            Methode appelee dans l __init__ d un ASSD lors de sa creation
-            pour s enregistrer
+        Methode appelee dans l __init__ d un ASSD lors de sa creation
+        pour s enregistrer
         """
         return self.o_register(sd)
 
     def deleteConceptAfterEtape(self, etape, sd):
         """
-            Met a jour les etapes du JDC qui sont après etape suite a
-            la disparition du concept sd
+        Met a jour les etapes du JDC qui sont après etape suite a
+        la disparition du concept sd
         """
         # Cette methode est definie dans le noyau mais ne sert que pendant
         # la phase de creation des etapes et des concepts. Il n'y a aucun
@@ -437,28 +421,28 @@ Causes possibles :
             e.jdc = jdc
             del self.index_etapes[e]
 
-    def getFile(self, unite=None, fic_origine='', fname=None):
+    def getFile(self, unite=None, fic_origine="", fname=None):
         """
-            Retourne le nom du fichier correspondant a un numero d'unite
-            logique (entier) ainsi que le source contenu dans le fichier
+        Retourne le nom du fichier correspondant a un numero d'unite
+        logique (entier) ainsi que le source contenu dans le fichier
         """
-        #if self.appliEficas:
-            # Si le JDC est relie a une appliEficascation maitre, on delègue la
-            # recherche
+        # if self.appliEficas:
+        # Si le JDC est relie a une appliEficascation maitre, on delègue la
+        # recherche
         #    return self.appliEficas.getFile(unite, fic_origine)
-        #else:
+        # else:
         #    if unite != None:
         #        if os.path.exists("fort." + str(unite)):
         #            fname = "fort." + str(unite)
         if fname == None:
             raise AsException("Impossible de trouver le fichier correspondant")
         if not os.path.exists(fname):
-            raise AsException(fname + " n'est pas un fichier existant" )
-        fproc = open(fname, 'r')
+            raise AsException(fname + " n'est pas un fichier existant")
+        fproc = open(fname, "r")
         text = fproc.read()
         fproc.close()
-        text = text.replace('\r\n', '\n')
-        linecache.cache[fname] = 0, 0, text.split('\n'), fname
+        text = text.replace("\r\n", "\n")
+        linecache.cache[fname] = 0, 0, text.split("\n"), fname
         return fname, text
 
     def set_parLot(self, parLot, user_value=False):
@@ -480,19 +464,19 @@ Causes possibles :
             self.parLot = parLot
         else:
             # Avec appliEficascation maitre
-            self.parLot = 'OUI'
+            self.parLot = "OUI"
 
     def accept(self, visitor):
         """
-           Cette methode permet de parcourir l'arborescence des objets
-           en utilisant le pattern VISITEUR
+        Cette methode permet de parcourir l'arborescence des objets
+        en utilisant le pattern VISITEUR
         """
         visitor.visitJDC(self)
 
     def interact(self):
         """
-            Cette methode a pour fonction d'ouvrir un interpreteur
-            pour que l'utilisateur entre des commandes interactivement
+        Cette methode a pour fonction d'ouvrir un interpreteur
+        pour que l'utilisateur entre des commandes interactivement
         """
         CONTEXT.setCurrentStep(self)
         try:
@@ -503,12 +487,15 @@ Causes possibles :
             # aux commandes qui sont dans le buffer de la console
             import linecache
             import code
-            console = code.InteractiveConsole(
-                self.g_context, filename="<console>")
+
+            console = code.InteractiveConsole(self.g_context, filename="<console>")
             linecache.cache["<console>"] = 0, 0, console.buffer, "<console>"
-            banner = """***********************************************
+            banner = (
+                """***********************************************
 *          Interpreteur interactif %s
-***********************************************""" % self.code
+***********************************************"""
+                % self.code
+            )
             console.interact(banner)
         finally:
             console = None
@@ -516,10 +503,10 @@ Causes possibles :
 
     def getContexteAvant(self, etape):
         """
-           Retourne le dictionnaire des concepts connus avant etape
-           On tient compte des commandes qui modifient le contexte
-           comme DETRUIRE ou les macros
-           Si etape == None, on retourne le contexte en fin de JDC
+        Retourne le dictionnaire des concepts connus avant etape
+        On tient compte des commandes qui modifient le contexte
+        comme DETRUIRE ou les macros
+        Si etape == None, on retourne le contexte en fin de JDC
         """
         # L'etape courante pour laquelle le contexte a ete calcule est
         # memorisee dans self.index_etape_courante
@@ -529,11 +516,11 @@ Causes possibles :
         # Si on insère des commandes (par ex, dans EFICAS), il faut prealablement
         # remettre ce pointeur a 0
         # self.currentContext.items() if isinstance(v, ASSD)])
-        #if self.parLot_user == 'NON':
+        # if self.parLot_user == 'NON':
         #    d = self.currentContext = self.g_context.copy()
         #    if etape is None:
         #        return d
-            # retirer les sd produites par 'etape'
+        # retirer les sd produites par 'etape'
         #    sd_names = [sd.nom for sd in etape.getCreated_sd()]
         #    for nom in sd_names:
         #        try:
@@ -554,7 +541,7 @@ Causes possibles :
             d = self.currentContext
             if self.index_etape_courante == 0 and self.context_ini:
                 d.update(self.context_ini)
-            liste_etapes = self.etapes[self.index_etape_courante:index_etape]
+            liste_etapes = self.etapes[self.index_etape_courante : index_etape]
         else:
             d = self.currentContext = {}
             if self.context_ini:
@@ -582,8 +569,8 @@ Causes possibles :
 
     def getContexteCourant(self, etape_courante=None):
         """
-           Retourne le contexte tel qu'il est (ou 'sera' si on est en phase
-           de construction) au moment de l'execution de l'etape courante.
+        Retourne le contexte tel qu'il est (ou 'sera' si on est en phase
+        de construction) au moment de l'execution de l'etape courante.
         """
         if etape_courante is None:
             etape_courante = CONTEXT.getCurrentStep()
@@ -591,7 +578,7 @@ Causes possibles :
 
     def getConcept(self, nomsd):
         """
-            Methode pour recuperer un concept a partir de son nom
+        Methode pour recuperer un concept a partir de son nom
         """
         co = self.getContexteCourant().get(nomsd.strip(), None)
         if not isinstance(co, ASSD):
@@ -600,8 +587,8 @@ Causes possibles :
 
     def getConceptByType(self, nomsd, typesd, etape):
         """
-            Methode pour recuperer un concept a partir de son nom et de son type.
-            Il aura comme père 'etape'.
+        Methode pour recuperer un concept a partir de son nom et de son type.
+        Il aura comme père 'etape'.
         """
         assert issubclass(typesd, ASSD), typesd
         co = typesd(etape=etape)
@@ -611,8 +598,8 @@ Causes possibles :
 
     def delConcept(self, nomsd):
         """
-           Methode pour supprimer la reference d'un concept dans le sdsDict.
-           Ne detruire pas le concept (different de supprime).
+        Methode pour supprimer la reference d'un concept dans le sdsDict.
+        Ne detruire pas le concept (different de supprime).
         """
         try:
             del self.sdsDict[nomsd.strip()]
@@ -621,9 +608,9 @@ Causes possibles :
 
     def getCmd(self, nomcmd):
         """
-            Methode pour recuperer la definition d'une commande
-            donnee par son nom dans les catalogues declares
-            au niveau du jdc
+        Methode pour recuperer la definition d'une commande
+        donnee par son nom dans les catalogues declares
+        au niveau du jdc
         """
         for cata in (self.cata,):
             if hasattr(cata, nomcmd):
@@ -631,8 +618,8 @@ Causes possibles :
 
     def append_reset(self, etape):
         """
-           Ajoute une etape provenant d'un autre jdc a la liste des etapes
-           et remet a jour la parente de l'etape et des concepts
+        Ajoute une etape provenant d'un autre jdc a la liste des etapes
+        et remet a jour la parente de l'etape et des concepts
         """
         self.etapes.append(etape)
         self.index_etapes[etape] = len(self.etapes) - 1
@@ -640,33 +627,71 @@ Causes possibles :
         etape.resetJdc(self)
 
     def sdAccessible(self):
-        """On peut acceder aux "valeurs" (jeveux) des ASSD si le JDC est en PAR_LOT="NON".
-        """
+        """On peut acceder aux "valeurs" (jeveux) des ASSD si le JDC est en PAR_LOT="NON"."""
         if CONTEXT.debug:
-            print((' `- JDC sdAccessible : PAR_LOT =', self.parLot))
-        return self.parLot == 'NON'
+            print((" `- JDC sdAccessible : PAR_LOT =", self.parLot))
+        return self.parLot == "NON"
 
-    def getEtapesByName(self,name):
-        listeDEtapes=[]
-        for e in self.etapes :
-            if e.nom  == name : listeDEtapes.append(e) 
+    def getEtapesByName(self, name):
+        listeDEtapes = []
+        for e in self.etapes:
+            if e.nom == name:
+                listeDEtapes.append(e)
         return listeDEtapes
 
-    def getEtapeByConceptName(self,conceptName):
-        for e in self.etapes :
-            if hasattr(e,'sdnom') and e.sdnom  == conceptName :  return e 
-
+    def getEtapeByConceptName(self, conceptName):
+        for e in self.etapes:
+            if hasattr(e, "sdnom") and e.sdnom == conceptName:
+                return e
 
     def _build_reserved_kw_list(self):
         """Construit la liste des mots-cles reserves (interdits pour le
         nommage des concepts)."""
         self._reserved_kw = set()
-        #for cat in self.cata:
-        cat=self.cata
+        # for cat in self.cata:
+        cat = self.cata
         self._reserved_kw.update(
-                #PN 14  2020 [kw for kw in dir(cat) if len(kw) <= 8 and kw == kw.upper()])
-                [kw for kw in dir(cat) ])
+            # PN 14  2020 [kw for kw in dir(cat) if len(kw) <= 8 and kw == kw.upper()])
+            [kw for kw in dir(cat)]
+        )
         self._reserved_kw.difference_update(
-            ['OPER', 'MACRO', 'BLOC', 'SIMP', 'FACT', 'FORM',
-             'GEOM', 'MCSIMP', 'MCFACT'])
+            [
+                "OPER",
+                "MACRO",
+                "BLOC",
+                "SIMP",
+                "FACT",
+                "FORM",
+                "GEOM",
+                "MCSIMP",
+                "MCFACT",
+            ]
+        )
 
+    def prepareInsertInDB(self):
+        debug = 1
+        if debug:
+            print("prepareInsertInDB traitement de ", self.nom)
+        if hasattr(self, "dPrimaryKey"):
+            dPrimaryKey = self.dPrimaryKey
+        else:
+            dPrimaryKey = {}
+        if hasattr(self, "dElementsRecursifs"):
+            dElementsRecursifs = self.dElementsRecursifs
+        else:
+            dElementsRecursifs = {}
+        dictKey = {}
+        if debug:
+            print("dElementsRecursifs", dElementsRecursifs)
+        if debug:
+            print(
+                "dPrimaryKey",
+                dPrimaryKey,
+            )
+        for mc in dPrimaryKey.values():
+            dictKey[mc] = None
+        texte = ""
+        for e in self.etapes:
+            tc, tv, ta = e.prepareInsertInDB(dictKey, dElementsRecursifs, dPrimaryKey)
+            texte += tc + tv + ta
+        return texte

@@ -28,6 +28,7 @@ class FACT(N_FACT.FACT, X_FACT, I_ENTITE.ENTITE):
     """
     Accas class for catalog definition keyword FACT
     """
+
     class_instance = A_MCFACT.MCFACT
     list_instance = A_MCLIST.MCList
 
@@ -38,6 +39,7 @@ class FACT(N_FACT.FACT, X_FACT, I_ENTITE.ENTITE):
 
 from Noyau import N_OBJECT
 from Ihm import I_OBJECT
+
 
 class ErrorObj(I_OBJECT.ErrorObj, N_OBJECT.ErrorObj):
     pass

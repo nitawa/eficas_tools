@@ -1,5 +1,5 @@
 # coding=utf-8
-# Copyright (C) 2007-2021   EDF R&D
+# Copyright (C) 2007-2024   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -20,49 +20,41 @@
 # Attention : cet import permet d'avoir, en Python, le comportement
 # de la division réelle pour les entiers, et non la division entière
 # 1/2=0.5 (et non 0). Comportement par défaut dans Python 3.0.
-from __future__ import division
-from __future__ import absolute_import
-try :
-    from builtins import zip
-    from builtins import str
-except :
-    pass
+
+from builtins import zip
+from builtins import str
 from math import sin, cos, tan, asin, acos, atan2, atan, sinh, cosh, tanh
 from math import pi, exp, log, log10, sqrt
-
 from .N_ASSD import ASSD
-from six.moves import zip
-
 
 class FONCTION(ASSD):
     pass
 
-
 class formule(ASSD):
-
     def __init__(self, *args, **kwargs):
         ASSD.__init__(self, *args, **kwargs)
         self.nompar = None
         self.expression = None
         ctxt = {}
-        ctxt.update(getattr(self.parent, 'const_context', {}))
-        ctxt.update(getattr(self.parent, 'macro_const_context', {}))
+        ctxt.update(getattr(self.parent, "const_context", {}))
+        ctxt.update(getattr(self.parent, "macro_const_context", {}))
         self.parent_context = self.filter_context(ctxt)
 
     def __call__(self, *val):
         """Evaluation de la formule"""
         # en POURSUITE, self.parent_context is None, on essaie de reprendre
         # const_context
-        context = getattr(self, 'parent_context') or getattr(
-            self.parent, 'const_context', {})
+        context = getattr(self, "parent_context") or getattr(
+            self.parent, "const_context", {}
+        )
         for param, value in zip(self.nompar, val):
             context[param] = value
         try:
             # globals() pour math.*
             res = eval(self.code, context, globals())
         except Exception as exc:
-            mes = "ERREUR LORS DE L EVALUATION DE LA FORMULE %s" %self.nom
-            print (mes)
+            mes = "ERREUR LORS DE L EVALUATION DE LA FORMULE %s" % self.nom
+            print(mes)
             raise
         return res
 
@@ -73,22 +65,22 @@ class formule(ASSD):
         self.nompar = nom_para
         self.expression = texte
         try:
-            self.code = compile(texte, texte, 'eval')
+            self.code = compile(texte, texte, "eval")
         except SyntaxError as exc:
-            mes = "ERREUR LORS DE LA CREATION  DE LA FORMULE %s" %self.nom
-            print (mes)
+            mes = "ERREUR LORS DE LA CREATION  DE LA FORMULE %s" % self.nom
+            print(mes)
             raise
 
     def __setstate__(self, state):
         """Cette methode sert a restaurer l'attribut code lors d'un unpickle."""
-        self.__dict__.update(state)                   # update attributes
+        self.__dict__.update(state)  # update attributes
         self.setFormule(self.nompar, self.expression)  # restore code attribute
 
     def __getstate__(self):
         """Pour les formules, il faut enlever l'attribut code qui n'est
         pas picklable."""
         d = ASSD.__getstate__(self)
-        del d['code']
+        del d["code"]
         return d
 
     def supprime(self, force=False):
@@ -107,7 +99,7 @@ class formule(ASSD):
         conservé.
         """
         if force:
-            for ctxt in ('parent_context', 'g_context'):
+            for ctxt in ("parent_context", "g_context"):
                 if hasattr(self, ctxt):
                     setattr(self, ctxt, None)
         ASSD.supprime(self, force)
@@ -118,24 +110,23 @@ class formule(ASSD):
         """
         from SD.sd_fonction import sd_formule
         from Utilitai.Utmess import UTMESS
+
         if self.accessible():
-            TypeProl = {
-                'E': 'EXCLU', 'L': 'LINEAIRE', 'C': 'CONSTANT', 'I': 'INTERPRE'}
+            TypeProl = {"E": "EXCLU", "L": "LINEAIRE", "C": "CONSTANT", "I": "INTERPRE"}
             sd = sd_formule(self.getName())
             prol = sd.PROL.get()
             nova = sd.NOVA.get()
             if prol is None or nova is None:
-                UTMESS('F', 'SDVERI_2', valk=[objev])
+                UTMESS("F", "SDVERI_2", valk=[objev])
             dico = {
-                'INTERPOL': ['LIN', 'LIN'],
-                'NOM_PARA': [s.strip() for s in nova],
-                'NOM_RESU': prol[3][0:16].strip(),
-                'PROL_DROITE': TypeProl['E'],
-                'PROL_GAUCHE': TypeProl['E'],
+                "INTERPOL": ["LIN", "LIN"],
+                "NOM_PARA": [s.strip() for s in nova],
+                "NOM_RESU": prol[3][0:16].strip(),
+                "PROL_DROITE": TypeProl["E"],
+                "PROL_GAUCHE": TypeProl["E"],
             }
         else:
-            raise Accas.AsException(
-                "Erreur dans fonction.Parametres en PAR_LOT='OUI'")
+            raise Accas.AsException("Erreur dans fonction.Parametres en PAR_LOT='OUI'")
         return dico
 
 

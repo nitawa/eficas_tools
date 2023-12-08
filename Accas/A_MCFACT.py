@@ -17,7 +17,6 @@
 #
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
-from __future__ import absolute_import
 from Noyau import N_MCFACT
 from Validation import V_MCFACT
 from Ihm import I_MCFACT
@@ -28,7 +27,14 @@ class MCFACT(I_MCFACT.MCFACT, N_MCFACT.MCFACT, X_MCFACT, V_MCFACT.MCFACT):
     """
     class of FACT object (MCFACT = mot clef FACTEUR)
     """
+
     def __init__(self, val, definition, nom, parent, dicoPyxbDeConstruction=None):
-        N_MCFACT.MCFACT.__init__(self, val, definition, nom,
-                 parent, dicoPyxbDeConstruction=dicoPyxbDeConstruction)
+        N_MCFACT.MCFACT.__init__(
+            self,
+            val,
+            definition,
+            nom,
+            parent,
+            dicoPyxbDeConstruction=dicoPyxbDeConstruction,
+        )
         V_MCFACT.MCFACT.__init__(self)

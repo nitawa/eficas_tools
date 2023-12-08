@@ -1,5 +1,5 @@
 # coding=utf-8
-# Copyright (C) 2007-2021   EDF R&D
+# Copyright (C) 2007-2024   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -37,44 +37,39 @@
     r.verif({"INFO":v1,"AFFE":v2)
 """
 
-from __future__ import absolute_import
-try :
-    from builtins import object
-except :
-    pass
+from builtins import object
 import types
 
 
 class REGLE(object):
-
     def __init__(self, *args):
         """
-            Les classes dérivées peuvent utiliser cet initialiseur par défaut ou
-            le surcharger
+        Les classes dérivées peuvent utiliser cet initialiseur par défaut ou
+        le surcharger
         """
         self.mcs = args
 
     def verif(self, args):
         """
-           Les classes dérivées doivent implémenter cette méthode
-           qui doit retourner une paire dont le premier élément est une chaine de caractère
-           et le deuxième un entier.
+        Les classes dérivées doivent implémenter cette méthode
+        qui doit retourner une paire dont le premier élément est une chaine de caractère
+        et le deuxième un entier.
 
-           L'entier peut valoir 0 ou 1. -- s'il vaut 1, la règle est vérifiée
-            s'il vaut 0, la règle n'est pas vérifiée et le texte joint contient
-           un commentaire de la non validité.
+        L'entier peut valoir 0 ou 1. -- s'il vaut 1, la règle est vérifiée
+         s'il vaut 0, la règle n'est pas vérifiée et le texte joint contient
+        un commentaire de la non validité.
         """
-        raise NotImplementedError('class REGLE should be derived')
+        raise NotImplementedError("class REGLE should be derived")
 
     def listeToDico(self, args):
         """
-           Cette méthode est utilitaire pour les seuls besoins
-           des classes dérivées.
+        Cette méthode est utilitaire pour les seuls besoins
+        des classes dérivées.
 
-           Elle transforme une liste de noms de mots clés en un
-           dictionnaire équivalent dont les clés sont les noms des mts-clés
+        Elle transforme une liste de noms de mots clés en un
+        dictionnaire équivalent dont les clés sont les noms des mts-clés
 
-           Ceci permet d'avoir un traitement identique pour les listes et les dictionnaires
+        Ceci permet d'avoir un traitement identique pour les listes et les dictionnaires
         """
         if type(args) == dict:
             return args
@@ -84,5 +79,4 @@ class REGLE(object):
                 dico[arg] = 0
             return dico
         else:
-            raise Exception(
-                "Erreur ce n'est ni un dictionnaire ni une liste %s" % args)
+            raise Exception("Erreur ce n'est ni un dictionnaire ni une liste %s" % args)

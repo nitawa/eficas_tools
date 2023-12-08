@@ -1,5 +1,5 @@
 # coding=utf-8
-# Copyright (C) 2007-2021   EDF R&D
+# Copyright (C) 2007-2024   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -16,29 +16,23 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 #
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
-
-
+"""
 """
 
-"""
-from __future__ import absolute_import
 from .N_ASSD import ASSD
-try:basestring
-except NameError: basestring = str
-
 
 
 class GEOM(ASSD):
 
     """
-       Cette classe sert à définir les types de concepts
-       géométriques comme GROUP_NO, GROUP_MA,NOEUD et MAILLE
+    Cette classe sert à définir les types de concepts
+    géométriques comme GROUP_NO, GROUP_MA,NOEUD et MAILLE
+    inusitée
 
     """
 
-    def __init__(self, nom, etape=None, sd=None, reg='oui'):
-        """
-        """
+    def __init__(self, nom, etape=None, sd=None, reg="oui"):
+        """ """
         self.etape = etape
         self.sd = sd
         if etape:
@@ -52,7 +46,7 @@ class GEOM(ASSD):
 
         if not self.parent:
             self.id = None
-        elif reg == 'oui':
+        elif reg == "oui":
             self.id = self.parent.regSD(self)
         self.nom = nom
 
@@ -60,10 +54,10 @@ class GEOM(ASSD):
         return self.nom
 
     def __convert__(cls, valeur):
-        if isinstance(valeur, basestring) and len(valeur.strip()) <= 8:
+        if isinstance(valeur, str) and len(valeur.strip()) <= 8:
             return valeur.strip()
-        raise ValueError(
-            _(u'On attend une chaine de caractères (de longueur <= 8).'))
+        raise ValueError(_("On attend une chaine de caractères (de longueur <= 8)."))
+
     __convert__ = classmethod(__convert__)
 
 

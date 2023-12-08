@@ -24,9 +24,10 @@ from Efi2Xsd.AccasXsd import X_SIMP
 
 
 class SIMP(N_SIMP.SIMP, X_SIMP, I_ENTITE.ENTITE):
-    """ 
+    """
     Accas class for catalog definition keyword SIMP
     """
+
     class_instance = A_MCSIMP.MCSIMP
 
     def __init__(self, *tup, **args):

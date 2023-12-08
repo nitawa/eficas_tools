@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 2007-2024  EDF R&D                  
+# COPYRIGHT (C) 2007-2024  EDF R&D
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -17,8 +17,6 @@
 #
 #
 # ======================================================================
-
-
 """
    Ce module contient la classe mixin MACRO_ETAPE qui porte les methodes
    necessaires pour realiser la validation d'un objet de type MACRO_ETAPE
@@ -27,6 +25,7 @@
    Une classe mixin porte principalement des traitements et est
    utilisee par heritage multiple pour composer les traitements.
 """
+
 # Modules Python
 import types
 import sys
@@ -41,29 +40,28 @@ from Noyau.N_utils import AsType
 
 class MACRO_ETAPE(V_ETAPE.ETAPE):
 
-    """
-    """
+    """ """
 
-    def isValid(self, sd='oui', cr='non'):
+    def isValid(self, sd="oui", cr="non"):
         """
-           Methode pour verifier la validite de l'objet ETAPE. Cette methode
-           peut etre appelee selon plusieurs modes en fonction de la valeur
-           de sd et de cr.
+        Methode pour verifier la validite de l'objet ETAPE. Cette methode
+        peut etre appelee selon plusieurs modes en fonction de la valeur
+        de sd et de cr.
 
-           Si cr vaut oui elle cree en plus un compte-rendu.
+        Si cr vaut oui elle cree en plus un compte-rendu.
 
-           Cette methode a plusieurs fonctions :
+        Cette methode a plusieurs fonctions :
 
-            - mettre a jour l'etat de self (update)
+         - mettre a jour l'etat de self (update)
 
-            - retourner un indicateur de validite 0=non, 1=oui
+         - retourner un indicateur de validite 0=non, 1=oui
 
-            - produire un compte-rendu : self.cr
+         - produire un compte-rendu : self.cr
 
         """
         if CONTEXT.debug:
             print(("ETAPE.isValid ", self.nom))
-        if self.state == 'unchanged':
+        if self.state == "unchanged":
             return self.valid
         else:
             valid = 1
@@ -79,17 +77,21 @@ class MACRO_ETAPE(V_ETAPE.ETAPE):
                     # Cette situation est interdite
                     # Pb: La macro-commande a passe le concept a une commande
                     # (macro ?) mal definie
-                    if cr == 'oui':
-                        self.cr.fatal("Macro-commande mal definie : le concept n'a pas ete type par un appel a typeSDProd pour %s"  % c.nom)
+                    if cr == "oui":
+                        self.cr.fatal(
+                            "Macro-commande mal definie : le concept n'a pas ete type par un appel a typeSDProd pour %s"
+                            % c.nom
+                        )
                     valid = 0
 
             valid = valid * self.validChild()
             valid = valid * self.validRegles(cr)
 
             if self.reste_val != {}:
-                if cr == 'oui':
+                if cr == "oui":
                     self.cr.fatal(
-                        "unknown keyword : %s"  %','.join(list(self.reste_val.keys())))
+                        "unknown keyword : %s" % ",".join(list(self.reste_val.keys()))
+                    )
                 valid = 0
 
             if sd == "non":
@@ -100,11 +102,13 @@ class MACRO_ETAPE(V_ETAPE.ETAPE):
             if self.sd != None:
                 valid = valid * self.validSdnom(cr)
 
-            if self.definition.reentrant == 'n' and self.reuse:
+            if self.definition.reentrant == "n" and self.reuse:
                 # Il ne peut y avoir de concept reutilise avec une MACRO  non
                 # reentrante
-                if cr == 'oui': self.cr.fatal(
-                        'Macro-commande non reentrante : ne pas utiliser reuse')
+                if cr == "oui":
+                    self.cr.fatal(
+                        "Macro-commande non reentrante : ne pas utiliser reuse"
+                    )
                 valid = 0
 
             if valid:
@@ -120,17 +124,17 @@ class MACRO_ETAPE(V_ETAPE.ETAPE):
 
             return self.valid
 
-    def updateSdprod(self, cr='non'):
+    def updateSdprod(self, cr="non"):
         """
-             Cette methode met a jour le concept produit en fonction des conditions initiales :
+        Cette methode met a jour le concept produit en fonction des conditions initiales :
 
-              1. Il n'y a pas de concept retourne (self.definition.sd_prod == None)
+         1. Il n'y a pas de concept retourne (self.definition.sd_prod == None)
 
-              2. Le concept retourne n existait pas (self.sd == None)
+         2. Le concept retourne n existait pas (self.sd == None)
 
-              3. Le concept retourne existait. On change alors son type ou on le supprime
+         3. Le concept retourne existait. On change alors son type ou on le supprime
 
-             En cas d'erreur (exception) on retourne un indicateur de validite de 0 sinon de 1
+        En cas d'erreur (exception) on retourne un indicateur de validite de 0 sinon de 1
         """
         sd_prod = self.definition.sd_prod
         # On memorise le type retourne dans l attribut typret
@@ -151,11 +155,14 @@ class MACRO_ETAPE(V_ETAPE.ETAPE):
                 if CONTEXT.debug:
                     traceback.print_exc()
                 self.sd = None
-                if cr == 'oui':
-                    l = traceback.format_exception(sys.exc_info()[0],
-                                                   sys.exc_info()[1],
-                                                   sys.exc_info()[2])
-                    self.cr.fatal( 'Impossible d affecter un type au resultat\n%s' % ' '.join(l[2:]))
+                if cr == "oui":
+                    l = traceback.format_exception(
+                        sys.exc_info()[0], sys.exc_info()[1], sys.exc_info()[2]
+                    )
+                    self.cr.fatal(
+                        "Impossible d affecter un type au resultat\n%s"
+                        % " ".join(l[2:])
+                    )
                 return 0
         # on teste maintenant si la SD est reutilisee ou s'il faut la
         # creer
@@ -163,16 +170,20 @@ class MACRO_ETAPE(V_ETAPE.ETAPE):
         if self.reuse:
             # Un concept reutilise a ete specifie
             if AsType(self.reuse) != sd_prod:
-                if cr == 'oui':
+                if cr == "oui":
                     self.cr.fatal(
-                        'Type de concept reutilise incompatible avec type produit')
+                        "Type de concept reutilise incompatible avec type produit"
+                    )
                 valid = 0
-            if self.sdnom != '':
-                if self.sdnom[0] != '_' and self.reuse.nom != self.sdnom:
+            if self.sdnom != "":
+                if self.sdnom[0] != "_" and self.reuse.nom != self.sdnom:
                     # Le nom de la variable de retour (self.sdnom) doit etre le
                     # meme que celui du concept reutilise (self.reuse.nom)
-                    if cr == 'oui':
-                        self.cr.fatal('Concept reutilise : le nom de la variable de retour devrait etre %s et non %s' % (self.reuse.nom, self.sdnom))
+                    if cr == "oui":
+                        self.cr.fatal(
+                            "Concept reutilise : le nom de la variable de retour devrait etre %s et non %s"
+                            % (self.reuse.nom, self.sdnom)
+                        )
                     valid = 0
             if valid:
                 self.sd = self.reuse
@@ -192,19 +203,20 @@ class MACRO_ETAPE(V_ETAPE.ETAPE):
                 else:
                     # Le sd n existait pas , on ne le cree pas
                     self.typret = sd_prod
-                    if cr == 'oui':
+                    if cr == "oui":
                         self.cr.fatal("Concept retourne non defini")
                     valid = 0
-            if self.definition.reentrant == 'o':
-                if cr == 'oui':
+            if self.definition.reentrant == "o":
+                if cr == "oui":
                     self.cr.fatal(
-                        'Commande obligatoirement reentrante : specifier reuse=concept')
+                        "Commande obligatoirement reentrante : specifier reuse=concept"
+                    )
                 valid = 0
         return valid
 
     def report(self):
         """
-            Methode pour la generation d un rapport de validation
+        Methode pour la generation d un rapport de validation
         """
         V_ETAPE.ETAPE.report(self)
         for e in self.etapes:

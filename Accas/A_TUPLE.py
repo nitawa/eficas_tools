@@ -26,6 +26,7 @@ class Tuple(N_TUPLE.N_Tuple):
     """
     Accas class for catalog definition keyword Tuple
     """
+
     pass
 
 
@@ -33,5 +34,5 @@ class Matrice(I_TUPLE.I_Matrice, N_TUPLE.N_Matrice):
     """
     Accas class for catalog definition keyword Matrice
     """
-    pass
 
+    pass

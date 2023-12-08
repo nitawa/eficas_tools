@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 2007-2024  EDF R&D                  
+# COPYRIGHT (C) 2007-2024  EDF R&D
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -15,7 +15,6 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-
 """
    Ce module contient la classe mixin PROC_ETAPE qui porte les methodes
    necessaires pour realiser la validation d'un objet de type PROC_ETAPE
@@ -34,40 +33,43 @@ from Extensions.i18n import tr
 class PROC_ETAPE(V_ETAPE.ETAPE):
 
     """
-       On reutilise les methodes report,verifRegles
-       de ETAPE par heritage.
+    On reutilise les methodes report,verifRegles
+    de ETAPE par heritage.
     """
 
-    def isValid(self, sd='oui', cr='non'):
+    def isValid(self, sd="oui", cr="non"):
         """
-           Methode pour verifier la validite de l'objet PROC_ETAPE. Cette methode
-           peut etre appelee selon plusieurs modes en fonction de la valeur
-           de sd et de cr (sd n'est pas utilise).
+        Methode pour verifier la validite de l'objet PROC_ETAPE. Cette methode
+        peut etre appelee selon plusieurs modes en fonction de la valeur
+        de sd et de cr (sd n'est pas utilise).
 
-           Si cr vaut oui elle cree en plus un compte-rendu.
+        Si cr vaut oui elle cree en plus un compte-rendu.
 
-           Cette methode a plusieurs fonctions :
+        Cette methode a plusieurs fonctions :
 
-            - retourner un indicateur de validite 0=non, 1=oui
+         - retourner un indicateur de validite 0=non, 1=oui
 
-            - produire un compte-rendu : self.cr
+         - produire un compte-rendu : self.cr
 
-            - propager l'eventuel changement d'etat au parent
+         - propager l'eventuel changement d'etat au parent
         """
         if CONTEXT.debug:
             print(("ETAPE.isValid ", self.nom))
-        if self.state == 'unchanged':
+        if self.state == "unchanged":
             return self.valid
         else:
             valid = self.validChild()
             valid = valid * self.validRegles(cr)
             if self.reste_val != {}:
-                if not hasattr(self,'cr') :
+                if not hasattr(self, "cr"):
                     from Noyau.N_CR import CR
-                    self.cr=CR()
-                if  cr == 'oui':
+
+                    self.cr = CR()
+                if cr == "oui":
                     self.cr.fatal(
-                        tr("unknown keywords : %s") % ','.join(list(self.reste_val.keys())))
+                        tr("unknown keywords : %s")
+                        % ",".join(list(self.reste_val.keys()))
+                    )
                 valid = 0
             self.setValid(valid)
             return self.valid

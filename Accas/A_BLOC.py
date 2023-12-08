@@ -27,6 +27,7 @@ class BLOC(N_BLOC.BLOC, X_BLOC, I_ENTITE.ENTITE):
     """
     Accas class for catalog definition keyword BLOC
     """
+
     class_instance = A_MCBLOC.MCBLOC
 
     def __init__(self, *tup, **args):

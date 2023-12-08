@@ -17,7 +17,6 @@
 #
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
-from __future__ import absolute_import
 from Noyau import N_REGLE
 from Validation import V_MEME_NOMBRE
 from Ihm import I_REGLE
@@ -27,4 +26,5 @@ class MEME_NOMBRE(V_MEME_NOMBRE.MEME_NOMBRE, I_REGLE.REGLE, N_REGLE.REGLE):
     """
     Accas class for catalog rule MEME_NOMBRE
     """
+
     pass

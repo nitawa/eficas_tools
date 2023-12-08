@@ -1,5 +1,5 @@
 # coding=utf-8
-# Copyright (C) 2007-2021   EDF R&D
+# Copyright (C) 2007-2024   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -23,34 +23,22 @@
     d'une liste de mots-clés facteur par rapport à sa définition portée par un objet
     de type ENTITE
 """
-
-from __future__ import absolute_import
-try :
-    from future import standard_library
-    standard_library.install_aliases()
-except :
-    pass
 from copy import copy
 import types
-
-try:
-    from UserList import UserList
-except ImportError:
-    from collections import UserList
-
-
+from collections import UserList
 
 
 class MCList(UserList):
 
-    """ Liste semblable a la liste Python
-        mais avec quelques methodes en plus
-        = liste de MCFACT
+    """Liste semblable a la liste Python
+    mais avec quelques methodes en plus
+    = liste de MCFACT
     """
-    nature = 'MCList'
+
+    nature = "MCList"
 
     def init(self, nom, parent):
-        self.objPyxbDeConstruction=None
+        self.objPyxbDeConstruction = None
         self.definition = None
         self.nom = nom
         self.parent = parent
@@ -66,23 +54,23 @@ class MCList(UserList):
 
     def getValeur(self):
         """
-           Retourne la "valeur" d'un objet MCList. Sert à construire
-           un contexte d'évaluation pour une expression Python.
-           On retourne l'objet lui-meme.
+        Retourne la "valeur" d'un objet MCList. Sert à construire
+        un contexte d'évaluation pour une expression Python.
+        On retourne l'objet lui-meme.
         """
         return self
 
     def getVal(self):
         """
-            Une autre méthode qui retourne une "autre" valeur d'une MCList
-            Elle est utilisée par la méthode getMocle
+        Une autre méthode qui retourne une "autre" valeur d'une MCList
+        Elle est utilisée par la méthode getMocle
         """
         return self
 
     def supprime(self):
         """
-           Méthode qui supprime toutes les références arrières afin que l'objet puisse
-           etre correctement détruit par le garbage collector
+        Méthode qui supprime toutes les références arrières afin que l'objet puisse
+        etre correctement détruit par le garbage collector
         """
         self.parent = None
         self.etape = None
@@ -91,10 +79,10 @@ class MCList(UserList):
         for child in self.data:
             child.supprime()
 
-    def getChild(self, name,restreint='non'):
+    def getChild(self, name, restreint="non"):
         """
-            Retourne le fils de nom name s'il est contenu dans self
-            Par défaut retourne le fils du premier de la liste
+        Retourne le fils de nom name s'il est contenu dans self
+        Par défaut retourne le fils du premier de la liste
         """
         obj = self.data[0]
         # Phase 1 : on cherche dans les fils directs de obj
@@ -118,53 +106,52 @@ class MCList(UserList):
         return None
 
     def getAllChild(self, name):
-    # A utiliser uniquement dans un filtre
-        maListeRetour= MCList()
+        # A utiliser uniquement dans un filtre
+        maListeRetour = MCList()
         for obj in self.data:
-            for objFils in obj.getChild(name) :
+            for objFils in obj.getChild(name):
                 maListeRetour.append(objFils)
         return maListeRetour
 
-
     def isBLOC(self):
         """
-             Indique si l'objet est de type BLOC
+        Indique si l'objet est de type BLOC
         """
         return 0
 
     def accept(self, visitor):
         """
-           Cette methode permet de parcourir l'arborescence des objets
-           en utilisant le pattern VISITEUR
+        Cette methode permet de parcourir l'arborescence des objets
+        en utilisant le pattern VISITEUR
         """
         visitor.visitMCList(self)
 
     def getSd_utilisees(self):
         """
-          Retourne la liste des concepts qui sont utilisés à l'intérieur de self
-          ( comme valorisation d'un MCS)
+        Retourne la liste des concepts qui sont utilisés à l'intérieur de self
+        ( comme valorisation d'un MCS)
         """
         l = []
         for child in self.data:
             l.extend(child.getSd_utilisees())
         return l
 
-    def getSd_mcs_utilisees(self):
+    def getSdMCSUtilisees(self):
         """
-            Retourne la ou les SD utilisée par self sous forme d'un dictionnaire :
-              - Si aucune sd n'est utilisée, le dictionnaire est vide.
-              - Sinon, les clés du dictionnaire sont les mots-clés derrière lesquels on
-                trouve des sd ; la valeur est la liste des sd attenante.
+        Retourne la ou les SD utilisée par self sous forme d'un dictionnaire :
+          - Si aucune sd n'est utilisée, le dictionnaire est vide.
+          - Sinon, les clés du dictionnaire sont les mots-clés derrière lesquels on
+            trouve des sd ; la valeur est la liste des sd attenante.
 
-                Exemple ::
+            Exemple ::
 
-                  { 'VALE_F': [ <Cata.cata.fonction_sdaster instance at 0x9419854>,
-                                <Cata.cata.fonction_sdaster instance at 0x941a204> ],
-                    'MODELE': [<Cata.cata.modele instance at 0x941550c>] }
+              { 'VALE_F': [ <Cata.cata.fonction_sdaster instance at 0x9419854>,
+                            <Cata.cata.fonction_sdaster instance at 0x941a204> ],
+                'MODELE': [<Cata.cata.modele instance at 0x941550c>] }
         """
         dico = {}
         for child in self.data:
-            daux = child.getSd_mcs_utilisees()
+            daux = child.getSdMCSUtilisees()
             for cle in daux:
                 dico[cle] = dico.get(cle, [])
                 dico[cle].extend(daux[cle])
@@ -172,10 +159,10 @@ class MCList(UserList):
 
     def getMcsWithCo(self, co):
         """
-           Cette methode retourne l'objet MCSIMP fils de self
-           qui a le concept co comme valeur.
-           En principe, elle ne doit etre utilisee que pour les concepts
-           instances de la classe CO
+        Cette methode retourne l'objet MCSIMP fils de self
+        qui a le concept co comme valeur.
+        En principe, elle ne doit etre utilisee que pour les concepts
+        instances de la classe CO
         """
         l = []
         for child in self.data:
@@ -184,7 +171,7 @@ class MCList(UserList):
 
     def getAllCo(self):
         """
-           Cette methode retourne tous les concepts instances de CO
+        Cette methode retourne tous les concepts instances de CO
         """
         l = []
         for child in self.data:
@@ -193,7 +180,7 @@ class MCList(UserList):
 
     def copy(self):
         """
-          Réalise la copie d'une MCList
+        Réalise la copie d'une MCList
         """
         liste = self.data[0].definition.list_instance()
         # FR -->Il faut spécifier un parent pour la méthode init qui attend 2
@@ -210,7 +197,7 @@ class MCList(UserList):
 
     def reparent(self, parent):
         """
-           Cette methode sert a reinitialiser la parente de l'objet
+        Cette methode sert a reinitialiser la parente de l'objet
         """
         self.parent = parent
         self.jdc = parent.jdc
@@ -220,10 +207,10 @@ class MCList(UserList):
 
     def getEtape(self):
         """
-           Retourne l'étape à laquelle appartient self
-           Un objet de la catégorie etape doit retourner self pour indiquer que
-           l'étape a été trouvée
-           XXX double emploi avec self.etape ???
+        Retourne l'étape à laquelle appartient self
+        Un objet de la catégorie etape doit retourner self pour indiquer que
+        l'étape a été trouvée
+        XXX double emploi avec self.etape ???
         """
         if self.parent == None:
             return None
@@ -231,7 +218,7 @@ class MCList(UserList):
 
     def __getitem__(self, key):
         """
-           Dans le cas d un mot cle facteur de longueur 1 on simule un scalaire
+        Dans le cas d un mot cle facteur de longueur 1 on simule un scalaire
         """
         if type(key) != int and len(self) == 1:
             return self.data[0].getMocle(key)
@@ -240,8 +227,8 @@ class MCList(UserList):
 
     def List_F(self):
         """
-           Retourne une liste de dictionnaires (eventuellement singleton) qui peut etre
-           passe directement derriere un mot-cle facteur (pour les macros).
+        Retourne une liste de dictionnaires (eventuellement singleton) qui peut etre
+        passe directement derriere un mot-cle facteur (pour les macros).
         """
         dresu = []
         for mcf in self:
@@ -253,5 +240,5 @@ class MCList(UserList):
         return dresu
 
     def longueurDsArbre(self):
-    # pour Pyxb : longueur  dans le orderedcontent de pyxb
+        # pour Pyxb : longueur  dans le orderedcontent de pyxb
         return len(self)

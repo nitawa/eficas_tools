@@ -1,5 +1,5 @@
 # coding=utf-8
-# Copyright (C) 2007-2021   EDF R&D
+# Copyright (C) 2007-2024   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -23,7 +23,6 @@
     qui permet de spécifier les caractéristiques d'un JDC
 """
 
-from __future__ import absolute_import
 import types
 import traceback
 
@@ -34,24 +33,35 @@ from . import N_JDC
 class JDC_CATA(N_ENTITE.ENTITE):
 
     """
-     Classe pour definir un jeu de commandes
+    Classe pour definir un jeu de commandes
 
-     Attributs de classe :
+    Attributs de classe :
 
-     - class_instance qui indique la classe qui devra etre utilisée
-             pour créer l'objet qui servira à controler la conformité
-             du jeu de commandes avec sa définition
+    - class_instance qui indique la classe qui devra etre utilisée
+            pour créer l'objet qui servira à controler la conformité
+            du jeu de commandes avec sa définition
 
-     - label qui indique la nature de l'objet de définition (ici, JDC)
+    - label qui indique la nature de l'objet de définition (ici, JDC)
 
     """
-    class_instance = N_JDC.JDC
-    label = 'JDC'
 
-    def __init__(self, code='', execmodul=None, regles=(), niveaux=(),fichierSource=None, fr='', ang ='', **args):
+    class_instance = N_JDC.JDC
+    label = "JDC"
+
+    def __init__(
+        self,
+        code="",
+        execmodul=None,
+        regles=(),
+        niveaux=(),
+        fichierSource=None,
+        fr="",
+        ang="",
+        **args
+    ):
         """
         on se laisse la possibilite d initier fichierSource avec autre chose que le nom du fichier
-        au cas ou ... pour pouvoir changer le nom du 'sous code' implementer (cf readercata)
+        au cas ou ... pour pouvoir changer le nom du 'sous code' implemente (cf readercata)
         """
         self.code = code
         self.fr = fr
@@ -65,7 +75,7 @@ class JDC_CATA(N_ENTITE.ENTITE):
         # et seront passés au JDC pour initialiser ses paramètres propres
         self.args = args
         self.d_niveaux = {}
-        self.l_niveaux = niveaux
+        self.lNiveaux = niveaux
         self.commandes = []
         self.fichierSource = fichierSource
         for niveau in niveaux:
@@ -74,86 +84,129 @@ class JDC_CATA(N_ENTITE.ENTITE):
         # courant à None
         CONTEXT.unsetCurrentCata()
         CONTEXT.setCurrentCata(self)
-        self.fenetreIhm=None
+        self.fenetreIhm = None
         self.definitUserASSD = False
         self.definitUserASSDMultiple = False
-        self.dictTypesXSD={}
-        self.dictTypesXSDJumeaux={}
-        self.dictTypesASSDorUserASSDCrees={}
-        self.dictTypesASSDorUserASSDUtilises={}
-        self.listeUserASSDDumpes=set()
-        self.listeTypeTXMAvecBlancs=set()
+        self.dictTypesXSD = {}
+        self.dictTypesXSDJumeaux = {}
+        self.dictTypesASSDorUserASSDCrees = {}
+        self.dictTypesASSDorUserASSDUtilises = {}
+        self.listeUserASSDDumpes = set()
+        self.listeTypeTXMAvecBlancs = set()
 
-
-    def __call__(self, procedure=None, cata=None, cata_ord_dico=None,
-                 nom='SansNom', parent=None, **args):
+    def __call__(
+        self,
+        procedure=None,
+        cata=None,
+        cata_ord_dico=None,
+        nom="SansNom",
+        parent=None,
+        **args
+    ):
         """
-            Construit l'objet JDC a partir de sa definition (self),
+        Construit l'objet JDC a partir de sa definition (self),
         """
-        return self.class_instance(definition=self, procedure=procedure,
-                                   cata=cata, cata_ord_dico=cata_ord_dico,
-                                   nom=nom,
-                                   parent=parent,
-                                   **args
-                                   )
+        return self.class_instance(
+            definition=self,
+            procedure=procedure,
+            cata=cata,
+            cata_ord_dico=cata_ord_dico,
+            nom=nom,
+            parent=parent,
+            **args
+        )
 
     def enregistre(self, commande):
         """
-           Methode qui permet aux definitions de commandes de s'enregistrer aupres
-           d'un JDC_CATA
+        Methode qui permet aux definitions de commandes de s'enregistrer aupres
+        d'un JDC_CATA
         """
         self.commandes.append(commande)
 
     def verifCata(self):
         """
-            Méthode de vérification des attributs de définition
+        Méthode de vérification des attributs de définition
         """
         self.checkRegles()
         self.verifCataRegles()
 
     def verifCataRegles(self):
         """
-           Cette méthode vérifie pour tous les objets stockés dans la liste entités
-           respectent les REGLES associés  à self
+        Cette méthode vérifie pour tous les objets stockés dans la liste entités
+        respectent les REGLES associés  à self
         """
         # A FAIRE
 
     def report(self):
         """
-           Methode pour produire un compte-rendu de validation d'un catalogue de commandes
+        Methode pour produire un compte-rendu de validation d'un catalogue de commandes
         """
         self.cr = self.CR(
-            debut=u"Compte-rendu de validation du catalogue " + self.code,
-            fin=u"Fin Compte-rendu de validation du catalogue " + self.code)
+            debut="Compte-rendu de validation du catalogue " + self.code,
+            fin="Fin Compte-rendu de validation du catalogue " + self.code,
+        )
         self.verifCata()
         for commande in self.commandes:
             cr = commande.report()
-            cr.debut = u"Début Commande :" + commande.nom
-            cr.fin = u"Fin commande :" + commande.nom
+            cr.debut = "Début Commande :" + commande.nom
+            cr.fin = "Fin commande :" + commande.nom
             self.cr.add(cr)
         return self.cr
 
     def supprime(self):
         """
-            Méthode pour supprimer les références arrières susceptibles de provoquer
-            des cycles de références
+        Méthode pour supprimer les références arrières susceptibles de provoquer
+        des cycles de références
         """
         for commande in self.commandes:
             commande.supprime()
 
     def getNiveau(self, nom_niveau):
         """
-             Retourne l'objet de type NIVEAU de nom nom_niveau
-             ou None s'il n'existe pas
+        Retourne l'objet de type NIVEAU de nom nom_niveau
+        ou None s'il n'existe pas
         """
         return self.d_niveaux.get(nom_niveau, None)
 
-
     def dumpStructure(self):
-        texte=""
+        texte = ""
         for c in self.commandes:
-            if not(c.label != "OPER") and not(c.label != 'PROC')  : continue
-            if c.label == "OPER"  : texte+=c.nom + " "+ str(c.sd_prod) + "\n"
-            if c.label == "PROC"  : texte+=c.nom + " \n"
-            texte+=c.dumpStructure()
+            if not (c.label != "OPER") and not (c.label != "PROC"):
+                continue
+            if c.label == "OPER":
+                texte += c.nom + " " + str(c.sd_prod) + "\n"
+            if c.label == "PROC":
+                texte += c.nom + " \n"
+            texte += c.dumpStructure()
+        return texte
+
+    def dumpStringDataBase(self, nomDataBaseACreer):
+        texte = "create database {}; \n".format(nomDataBaseACreer)
+        texte += "create user admin{}; \n".format(nomDataBaseACreer)
+        texte += "grant all privileges on database {} to admin{}; \n".format(
+            nomDataBaseACreer, nomDataBaseACreer
+        )
+        texte += "********* fin de creation de la database ********* \n"
+        dictPrimaryKey = {}
+        dictRecursif = {}
+        if hasattr(self.cata, "dPrimaryKey"):
+            dPrimaryKey = self.cata.dPrimaryKey
+        if hasattr(self.cata, "dElementsRecursifs"):
+            dElementsRecursifs = self.cata.dElementsRecursifs
+        for c in self.commandes:
+            if not (c.label != "OPER") and not (c.label != "PROC"):
+                continue  # une macro ?
+            texte += c.dumpStringDataBase(dPrimaryKey, dElementsRecursifs, {}, False)
+        # print (texte)
+        return texte
+
+    def dumpGitStringFormat(self):
+        texte = "git log --pretty=format:'"
+        for c in self.commandes:
+            if not (c.label != "OPER") and not (c.label != "PROC"):
+                continue
+            texte += "<ns1:{}>".format(c.nom)
+            texte += c.dumpGitStringFormat()
+            texte += "</ns1:{}>".format(c.nom)
+        texte += "'"
         return texte

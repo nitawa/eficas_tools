@@ -1,5 +1,5 @@
 # coding=utf-8
-# Copyright (C) 2007-2021   EDF R&D
+# Copyright (C) 2007-2024   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -22,10 +22,11 @@
 """
 
 # eficas sentinel
-from __future__ import absolute_import
-import six
+
+
 try:
     import numpy as NP
+
     _np_arr = NP.ndarray
 except ImportError:
     _np_arr = None
@@ -45,6 +46,7 @@ def isFloat(obj):
 def isComplex(obj):
     return isinstance(obj, complex)
 
+
 from decimal import Decimal
 
 
@@ -57,6 +59,8 @@ def isNumber(obj):
 
 
 def isStr(obj):
+    import six
+
     return isinstance(obj, (str, six.text_type))
 
 
@@ -80,6 +84,7 @@ def isSequence(obj):
 
 def isASSD(obj):
     from .N_ASSD import ASSD
+
     return isinstance(obj, ASSD)
 
 
@@ -88,7 +93,9 @@ def forceList(obj):
     sinon retourne [obj,] (en tant que list).
     """
     if not isSequence(obj):
-        obj = [obj, ]
+        obj = [
+            obj,
+        ]
     return list(obj)
 
 
@@ -96,12 +103,12 @@ def forceTuple(obj):
     """Return `obj` as a tuple."""
     return tuple(forceList(obj))
 
+
 # backward compatibility
 from warnings import warn
 
 
 def isEnum(obj):
     """same as isSequence"""
-    warn("'isEnum' is deprecated, use 'isSequence'",
-         DeprecationWarning, stacklevel=2)
+    warn("'isEnum' is deprecated, use 'isSequence'", DeprecationWarning, stacklevel=2)
     return isSequence(obj)

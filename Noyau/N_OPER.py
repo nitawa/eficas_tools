@@ -1,5 +1,5 @@
 # coding=utf-8
-# Copyright (C) 2007-2021   EDF R&D
+# Copyright (C) 2007-2024   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -23,7 +23,7 @@
     qui permet de spécifier les caractéristiques d'un opérateur
 """
 
-from __future__ import absolute_import
+
 import types
 import traceback
 
@@ -35,62 +35,78 @@ from . import nommage
 class OPER(N_ENTITE.ENTITE):
 
     """
-     Classe pour definir un opérateur
+    Classe pour definir un opérateur
 
-     Cette classe a trois attributs de classe
+    Cette classe a trois attributs de classe
 
-     - class_instance qui indique la classe qui devra etre utilisée
-             pour créer l'objet qui servira à controler la conformité d'un
-             opérateur avec sa définition
+    - class_instance qui indique la classe qui devra etre utilisée
+            pour créer l'objet qui servira à controler la conformité d'un
+            opérateur avec sa définition
 
-     - label qui indique la nature de l'objet de définition (ici, OPER)
+    - label qui indique la nature de l'objet de définition (ici, OPER)
 
-     - nommage qui est un module Python qui fournit la fonctionnalité de nommage
+    - nommage qui est un module Python qui fournit la fonctionnalité de nommage
 
-     et les attributs d'instance suivants :
+    et les attributs d'instance suivants :
 
-     - nom   : son nom
+    - nom   : son nom
 
-     - op   : le numéro d'opérateur
+    - op   : le numéro d'opérateur
 
-     - sd_prod : le type de concept produit. C'est une classe ou une fonction qui retourne
-                       une classe
+    - sd_prod : le type de concept produit. C'est une classe ou une fonction qui retourne
+                      une classe
 
-     - reentrant : vaut 'n' ou 'o'. Indique si l'opérateur est réentrant ou pas. Un opérateur
-                         réentrant peut modifier un concept d'entrée et le produire comme concept de sortie
+    - reentrant : vaut 'n' ou 'o'. Indique si l'opérateur est réentrant ou pas. Un opérateur
+                        réentrant peut modifier un concept d'entrée et le produire comme concept de sortie
 
-     - repetable : vaut 'n' ou 'o'. Indique si l'opérateur est répetable ou pas. Un opérateur
-                         non répétable ne doit apparaitre qu'une fois dans une exécution. C'est du ressort
-                         de l'objet gérant le contexte d'exécution de vérifier cette contrainte.
+    - repetable : vaut 'n' ou 'o'. Indique si l'opérateur est répetable ou pas. Un opérateur
+                        non répétable ne doit apparaitre qu'une fois dans une exécution. C'est du ressort
+                        de l'objet gérant le contexte d'exécution de vérifier cette contrainte.
 
-     - fr   : commentaire associé en francais
+    - fr   : commentaire associé en francais
 
-     - docu : clé de documentation associée
+    - docu : clé de documentation associée
 
-     - regles : liste des règles associées
+    - regles : liste des règles associées
 
-     - op_init : cet attribut vaut None ou une fonction. Si cet attribut ne vaut pas None, cette
-                       fonction est exécutée lors des phases d'initialisation de l'étape associée.
+    - op_init : cet attribut vaut None ou une fonction. Si cet attribut ne vaut pas None, cette
+                      fonction est exécutée lors des phases d'initialisation de l'étape associée.
 
-     - niveau : indique le niveau dans lequel est rangé l'opérateur. Les opérateurs peuvent etre
-                      rangés par niveau. Ils apparaissent alors exclusivement dans leur niveau de rangement.
-                      Si niveau vaut None, l'opérateur est rangé au niveau global.
+    - niveau : indique le niveau dans lequel est rangé l'opérateur. Les opérateurs peuvent etre
+                     rangés par niveau. Ils apparaissent alors exclusivement dans leur niveau de rangement.
+                     Si niveau vaut None, l'opérateur est rangé au niveau global.
 
-     - entites : dictionnaire dans lequel sont stockés les sous entités de l'opérateur. Il s'agit
-                       des entités de définition pour les mots-clés : FACT, BLOC, SIMP. Cet attribut
-                       est initialisé avec args, c'est à dire les arguments d'appel restants.
+    - entites : dictionnaire dans lequel sont stockés les sous entités de l'opérateur. Il s'agit
+                      des entités de définition pour les mots-clés : FACT, BLOC, SIMP. Cet attribut
+                      est initialisé avec args, c'est à dire les arguments d'appel restants.
 
 
     """
+
     class_instance = N_ETAPE.ETAPE
-    label = 'OPER'
+    label = "OPER"
     nommage = nommage
 
-    def __init__(self, nom, op=None, sd_prod=None, reentrant='n', repetable='o', fr="",ang="",fenetreIhm=None,
-                 docu="", regles=(), op_init=None, niveau = None, UIinfo=None, **args):
+    def __init__(
+        self,
+        nom,
+        op=None,
+        sd_prod=None,
+        reentrant="n",
+        repetable="o",
+        fr="",
+        ang="",
+        fenetreIhm=None,
+        docu="",
+        regles=(),
+        op_init=None,
+        niveau=None,
+        UIinfo=None,
+        **args
+    ):
         """
-           Méthode d'initialisation de l'objet OPER. Les arguments sont utilisés pour initialiser
-           les attributs de meme nom
+        Méthode d'initialisation de l'objet OPER. Les arguments sont utilisés pour initialiser
+        les attributs de meme nom
         """
         self.nom = nom
         self.op = op
@@ -100,7 +116,7 @@ class OPER(N_ENTITE.ENTITE):
         self.ang = ang
         self.repetable = repetable
         self.docu = docu
-        self.fenetreIhm= fenetreIhm
+        self.fenetreIhm = fenetreIhm
         if type(regles) == tuple:
             self.regles = regles
         else:
@@ -119,43 +135,45 @@ class OPER(N_ENTITE.ENTITE):
         self.UIinfo = UIinfo
         self.affecter_parente()
         self.checkDefinition(self.nom)
-        self.txtNomComplet=""
-        self.dejaPrepareDump=False
+        self.txtNomComplet = ""
+        self.dejaPrepareDump = False
 
-    def __call__(self, reuse=None, nomXML=None,**args):
+    def __call__(self, reuse=None, nomXML=None, **args):
         """
-            Construit l'objet ETAPE a partir de sa definition (self),
-            puis demande la construction de ses sous-objets et du concept produit.
+        Construit l'objet ETAPE a partir de sa definition (self),
+        puis demande la construction de ses sous-objets et du concept produit.
         """
-        if nomXML == None : nomsd = self.nommage.getNomConceptResultat(self.nom)
-        else : nomsd = nomXML
+        if nomXML == None:
+            nomsd = self.nommage.getNomConceptResultat(self.nom)
+        else:
+            nomsd = nomXML
         etape = self.class_instance(oper=self, reuse=reuse, args=args)
         etape.MCBuild()
-        while etape.doitEtreRecalculee == True :
+        while etape.doitEtreRecalculee == True:
             etape.doitEtreRecalculee = False
             etape.deepUpdateConditionBlocApresCreation()
             etape.reConstruitResteVal()
-            etape.state='modified'
-            #print ('on recalcule la validite depuis N_OPER')
+            etape.state = "modified"
+            # print ('on recalcule la validite depuis N_OPER')
         #   etape.isValid(cr='oui')
         etape.metAJourNomASSD(nomsd)
         return etape.buildSd(nomsd)
 
-    def make_objet(self, mc_list='oui'):
+    def make_objet(self, mc_list="oui"):
         """
-             Cette méthode crée l'objet ETAPE dont la définition est self sans
-              l'enregistrer ni créer sa sdprod.
-             Si l'argument mc_list vaut 'oui', elle déclenche en plus la construction
-             des objets MCxxx.
+        Cette méthode crée l'objet ETAPE dont la définition est self sans
+         l'enregistrer ni créer sa sdprod.
+        Si l'argument mc_list vaut 'oui', elle déclenche en plus la construction
+        des objets MCxxx.
         """
         etape = self.class_instance(oper=self, reuse=None, args={})
-        if mc_list == 'oui':
+        if mc_list == "oui":
             etape.MCBuild()
         return etape
 
     def verifCata(self):
         """
-            Méthode de vérification des attributs de définition
+        Méthode de vérification des attributs de définition
         """
         self.checkRegles()
         self.checkFr()
@@ -167,7 +185,7 @@ class OPER(N_ENTITE.ENTITE):
 
     def supprime(self):
         """
-            Méthode pour supprimer les références arrières susceptibles de provoquer
-            des cycles de références
+        Méthode pour supprimer les références arrières susceptibles de provoquer
+        des cycles de références
         """
         self.niveau = None

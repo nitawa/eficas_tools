@@ -21,17 +21,20 @@
 from Noyau.N_utils import Singleton
 from Accas import JDC_CATA
 
+
 class JDC_CATA_SINGLETON(Singleton, JDC_CATA):
     """
     class used for defining catalogs which can be either standalone
     either imported by another catalog
     the steps are recorded in the correct JDC_CATA
     """
+
     def __init__(self, *pos, **kw):
         if hasattr(self, "initialised"):
             return
         self.initialised = True
         JDC_CATA.__init__(self, *pos, **kw)
-     # to do : reflechir pour les imports des drivers a utiliser le nom du code 
-     # de maniere a pour pourvoir utiliser n importe lequel des driver pour lire
-     # le XML
+
+    # to do : reflechir pour les imports des drivers a utiliser le nom du code
+    # de maniere a pour pourvoir utiliser n importe lequel des driver pour lire
+    # le XML

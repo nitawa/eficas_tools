@@ -27,4 +27,5 @@ class EXCLUS(I_EXCLUS.EXCLUS, V_EXCLUS.EXCLUS, N_REGLE.REGLE):
     Accas class for catalog rule EXCLUS
     class instantiation automatically invokes REGLE.__init__()
     """
+
     pass

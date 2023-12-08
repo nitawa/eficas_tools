@@ -1,5 +1,5 @@
 # coding=utf-8
-# Copyright (C) 2007-2021   EDF R&D
+# Copyright (C) 2007-2024   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -20,29 +20,23 @@
 
 """ Ce module contient la classe compte-rendu de validation
 """
-
-from __future__ import absolute_import
-try :
-    from builtins import str
-    from builtins import object
-except :
-    pass
-import six
+from builtins import str
+from builtins import object
 
 
 class CR(object):
 
     """
-         Classe servant a la construction et a l'affichage des objets Comptes-rendus
+    Classe servant a la construction et a l'affichage des objets Comptes-rendus
     """
 
-    def __init__(self, verbeux='non', debut='', fin='', dec='   '):
+    def __init__(self, verbeux="non", debut="", fin="", dec="   "):
         """
-           Attributs
-            - verbeux
-            - debut
-            - fin
-            - dec
+        Attributs
+         - verbeux
+         - debut
+         - fin
+         - dec
         """
         self.verbeux = verbeux
         self.debut = debut
@@ -55,30 +49,30 @@ class CR(object):
         self.subcr = []
 
     def ok(self, comment):
-        """ Ajoute un commentaire OK a la liste crok"""
+        """Ajoute un commentaire OK a la liste crok"""
         self.crok.append(comment)
 
     def warn(self, comment):
-        """ Ajoute un commentaire Warning a la liste crwarn"""
+        """Ajoute un commentaire Warning a la liste crwarn"""
         self.crwarn.append(comment)
 
     def fatal(self, comment, *args):
         """Ajoute un commentaire Erreur Fatale a la liste crfatal a formater"""
         self.crfatal.append(comment)
-        self.crfatal.append(str( *args))
+        self.crfatal.append(str(*args))
 
     def exception(self, comment):
-        """ Ajoute un commentaire Exception a la liste crexception"""
+        """Ajoute un commentaire Exception a la liste crexception"""
         self.crexception.append(comment)
 
     def add(self, cr):
-        """ Ajoute un objet CR a la liste subcr :il s'agit de l'objet CR d'un fils de self """
+        """Ajoute un objet CR a la liste subcr :il s'agit de l'objet CR d'un fils de self"""
         self.subcr.append(cr)
 
     def estvide(self):
         """
-             Retourne 1 si self ne contient aucun message grave (fatal ou exception)
-             et aucun CR qui en contienne, 0 sinon
+        Retourne 1 si self ne contient aucun message grave (fatal ou exception)
+        et aucun CR qui en contienne, 0 sinon
         """
         if self.crexception:
             return 0
@@ -91,11 +85,11 @@ class CR(object):
 
     def purge(self):
         """
-             Purge complètement le CR sauf les exceptions
+        Purge complètement le CR sauf les exceptions
         """
-        self.debut = ''
-        self.fin = ''
-        self.dec = '   '
+        self.debut = ""
+        self.fin = ""
+        self.dec = "   "
         self.crok = []
         self.crwarn = []
         self.crfatal = []
@@ -103,53 +97,53 @@ class CR(object):
 
     def beautifieMessages(self):
         """
-          Beautifie les messages stockés dans crok,crfatal,crexception et crwarn
+        Beautifie les messages stockés dans crok,crfatal,crexception et crwarn
         """
         l = []
         for mess in self.crok:
-            l.append(mess + '\n')
+            l.append(mess + "\n")
         self.crok_belle = l
         l = []
         for mess in self.crwarn:
-            l.append(encadreMessage(mess, '*'))
+            l.append(encadreMessage(mess, "*"))
         self.crwarn_belle = l
         l = []
         for mess in self.crfatal:
-            l.append(encadreMessage(mess, '!'))
+            l.append(encadreMessage(mess, "!"))
         self.crfatal_belle = l
         l = []
         for mess in self.crexception:
-            l.append(encadreMessage(mess, '!'))
+            l.append(encadreMessage(mess, "!"))
         self.crexception_belle = l
 
     def indent(self, s):
         """
-          Insère en tete de chaque ligne du texte s la chaine self.dec
+        Insère en tete de chaque ligne du texte s la chaine self.dec
         """
-        l = s.split( '\n')
-        a='\n' + self.dec
+        l = s.split("\n")
+        a = "\n" + self.dec
         return self.dec + a.join(l)[:-3]
 
     def __unicode__(self):
         """
-          Retourne une chaine de caractères décorée et représentative de self
+        Retourne une chaine de caractères décorée et représentative de self
         """
-        s = ''
+        s = ""
         self.beautifieMessages()
-        s = s + ''.join(self.crok_belle)
-        s = s + ''.join(self.crwarn_belle)
-        s = s + ''.join(self.crfatal_belle)
-        s = s + ''.join(self.crexception_belle)
+        s = s + "".join(self.crok_belle)
+        s = s + "".join(self.crwarn_belle)
+        s = s + "".join(self.crfatal_belle)
+        s = s + "".join(self.crexception_belle)
         for subcr in self.subcr:
-            if self.verbeux == 'oui':
-                s = s + six.text_type(subcr) + '\n'
+            if self.verbeux == "oui":
+                s = s + six.text_type(subcr) + "\n"
             else:
                 if not subcr.estvide():
                     s = s + six.text_type(subcr)
-        if s != '':
-            s = self.debut + '\n' + self.indent(s) + self.fin + '\n'
+        if s != "":
+            s = self.debut + "\n" + self.indent(s) + self.fin + "\n"
         else:
-            s = self.debut + '\n' + self.fin + '\n'
+            s = self.debut + "\n" + self.fin + "\n"
         return s
 
     def __str__(self):
@@ -159,35 +153,42 @@ class CR(object):
 
     def report(self, decalage=2):
         """
-          Retourne une chaine de caractères non encadrée mais représentative de self
+        Retourne une chaine de caractères non encadrée mais représentative de self
         """
-        s = ''
+        s = ""
         # on stocke dans s les messages de premier niveau
         for mess in self.crok:
-            s = s + decalage * self.dec + mess + self.dec + '\n'
+            s = s + decalage * self.dec + mess + self.dec + "\n"
         for mess in self.crwarn:
-            s = s + decalage * self.dec + mess + self.dec + '\n'
+            s = s + decalage * self.dec + mess + self.dec + "\n"
         for mess in self.crfatal:
-            s = s + decalage * self.dec + mess + self.dec + '\n'
+            s = s + decalage * self.dec + mess + self.dec + "\n"
         for mess in self.crexception:
-            s = s + decalage * self.dec + mess + self.dec + '\n'
+            s = s + decalage * self.dec + mess + self.dec + "\n"
         # on récupère les messages des sous comptes-rendus ...
         for subcr in self.subcr:
             if not subcr.estvide():
                 s = s + subcr.report(decalage=decalage + 1)
         # on rajoute les flags de début et de fin ... (si self n'est pas vide)
         if not self.estvide():
-            s = (decalage - 1) * self.dec + self.debut + '\n' + s + \
-                (decalage - 1) * self.dec + self.fin + '\n'
+            s = (
+                (decalage - 1) * self.dec
+                + self.debut
+                + "\n"
+                + s
+                + (decalage - 1) * self.dec
+                + self.fin
+                + "\n"
+            )
         return s
 
     def getMessFatal(self):
         """
-            Retourne une chaine de caractères contenant les messages de
-            la liste crfatal (du dernier au premier)
+        Retourne une chaine de caractères contenant les messages de
+        la liste crfatal (du dernier au premier)
         """
         self.crfatal.reverse()
-        s = ''
+        s = ""
         for elem in self.crfatal:
             s = s + elem
         self.crfatal.reverse()
@@ -195,18 +196,18 @@ class CR(object):
 
     def getMessException(self):
         """
-            Retourne une chaine de caractères contenant les messages
-            de la liste crexception (du dernier au premier)
+        Retourne une chaine de caractères contenant les messages
+        de la liste crexception (du dernier au premier)
         """
         self.crexception.reverse()
-        s = ''
+        s = ""
         for elem in self.crexception:
             s = s + elem
         self.crexception.reverse()
         return s
 
 
-separateurs = (' ', ',', '/')
+separateurs = (" ", ",", "/")
 
 
 def split(ligne, cesure):
@@ -225,36 +226,46 @@ def split(ligne, cesure):
         if coupure == len(ligne) - 1:
             return ligne
         else:
-            return ligne[:coupure + 1] + '\n' + split(ligne[coupure + 1:], cesure)
+            return ligne[: coupure + 1] + "\n" + split(ligne[coupure + 1 :], cesure)
 
 
-def justifyText(texte='', cesure=50):
-    if not isinstance (texte,str) :  texte = ''.join(texte)
+def justifyText(texte="", cesure=50):
+    if not isinstance(texte, str):
+        texte = "".join(texte)
     texte = texte.strip()
-    liste_lignes = texte.split('\n')
+    liste_lignes = texte.split("\n")
     l = [split(l, cesure) for l in liste_lignes]
-    texte_justifie = '\n'.join(l)
+    texte_justifie = "\n".join(l)
     return texte_justifie
 
 
 def encadreMessage(texte, motif):
     """
-       Retourne la chaine de caractères texte entourée d'un cadre formés
-       d'éléments 'motif'
+    Retourne la chaine de caractères texte entourée d'un cadre formés
+    d'éléments 'motif'
     """
     texte = justifyText(texte, cesure=80)
-    if texte.strip() == "" : return ''
-    lignes = texte.split( '\n')
+    if texte.strip() == "":
+        return ""
+    lignes = texte.split("\n")
     longueur = 0
     for ligne in lignes:
         ligne = ligne.rstrip()
         if len(ligne) > longueur:
             longueur = len(ligne)
     longueur = longueur + 4
-    txt = motif * longueur + '\n'
+    txt = motif * longueur + "\n"
     for ligne in lignes:
-        if ligne == '' : continue
-        txt = txt + motif + ' ' + ligne + ' ' * \
-            (longueur - len(motif + ligne) - 2) + motif + '\n'
-    txt = txt + motif * longueur + '\n'
+        if ligne == "":
+            continue
+        txt = (
+            txt
+            + motif
+            + " "
+            + ligne
+            + " " * (longueur - len(motif + ligne) - 2)
+            + motif
+            + "\n"
+        )
+    txt = txt + motif * longueur + "\n"
     return txt

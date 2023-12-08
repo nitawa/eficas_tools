@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 2007-2024  EDF R&D                  
+# COPYRIGHT (C) 2007-2024  EDF R&D
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -17,32 +17,34 @@
 #
 #
 # ======================================================================
+from builtins import object
+
 
 class EXCLUS(object):
 
     """
-       La regle verifie qu'un seul mot-cle de self.mcs est present
-           parmi les elements de args.
+    La regle verifie qu'un seul mot-cle de self.mcs est present
+        parmi les elements de args.
 
-       Ces arguments sont transmis a la regle pour validation sous la forme
-       d'une liste de noms de mots-cles ou d'un dictionnaire dont
-       les cles sont des noms de mots-cles.
+    Ces arguments sont transmis a la regle pour validation sous la forme
+    d'une liste de noms de mots-cles ou d'un dictionnaire dont
+    les cles sont des noms de mots-cles.
     """
 
     def verif(self, args):
         """
-            La methode verif effectue la verification specifique a la regle.
-            args peut etre un dictionnaire ou une liste. Les elements de args
-            sont soit les elements de la liste soit les cles du dictionnaire.
+        La methode verif effectue la verification specifique a la regle.
+        args peut etre un dictionnaire ou une liste. Les elements de args
+        sont soit les elements de la liste soit les cles du dictionnaire.
         """
         #  on compte le nombre de mots cles presents
-        text = ''
+        text = ""
         count = 0
         args = self.listeToDico(args)
         for mc in self.mcs:
             if mc in args:
                 count = count + 1
         if count > 1:
-            text = "- Il ne faut qu un mot cle parmi : " + repr(self.mcs)+'\n'
+            text = "- Il ne faut qu un mot cle parmi : " + repr(self.mcs) + "\n"
             return text, 0
         return text, 1

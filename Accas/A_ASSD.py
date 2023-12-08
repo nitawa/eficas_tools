@@ -37,45 +37,57 @@ from Noyau import N_UserASSDMultiple
 class ASSD(I_ASSD.ASSD, N_ASSD.ASSD):
     pass
 
+
 # class LASSD(I_LASSD.LASSD,N_LASSD.LASSD):pass
 class LASSD(I_LASSD.LASSD):
     pass
 
+
 class UserASSD(N_UserASSD.UserASSD, ASSD):
     pass
+
 
 class UserASSDMultiple(N_UserASSDMultiple.UserASSDMultiple, UserASSD):
     pass
 
+
 class assd(N_ASSD.assd, I_ASSD.assd, ASSD):
     pass
+
 
 class FONCTION(N_FONCTION.FONCTION, I_FONCTION.FONCTION, ASSD):
     def __init__(self, etape=None, sd=None, reg="oui"):
         N_FONCTION.FONCTION.__init__(self, etape=etape, sd=sd, reg=reg)
         I_FONCTION.FONCTION.__init__(self, etape=etape, sd=sd, reg=reg)
 
+
 class formule(I_FONCTION.formule, N_FONCTION.formule, ASSD):
     def __init__(self, etape=None, sd=None, reg="oui"):
         N_FONCTION.formule.__init__(self, etape=etape, sd=sd, reg=reg)
         I_FONCTION.formule.__init__(self, etape=etape, sd=sd, reg=reg)
 
+
 class formule_c(formule):
     pass
+
 
 # On conserve fonction (ceinture et bretelles)
 # fonction n'existe plus dans N_FONCTION on le remplace par formule
 class fonction(N_FONCTION.formule, I_FONCTION.fonction, ASSD):
-    """ obsolete class : use formule instead"""
+    """obsolete class : use formule instead"""
+
     def __init__(self, etape=None, sd=None, reg="oui"):
         N_FONCTION.formule.__init__(self, etape=etape, sd=sd, reg=reg)
         I_FONCTION.fonction.__init__(self, etape=etape, sd=sd, reg=reg)
 
+
 class GEOM(N_GEOM.GEOM, I_ASSD.GEOM, ASSD):
     pass
 
+
 class geom(N_GEOM.geom, I_ASSD.geom, ASSD):
     pass
+
 
 class CO(N_CO.CO, I_ASSD.CO, ASSD):
     pass

@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 2007-2021  EDF R&D                  
+# COPYRIGHT (C) 2007-2024  EDF R&D
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -17,8 +17,6 @@
 #
 #
 # ======================================================================
-
-
 """
     Ce package fournit les classes de base d'EFICAS.
     Ces classes permettent d'effectuer quelques operations basiques :
@@ -31,26 +29,17 @@
 # sous le nom CONTEXT afin d'avoir acces aux fonctions
 # getCurrentStep, setCurrentStep et unsetCurrentStep de n'importe ou
 
-from __future__ import absolute_import
+
 from . import context
 
-try :
-    import __builtin__
-    __builtin__.CONTEXT = context
-except :
-    import builtins
-    builtins.CONTEXT = context
+import builtins
 
-
-# Classes de base
-#from .N_SIMP import SIMP
-#from .N_FACT import FACT
-
+builtins.CONTEXT = context
 
 # Only the first MAXSIZE objects will be checked
 # This is used for the number of MCFACT, the number of MCSIMP and the number of
 # values in a MCSIMP.
-MAXSIZE = 500
 
-MAXSIZE_MSGCHK = ' <I> Only the first {0} occurrences (total: {1}) have been checked.'
-MAXSIZE_MSGKEEP = ' <I> Only the first {0} occurrences (total: {1}) have been printed.'
+MAXSIZE = 500
+MAXSIZE_MSGCHK = " <I> Only the first {0} occurrences (total: {1}) have been checked."
+MAXSIZE_MSGKEEP = " <I> Only the first {0} occurrences (total: {1}) have been printed."

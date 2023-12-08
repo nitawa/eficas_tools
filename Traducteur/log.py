@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2007-2017   EDF R&D
+# Copyright (C) 2007-2024   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -20,28 +20,30 @@
 
 import logging
 import os
-logger=logging.getLogger()
+
+logger = logging.getLogger()
+
 
 def initialise(flog=None):
-    if flog == None :
-        MaDir=os.path.join(os.path.expanduser("~"),"Eficas_install")
-        try :
+    if flog == None:
+        MaDir = os.path.join(os.path.expanduser("~"), "Eficas_install")
+        try:
             os.mkdir(MaDir)
-        except :
+        except:
             pass
-        try :
+        try:
             os.listdir(MaDir)
-            flog=MaDir+"/convert.log"
-        except :
-            flog='/tmp/convert.log'
+            flog = MaDir + "/convert.log"
+        except:
+            flog = "/tmp/convert.log"
 
-    hdlr=logging.FileHandler(flog,'w')
-    formatter = logging.Formatter('%(levelname)s: %(message)s')
+    hdlr = logging.FileHandler(flog, "w")
+    formatter = logging.Formatter("%(levelname)s: %(message)s")
     hdlr.setFormatter(formatter)
     logger.addHandler(hdlr)
     logger.setLevel(logging.INFO)
     return hdlr
 
 
-def ferme (hdlr) :
+def ferme(hdlr):
     logger.removeHandler(hdlr)

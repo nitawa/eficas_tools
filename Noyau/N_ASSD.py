@@ -1,5 +1,5 @@
 # coding=utf-8
-# Copyright (C) 2007-2021   EDF R&D
+# Copyright (C) 2007-2024   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -20,28 +20,24 @@
 """
 
 """
+from builtins import object
 
-
-from __future__ import absolute_import
-from __future__ import print_function
-try :
-    from builtins import object
-except : pass
 
 class ASSD(object):
 
     """
-       Classe de base pour definir des types de structures de donnees ASTER
-       equivalent d un concept ASTER
-       Doit_on garder tout ce qui concerne jeveux ? les concepts ?
+    Classe de base pour definir des types de structures de donnees ASTER
+    equivalent d un concept ASTER
+    Doit_on garder tout ce qui concerne jeveux ? les concepts ?
     """
+
     idracine = "SD"
 
-    def __init__(self, etape=None, sd=None, reg='oui'):
+    def __init__(self, etape=None, sd=None, reg="oui"):
         """
-          reg est un parametre qui vaut oui ou non :
-            - si oui (défaut) : on enregistre la SD aupres du JDC
-            - si non : on ne l'enregistre pas
+        reg est un parametre qui vaut oui ou non :
+          - si oui (défaut) : on enregistre la SD aupres du JDC
+          - si non : on ne l'enregistre pas
         """
         self.etape = etape
         self.sd = sd
@@ -57,7 +53,7 @@ class ASSD(object):
 
         if not self.parent:
             self.id = None
-        elif reg == 'oui':
+        elif reg == "oui":
             self.id = self.parent.regSD(self)
         else:
             self.id = self.parent.o_register(self)
@@ -78,9 +74,11 @@ class ASSD(object):
     def _getSdj(self):
         """Retourne le catalogue de SD associé au concept."""
         if self.ptr_sdj is None:
-            cata_sdj = getattr(self, 'cata_sdj', None)
-            assert cata_sdj, "The attribute 'cata_sdj' must be defined in the class %s" \
+            cata_sdj = getattr(self, "cata_sdj", None)
+            assert cata_sdj, (
+                "The attribute 'cata_sdj' must be defined in the class %s"
                 % self.__class__.__name__
+            )
             assert self.nom, "The attribute 'nom' has not been filled!"
             if self.ptr_class_sdj is None:
                 self.ptr_class_sdj = importObject(cata_sdj)
@@ -99,12 +97,12 @@ class ASSD(object):
     def __getitem__(self, key):
         text_error = "ASSD.__getitem__ est déprécié car la référence a l'objet ETAPE parent sera supprimée."
         from warnings import warn
+
         warn(text_error, DeprecationWarning, stacklevel=2)
         return self.etape[key]
 
     def setName(self, nom):
-        """Positionne le nom de self
-        """
+        """Positionne le nom de self"""
         self.nom = nom
 
     def isTypCO(self):
@@ -119,12 +117,12 @@ class ASSD(object):
     def changeType(self, new_type):
         """Type connu a posteriori (type CO)."""
         self.__class__ = new_type
-        assert self._as_co != 0, 'it should only be called on CO object.'
+        assert self._as_co != 0, "it should only be called on CO object."
         self._as_co = 2
 
     def getName(self):
         """
-            Retourne le nom de self, éventuellement en le demandant au JDC
+        Retourne le nom de self, éventuellement en le demandant au JDC
         """
         if not self.nom:
             try:
@@ -132,7 +130,7 @@ class ASSD(object):
             except:
                 self.nom = ""
 
-        if self.nom=='sansnom' or self.nom == '':
+        if self.nom == "sansnom" or self.nom == "":
             self.nom = self.id
         return self.nom
 
@@ -153,52 +151,51 @@ class ASSD(object):
         # 'del self.sdj' appellerait la méthode '_getSdj()'...
         self._del_sdj()
 
-
     def accept(self, visitor):
         """
-           Cette methode permet de parcourir l'arborescence des objets
-           en utilisant le pattern VISITEUR
+        Cette methode permet de parcourir l'arborescence des objets
+        en utilisant le pattern VISITEUR
         """
         visitor.visitASSD(self)
 
     def __getstate__(self):
         """
-            Cette methode permet de pickler les objets ASSD
-            Ceci est possible car on coupe les liens avec les objets
-            parent, etape et jdc qui conduiraient a pickler de nombreux
-            objets inutiles ou non picklables.
-            En sortie, l'objet n'est plus tout a fait le même !
+        Cette methode permet de pickler les objets ASSD
+        Ceci est possible car on coupe les liens avec les objets
+        parent, etape et jdc qui conduiraient a pickler de nombreux
+        objets inutiles ou non picklables.
+        En sortie, l'objet n'est plus tout a fait le même !
         """
         d = self.__dict__.copy()
-        for key in ('parent', 'etape', 'jdc'):
-            if key in d :
+        for key in ("parent", "etape", "jdc"):
+            if key in d:
                 del d[key]
         for key in list(d.keys()):
-            if key in ('_as_co', ):
+            if key in ("_as_co",):
                 continue
-            if key[0] == '_':
+            if key[0] == "_":
                 del d[key]
         return d
 
     def accessible(self):
-        """Dit si on peut acceder aux "valeurs" (jeveux) de l'ASSD.
-        """
+        """Dit si on peut acceder aux "valeurs" (jeveux) de l'ASSD."""
         if CONTEXT.debug:
-            print(('| accessible ?', self.nom))
+            print(("| accessible ?", self.nom))
         is_accessible = CONTEXT.getCurrentStep().sdAccessible()
         if CONTEXT.debug:
-            print(('  `- is_accessible =', repr(is_accessible)))
+            print(("  `- is_accessible =", repr(is_accessible)))
         return is_accessible
 
     def filter_context(self, context):
         """Filtre le contexte fourni pour retirer (en gros) ce qui vient du catalogue."""
         from .N_ENTITE import ENTITE
         import types
+
         ctxt = {}
         for key, value in list(context.items()):
             if type(value) is type:
                 continue
-            if type(value) is types.ModuleType and value.__name__.startswith('Accas'):
+            if type(value) is types.ModuleType and value.__name__.startswith("Accas"):
                 continue
             if issubclass(type(value), type):
                 continue
@@ -210,58 +207,62 @@ class ASSD(object):
     def parLot(self):
         """Conserver uniquement pour la compatibilite avec le catalogue v9 dans eficas."""
         # XXX eficas
-        if not hasattr(self, 'jdc') or self.jdc == None:
+        if not hasattr(self, "jdc") or self.jdc == None:
             val = None
         else:
             val = self.jdc.parLot
-        return val == 'OUI'
-
+        return val == "OUI"
 
     def getEficasAttribut(self, attribut):
-        #print ('getEficasAttribut : ', self, attribut)
-        valeur=self.etape.getMocle(attribut)
-        try :
-            valeur=self.etape.getMocle(attribut)
-        except :
+        # print ('getEficasAttribut : ', self, attribut)
+        valeur = self.etape.getMocle(attribut)
+        try:
+            valeur = self.etape.getMocle(attribut)
+        except:
             valeur = None
-        #print (valeur)
+        # print (valeur)
         return valeur
 
-    def getEficasListOfAttributs(self,listeAttributs):
+    def getEficasListOfAttributs(self, listeAttributs):
         from .N_MCLIST import MCList
-        #print ('getEficasListOfAttributs pour', self,listeAttributs)
-        aTraiter=(self.etape,)
-        while len(listeAttributs) > 0 :
-            attribut=listeAttributs.pop(0)
-            nvListe=[]
-            for mc in aTraiter :
-                try :
-                    resultat=mc.getMocle(attribut)
-                    if isinstance(resultat,MCList):
-                        for rmc in resultat : nvListe.append(rmc)
-                    else : nvListe.append(resultat)
-                except : pass
-            aTraiter=nvListe
-        #print ('fin getEficasListOfAttributs ', nvListe)
+
+        # print ('getEficasListOfAttributs pour', self,listeAttributs)
+        aTraiter = (self.etape,)
+        while len(listeAttributs) > 0:
+            attribut = listeAttributs.pop(0)
+            nvListe = []
+            for mc in aTraiter:
+                try:
+                    resultat = mc.getMocle(attribut)
+                    if isinstance(resultat, MCList):
+                        for rmc in resultat:
+                            nvListe.append(rmc)
+                    else:
+                        nvListe.append(resultat)
+                except:
+                    pass
+            aTraiter = nvListe
+        # print ('fin getEficasListOfAttributs ', nvListe)
         return nvListe
 
-    def ajouteUnPere(self,pere):
+    def ajouteUnPere(self, pere):
         # ne fait rien mais est appeler pour tous les types de ASSD
         pass
 
-class assd(ASSD):
 
+class assd(ASSD):
     def __convert__(cls, valeur):
-            # On accepte les vraies ASSD et les objets 'entier' et 'reel'
-            # qui font tout pour se faire passer pour de vrais entiers/réels.
+        # On accepte les vraies ASSD et les objets 'entier' et 'reel'
+        # qui font tout pour se faire passer pour de vrais entiers/réels.
         if isinstance(valeur, ASSD) or type(valeur) in (int, float):
             return valeur
-        raise ValueError(_(u"On attend un objet concept."))
+        raise ValueError(_("On attend un objet concept."))
+
     __convert__ = classmethod(__convert__)
 
 
 class not_checked(ASSD):
-
     def __convert__(cls, valeur):
         return valeur
+
     __convert__ = classmethod(__convert__)

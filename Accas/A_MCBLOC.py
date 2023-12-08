@@ -17,7 +17,6 @@
 #
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
-from __future__ import absolute_import
 from Noyau import N_MCBLOC
 from Validation import V_MCBLOC
 from Ihm import I_MCBLOC
@@ -28,7 +27,14 @@ class MCBLOC(I_MCBLOC.MCBLOC, N_MCBLOC.MCBLOC, X_MCBLOC, V_MCBLOC.MCBLOC):
     """
     class of BLOC objet
     """
+
     def __init__(self, val, definition, nom, parent, dicoPyxbDeConstruction=None):
-        N_MCBLOC.MCBLOC.__init__(self, val, definition, nom,
-                        parent, dicoPyxbDeConstruction=dicoPyxbDeConstruction)
+        N_MCBLOC.MCBLOC.__init__(
+            self,
+            val,
+            definition,
+            nom,
+            parent,
+            dicoPyxbDeConstruction=dicoPyxbDeConstruction,
+        )
         V_MCBLOC.MCBLOC.__init__(self)

@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 2007-2024  EDF R&D                  
+# COPYRIGHT (C) 2007-2024  EDF R&D
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -17,8 +17,6 @@
 #
 #
 # ======================================================================
-
-
 """
    Ce module contient la classe mixin MCBLOC qui porte les methodes
    necessaires pour realiser la validation d'un objet de type MCBLOC
@@ -27,6 +25,7 @@
    Une classe mixin porte principalement des traitements et est
    utilisee par heritage multiple pour composer les traitements.
 """
+
 # Modules EFICAS
 from . import V_MCCOMPO
 
@@ -34,27 +33,27 @@ from . import V_MCCOMPO
 class MCBLOC(V_MCCOMPO.MCCOMPO):
 
     """
-       Cette classe a un attribut de classe :
+    Cette classe a un attribut de classe :
 
-       - txt_nat qui sert pour les comptes-rendus lies a cette classe
+    - txt_nat qui sert pour les comptes-rendus lies a cette classe
     """
 
-    txt_nat = u"Bloc :"
+    txt_nat = "Bloc :"
 
-    def isValid(self, sd='oui', cr='non'):
+    def isValid(self, sd="oui", cr="non"):
         """
-           Methode pour verifier la validite du MCBLOC. Cette methode
-           peut etre appelee selon plusieurs modes en fonction de la valeur
-           de sd et de cr.
+        Methode pour verifier la validite du MCBLOC. Cette methode
+        peut etre appelee selon plusieurs modes en fonction de la valeur
+        de sd et de cr.
 
-           Si cr vaut oui elle cree en plus un compte-rendu
-           sd est present pour compatibilite de l'interface mais ne sert pas
+        Si cr vaut oui elle cree en plus un compte-rendu
+        sd est present pour compatibilite de l'interface mais ne sert pas
         """
-        if self.state == 'unchanged':
+        if self.state == "unchanged":
             return self.valid
         else:
             valid = 1
-            if hasattr(self, 'valid'):
+            if hasattr(self, "valid"):
                 old_valid = self.valid
             else:
                 old_valid = None
@@ -66,11 +65,11 @@ class MCBLOC(V_MCCOMPO.MCCOMPO):
             # la validite des regles
             text_erreurs, test_regles = self.verifRegles()
             if not test_regles:
-                if cr == 'oui':
-                    self.cr.fatal( "Regle(s) non respectee(s) : %s" % text_erreurs)
+                if cr == "oui":
+                    self.cr.fatal("Regle(s) non respectee(s) : %s" % text_erreurs)
                 valid = 0
             self.valid = valid
-            self.state = 'unchanged'
+            self.state = "unchanged"
             if not old_valid or old_valid != self.valid:
                 self.initModifUp()
             return self.valid

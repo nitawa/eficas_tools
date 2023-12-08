@@ -1,5 +1,5 @@
 # coding=utf-8
-# Copyright (C) 2007-2021   EDF R&D
+# Copyright (C) 2007-2024   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -20,33 +20,25 @@
 """
    Module de conversion des valeurs saisies par l'utilisateur après vérification.
 """
-
-from __future__ import absolute_import
-try:
-    from builtins import object
-except : pass
-
+from builtins import object
 from .N_types import isInt, isFloat, isSequence
 
 
 def hasIntValue(real):
-    """Est-ce que 'real' a une valeur entière ?
-    """
-    return abs(int(real) - real) < 1.e-12
+    """Est-ce que 'real' a une valeur entière ?"""
+    return abs(int(real) - real) < 1.0e-12
 
 
 class Conversion(object):
 
-    """Conversion de type.
-    """
+    """Conversion de type."""
 
     def __init__(self, name, typeACreer):
         self.name = name
         self.typeACreer = typeACreer
 
     def convert(self, obj):
-        """Filtre liste
-        """
+        """Filtre liste"""
         in_as_seq = isSequence(obj)
         if not in_as_seq:
             obj = (obj,)
@@ -63,25 +55,23 @@ class Conversion(object):
             return tuple(result)
 
     def function(self, o):
-        raise NotImplementedError('cette classe doit être dérivée')
+        raise NotImplementedError("cette classe doit être dérivée")
 
 
 class TypeConversion(Conversion):
 
-    """Conversion de typeACreer
-    """
+    """Conversion de typeACreer"""
 
     def __init__(self, typeACreer):
-        Conversion.__init__(self, 'type', typeACreer)
+        Conversion.__init__(self, "type", typeACreer)
 
 
 class IntConversion(TypeConversion):
 
-    """Conversion en entier
-    """
+    """Conversion en entier"""
 
     def __init__(self):
-        TypeConversion.__init__(self, 'I')
+        TypeConversion.__init__(self, "I")
 
     def function(self, o):
         if isFloat(o) and hasIntValue(o):
@@ -91,11 +81,10 @@ class IntConversion(TypeConversion):
 
 class FloatConversion(TypeConversion):
 
-    """Conversion de type
-    """
+    """Conversion de type"""
 
     def __init__(self):
-        TypeConversion.__init__(self, 'R')
+        TypeConversion.__init__(self, "R")
 
     def function(self, o):
         if isFloat(o):
@@ -108,35 +97,41 @@ class UserASSDConversion(TypeConversion):
         TypeConversion.__init__(self, classUser)
 
     def function(self, o):
-        #print ('je convertis : ', o, 'en ', self.typeACreer )
-        #import traceback
-        #traceback.print_stack()
-        if o == None : return None
-        #print ('je cree UserASSDConversion', o, ' ', self.typeACreer)
-        nouvelObj=self.typeACreer(o)
+        # print ('je convertis : ', o, 'en ', self.typeACreer )
+        # import traceback
+        # traceback.print_stack()
+        if o == None:
+            return None
+        # print ('je cree UserASSDConversion', o, ' ', self.typeACreer)
+        nouvelObj = self.typeACreer(o)
         return nouvelObj
+
 
 class UserASSDMultipleConversion(TypeConversion):
     def __init__(self, classUser):
         TypeConversion.__init__(self, classUser)
 
     def function(self, o):
-        if o == None : return None
-        #print ('je cree dans UserASSDMultipleConversion', o, ' ', self.typeACreer)
-        nouvelObj=self.typeACreer(o)
+        if o == None:
+            return None
+        # print ('je cree dans UserASSDMultipleConversion', o, ' ', self.typeACreer)
+        nouvelObj = self.typeACreer(o)
         return nouvelObj
+
 
 _convertI = IntConversion()
 _convertR = FloatConversion()
 
 
 def ConversionFactory(name, typ):
-    if name == 'type':
-        if 'I' in typ   : return _convertI
-        elif 'R' in typ : return _convertR
-    if name == 'UserASSD':
-        #print(typ)
-        return (UserASSDConversion(typ))
-    if name == 'UserASSDMultiple':
-        return (UserASSDMultipleConversion(typ))
+    if name == "type":
+        if "I" in typ:
+            return _convertI
+        elif "R" in typ:
+            return _convertR
+    if name == "UserASSD":
+        # print(typ)
+        return UserASSDConversion(typ)
+    if name == "UserASSDMultiple":
+        return UserASSDMultipleConversion(typ)
     return None

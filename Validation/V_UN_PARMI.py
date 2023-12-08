@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 2007-2024  EDF R&D                  
+# COPYRIGHT (C) 2007-2024  EDF R&D
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -17,36 +17,36 @@
 #
 #
 # ======================================================================
+from builtins import object
 
 
 class UN_PARMI(object):
 
     """
-       La regle verifie que l'on trouve un des mots-cles
-       de la regle parmi les arguments d'un OBJECT.
+    La regle verifie que l'on trouve un des mots-cles
+    de la regle parmi les arguments d'un OBJECT.
 
-       Ces arguments sont transmis a la regle pour validation sous la forme
-       d'une liste de noms de mots-cles ou d'un dictionnaire dont
-       les cles sont des noms de mots-cles.
+    Ces arguments sont transmis a la regle pour validation sous la forme
+    d'une liste de noms de mots-cles ou d'un dictionnaire dont
+    les cles sont des noms de mots-cles.
     """
 
     def verif(self, args):
         """
-            La methode verif verifie que l'on trouve un des mos-cles
-            de la liste self.mcs parmi les elements de args
+        La methode verif verifie que l'on trouve un des mos-cles
+        de la liste self.mcs parmi les elements de args
 
-            args peut etre un dictionnaire ou une liste. Les elements de args
-            sont soit les elements de la liste soit les cles du dictionnaire.
+        args peut etre un dictionnaire ou une liste. Les elements de args
+        sont soit les elements de la liste soit les cles du dictionnaire.
         """
         #  on compte le nombre de mots cles presents
-        text = ''
+        text = ""
         count = 0
         args = self.listeToDico(args)
         for mc in self.mcs:
-            if mc in args :
+            if mc in args:
                 count = count + 1
         if count != 1:
-            text = "- Il faut un et un seul mot-cle parmi : " + \
-                repr(self.mcs)+'\n'
+            text = "- Il faut un et un seul mot-cle parmi : " + repr(self.mcs) + "\n"
             return text, 0
         return text, 1

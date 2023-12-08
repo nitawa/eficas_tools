@@ -23,21 +23,24 @@ from Noyau import N_SENSIBILITE
 
 
 class REUSE_SENSIBLE(I_REGLE.REGLE, N_SENSIBILITE.REUSE_SENSIBLE):
-    """ 
+    """
     obsolete class which was used by the supervisor
     """
+
     pass
 
 
 class CONCEPT_SENSIBLE(I_REGLE.REGLE, N_SENSIBILITE.CONCEPT_SENSIBLE):
-    """ 
+    """
     obsolete class which was used by the supervisor
     """
+
     pass
 
 
 class DERIVABLE(I_REGLE.REGLE, N_SENSIBILITE.DERIVABLE):
-    """ 
+    """
     obsolete class which was used by the supervisor
     """
+
     pass

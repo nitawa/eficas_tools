@@ -1,5 +1,5 @@
 # -*- coding: iso-8859-1 -*-
-# Copyright (C) 2007-2021   EDF R&D
+# Copyright (C) 2007-2024   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -23,33 +23,33 @@
    sur présence de la sensibilité.
 """
 
-from __future__ import absolute_import
 
 from .N_REGLE import REGLE
+
 
 # -----------------------------------------------------------------------------
 class CONCEPT_SENSIBLE(REGLE):
     """Règle permettant de renseigner au niveau du catalogue comment sera
     rempli le concept (valeur nominale ou dérivée(s) ou les deux...).
     """
-    def __init__(self, mode, mocle='SENSIBILITE'):
+
+    def __init__(self, mode, mocle="SENSIBILITE"):
         """Constructeur.
 
-           mode : manière dont la commande rempli le concept
-              - 'ENSEMBLE' : concept nominal ET dérivées en une seule passe
-              - 'SEPARE'   : concept nominal OU dérivée (une ou plusieurs)
+        mode : manière dont la commande rempli le concept
+           - 'ENSEMBLE' : concept nominal ET dérivées en une seule passe
+           - 'SEPARE'   : concept nominal OU dérivée (une ou plusieurs)
 
-           mocle : mot-clé contenant les paramètres sensibles.
+        mocle : mot-clé contenant les paramètres sensibles.
         """
         REGLE.__init__(self)
         self.mocle = mocle
-        self._modes = { 'ENSEMBLE' : 0, 'SEPARE' : 1 }
-        self.mode = self._modes.get(mode, self._modes['ENSEMBLE'])
+        self._modes = {"ENSEMBLE": 0, "SEPARE": 1}
+        self.mode = self._modes.get(mode, self._modes["ENSEMBLE"])
 
     def getText(self):
-        """Pour EFICAS
-        """
-        return ''
+        """Pour EFICAS"""
+        return ""
 
     def verif(self, args):
         """Retourne texte + 1 si ok, 0 si nook.
@@ -59,27 +59,29 @@ class CONCEPT_SENSIBLE(REGLE):
         """
         obj = args["self"]
         etape = obj.etape
-        id_etape = '%s_%s' % (etape.id, id(etape))
+        id_etape = "%s_%s" % (etape.id, id(etape))
         if etape.sd == None:
-            return '',1
-        if not hasattr(etape.sd,"sensi"):
+            return "", 1
+        if not hasattr(etape.sd, "sensi"):
             etape.sd.sensi = {}
         # si ENSEMBLE, la sd nominale est forcément produite
-        if self.mode == self._modes['ENSEMBLE'] and not 'nominal' in etape.sd.sensi :
-            etape.sd.sensi['nominal'] = id_etape
+        if self.mode == self._modes["ENSEMBLE"] and not "nominal" in etape.sd.sensi:
+            etape.sd.sensi["nominal"] = id_etape
         # liste des paramètres sensibles
         valeur = obj[self.mocle]
         if valeur == None:
             # pas de sensibilité, la sd nominale est produite
-            if not 'nominal' in etape.sd.sensi:
-                etape.sd.sensi['nominal'] = id_etape
-            return '', 1
+            if not "nominal" in etape.sd.sensi:
+                etape.sd.sensi["nominal"] = id_etape
+            return "", 1
         if not type(valeur) in (list, tuple):
-            valeur = [valeur,]
+            valeur = [
+                valeur,
+            ]
         for v in valeur:
             if not v.getName() in etape.sd.sensi:
                 etape.sd.sensi[v.getName()] = id_etape
-        return '', 1
+        return "", 1
 
 
 # -----------------------------------------------------------------------------
@@ -90,44 +92,55 @@ class REUSE_SENSIBLE(REGLE):
        - sd nominale calculée et SENSIBILITE absent
        - PS1 dans SENSIBILITE et sd dérivée par rapport à PS1 calculée
     """
-    def __init__(self, mocle='SENSIBILITE'):
+
+    def __init__(self, mocle="SENSIBILITE"):
         """Constructeur.
-           mocle : mot-clé SENSIBILITE.
+        mocle : mot-clé SENSIBILITE.
         """
         REGLE.__init__(self)
         self.mocle = mocle
 
     def getText(self):
-        """Pour EFICAS
-        """
-        return ''
+        """Pour EFICAS"""
+        return ""
 
-    def verif(self,args):
+    def verif(self, args):
         """Retourne texte + 1 si ok, 0 si nook = reuse interdit.
         Comme CONCEPT_SENSIBLE est appelé avant (et à chaque validation),
         on regarde si sd.sensi[ps] a été renseigné par une étape précédente.
         """
         obj = args["self"]
         etape = obj.etape
-        id_etape = '%s_%s' % (etape.id, id(etape))
+        id_etape = "%s_%s" % (etape.id, id(etape))
         sd = etape.sd
         # si la commande n'est pas réentrante, rien à faire
         if etape.reuse is not None:
             valeur = obj[self.mocle]
             if valeur is None:
-                if not hasattr(sd, 'sensi') or sd.sensi.get('nominal', id_etape) != id_etape:
+                if (
+                    not hasattr(sd, "sensi")
+                    or sd.sensi.get("nominal", id_etape) != id_etape
+                ):
                     # pas de sensibilite et concept nominal déjà calculé : reuse interdit
                     text = "Commande non réentrante en l'absence de sensibilité."
                     return text, 0
             else:
                 if not type(valeur) in (list, tuple):
-                    valeur = [valeur,]
+                    valeur = [
+                        valeur,
+                    ]
                 for ps in valeur:
-                    if hasattr(sd, 'sensi') and sd.sensi.get(ps.nom, id_etape) != id_etape:
+                    if (
+                        hasattr(sd, "sensi")
+                        and sd.sensi.get(ps.nom, id_etape) != id_etape
+                    ):
                         # concept dérivé par rapport à ps déjà calculé : reuse interdit
-                        text = "Commande non réentrante : dérivée par rapport à %s déjà calculée" % ps.nom
+                        text = (
+                            "Commande non réentrante : dérivée par rapport à %s déjà calculée"
+                            % ps.nom
+                        )
                         return text, 0
-        return '', 1
+        return "", 1
 
 
 # -----------------------------------------------------------------------------
@@ -137,28 +150,29 @@ class DERIVABLE(REGLE):
     '.sensi' soit cohérent avec le contenu du mot-clé SENSIBILITE (ou l'absence
     de celui-ci).
     """
+
     def __init__(self, mocle):
         """Constructeur.
-           mocle : mot-clé dérivable.
+        mocle : mot-clé dérivable.
         """
         REGLE.__init__(self)
         self.mocle = mocle
 
     def getText(self):
-        """Pour EFICAS
-        """
-        return ''
+        """Pour EFICAS"""
+        return ""
 
-    def verif(self,args):
-        """
-        """
+    def verif(self, args):
+        """ """
         obj = args["self"]
         try:
             concept = obj[self.mocle]
         except IndexError:
-            return '', 1
+            return "", 1
         if not type(concept) in (list, tuple):
-            concept = [concept,]
+            concept = [
+                concept,
+            ]
         l_ps = obj["SENSIBILITE"]
         for co in concept:
             if co is None:
@@ -166,17 +180,23 @@ class DERIVABLE(REGLE):
                 return text, 0
             if not l_ps:
                 # pas de sensibilité
-                if hasattr(co,"sensi") and not co.sensi.get('nominal'):
-                    text = "%s ne contient que des valeurs dérivées, utilisez le mot cle SENSIBILITE" %\
-                          co.nom
+                if hasattr(co, "sensi") and not co.sensi.get("nominal"):
+                    text = (
+                        "%s ne contient que des valeurs dérivées, utilisez le mot cle SENSIBILITE"
+                        % co.nom
+                    )
                     return text, 0
             else:
                 # sensibilité spécifiée
                 if not type(l_ps) in (list, tuple):
-                    l_ps = [l_ps,]
+                    l_ps = [
+                        l_ps,
+                    ]
                 for ps in l_ps:
-                    if not hasattr(co,"sensi") or not co.sensi.get(ps.nom):
-                        text = "La dérivée de %s par rapport à %s n'est pas disponible." %\
-                              (co.nom, ps.nom)
+                    if not hasattr(co, "sensi") or not co.sensi.get(ps.nom):
+                        text = (
+                            "La dérivée de %s par rapport à %s n'est pas disponible."
+                            % (co.nom, ps.nom)
+                        )
                         return text, 0
-        return '', 1
+        return "", 1

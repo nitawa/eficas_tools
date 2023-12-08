@@ -26,4 +26,5 @@ class UN_PARMI(I_UN_PARMI.UN_PARMI, V_UN_PARMI.UN_PARMI, N_REGLE.REGLE):
     """
     Accas class for catalog rule UN_PARMI
     """
+
     pass

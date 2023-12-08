@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 2007-2021  EDF R&D                  
+# COPYRIGHT (C) 2007-2024  EDF R&D
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -21,21 +21,19 @@
 """
    Ce module contient la classe AsException
 """
-
 # Modules EFICAS
-from __future__ import absolute_import
+
 from .strfunc import getEncoding, toUnicode
 import six
 
 
 class AsException(Exception):
-
     def __unicode__(self):
         args = []
         for x in self.args:
             ustr = toUnicode(x)
             if type(ustr) is not six.text_type:
-                ustr = six.text_type( repr(x) )
+                ustr = six.text_type(repr(x))
             args.append(ustr)
         return " ".join(args)
 

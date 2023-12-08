@@ -27,4 +27,5 @@ class AU_MOINS_UN(V_AU_MOINS_UN.AU_MOINS_UN, I_REGLE.REGLE, N_REGLE.REGLE):
     Accas class for catalog rule AU_MOINS_UN
     __init__ is in N_REGLE.REGLE
     """
+
     pass

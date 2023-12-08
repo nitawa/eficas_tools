@@ -1,5 +1,5 @@
 # coding=utf-8
-# Copyright (C) 2007-2021   EDF R&D
+# Copyright (C) 2007-2024   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -17,11 +17,8 @@
 #
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 
-from __future__ import absolute_import
-try :
-    from builtins import object
-except :
-    pass
+
+from builtins import object
 from .N_utils import importObject
 
 
@@ -48,5 +45,6 @@ class NOTHING(OPS):
     def __call__(self, macro, *args, **kwargs):
         macro.set_icmd(1)
         return 0
+
 
 EMPTY_OPS = NOTHING(None)

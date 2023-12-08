@@ -27,6 +27,7 @@ class PROC(N_PROC.PROC, X_PROC, I_ENTITE.ENTITE):
     """
     Accas class for catalog definition keyword PROC
     """
+
     class_instance = A_PROC_ETAPE.PROC_ETAPE
 
     def __init__(self, *tup, **args):

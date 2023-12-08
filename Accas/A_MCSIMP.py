@@ -27,8 +27,11 @@ class MCSIMP(I_MCSIMP.MCSIMP, N_MCSIMP.MCSIMP, X_MCSIMP, V_MCSIMP.MCSIMP):
     """
     class for SIMP object (MCSIMP = mot clef simp)
     """
+
     def __init__(self, val, definition, nom, parent, objPyxbDeConstruction=None):
-        # le defaut de objPyxbDeConstruction permet de lire les comm 
+        # le defaut de objPyxbDeConstruction permet de lire les comm
         # avec des modeles sans equivalent XSD
-        N_MCSIMP.MCSIMP.__init__(self,val,definition,nom,parent,objPyxbDeConstruction)
+        N_MCSIMP.MCSIMP.__init__(
+            self, val, definition, nom, parent, objPyxbDeConstruction
+        )
         V_MCSIMP.MCSIMP.__init__(self)

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2007-2021   EDF R&D
+# Copyright (C) 2007-2024   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -21,27 +21,47 @@
     Ce module sert pour charger les parametres de configuration d'EFICAS
 """
 # Modules Python
-from __future__ import absolute_import
-try :
-    from builtins import str
-    from builtins import object
-except : pass
+from builtins import str
+from builtins import object
 
-import os, sys,  types, re
+import os, sys, types, re
 from Extensions.i18n import tr
 
-class ModificationGenerator(object):
-    def generTexteModif(self,obj):
-        texteModification=""
-        for t in  list(obj.editor.dicoNouveauxMC.keys()) :
-            # 'ajoutDefinitionMC',etape,listeAvant,nomDuMC,typ,args
-            fonction,Etape,Genea,nomSIMP,typeSIMP,arguments = obj.editor.dicoNouveauxMC[t]
-            texteModification += "MODIFICATION_CATALOGUE(Fonction  = '" + str(fonction)+ "',\n"
-            texteModification += "                       Etape     = '" + str(Etape)   + "',\n"
-            texteModification += "                       Genea     = "  + str(Genea)   + ",\n"
-            texteModification += "                       NomSIMP   = '" + str(nomSIMP) + "',\n"
-            texteModification += "                       TypeSIMP  = '" + str(typeSIMP)+ "',\n"
-            texteModification += "                       PhraseArguments = " +'"' + str(arguments)+ '"'+ ",);\n"
 
+class ModificationGenerator(object):
+    def generTexteModif(self, obj):
+        texteModification = ""
+        for t in list(obj.editor.dicoNouveauxMC.keys()):
+            # 'ajoutDefinitionMC',etape,listeAvant,nomDuMC,typ,args
+            (
+                fonction,
+                Etape,
+                Genea,
+                nomSIMP,
+                typeSIMP,
+                arguments,
+            ) = obj.editor.dicoNouveauxMC[t]
+            texteModification += (
+                "MODIFICATION_CATALOGUE(Fonction  = '" + str(fonction) + "',\n"
+            )
+            texteModification += (
+                "                       Etape     = '" + str(Etape) + "',\n"
+            )
+            texteModification += (
+                "                       Genea     = " + str(Genea) + ",\n"
+            )
+            texteModification += (
+                "                       NomSIMP   = '" + str(nomSIMP) + "',\n"
+            )
+            texteModification += (
+                "                       TypeSIMP  = '" + str(typeSIMP) + "',\n"
+            )
+            texteModification += (
+                "                       PhraseArguments = "
+                + '"'
+                + str(arguments)
+                + '"'
+                + ",);\n"
+            )
 
         return texteModification

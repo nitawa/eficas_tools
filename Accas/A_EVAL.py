@@ -19,9 +19,11 @@
 #
 from Ihm import I_EVAL
 
+
 class EVAL(I_EVAL.EVAL):
     """
     class used to evaluate parameter
     """
+
     def __init__(self, str):
         I_EVAL.EVAL.__init__(self, str)

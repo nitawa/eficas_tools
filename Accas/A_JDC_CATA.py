@@ -25,9 +25,10 @@ from Efi2Xsd.AccasXsd import X_JDC_CATA
 
 class JDC_CATA(I_JDC_CATA.JDC_CATA, N_JDC_CATA.JDC_CATA, X_JDC_CATA):
     """
-    Accas class that defines a catalog object that is object which will be used 
+    Accas class that defines a catalog object that is object which will be used
     to control conformity of the dataset with its definition
     """
+
     class_instance = A_JDC.JDC
 
     def __init__(self, *pos, **kw):

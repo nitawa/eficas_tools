@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 2007-2021  EDF R&D                  
+# COPYRIGHT (C) 2007-2024  EDF R&D
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -18,10 +18,9 @@
 #
 # ======================================================================
 
-from __future__ import absolute_import
 _root = None
 _cata = None
-_jdc  = None
+_jdc = None
 debug = 0
 
 # Le "current step" est l'etape courante.
@@ -33,7 +32,7 @@ debug = 0
 
 def setCurrentStep(step):
     """
-       Fonction qui permet de changer la valeur de l'etape courante
+    Fonction qui permet de changer la valeur de l'etape courante
     """
     global _root
     if _root:
@@ -43,14 +42,14 @@ def setCurrentStep(step):
 
 def getCurrentStep():
     """
-       Fonction qui permet d'obtenir la valeur de l'etape courante
+    Fonction qui permet d'obtenir la valeur de l'etape courante
     """
     return _root
 
 
 def unsetCurrentStep():
     """
-       Fonction qui permet de remettre a None l'etape courante
+    Fonction qui permet de remettre a None l'etape courante
     """
     global _root
     _root = None
@@ -58,7 +57,7 @@ def unsetCurrentStep():
 
 def setCurrentCata(cata):
     """
-       Fonction qui permet de changer l'objet catalogue courant
+    Fonction qui permet de changer l'objet catalogue courant
     """
     global _cata
     if _cata:
@@ -68,14 +67,14 @@ def setCurrentCata(cata):
 
 def getCurrentCata():
     """
-       Fonction qui retourne l'objet catalogue courant
+    Fonction qui retourne l'objet catalogue courant
     """
     return _cata
 
 
 def unsetCurrentCata():
     """
-       Fonction qui permet de remettre a None le catalogue courant
+    Fonction qui permet de remettre a None le catalogue courant
     """
     global _cata
     _cata = None
@@ -83,22 +82,24 @@ def unsetCurrentCata():
 
 def getCurrentJdC():
     """
-       Fonction qui retourne l'objet JDC courant
+    Fonction qui retourne l'objet JDC courant
     """
     return _jdc
 
+
 def setCurrentJdC(jdc):
     """
-       Fonction qui permet de changer l'objet JDC courant
+    Fonction qui permet de changer l'objet JDC courant
     """
     global _jdc
     if _jdc:
         raise Exception("Impossible d'affecter _jdc. Il devrait valoir None")
     _jdc = jdc
 
+
 def unsetCurrentJdC():
     """
-       Fonction qui permet de remettre a None le JDC courant
+    Fonction qui permet de remettre a None le JDC courant
     """
     global _jdc
     _jdc = None

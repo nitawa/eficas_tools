@@ -24,14 +24,19 @@ from Accas.A_ASSD import CO
 from Efi2Xsd.MCAccasXML import X_MCCOMPO
 
 
-class MACRO_ETAPE( I_MACRO_ETAPE.MACRO_ETAPE, X_MCCOMPO,
-                   V_MACRO_ETAPE.MACRO_ETAPE, N_MACRO_ETAPE.MACRO_ETAPE,):
+class MACRO_ETAPE(
+    I_MACRO_ETAPE.MACRO_ETAPE,
+    X_MCCOMPO,
+    V_MACRO_ETAPE.MACRO_ETAPE,
+    N_MACRO_ETAPE.MACRO_ETAPE,
+):
     """
     parent class of MACRO objects
     unused class that could/should be reactivated
-    a macro is a set of command 
+    a macro is a set of command
     differs from step (PROC or OPER) for supervision
     """
+
     typeCO = CO
 
     def __init__(self, oper=None, reuse=None, args={}):

@@ -26,6 +26,8 @@ class Fichier(I_FICHIER.Fichier):
     (defined in Salome EFICAS module) when Eficas is launched in Salome context.
     It handles the objects that can be selected from Salome object browser.
     """
+
     def __init__(self, *tup, **args):
         I_FICHIER.FICHIER.__init__(self, *tup, **args)
+
     # To do --> a travailler pour ajouter tous les types de fichier (existant ou non, avec un chemin relatif pour etre vraiment utilise hors salome

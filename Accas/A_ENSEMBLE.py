@@ -27,4 +27,5 @@ class ENSEMBLE(I_REGLE.REGLE, V_ENSEMBLE.ENSEMBLE, N_REGLE.REGLE):
     Accas class for catalog rule ENSEMBLE
     class instantiation automatically invokes REGLE.__init__()
     """
+
     pass

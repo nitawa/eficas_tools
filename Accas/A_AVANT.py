@@ -26,4 +26,5 @@ class AVANT(I_AVANT.I_AVANT, I_REGLE.REGLE, N_REGLE.REGLE):
     Accas class for catalog rule AVANT
     class instantiation automatically invokes REGLE.__init__()
     """
+
     pass

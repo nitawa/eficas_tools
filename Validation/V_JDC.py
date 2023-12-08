@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 2007-2024  EDF R&D                  
+# COPYRIGHT (C) 2007-2024  EDF R&D
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -17,8 +17,6 @@
 #
 #
 # ======================================================================
-
-
 """
    Ce module contient la classe mixin JDC qui porte les methodes
    necessaires pour realiser la validation d'un objet de type JDC
@@ -27,7 +25,7 @@
    Une classe mixin porte principalement des traitements et est
    utilisee par heritage multiple pour composer les traitements.
 """
-from __future__ import absolute_import
+
 # Modules EFICAS
 from . import V_MCCOMPO
 from Noyau.N_Exception import AsException
@@ -36,40 +34,41 @@ from Noyau.N_utils import AsType
 
 class JDC(V_MCCOMPO.MCCOMPO):
 
-    """
-    """
+    """ """
 
     def report(self):
         """
-            Methode pour generation d un rapport de validite
+        Methode pour generation d un rapport de validite
         """
         self.cr.purge()
-        #self.cr.debut = "DEBUT CR validation : " + self.nom
-        #self.cr.fin = "FIN CR validation :" + self.nom
+        # self.cr.debut = "DEBUT CR validation : " + self.nom
+        # self.cr.fin = "FIN CR validation :" + self.nom
         self.cr.debut = "BEGIN validation report : " + self.nom
         self.cr.fin = "END validation report :" + self.nom
         for e in self.etapes:
             if e.isActif():
                 self.cr.add(e.report())
-        self.state = 'modified'
-        self.isValid(cr='oui')
+        self.state = "modified"
+        self.isValid(cr="oui")
         return self.cr
 
-    def isValid(self, cr='non'):
+    def isValid(self, cr="non"):
         """
-          Methode booleenne qui retourne 0 si le JDC est invalide, 1 sinon
+        Methode booleenne qui retourne 0 si le JDC est invalide, 1 sinon
         """
         # FR : on prend en compte l'etat du JDC ('unchanged','modified','undetermined')
         # afin d'accelerer le test de validite du JDC
-        if self.state == 'unchanged':
+        if self.state == "unchanged":
             return self.valid
         else:
             valid = 1
             texte, test = self.verifRegles()
             if test == 0:
-                if cr == 'oui':
-                    if texte != "" and (' '.strip(texte) == "") : self.cr.fatal(texte)
-                    else : self.cr.fatal(' '.strip(texte))
+                if cr == "oui":
+                    if texte != "" and (" ".strip(texte) == ""):
+                        self.cr.fatal(texte)
+                    else:
+                        self.cr.fatal(" ".strip(texte))
                 valid = 0
             if valid:
                 for e in self.etapes:
@@ -87,7 +86,7 @@ class JDC(V_MCCOMPO.MCCOMPO):
         Effectue la verification de validite des regles du jeu de commandes
         """
         noms_etapes = [etape.nom for etape in self.etapes]
-        texte_global = ''
+        texte_global = ""
         test_global = 1
         for regle in self.regles:
             texte, test = regle.verif(noms_etapes)
