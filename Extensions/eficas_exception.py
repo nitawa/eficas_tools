@@ -20,7 +20,7 @@ This class supports the internationalization mechanism provided in
 the ``i18n`` module.
 """
 
-from __future__ import absolute_import
+
 class EficasException(Exception):
     """
     ``EficasException`` class, which embeds the translation mechanism.
@@ -29,6 +29,7 @@ class EficasException(Exception):
     have no effect, since its input would not be among the source
     strings to be translated.
     """
+
     def __init__(self, msg=""):
         """
         Initializes the EficasException instances. The output message,
@@ -36,12 +37,14 @@ class EficasException(Exception):
         mechanism.
         """
         Exception.__init__(self)
-        #import sys, os
-        #sys.path.append(os.path.realpath(".."))
+        # import sys, os
+        # sys.path.append(os.path.realpath(".."))
         from Extensions.i18n import tr
+
         self.args = (tr(msg),)
 
 
 if __name__ == "__main__":
     import sys
+
     raise EficasException(sys.argv[1])

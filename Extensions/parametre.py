@@ -26,12 +26,8 @@
 """
 
 # import de modules Python
-from __future__ import absolute_import
-from __future__ import print_function
-try :
-    from builtins import str
-    from builtins import object
-except : pass
+from builtins import str
+from builtins import object
 
 import types
 from math import *
@@ -48,52 +44,51 @@ from Ihm import CONNECTOR
 from Extensions.i18n import tr
 
 
-class PARAMETRE(N_OBJECT.OBJECT,I_OBJECT.OBJECT,Formula) :
+class PARAMETRE(N_OBJECT.OBJECT, I_OBJECT.OBJECT, Formula):
     """
-       Cette classe permet de creer des objets de type PARAMETRE
-       cad des affectations directes dans le jeu de commandes (ex: a=10.)
-       qui sont interpretees par le parseur de fichiers Python.
-       Les objets ainsi crees constituent des parametres pour le jdc
+    Cette classe permet de creer des objets de type PARAMETRE
+    cad des affectations directes dans le jeu de commandes (ex: a=10.)
+    qui sont interpretees par le parseur de fichiers Python.
+    Les objets ainsi crees constituent des parametres pour le jdc
     """
 
-    nature = 'PARAMETRE'
-    idracine = 'param'
+    nature = "PARAMETRE"
+    idracine = "param"
 
-    def __new__(cls,nom,valeur=None):
-      # on est en relecture du .comm: l objet a ete detecte comme parametre par le parsing
-      # mais il  s agit d une reference, une UserASDD
-        if (issubclass(valeur.__class__, UserASSDMultiple)):
+    def __new__(cls, nom, valeur=None):
+        # on est en relecture du .comm: l objet a ete detecte comme parametre par le parsing
+        # mais il  s agit d une reference, une UserASDD
+        if issubclass(valeur.__class__, UserASSDMultiple):
             valeur.initialiseNom(nom)
             return valeur
-        if (issubclass(valeur.__class__, UserASSD)):
+        if issubclass(valeur.__class__, UserASSD):
             valeur.initialiseNom(nom)
             return valeur
-        try :
-            return super(PARAMETRE, cls).__new__(cls,*args,**kwargs)
-        except :
+        try:
+            return super(PARAMETRE, cls).__new__(cls, *args, **kwargs)
+        except:
             return super(PARAMETRE, cls).__new__(cls)
 
-
-    def __init__(self,nom,valeur=None):
-      #print ('__init__ de parametre pour', nom,valeur)
+    def __init__(self, nom, valeur=None):
+        # print ('__init__ de parametre pour', nom,valeur)
         self.nom = nom
         # La classe PARAMETRE n'a pas de definition : on utilise self pour
         # completude
-        self.definition=self
+        self.definition = self
         # parent ne peut etre qu'un objet de type JDC
         self.jdc = self.parent = CONTEXT.getCurrentStep()
-        self.niveau=self.parent.niveau
-        self.actif=1
-        self.state='undetermined'
+        self.niveau = self.parent.niveau
+        self.actif = 1
+        self.state = "undetermined"
         self.register()
-        self.dict_valeur=[]
-        #self.valeur = self.interpreteValeur(valeur)
-        #self.val=valeur
+        self.dict_valeur = []
+        # self.valeur = self.interpreteValeur(valeur)
+        # self.val=valeur
         self.valeur = valeur
-        self.val=repr(valeur)
-        self.fenetreIhm=None
+        self.val = repr(valeur)
+        self.fenetreIhm = None
 
-    def interpreteValeur(self,val):
+    def interpreteValeur(self, val):
         """
         Essaie d'interpreter val (chaine de caracteres)comme :
         - un entier
@@ -102,53 +97,53 @@ class PARAMETRE(N_OBJECT.OBJECT,I_OBJECT.OBJECT,Formula) :
         - une liste d'items d'un type qui precede
         Retourne la valeur interpretee
         """
-        #if not val : return None
+        # if not val : return None
         valeur = None
 
         if type(val) == list:
-        # Un premier traitement a ete fait lors de la saisie
-        # permet de tester les parametres qui sont des listes
+            # Un premier traitement a ete fait lors de la saisie
+            # permet de tester les parametres qui sont des listes
             l_new_val = []
-            for v in val :
-                try :
-                    valeur=eval(str(v))
+            for v in val:
+                try:
+                    valeur = eval(str(v))
                     l_new_val.append(v)
-                except :
+                except:
                     return None
             return l_new_val
 
-        if type(val) == bytes or  type(val) == str:
+        if type(val) == bytes or type(val) == str:
             # on tente l'evaluation dans un contexte fourni par le parent s'il existe
             if self.parent:
-                valeur=self.parent.evalInContext(val,self)
+                valeur = self.parent.evalInContext(val, self)
             else:
-                try :
+                try:
                     valeur = eval(val)
                 except:
-                    #traceback.print_exc()
+                    # traceback.print_exc()
                     pass
-        #PN je n ose pas modifier je rajoute
+        # PN je n ose pas modifier je rajoute
         # refus des listes heterogenes : ne dvrait pas etre la
-        if valeur != None :
+        if valeur != None:
             if type(valeur) == tuple:
                 l_new_val = []
                 typ = None
-                for v in valeur :
+                for v in valeur:
                     if not typ:
                         typ = type(v)
                     else:
-                        if type(v) != typ :
+                        if type(v) != typ:
                             # la liste est heterogene --> on refuse d'interpreter
                             #  self comme une liste
                             # on retourne la string initiale
-                            print(('liste heterogene ',val))
+                            print(("liste heterogene ", val))
                             return val
                     l_new_val.append(v)
                 return tuple(l_new_val)
 
-        if valeur != None :
-            if type(valeur).__name__ == 'list':
-                self.dict_valeur=[]
+        if valeur != None:
+            if type(valeur).__name__ == "list":
+                self.dict_valeur = []
                 for i in range(len(valeur)):
                     self.dict_valeur.append(valeur[i])
             return valeur
@@ -156,7 +151,7 @@ class PARAMETRE(N_OBJECT.OBJECT,I_OBJECT.OBJECT,Formula) :
         return val
 
     def getValeurs(self):
-        valeurretour=[]
+        valeurretour = []
         if self.dict_valeur != []:
             for val in self.dict_valeur:
                 valeurretour.append(val)
@@ -164,21 +159,21 @@ class PARAMETRE(N_OBJECT.OBJECT,I_OBJECT.OBJECT,Formula) :
             valeurretour.append(self.valeur)
         return valeurretour
 
-    def setValeur(self,new_valeur):
+    def setValeur(self, new_valeur):
         """
         Remplace la valeur de self par new_valeur interpretee
         """
         self.valeur = self.interpreteValeur(new_valeur)
-        self.val=repr(self.valeur)
-        self.parent.updateConceptAfterEtape(self,self)
+        self.val = repr(self.valeur)
+        self.parent.updateConceptAfterEtape(self, self)
         self.initModif()
 
-    def setNom(self,new_nom):
+    def setNom(self, new_nom):
         """
         Change le nom du parametre
         """
         self.initModif()
-        self.nom=new_nom
+        self.nom = new_nom
         self.finModif()
 
     def initModif(self):
@@ -186,7 +181,7 @@ class PARAMETRE(N_OBJECT.OBJECT,I_OBJECT.OBJECT,Formula) :
         Methode qui declare l'objet courant comme modifie et propage
         cet etat modifie a ses ascendants
         """
-        self.state = 'modified'
+        self.state = "modified"
         if self.parent:
             self.parent.initModif()
 
@@ -203,21 +198,21 @@ class PARAMETRE(N_OBJECT.OBJECT,I_OBJECT.OBJECT,Formula) :
         self.parent.registerParametre(self)
         self.parent.register(self)
 
-    def isValid(self,cr='non'):
+    def isValid(self, cr="non"):
         """
         Retourne 1 si self est valide, 0 sinon
         Un parametre est considere comme valide si :
           - il a un nom
           - il a une valeur
         """
-        if self.nom == '' :
-            if cr == 'oui':
+        if self.nom == "":
+            if cr == "oui":
                 self.cr.fatal(tr("Pas de nom donne au parametre "))
             return 0
         else:
-            if self.valeur == None :
-                if cr == 'oui' :
-                    self.cr.fatal(tr("Le parametre %s ne peut valoir None" , self.nom))
+            if self.valeur == None:
+                if cr == "oui":
+                    self.cr.fatal(tr("Le parametre %s ne peut valoir None", self.nom))
                 return 0
         return 1
 
@@ -243,8 +238,8 @@ class PARAMETRE(N_OBJECT.OBJECT,I_OBJECT.OBJECT,Formula) :
         """
         self.parent = None
         self.jdc = None
-        self.definition=None
-        self.niveau=None
+        self.definition = None
+        self.niveau = None
 
     def active(self):
         """
@@ -256,8 +251,8 @@ class PARAMETRE(N_OBJECT.OBJECT,I_OBJECT.OBJECT,Formula) :
             self.jdc.appendParam(self)
         except:
             pass
-        CONNECTOR.Emit(self,"add",None)
-        CONNECTOR.Emit(self,"valid")
+        CONNECTOR.Emit(self, "add", None)
+        CONNECTOR.Emit(self, "valid")
 
     def inactive(self):
         """
@@ -266,9 +261,9 @@ class PARAMETRE(N_OBJECT.OBJECT,I_OBJECT.OBJECT,Formula) :
         """
         self.actif = 0
         self.jdc.delParam(self)
-        self.jdc.deleteConceptAfterEtape(self,self)
-        CONNECTOR.Emit(self,"supp",None)
-        CONNECTOR.Emit(self,"valid")
+        self.jdc.deleteConceptAfterEtape(self, self)
+        CONNECTOR.Emit(self, "supp", None)
+        CONNECTOR.Emit(self, "valid")
 
     def isActif(self):
         """
@@ -276,12 +271,12 @@ class PARAMETRE(N_OBJECT.OBJECT,I_OBJECT.OBJECT,Formula) :
         """
         return self.actif
 
-    def setAttribut(self,nom_attr,new_valeur):
+    def setAttribut(self, nom_attr, new_valeur):
         """
         Remplace la valeur de self.nom_attr par new_valeur)
         """
-        if hasattr(self,nom_attr):
-            setattr(self,nom_attr,new_valeur)
+        if hasattr(self, nom_attr):
+            setattr(self, nom_attr, new_valeur)
             self.initModif()
 
     def supprimeSdProds(self):
@@ -292,50 +287,50 @@ class PARAMETRE(N_OBJECT.OBJECT,I_OBJECT.OBJECT,Formula) :
         self.jdc.deleteParam(self)
         self.parent.deleteConcept(self)
 
-    def updateContext(self,d):
+    def updateContext(self, d):
         """
         Update le dictionnaire d avec le parametre que produit self
         """
-        d[self.nom]=self
+        d[self.nom] = self
 
     def __repr__(self):
         """
-            Donne un echo de self sous la forme nom = valeur
+        Donne un echo de self sous la forme nom = valeur
         """
-        if type(self.valeur) == bytes or  type(self.valeur) == str :
-            if self.valeur.find('\n') == -1:
+        if type(self.valeur) == bytes or type(self.valeur) == str:
+            if self.valeur.find("\n") == -1:
                 # pas de retour chariot, on utilise repr
-                return self.nom+' = '+ repr(self.valeur)
+                return self.nom + " = " + repr(self.valeur)
             elif self.valeur.find('"""') == -1:
                 # retour chariot mais pas de triple ", on formatte
-                return self.nom+' = """'+self.valeur+'"""'
+                return self.nom + ' = """' + self.valeur + '"""'
             else:
-                return self.nom+' = '+ repr(self.valeur)
+                return self.nom + " = " + repr(self.valeur)
         else:
-            if type(self.valeur) == list :
-                aRetourner=self.nom+' = ['
-                for l in self.valeur :
-                    aRetourner=aRetourner+str(l) +","
-                aRetourner=aRetourner[0:-1]+']'
+            if type(self.valeur) == list:
+                aRetourner = self.nom + " = ["
+                for l in self.valeur:
+                    aRetourner = aRetourner + str(l) + ","
+                aRetourner = aRetourner[0:-1] + "]"
                 return aRetourner
-            return self.nom+' = '+ str(self.valeur)
+            return self.nom + " = " + str(self.valeur)
 
     def __str__(self):
         """
-            Retourne le nom du parametre comme representation de self
+        Retourne le nom du parametre comme representation de self
         """
         return self.nom
 
-    def getSdprods(self,nom_sd):
+    def getSdprods(self, nom_sd):
         """
-            Retourne les concepts produits par la commande
+        Retourne les concepts produits par la commande
         """
         return None
 
     def report(self):
-        """ Genere l'objet rapport (classe CR) """
-        self.cr=CR()
-        self.isValid(cr='oui')
+        """Genere l'objet rapport (classe CR)"""
+        self.cr = CR()
+        self.isValid(cr="oui")
         return self.cr
 
     def ident(self):
@@ -345,34 +340,34 @@ class PARAMETRE(N_OBJECT.OBJECT,I_OBJECT.OBJECT,Formula) :
         """
         return self.nom
 
-    def deleteConcept(self,sd):
+    def deleteConcept(self, sd):
         pass
 
-    def replaceConcept(self,old_sd,sd):
+    def replaceConcept(self, old_sd, sd):
         pass
 
     def verifConditionBloc(self):
         """
-            Evalue les conditions de tous les blocs fils possibles
-            (en fonction du catalogue donc de la definition) de self et
-            retourne deux listes :
-              - la premiere contient les noms des blocs a rajouter
-              - la seconde contient les noms des blocs a supprimer
+        Evalue les conditions de tous les blocs fils possibles
+        (en fonction du catalogue donc de la definition) de self et
+        retourne deux listes :
+          - la premiere contient les noms des blocs a rajouter
+          - la seconde contient les noms des blocs a supprimer
         """
-        return [],[]
+        return [], []
 
-    def verifConditionRegles(self,liste_presents):
+    def verifConditionRegles(self, liste_presents):
         """
-            Retourne la liste des mots-cles a rajouter pour satisfaire les regles
-            en fonction de la liste des mots-cles presents
+        Retourne la liste des mots-cles a rajouter pour satisfaire les regles
+        en fonction de la liste des mots-cles presents
         """
         return []
 
     def verifExistenceSd(self):
         pass
 
-    def controlSdprods(self,d):
-        """sans objet """
+    def controlSdprods(self, d):
+        """sans objet"""
         pass
 
     def close(self):
@@ -382,18 +377,19 @@ class PARAMETRE(N_OBJECT.OBJECT,I_OBJECT.OBJECT,Formula) :
         pass
 
     def eval(self):
-        if isinstance(self.valeur,Formula):
+        if isinstance(self.valeur, Formula):
             return self.valeur.eval()
         else:
             return self.valeur
 
-    def __adapt__(self,validator):
+    def __adapt__(self, validator):
         return validator.adapt(self.eval())
 
-class COMBI_PARAMETRE(object) :
-    def __init__(self,chainevaleur,valeur):
-        self.chainevaleur=chainevaleur
-        self.valeur=valeur
+
+class COMBI_PARAMETRE(object):
+    def __init__(self, chainevaleur, valeur):
+        self.chainevaleur = chainevaleur
+        self.valeur = valeur
 
     def __repr__(self):
         return self.chainevaleur
@@ -402,24 +398,23 @@ class COMBI_PARAMETRE(object) :
         if self.valeur and self.chainevaleur:
             return 1
 
-class ITEM_PARAMETRE(object) :
-    def __init__(self,param_pere,item=None):
+
+class ITEM_PARAMETRE(object):
+    def __init__(self, param_pere, item=None):
         self.param_pere = param_pere
         self.item = item
 
-
     def __repr__(self):
-        return self.param_pere.nom+'['+str(self.item)+']'
-
+        return self.param_pere.nom + "[" + str(self.item) + "]"
 
     def isValid(self):
         isValid = 1
         if self.item < 0:
-            isValid =  0
+            isValid = 0
         try:
-            longueur= len(self.param_pere.dict_valeur) - 1
+            longueur = len(self.param_pere.dict_valeur) - 1
         except:
-            longueur=0
-        if self.item > longueur :
-            isValid= 0
+            longueur = 0
+        if self.item > longueur:
+            isValid = 0
         return isValid

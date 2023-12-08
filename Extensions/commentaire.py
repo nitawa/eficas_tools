@@ -22,48 +22,49 @@
    pour gerer les commentaires dans un JDC
 """
 
-from __future__ import absolute_import
 from Noyau.N_CR import CR
 from Noyau import N_OBJECT
 from Ihm import I_OBJECT
 from Extensions.i18n import tr
 
-class COMMENTAIRE(N_OBJECT.OBJECT,I_OBJECT.OBJECT) :
-    """
-        Cette classe permet de creer des objets de type COMMENTAIRE
-    """
-    nature = 'COMMENTAIRE'
-    idracine = '_comm'
 
-    def __init__(self,valeur,parent=None):
+class COMMENTAIRE(N_OBJECT.OBJECT, I_OBJECT.OBJECT):
+    """
+    Cette classe permet de creer des objets de type COMMENTAIRE
+    """
+
+    nature = "COMMENTAIRE"
+    idracine = "_comm"
+
+    def __init__(self, valeur, parent=None):
         # parent est un objet de type OBJECT (ETAPE ou MC ou JDC...)
-        self.valeur=valeur
-        if not parent :
+        self.valeur = valeur
+        if not parent:
             self.jdc = self.parent = CONTEXT.getCurrentStep()
         else:
             self.jdc = self.parent = parent
         # La classe COMMENTAIRE n'a pas de definition. On utilise self
         # pour completude
-        self.definition=self
-        self.nom=''
+        self.definition = self
+        self.nom = ""
         self.niveau = self.parent.niveau
-        self.actif=1
-        self.state="unchanged"
+        self.actif = 1
+        self.state = "unchanged"
         self.register()
-        self.fenetreIhm=None
+        self.fenetreIhm = None
 
     def register(self):
         """
-            Enregistre le commentaire dans la liste des etapes de son parent
-            lorsque celui-ci est un JDC
+        Enregistre le commentaire dans la liste des etapes de son parent
+        lorsque celui-ci est un JDC
         """
-        if self.parent.nature == 'JDC':
+        if self.parent.nature == "JDC":
             # le commentaire est entre deux commandes:
             # il faut l'enregistrer dans la liste des etapes
             self.parent.register(self)
 
     def copy(self):
-        c=COMMENTAIRE(valeur=self.valeur,parent=self.jdc)
+        c = COMMENTAIRE(valeur=self.valeur, parent=self.jdc)
         return c
 
     def isValid(self):
@@ -74,11 +75,11 @@ class COMMENTAIRE(N_OBJECT.OBJECT,I_OBJECT.OBJECT) :
         return 1
 
     def isOblig(self):
-        """ Indique si self est obligatoire ou non : retourne toujours 0 """
+        """Indique si self est obligatoire ou non : retourne toujours 0"""
         return 0
 
     def isRepetable(self):
-        """ Indique si self est repetable ou non : retourne toujours 1 """
+        """Indique si self est repetable ou non : retourne toujours 1"""
         return 1
 
     def active(self):
@@ -105,81 +106,82 @@ class COMMENTAIRE(N_OBJECT.OBJECT,I_OBJECT.OBJECT) :
         Methode qui supprime toutes les boucles de references afin que
         l'objet puisse etre correctement detruit par le garbage collector
         """
-        self.parent=None
-        self.jdc=None
+        self.parent = None
+        self.jdc = None
         self.definition = None
         self.niveau = None
 
     def listeMcPresents(self):
         return []
 
-    def getValeur(self) :
-        """ Retourne la valeur de self, cad le contenu du commentaire """
-        try :
+    def getValeur(self):
+        """Retourne la valeur de self, cad le contenu du commentaire"""
+        try:
             return self.valeur
         except:
             return None
 
-    def setValeur(self,new_valeur):
+    def setValeur(self, new_valeur):
         """
-            Remplace la valeur de self(si elle existe) par new_valeur
+        Remplace la valeur de self(si elle existe) par new_valeur
         """
         self.valeur = new_valeur
         self.initModif()
 
     def initModif(self):
-        self.state = 'modified'
+        self.state = "modified"
         if self.parent:
             self.parent.initModif()
 
     def supprimeSdProds(self):
         pass
 
-    def updateContext(self,d):
+    def updateContext(self, d):
         """
-            Update le dictionnaire d avec les concepts ou objets produits par self
-            --> ne fait rien pour un commentaire
+        Update le dictionnaire d avec les concepts ou objets produits par self
+        --> ne fait rien pour un commentaire
         """
         pass
 
     def report(self):
-        """ Genere l'objet rapport (classe CR) """
-        self.cr=CR()
-        if not self.isValid(): self.cr.warn(tr("Objet commentaire non valorise"))
+        """Genere l'objet rapport (classe CR)"""
+        self.cr = CR()
+        if not self.isValid():
+            self.cr.warn(tr("Objet commentaire non valorise"))
         return self.cr
 
     def ident(self):
-        """ Retourne le nom interne associe a self
-            Ce nom n'est jamais vu par l'utilisateur dans EFICAS
+        """Retourne le nom interne associe a self
+        Ce nom n'est jamais vu par l'utilisateur dans EFICAS
         """
         return self.nom
 
-    def deleteConcept(self,sd):
+    def deleteConcept(self, sd):
         pass
 
-    def replaceConcept (self,old_sd,sd):
+    def replaceConcept(self, old_sd, sd):
         pass
 
     def verifConditionBloc(self):
         """
-            Evalue les conditions de tous les blocs fils possibles
-            (en fonction du catalogue donc de la definition) de self et
-            retourne deux listes :
-              - la premiere contient les noms des blocs a rajouter
-              - la seconde contient les noms des blocs a supprimer
+        Evalue les conditions de tous les blocs fils possibles
+        (en fonction du catalogue donc de la definition) de self et
+        retourne deux listes :
+          - la premiere contient les noms des blocs a rajouter
+          - la seconde contient les noms des blocs a supprimer
         """
-        return [],[]
+        return [], []
 
-    def verifConditionRegles(self,liste_presents):
+    def verifConditionRegles(self, liste_presents):
         """
-            Retourne la liste des mots-cles a rajouter pour satisfaire les regles
-            en fonction de la liste des mots-cles presents
+        Retourne la liste des mots-cles a rajouter pour satisfaire les regles
+        en fonction de la liste des mots-cles presents
         """
         return []
 
-    def getSdprods(self,nom_sd):
+    def getSdprods(self, nom_sd):
         """
-            Retourne les concepts produits par la commande
+        Retourne les concepts produits par la commande
         """
         return None
 
@@ -190,10 +192,10 @@ class COMMENTAIRE(N_OBJECT.OBJECT,I_OBJECT.OBJECT) :
         """
         Retourne le commentaire lui meme tronque a la 1ere ligne
         """
-        return self.valeur.split('\n',1)[0]
+        return self.valeur.split("\n", 1)[0]
 
-    def controlSdprods(self,d):
-        """sans objet """
+    def controlSdprods(self, d):
+        """sans objet"""
         pass
 
     def close(self):

@@ -21,24 +21,19 @@ formatted strings, according to all formatting schemes: via dictionaries,
 tuples, or atoms.
 
 """
-from __future__ import absolute_import
-try :
-    from builtins import zip
-    from builtins import map
-    from builtins import range
-except :
-    pass
+from builtins import zip
+from builtins import map
+from builtins import range
 from .eficas_exception import EficasException
 
 import re
-regex=re.compile(r"% *[0-9]+")
+
+regex = re.compile(r"% *[0-9]+")
 
 import six
 from six.moves import map
 from six.moves import range
 from six.moves import zip
-
-
 
 
 def _reformat_qstring_from_tuple(qstring, params):
@@ -50,42 +45,51 @@ def _reformat_qstring_from_tuple(qstring, params):
     and a tuple specifying the parameters of the string.
     """
     from PyQt5.QtCore import QRegExp
+
     reg = QRegExp("\%\.[1-9]{1,2}f")
     for p, j in zip(params, list(range(len(params)))):
         try:
-            i += 1 + qstring[i + 1:].indexOf("%")
+            i += 1 + qstring[i + 1 :].indexOf("%")
         except NameError:
             i = qstring.indexOf("%")
         if i == reg.indexIn(qstring):
-            precision = reg.cap(0).split('.')[1].split('f')[0]
-            qstring = qstring[:i + 2 + len(precision)].\
-                      replace("%." + precision, "%" + six.text_type(1 + j)) + \
-                      qstring[i + 3 + len(precision):]
-            qstring=regex.sub("{}",qstring)
-            #qstring = qstring.format(QString.number(float(params[j]), 'f', int(precision)))
+            precision = reg.cap(0).split(".")[1].split("f")[0]
+            qstring = (
+                qstring[: i + 2 + len(precision)].replace(
+                    "%." + precision, "%" + six.text_type(1 + j)
+                )
+                + qstring[i + 3 + len(precision) :]
+            )
+            qstring = regex.sub("{}", qstring)
+            # qstring = qstring.format(QString.number(float(params[j]), 'f', int(precision)))
             qstring = qstring.format(float(params[j]))
         else:
-            qstring = qstring[:i + 1].replace("%", "%" + six.text_type(1 + j)) + \
-                      qstring[i + 2:]
+            qstring = (
+                qstring[: i + 1].replace("%", "%" + six.text_type(1 + j))
+                + qstring[i + 2 :]
+            )
             if isinstance(params[j], six.text_type):
-                qstring=regex.sub("{}",qstring)
+                qstring = regex.sub("{}", qstring)
                 qstring = qstring.format(params[j])
             elif isinstance(params[j], float):
-                qstring=regex.sub("{}",qstring)
-                #qstring = qstring.format(QString.number(params[j], 'f',\ len(unicode(params[j]).\
+                qstring = regex.sub("{}", qstring)
+                # qstring = qstring.format(QString.number(params[j], 'f',\ len(unicode(params[j]).\
                 #                                         split('.')[1])))
                 qstring = qstring.format(params[j])
             elif isinstance(params[j], int):
-                qstring=regex.sub("{}",qstring)
-                #qstring = qstring.format(QString.number(params[j], 10))
+                qstring = regex.sub("{}", qstring)
+                # qstring = qstring.format(QString.number(params[j], 10))
                 qstring = qstring.format(params[j])
             elif isinstance(params[j], list):
-                qstring=regex.sub("{}",qstring)
+                qstring = regex.sub("{}", qstring)
                 qstring = qstring.format(repr(params[j]))
             else:
-                raise EficasException("TypeError: i18n.translation: \
-                                      Unicode, list or number expected!")
+                raise EficasException(
+                    "TypeError: i18n.translation: \
+                                      Unicode, list or number expected!"
+                )
     return qstring
+
 
 def _reformat_qstring_from_dict(qstring, params):
     """
@@ -96,40 +100,46 @@ def _reformat_qstring_from_dict(qstring, params):
     and a dictionary specifying the parameters of the string.
     """
     from PyQt5.QtCore import QRegExp
+
     for p, j in zip(params, list(range(len(params)))):
-        p_reg = QRegExp("\%\("+ p + "\)\.[1-9]{1,2}f")
+        p_reg = QRegExp("\%\(" + p + "\)\.[1-9]{1,2}f")
         p_index = p_reg.indexIn(qstring)
         if p_index != -1:
-            precision = p_reg.cap(0).split('.')[1].split('f')[0]
-            #qstring = qstring.replace("%(" + p + ")." + precision + "f",\
+            precision = p_reg.cap(0).split(".")[1].split("f")[0]
+            # qstring = qstring.replace("%(" + p + ")." + precision + "f",\
             #                          "%" + unicode(1 + j)).\
             #                          arg(QString.number(float(params[p]), \
             #                                             'f', \
             #                                             int(precision)))
-            qstring = qstring.replace("%(" + p + ")." + precision + "f","%" + six.text_type(1 + j))
-            qstring=regex.sub("{}",qstring)
+            qstring = qstring.replace(
+                "%(" + p + ")." + precision + "f", "%" + six.text_type(1 + j)
+            )
+            qstring = regex.sub("{}", qstring)
             qstring = qstring.format(float(params[p]))
         else:
             qstring.remove(QRegExp("\\)[sdf]{1}"))
             qstring = qstring.replace("%(" + p, "%" + six.text_type(1 + j))
             if isinstance(params[p], six.text_type):
-                qstring=regex.sub("{}",qstring)
+                qstring = regex.sub("{}", qstring)
                 qstring = qstring.format(params[p])
             elif isinstance(params[p], float):
-                qstring=regex.sub("{}",qstring)
+                qstring = regex.sub("{}", qstring)
                 qstring = qstring.format(params[p])
-                #qstring = qstring.format(QString.number(params[p], 'f', \
+                # qstring = qstring.format(QString.number(params[p], 'f', \
                 #          len(unicode(params[p]).split('.')[1])))
             elif isinstance(params[p], int):
-                qstring=regex.sub("{}",qstring)
+                qstring = regex.sub("{}", qstring)
                 qstring = qstring.format(params[p])
             elif isinstance(params[p], list):
-                qstring=regex.sub("{}",qstring)
+                qstring = regex.sub("{}", qstring)
                 qstring = qstring.format(repr(params[p]))
             else:
-                raise EficasException("TypeError: i18n.translation: \
-                                      Improper string parameter type.")
+                raise EficasException(
+                    "TypeError: i18n.translation: \
+                                      Improper string parameter type."
+                )
     return qstring
+
 
 def _reformat_qstring_from_atom(qstring, params):
     """
@@ -141,44 +151,48 @@ def _reformat_qstring_from_atom(qstring, params):
     the string.
     """
     from PyQt5.QtCore import QRegExp
+
     reg = QRegExp("\%\.[1-9]{1,2}f")
     if qstring.count("%") == 0:
         qstring.append("%1")
         try:
-            qstring=regex.sub("{}",qstring)
+            qstring = regex.sub("{}", qstring)
             qstring = qstring.format(six.text_type(params))
         except AttributeError:
-            qstring=regex.sub("{}",qstring)
+            qstring = regex.sub("{}", qstring)
             qstring = qstring.format(params)
     elif qstring.count("%") == 1:
         i = qstring.indexOf("%")
         if i == reg.indexIn(qstring):
-            precision = reg.cap(0).split('.')[1].split('f')[0]
-            qstring = qstring[: i + 2 + len(precision)].\
-                      replace("%." + precision, "%1") + \
-                      qstring[i + 3 + len(precision):]
-            qstring=regex.sub("{}",qstring)
+            precision = reg.cap(0).split(".")[1].split("f")[0]
+            qstring = (
+                qstring[: i + 2 + len(precision)].replace("%." + precision, "%1")
+                + qstring[i + 3 + len(precision) :]
+            )
+            qstring = regex.sub("{}", qstring)
             qstring = qstring.format((params))
-            #qstring = qstring.format(QString.number(float(params), 'f',\
+            # qstring = qstring.format(QString.number(float(params), 'f',\
             #                                     int(precision)))
         else:
-            qstring = qstring[:i + 1].replace("%", "%1") + \
-                      qstring[i + 2:]
+            qstring = qstring[: i + 1].replace("%", "%1") + qstring[i + 2 :]
             if isinstance(params, (six.text_type, str)):
                 qstring = qstring.format(_preprocess_atom(params))
             elif isinstance(params, float):
-                #qstring = qstring.format(QString.number(params, 'f', \
+                # qstring = qstring.format(QString.number(params, 'f', \
                 #                                     len(unicode(params).\
                 #                                         split('.')[1])))
                 qstring = qstring.format(params)
             elif isinstance(params, int):
-                qstring=regex.sub("{}",qstring)
-                #qstring = qstring.format(QString.number(params, 10))
+                qstring = regex.sub("{}", qstring)
+                # qstring = qstring.format(QString.number(params, 10))
                 qstring = qstring.format(params)
             else:
-                raise EficasException("TypeError: i18n.translation: Unicode, \
-                                      string or number expected!")
+                raise EficasException(
+                    "TypeError: i18n.translation: Unicode, \
+                                      string or number expected!"
+                )
     return qstring
+
 
 def _reformat_qstring_from_list(qstring, params):
     """
@@ -191,19 +205,21 @@ def _reformat_qstring_from_list(qstring, params):
     """
     # XXX to add further functionality, e.g. list processing
     # when ``%`` not at the end.
-    if qstring.count("%") == 1 and \
-       six.text_type(qstring).strip()[:-1].endswith("%"):
-        qstring = qstring[:qstring.indexOf("%") + 1].append("1")
-        qstring=regex.sub("{}",qstring)
-        qstring = qstring.format(u' '.join(map(six.text_type, params)))
+    if qstring.count("%") == 1 and six.text_type(qstring).strip()[:-1].endswith("%"):
+        qstring = qstring[: qstring.indexOf("%") + 1].append("1")
+        qstring = regex.sub("{}", qstring)
+        qstring = qstring.format(" ".join(map(six.text_type, params)))
     elif qstring.count("%") == 0:
         qstring.append("%1")
-        qstring=regex.sub("{}",qstring)
-        qstring = qstring.format(u' '.join(map(six.text_type, params)))
+        qstring = regex.sub("{}", qstring)
+        qstring = qstring.format(" ".join(map(six.text_type, params)))
     else:
-        raise EficasException("ValueError: i18n.translation: \
-                              At most one '%' expected!")
+        raise EficasException(
+            "ValueError: i18n.translation: \
+                              At most one '%' expected!"
+        )
     return qstring
+
 
 def _preprocess_atom(string):
     """
@@ -218,8 +234,11 @@ def _preprocess_atom(string):
     elif isinstance(string, str):
         return _str_toUnicode(string)
     else:
-        raise EficasException("TypeError: Expected number, string or\
-                              Unicode object!")
+        raise EficasException(
+            "TypeError: Expected number, string or\
+                              Unicode object!"
+        )
+
 
 def _str_toUnicode(string):
     """
@@ -234,21 +253,24 @@ def _str_toUnicode(string):
         try:
             string = six.text_type(string, "iso-8859-15")
         except UnicodeDecodeError:
-            raise EficasException("UnicodeDecodeError: UTF-8, Latin-1 \
-                                  or Latin-9 expected")
+            raise EficasException(
+                "UnicodeDecodeError: UTF-8, Latin-1 \
+                                  or Latin-9 expected"
+            )
     return string
+
 
 def tr(string, *args):
     """tr(string-or-unicode, iterable-or-float-or-int) -> unicode
-       tr(string-or-unicode) -> unicode
+    tr(string-or-unicode) -> unicode
 
-       Returns a formatted Unicode object from an unformatted
-       string or Unicode object with formatting specifications, and,
-       optionally, an iterable or an int or float.
-       Lets Python do the string formatting."""
-    try :
+    Returns a formatted Unicode object from an unformatted
+    string or Unicode object with formatting specifications, and,
+    optionally, an iterable or an int or float.
+    Lets Python do the string formatting."""
+    try:
         from PyQt5.QtWidgets import QApplication
-    except :
+    except:
         return string
 
     string = _preprocess_atom(string)
@@ -259,49 +281,61 @@ def tr(string, *args):
             if string.count("%") == len(args[0]):
                 r = six.text_type(QApplication.translate("@default", string)) % args[0]
             elif string.count("%") == 1 and string.count("%(") == 0:
-                r = six.text_type(QApplication.translate("@default", string))\
-                    % _preprocess_atom(repr(args[0]))
+                r = six.text_type(
+                    QApplication.translate("@default", string)
+                ) % _preprocess_atom(repr(args[0]))
             elif string.count("%") == 0:
                 r = (six.text_type(QApplication.translate("@default", string)), args[0])
             else:
-                raise EficasException("ValueError: i18n.translate.tr: \
-                                      Improper input string formatting")
+                raise EficasException(
+                    "ValueError: i18n.translate.tr: \
+                                      Improper input string formatting"
+                )
         elif isinstance(args[0], (six.text_type, str, int, float, complex)):
             if string.count("%") == 1:
-                r = six.text_type(QApplication.translate("@default", string))\
-                    % _preprocess_atom(args[0])
+                r = six.text_type(
+                    QApplication.translate("@default", string)
+                ) % _preprocess_atom(args[0])
             else:
-                r = six.text_type(QApplication.translate("@default", string)) +\
-                    six.text_type(_preprocess_atom(args[0]))
+                r = six.text_type(
+                    QApplication.translate("@default", string)
+                ) + six.text_type(_preprocess_atom(args[0]))
         elif isinstance(args[0], list) or args[0] is None:
             if string.count("%") == 1:
-                r = six.text_type(QApplication.translate("@default", string))\
-                    % _preprocess_atom(repr(args[0]))
+                r = six.text_type(
+                    QApplication.translate("@default", string)
+                ) % _preprocess_atom(repr(args[0]))
             else:
                 r = (six.text_type(QApplication.translate("@default", string)), args[0])
 
         else:
-            raise EficasException("ValueError: i18n.translation.tr: \
+            raise EficasException(
+                "ValueError: i18n.translation.tr: \
                                   Wrong type for formatted string \
-                                  arguments: %s" % type(args[0]))
+                                  arguments: %s"
+                % type(args[0])
+            )
     else:
-        raise EficasException("ValueError: i18n.translation.tr: \
-                              Wrong formatted string arguments")
+        raise EficasException(
+            "ValueError: i18n.translation.tr: \
+                              Wrong formatted string arguments"
+        )
     return r
 
 
 def tr_qt(string, *args):
     """tr_qt(string, iterable-or-float-or-int) -> unicode
-       t_qtr(string) -> unicode
+    t_qtr(string) -> unicode
 
-       Returns a formatted string from an unformatted
-       Unicode string with formatting specifications, and,
-       optionally, an iterable or an int or float.
-       Lets PyQt4 do the string formatting. To this end,
-       a conversion from Python to Qt string formatting
-       syntax is performed."""
+    Returns a formatted string from an unformatted
+    Unicode string with formatting specifications, and,
+    optionally, an iterable or an int or float.
+    Lets PyQt4 do the string formatting. To this end,
+    a conversion from Python to Qt string formatting
+    syntax is performed."""
     string = _preprocess_atom(string)
     from PyQt5.QtWidgets import QApplication
+
     if len(args) == 0:
         r = QApplication.translate("@default", string)
     elif len(args) == 1:
@@ -317,24 +351,33 @@ def tr_qt(string, *args):
             elif r.count("%") in range(2) and r.count("%(") == 0:
                 r = _reformat_qstring_from_atom(r, _preproces_atom(repr(args[0])))
             else:
-                raise EficasException("ValueError: i18n.translation.tr_qt: \
-                                      Improper formatting string parameters")
+                raise EficasException(
+                    "ValueError: i18n.translation.tr_qt: \
+                                      Improper formatting string parameters"
+                )
         elif isinstance(args[0], (six.text_type, str, int, float, complex)):
             r = _reformat_qstring_from_atom(r, args[0])
         elif isinstance(args[0], list):
             r = _reformat_qstring_from_list(r, args[0])
         elif args[0] is None:
-            r = _reformat_qstring_from_atom(r, _preprocess_string_from_atom(repr(args[0])))
+            r = _reformat_qstring_from_atom(
+                r, _preprocess_string_from_atom(repr(args[0]))
+            )
         else:
-            raise EficasException("ValueError: i18n.translation.tr_qt: \
-                                  Wrong string formatting parameter types")
+            raise EficasException(
+                "ValueError: i18n.translation.tr_qt: \
+                                  Wrong string formatting parameter types"
+            )
     else:
-        raise EficasException("ValueError: i18n.translation.tr_qt: \
-                              Improper formatted string parameter set")
+        raise EficasException(
+            "ValueError: i18n.translation.tr_qt: \
+                              Improper formatted string parameter set"
+        )
     return six.text_type(r)
 
 
 if __name__ == "__main__":
     import sys
+
     tr(sys.argv[1], *args)
     tr_qt(sys.argv[1], *args)

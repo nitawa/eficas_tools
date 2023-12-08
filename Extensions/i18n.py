@@ -22,8 +22,7 @@ for the ``Eficas`` application of EDF.
 It is usable from both Qt and non-Qt environments.
 ``PyQt4`` is currently supported.
 """
-from __future__ import absolute_import
 from .translation import tr, tr_qt
 from .localisation import localise
 
-__all__ = ['tr', 'tr_qt', 'localise']
+__all__ = ["tr", "tr_qt", "localise"]

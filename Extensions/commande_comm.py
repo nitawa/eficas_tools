@@ -17,12 +17,9 @@
 #
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
-from __future__ import absolute_import
-from __future__ import print_function
-try :
-    from builtins import str
-except : pass
-import os,traceback
+
+from builtins import str
+import os, traceback
 import re
 
 from Noyau.N_CR import CR
@@ -31,30 +28,33 @@ from Noyau import N_OBJECT
 from Ihm import I_OBJECT
 from Extensions.i18n import tr
 
-class COMMANDE_COMM(N_OBJECT.OBJECT,I_OBJECT.OBJECT) :
+
+class COMMANDE_COMM(N_OBJECT.OBJECT, I_OBJECT.OBJECT):
     """
     Cette classe sert a definir les objets de type Commande commentarisee
     """
-    nature = "COMMANDE_COMMENTARISEE"
-    idracine='_comm'
 
-    def __init__(self,texte='',parent=None,reg='oui'):
+    nature = "COMMANDE_COMMENTARISEE"
+    idracine = "_comm"
+
+    def __init__(self, texte="", parent=None, reg="oui"):
         self.valeur = texte
-        if not parent :
+        if not parent:
             self.jdc = self.parent = CONTEXT.getCurrentStep()
         else:
             self.jdc = self.parent = parent
-        if hasattr(self.parent,'etape'):
+        if hasattr(self.parent, "etape"):
             self.etape = self.parent.etape
-        else :
+        else:
             self.etape = None
-        self.definition=self
-        self.nom = ''
+        self.definition = self
+        self.nom = ""
         self.niveau = self.parent.niveau
-        self.actif=1
-        self.state="unchanged"
-        #self.appel = N_utils.calleeWhere(niveau=2)
-        if reg=='oui' : self.register()
+        self.actif = 1
+        self.state = "unchanged"
+        # self.appel = N_utils.calleeWhere(niveau=2)
+        if reg == "oui":
+            self.register()
 
     def isValid(self):
         return 1
@@ -63,8 +63,9 @@ class COMMANDE_COMM(N_OBJECT.OBJECT,I_OBJECT.OBJECT) :
         """
         Genere l'objet rapport (classe CR)
         """
-        self.cr=CR()
-        if not self.isValid(): self.cr.warn(tr("Objet commande commentarise invalide"))
+        self.cr = CR()
+        if not self.isValid():
+            self.cr.warn(tr("Objet commande commentarise invalide"))
         return self.cr
 
     def copy(self):
@@ -72,20 +73,20 @@ class COMMANDE_COMM(N_OBJECT.OBJECT,I_OBJECT.OBJECT) :
         Retourne une copie de self cad un objet COMMANDE_COMM
         """
         # XXX self.texte ne semble pas exister ???
-        return COMMANDE_COMM(self.texte,parent = self.parent,reg='non')
+        return COMMANDE_COMM(self.texte, parent=self.parent, reg="non")
 
     def initModif(self):
-        self.state = 'modified'
+        self.state = "modified"
         self.parent.initModif()
 
-    def setValeur(self,new_valeur):
+    def setValeur(self, new_valeur):
         """
         Remplace la valeur de self(si elle existe) par new_valeur)
         """
         self.valeur = new_valeur
         self.initModif()
 
-    def getValeur(self) :
+    def getValeur(self):
         """
         Retourne la valeur de self, cad le texte de la commande commentarisee
         """
@@ -117,24 +118,25 @@ class COMMANDE_COMM(N_OBJECT.OBJECT,I_OBJECT.OBJECT) :
         """
         return 1
 
-    def getAttribut(self,nom_attribut) :
+    def getAttribut(self, nom_attribut):
         """
         Retourne l'attribut de nom nom_attribut de self (ou herite)
         """
-        if hasattr(self,nom_attribut) :
-            return getattr(self,nom_attribut)
-        else :
+        if hasattr(self, nom_attribut):
+            return getattr(self, nom_attribut)
+        else:
             return None
 
     def getFr(self):
         """
         Retourne l'attribut fr de self.definition
         """
-        if self.jdc.code=='ASTER' : return self.definition.fr
-        try :
-            return getattr(self.definition,self.jdc.lang)
+        if self.jdc.code == "ASTER":
+            return self.definition.fr
+        try:
+            return getattr(self.definition, self.jdc.lang)
         except:
-            return ''
+            return ""
 
     def listeMcPresents(self):
         return []
@@ -156,20 +158,20 @@ class COMMANDE_COMM(N_OBJECT.OBJECT,I_OBJECT.OBJECT) :
     def supprimeSdProds(self):
         pass
 
-    def updateContext(self,d):
+    def updateContext(self, d):
         """
         Update le dictionnaire d avec les concepts ou objets produits par self
         --> ne fait rien pour une commande en  commentaire
         """
         pass
 
-    def deleteConcept(self,sd):
+    def deleteConcept(self, sd):
         pass
 
-    def replaceConcept (self,old_sd,sd):
+    def replaceConcept(self, old_sd, sd):
         pass
 
-    def getSdprods(self,nom_sd):
+    def getSdprods(self, nom_sd):
         return None
 
     def unComment(self):
@@ -184,42 +186,43 @@ class COMMANDE_COMM(N_OBJECT.OBJECT,I_OBJECT.OBJECT) :
         try:
             # on essaie de creer un objet JDC...
             CONTEXT.unsetCurrentStep()
-            if re.search('Fin Commentaire',self.valeur) :
-                self.valeur=self.valeur.replace('Fin Commentaire','')
-            J=self.jdc.__class__(procedure=self.valeur,
-                                 definition=self.jdc.definition,
-                                 cata=self.jdc.cata,
-                                 cata_ord_dico=self.jdc.cata_ordonne_dico,
-                                 context_ini = context_ini,
-                                )
+            if re.search("Fin Commentaire", self.valeur):
+                self.valeur = self.valeur.replace("Fin Commentaire", "")
+            J = self.jdc.__class__(
+                procedure=self.valeur,
+                definition=self.jdc.definition,
+                cata=self.jdc.cata,
+                cata_ord_dico=self.jdc.cata_ordonne_dico,
+                context_ini=context_ini,
+            )
             J.analyse()
         except Exception as e:
             traceback.print_exc()
-            #self.jdc.set_context()
-            raise AsException(tr("Erreur"),e.__str__())
-        if len(J.cr.crfatal)>0 :
+            # self.jdc.set_context()
+            raise AsException(tr("Erreur"), e.__str__())
+        if len(J.cr.crfatal) > 0:
             # des erreurs fatales ont ete rencontrees
-            #self.jdc.set_context()
-            print ('erreurs fatales !!!')
-            raise AsException(tr("Erreurs fatales"),''.join(J.cr.crfatal))
-        if not J.etapes :
+            # self.jdc.set_context()
+            print("erreurs fatales !!!")
+            raise AsException(tr("Erreurs fatales"), "".join(J.cr.crfatal))
+        if not J.etapes:
             # des erreurs ont ete rencontrees
-            raise AsException(tr("Impossible reconstruire commande\n"),str(J.cr))
-        #self.jdc.set_context()
+            raise AsException(tr("Impossible reconstruire commande\n"), str(J.cr))
+        # self.jdc.set_context()
 
         new_etape = J.etapes[0]
-        if new_etape.sd :
+        if new_etape.sd:
             nom_sd = new_etape.sd.nom
         else:
             nom_sd = None
-        #new_etape=new_etape.copy()
-        #print "unComment",new_etape.sd
+        # new_etape=new_etape.copy()
+        # print "unComment",new_etape.sd
 
-        pos=self.parent.etapes.index(self)
+        pos = self.parent.etapes.index(self)
         # L'ordre d'appel est important : suppEntite fait le menage des concepts dans les etapes suivantes
-        self.parent.addEntite(new_etape,pos)
+        self.parent.addEntite(new_etape, pos)
         self.parent.suppEntite(self)
-        return new_etape,nom_sd
+        return new_etape, nom_sd
 
     def active(self):
         """
@@ -241,38 +244,38 @@ class COMMANDE_COMM(N_OBJECT.OBJECT,I_OBJECT.OBJECT) :
 
     def verifConditionBloc(self):
         """
-            Evalue les conditions de tous les blocs fils possibles
-            (en fonction du catalogue donc de la definition) de self et
-            retourne deux listes :
-              - la premiere contient les noms des blocs a rajouter
-              - la seconde contient les noms des blocs a supprimer
+        Evalue les conditions de tous les blocs fils possibles
+        (en fonction du catalogue donc de la definition) de self et
+        retourne deux listes :
+          - la premiere contient les noms des blocs a rajouter
+          - la seconde contient les noms des blocs a supprimer
         """
-        return [],[]
+        return [], []
 
-    def verifConditionRegles(self,liste_presents):
+    def verifConditionRegles(self, liste_presents):
         """
-            Retourne la liste des mots-cles a rajouter pour satisfaire les regles
-            en fonction de la liste des mots-cles presents
+        Retourne la liste des mots-cles a rajouter pour satisfaire les regles
+        en fonction de la liste des mots-cles presents
         """
         return []
 
-    def reparent(self,parent):
+    def reparent(self, parent):
         """
-            Cette methode sert a reinitialiser la parente de l'objet
+        Cette methode sert a reinitialiser la parente de l'objet
         """
-        self.parent=parent
-        self.jdc=parent.getJdcRoot()
-        self.etape=self
+        self.parent = parent
+        self.jdc = parent.getJdcRoot()
+        self.etape = self
 
     def verifExistenceSd(self):
         """
-           Verifie que les structures de donnees utilisees dans self existent bien dans le contexte
-           avant etape, sinon enleve la reference a ces concepts
-           --> sans objet pour les commandes commentarisees
+        Verifie que les structures de donnees utilisees dans self existent bien dans le contexte
+        avant etape, sinon enleve la reference a ces concepts
+        --> sans objet pour les commandes commentarisees
         """
         pass
 
-    def controlSdprods(self,d):
+    def controlSdprods(self, d):
         """sans objet pour les commandes commentarisees"""
         pass
 
