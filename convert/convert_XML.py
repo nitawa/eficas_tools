@@ -1,4 +1,4 @@
-# Copyright (C) 2007-2021   EDF R&D
+# Copyright (C) 2007-2024   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -16,60 +16,61 @@
 #
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
-from __future__ import absolute_import
-
 
 import re
 from Extensions.i18n import tr
 
-#import traceback
-#traceback.print_stack()
+# import traceback
+# traceback.print_stack()
 
 from Extensions import localisation
 from Noyau import N_CR
+from .convert_UQPython import pythonUQParser
 
 
 def entryPoint():
     """
     Return a dictionary containing the description needed to load the plugin
     """
-    return {
-           'name' : 'xml',
-           'factory' : XMLparser
-           }
+    return {"name": "xml", "factory": XMLparser}
+
 
 class XMLparser:
     """
-    This converter works like Pythonparser, except that it is supposed to read XML
+    This converter works like Pythonparser, except that it reads XML file
     """
 
-    def __init__(self,cr=None):
-        print ('dans XML convert')
-        self.text=''
-        if cr : self.cr=cr
-        else: self.cr=N_CR.CR(debut='CR convertisseur format XML',
-                           fin='fin CR format XML')
+    def __init__(self, cr=None):
+        # print("dans XML convert")
+        self.text = ""
+        if cr:
+            self.cr = cr
+        else:
+            self.cr = N_CR.CR(
+                debut="CR convertisseur format XML", fin="fin CR format XML"
+            )
 
-    def readfile(self,filename):
-        self.filename=filename
+    def readfile(self, filename):
+        self.filename = filename
         try:
-            with open(filename) as fd :
-                self.text=fd.read()
+            with open(filename) as fd:
+                self.text = fd.read()
         except:
-            self.cr.exception(tr("Impossible d'ouvrir le fichier %s" ,str(filename)))
-            self.cr.fatal(tr("Impossible d'ouvrir le fichier %s" ,str(filename)))
+            self.cr.exception(tr("Impossible d'ouvrir le fichier %s", str(filename)))
+            self.cr.fatal(tr("Impossible d'ouvrir le fichier %s", str(filename)))
             return
 
-
-
     def convert(self, outformat, appliEficas=None):
-    # ici on ne fait rien
-    # on le fera a la creation du JDC
+        # ici on ne fait rien
+        # on le fera a la creation du JDC
         try:
             return self.text
-        except EficasException:
+        except Exception as e:
             # Erreur lors de la conversion
-            l=traceback.format_exception(sys.exc_info()[0],sys.exc_info()[1],
-                                         sys.exc_info()[2])
-            self.cr.exception(tr("Impossible de convertir le fichier XML\n %s", ''.join(l)))
+            l = traceback.format_exception(
+                sys.exc_info()[0], sys.exc_info()[1], sys.exc_info()[2]
+            )
+            self.cr.exception(
+                tr("Impossible de convertir le fichier XML\n %s", "".join(l))
+            )
             return ""

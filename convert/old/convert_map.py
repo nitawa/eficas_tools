@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2007-2021   EDF R&D
+# Copyright (C) 2007-2024   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -23,14 +23,15 @@
 from __future__ import absolute_import
 from .convert_python import Pythonparser
 
+
 def entryPoint():
     """
-        Retourne les informations necessaires pour le chargeur de plugins
-        Ces informations sont retournees dans un dictionnaire
+    Retourne les informations necessaires pour le chargeur de plugins
+    Ces informations sont retournees dans un dictionnaire
     """
     return {
-         # Le nom du plugin
-           'name' : 'MAP',
-         # La factory pour creer une instance du plugin
-           'factory' : Pythonparser,
-           }
+        # Le nom du plugin
+        "name": "MAP",
+        # La factory pour creer une instance du plugin
+        "factory": Pythonparser,
+    }

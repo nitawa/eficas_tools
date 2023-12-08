@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2007-2021   EDF R&D
+# Copyright (C) 2007-2024   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -48,82 +48,89 @@
 
 """
 from __future__ import absolute_import
-try :
+
+try:
     from builtins import str
     from builtins import object
-except :
+except:
     pass
 
-import sys,traceback
+import sys, traceback
 
 from Noyau import N_CR
 from Extensions.i18n import tr
 from Extensions.eficas_exception import EficasException
 
+
 def entryPoint():
     """
-        Retourne les informations necessaires pour le chargeur de plugins
-        Ces informations sont retournees dans un dictionnaire
+    Retourne les informations necessaires pour le chargeur de plugins
+    Ces informations sont retournees dans un dictionnaire
     """
     return {
-         # Le nom du plugin
-           'name' : 'pyth',
-         # La factory pour creer une instance du plugin
-           'factory' : Pythparser,
-           }
+        # Le nom du plugin
+        "name": "pyth",
+        # La factory pour creer une instance du plugin
+        "factory": Pythparser,
+    }
 
 
 class Pythparser(object):
     """
-        Ce convertisseur lit un fichier au format pyth avec la
-        methode readfile : convertisseur.readfile(nom_fichier)
-        et retourne le texte au format outformat avec la
-        methode convertisseur.convert(outformat)
+    Ce convertisseur lit un fichier au format pyth avec la
+    methode readfile : convertisseur.readfile(nom_fichier)
+    et retourne le texte au format outformat avec la
+    methode convertisseur.convert(outformat)
 
-        Ses caracteristiques principales sont exposees dans 2 attributs
-        de classe :
-          - extensions : qui donne une liste d'extensions de fichier preconisees
-          - formats : qui donne une liste de formats de sortie supportes
+    Ses caracteristiques principales sont exposees dans 2 attributs
+    de classe :
+      - extensions : qui donne une liste d'extensions de fichier preconisees
+      - formats : qui donne une liste de formats de sortie supportes
     """
+
     # Les extensions de fichier preconisees
-    extensions=('.pyth',)
+    extensions = (".pyth",)
     # Les formats de sortie supportes (eval dict ou exec)
-    formats=('dict',)
+    formats = ("dict",)
 
-    def __init__(self,cr=None):
+    def __init__(self, cr=None):
         # Si l'objet compte-rendu n'est pas fourni, on utilise le compte-rendu standard
-        if cr :
-            self.cr=cr
+        if cr:
+            self.cr = cr
         else:
-            self.cr=N_CR.CR(debut='CR convertisseur format pyth',
-                            fin='fin CR format pyth')
-        self.g={}
+            self.cr = N_CR.CR(
+                debut="CR convertisseur format pyth", fin="fin CR format pyth"
+            )
+        self.g = {}
 
-    def readfile(self,filename):
-        self.filename=filename
+    def readfile(self, filename):
+        self.filename = filename
         try:
-            with open(filename) as fd :
-                self.text=fd.read()
+            with open(filename) as fd:
+                self.text = fd.read()
         except:
-            self.cr.fatal(tr("Impossible d'ouvrir le fichier : %s",str( filename)))
+            self.cr.fatal(tr("Impossible d'ouvrir le fichier : %s", str(filename)))
             return
-        self.g={}
+        self.g = {}
         try:
             exec(self.text, self.g)
         except EficasException as e:
-            l=traceback.format_exception(sys.exc_info()[0],sys.exc_info()[1],sys.exc_info()[2])
-            s= ''.join(l[2:])
-            s= s.replace('"<string>"','"<%s>"'%self.filename)
+            l = traceback.format_exception(
+                sys.exc_info()[0], sys.exc_info()[1], sys.exc_info()[2]
+            )
+            s = "".join(l[2:])
+            s = s.replace('"<string>"', '"<%s>"' % self.filename)
             self.cr.fatal(tr("Erreur a l'evaluation :\n %s", s))
 
-    def convert(self,outformat,appliEficas=None):
-        if outformat == 'dict':
+    def convert(self, outformat, appliEficas=None):
+        if outformat == "dict":
             return self.getdict()
         else:
             raise EficasException(tr("Format de sortie : %s, non supporte", outformat))
 
     def getdict(self):
-        d={}
-        for k,v in list(self.g.items()):
-            if k[0] != '_':d[k]=v
+        d = {}
+        for k, v in list(self.g.items()):
+            if k[0] != "_":
+                d[k] = v
         return d

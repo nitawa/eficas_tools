@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2007-2021   EDF R&D
+# Copyright (C) 2007-2024   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -47,96 +47,102 @@
     Ce convertisseur supporte le format de sortie exec
 
 """
-from __future__ import absolute_import
-try :
-    from builtins import str
-    from builtins import object
-except :
-    pass
-import sys,traceback
+
+import sys, traceback
+from builtins import str
+from builtins import object
 
 from .parseur_python import PARSEUR_PYTHON
 from Noyau import N_CR
 from Extensions.i18n import tr
 from Extensions.eficas_exception import EficasException
 
+
 def entryPoint():
     """
-        Retourne les informations necessaires pour le chargeur de plugins
-        Ces informations sont retournees dans un dictionnaire
+    Retourne les informations necessaires pour le chargeur de plugins
+    Ces informations sont retournees dans un dictionnaire
     """
     return {
-         # Le nom du plugin
-           'name' : 'python',
-         # La factory pour creer une instance du plugin
-           'factory' : Pythonparser,
-           }
+        # Le nom du plugin
+        "name": "python",
+        # La factory pour creer une instance du plugin
+        "factory": Pythonparser,
+    }
 
 
 class Pythonparser(object):
     """
-        Ce convertisseur lit un fichier au format python avec la
-        methode readfile : convertisseur.readfile(nom_fichier)
-        et retourne le texte au format outformat avec la
-        methode convertisseur.convert(outformat)
+    Ce convertisseur lit un fichier au format python avec la
+    methode readfile : convertisseur.readfile(nom_fichier)
+    et retourne le texte au format outformat avec la
+    methode convertisseur.convert(outformat)
 
-        Ses caracteristiques principales sont exposees dans 2 attributs
-        de classe :
-           - extensions : qui donne une liste d'extensions de fichier preconisees
-           - formats : qui donne une liste de formats de sortie supportes
+    Ses caracteristiques principales sont exposees dans 2 attributs
+    de classe :
+       - extensions : qui donne une liste d'extensions de fichier preconisees
+       - formats : qui donne une liste de formats de sortie supportes
     """
+
     # Les extensions de fichier preconisees
-    extensions=('.py',)
+    extensions = (".py",)
     # Les formats de sortie supportes (eval dict ou exec)
     # Le format exec est du python executable (commande exec) converti avec PARSEUR_PYTHON
     # Le format execnoparseur est du python executable (commande exec) non converti
-    formats=('exec','execnoparseur')
+    formats = ("exec", "execnoparseur")
 
-    def __init__(self,cr=None):
+    def __init__(self, cr=None):
         # Si l'objet compte-rendu n'est pas fourni, on utilise le
         # compte-rendu standard
-        self.text=''
-        if cr :
-            self.cr=cr
+        self.text = ""
+        if cr:
+            self.cr = cr
         else:
-            self.cr=N_CR.CR(debut='CR convertisseur format python',
-                            fin='fin CR format python')
+            self.cr = N_CR.CR(
+                debut="CR convertisseur format python", fin="fin CR format python"
+            )
 
-    def readfile(self,filename):
-        self.filename=filename
+    def readfile(self, filename):
+        self.filename = filename
         try:
-            with open(filename) as fd :
-                self.text=fd.read()
+            with open(filename) as fd:
+                self.text = fd.read()
         except:
-            self.cr.exception(tr("Impossible d'ouvrir le fichier %s" ,str(filename)))
-            self.cr.fatal(tr("Impossible d'ouvrir le fichier %s" ,str(filename)))
+            self.cr.exception(tr("Impossible d'ouvrir le fichier %s", str(filename)))
+            self.cr.fatal(tr("Impossible d'ouvrir le fichier %s", str(filename)))
             return
 
-    def convert(self,outformat,appliEficas=None):
-        if outformat == 'exec':
+    def convert(self, outformat, appliEficas=None):
+        if outformat == "exec":
             try:
-                #import cProfile, pstats, StringIO
-                #pr = cProfile.Profile()
-                #pr.enable()
-                l= PARSEUR_PYTHON(self.text).getTexte(appliEficas)
+                # import cProfile, pstats, StringIO
+                # pr = cProfile.Profile()
+                # pr.enable()
+                l = PARSEUR_PYTHON(self.text).getTexte(appliEficas)
 
-                #pr.disable()
-                #s = StringIO.StringIO()
-                #sortby = 'cumulative'
-                #ps = pstats.Stats(pr, stream=s).sort_stats(sortby)
-                #ps.print_stats()
-                #print (s.getValue())
+                # pr.disable()
+                # s = StringIO.StringIO()
+                # sortby = 'cumulative'
+                # ps = pstats.Stats(pr, stream=s).sort_stats(sortby)
+                # ps.print_stats()
+                # print (s.getValue())
 
                 return l
             except EficasException:
                 # Erreur lors de la conversion
-                l=traceback.format_exception(sys.exc_info()[0],sys.exc_info()[1],
-                                             sys.exc_info()[2])
-                self.cr.exception(tr("Impossible de convertir le fichier Python qui doit contenir des erreurs.\n\
-                                      On retourne le fichier non converti. Prevenir la maintenance.\n\n %s", ''.join(l)))
+                l = traceback.format_exception(
+                    sys.exc_info()[0], sys.exc_info()[1], sys.exc_info()[2]
+                )
+                self.cr.exception(
+                    tr(
+                        "Impossible de convertir le fichier Python qui doit contenir des erreurs.\n\
+                                      On retourne le fichier non converti. Prevenir la maintenance.\n\n %s",
+                        "".join(l),
+                    )
+                )
                 # On retourne neanmoins le source initial non converti (au cas ou)
                 return self.text
-        elif outformat == 'execnoparseur':
+        elif outformat == "execnoparseur":
             return self.text
         else:
             raise EficasException(tr("Format de sortie : %s, non supporte", outformat))

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2007-2021   EDF R&D
+# Copyright (C) 2007-2024   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -18,15 +18,13 @@
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
 """
-   Ce package contient tous les convertisseurs de formats d'entree
-   en objets comprehensibles par EFICAS.
+   This package contains all input format converters
+   into objects understandable by EFICAS.
 
-   Ces convertisseurs sont implementes sous forme de plugins
+   These converters are implemented in the form of plugins
 """
 
-from __future__ import absolute_import
 from Extensions import pluginloader
-
 import convert
 
-plugins=pluginloader.PluginLoader(convert)
+plugins = pluginloader.PluginLoader(convert)

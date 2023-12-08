@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2007-2021   EDF R&D
+# Copyright (C) 2007-2024   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -19,96 +19,98 @@
 #
 from __future__ import absolute_import
 from __future__ import print_function
-try :
-    from future import standard_library
+
+try:
     standard_library.install_aliases()
-except :
+except:
     pass
-try :
+try:
     from builtins import str
-except :
+except:
     pass
 from builtins import object
-import sys,re,tokenize
+import sys, re, tokenize
 import io
 
 
-class ENTITE_JDC(object) :
+class ENTITE_JDC(object):
     def __init__(self):
-        self.texte = ''
+        self.texte = ""
 
-    def setText(self,texte):
+    def setText(self, texte):
         self.texte = texte
 
-    def appendText(self,texte):
-        """
-        """
-        self.texte = self.texte +texte
+    def appendText(self, texte):
+        """ """
+        self.texte = self.texte + texte
+
 
 class COMMENTAIRE(ENTITE_JDC):
-
     def __str__(self):
         """
         Retourne une chaine de caracteres representant self
         sous une forme interpretable par EFICAS
         """
-        t=repr(self.texte)
-        return "COMMENTAIRE(u"+t+")\n"
+        t = repr(self.texte)
+        return "COMMENTAIRE(u" + t + ")\n"
 
-    def appendText(self,texte):
+    def appendText(self, texte):
         """
         Ajoute texte a self.texte en enlevant le # initial
         """
-        if texte[0] == '#':
-            self.texte = self.texte+texte[1:]
+        if texte[0] == "#":
+            self.texte = self.texte + texte[1:]
         else:
             # le diese n'est pas sur le premier caractere
-            amont,aval = texte.split('#',1) # on decoupe suivant la premiere occurrence de #
-            self.texte = self.texte +amont + aval
+            amont, aval = texte.split(
+                "#", 1
+            )  # on decoupe suivant la premiere occurrence de #
+            self.texte = self.texte + amont + aval
+
 
 class AFFECTATION(ENTITE_JDC):
-
-    def appendText(self,texte):
+    def appendText(self, texte):
         """
         Ajoute texte a self.texte en enlevant tout retour chariot et tout point virgule
         """
-        self.texte = self.texte+texte
+        self.texte = self.texte + texte
 
     def __str__(self):
         """
         Retourne une expression de l'affectation comprehensible par ACCAS
         et exploitable par EFICAS
         """
-        #t=repr(self.texte)
-        t=self.texte
-        return "PARAMETRE(nom='"+self.name+"',valeur="+t+")"
+        # t=repr(self.texte)
+        t = self.texte
+        return "PARAMETRE(nom='" + self.name + "',valeur=" + t + ")"
+
 
 class COMMANDE_COMMENTARISEE(ENTITE_JDC):
-
-    def appendText(self,texte):
+    def appendText(self, texte):
         """
         Ajoute texte a self.texte en enlevant les doubles commentaires
         """
         texte = texte.strip()
         texte = texte[2:].strip()
-        self.texte = self.texte+(len(self.texte)>0)*'\n'+texte
+        self.texte = self.texte + (len(self.texte) > 0) * "\n" + texte
 
     def __str__(self):
         """
         Retourne une expression de la commande commentarisee comprehensible par ACCAS
         et exploitable par EFICAS
         """
-        return "COMMANDE_COMM(texte="+repr(self.texte)+")\n"
+        return "COMMANDE_COMM(texte=" + repr(self.texte) + ")\n"
 
 
 next = {}
-next['if'] = next['elif'] = 'elif', 'else', 'end'
-next['while'] = next['for'] = 'else', 'end'
-next['try'] = 'except', 'finally'
-next['except'] = 'except', 'else', 'end'
-next['else'] = next['finally'] = next['def'] = next['class'] = 'end'
-next['end'] = ()
-start = 'if', 'while', 'for', 'try', 'def', 'class'
+next["if"] = next["elif"] = "elif", "else", "end"
+next["while"] = next["for"] = "else", "end"
+next["try"] = "except", "finally"
+next["except"] = "except", "else", "end"
+next["else"] = next["finally"] = next["def"] = next["class"] = "end"
+next["end"] = ()
+start = "if", "while", "for", "try", "def", "class"
+
 
 class PARSEUR_PYTHON(object):
     """
@@ -118,90 +120,88 @@ class PARSEUR_PYTHON(object):
       - les affectations
       - les commandes
     """
-    # au moins 1 caractere non blanc ou non tabulation
-    #pattern_ligne_non_blanche = re.compile(r'^[\w\t]+')
-    pattern_ligne_non_blanche = re.compile(r'[^ \t]+')
-    kwprog = re.compile(
-                r'^\s*(?P<kw>[a-z]+)'
-                r'(\s+(?P<id>[a-zA-Z_]\w*))?'
-                r'[^\w]')
-    endprog = re.compile(
-                r'^\s*#?\s*end\s+(?P<kw>[a-z]+)'
-                r'(\s+(?P<id>[a-zA-Z_]\w*))?'
-                r'[^\w]')
-    wsprog = re.compile(r'^[ \t]*')
-    optionprog=re.compile(r'#\s*parse:\s*([^\n\'"]*)$')
 
-    def __init__(self,texte):
+    # au moins 1 caractere non blanc ou non tabulation
+    # pattern_ligne_non_blanche = re.compile(r'^[\w\t]+')
+    pattern_ligne_non_blanche = re.compile(r"[^ \t]+")
+    kwprog = re.compile(r"^\s*(?P<kw>[a-z]+)" r"(\s+(?P<id>[a-zA-Z_]\w*))?" r"[^\w]")
+    endprog = re.compile(
+        r"^\s*#?\s*end\s+(?P<kw>[a-z]+)" r"(\s+(?P<id>[a-zA-Z_]\w*))?" r"[^\w]"
+    )
+    wsprog = re.compile(r"^[ \t]*")
+    optionprog = re.compile(r'#\s*parse:\s*([^\n\'"]*)$')
+
+    def __init__(self, texte):
         # on verifie que le texte fourni se compile correctement
-        compile(texte,"<string>",'exec')
+        compile(texte, "<string>", "exec")
         self.texte = io.StringIO(texte)
-        self.line=''
-        self.out=""
+        self.line = ""
+        self.out = ""
         self.lastcol = 0
         self.lastrow = 1
         self.please_indent = 1
         self.indent_list = []
-        self.indentation=0
-        self.paren_level=0
-        self.affectation=0
-        self.indent_list=[""]
-        self.objet_courant=None
-        self.affectation_flag=1
-        self.comment_flag=1
-        self.buffer=[]
-        self.buffer_indent=""
+        self.indentation = 0
+        self.paren_level = 0
+        self.affectation = 0
+        self.indent_list = [""]
+        self.objet_courant = None
+        self.affectation_flag = 1
+        self.comment_flag = 1
+        self.buffer = []
+        self.buffer_indent = ""
 
     def getOptions(self):
-        m= self.optionprog.match(self.line)
+        m = self.optionprog.match(self.line)
         if m:
-            option=m.group(1)
-            name=option[1:]
-            flag=(option[0] == '+')
-            if name == "affectation": self.affectation_flag=flag
-            if name == "comment": self.comment_flag=flag
+            option = m.group(1)
+            name = option[1:]
+            flag = option[0] == "+"
+            if name == "affectation":
+                self.affectation_flag = flag
+            if name == "comment":
+                self.comment_flag = flag
             if name == "all":
-                self.comment_flag=flag
-                self.affectation_flag=flag
+                self.comment_flag = flag
+                self.affectation_flag = flag
 
     def readline(self):
-        self.line= self.texte.readline()
-        #print "line:",self.line
+        self.line = self.texte.readline()
+        # print "line:",self.line
         # option ?
         self.getOptions()
         return self.line
 
-    def getTexte(self,appliEficas=None):
+    def getTexte(self, appliEficas=None):
         """
-           Retourne le texte issu de l'analyse
+        Retourne le texte issu de l'analyse
         """
         for tk in tokenize.generate_tokens(self.readline):
             self.processToken(tk)
         return self.out
 
     def processToken(self, tk):
-        """
-        """
+        """ """
         ttype, tstring, spos, epos, line = tk
         thisrow, thiscol = spos
-        #print spos, epos,tokenize.tok_name[ttype],self.lastrow, self.lastcol
+        # print spos, epos,tokenize.tok_name[ttype],self.lastrow, self.lastcol
 
         if thisrow > self.lastrow:
             # si plusieurs lignes (>1)
-            self.out=self.out+"\n" * (thisrow - self.lastrow - 1)
+            self.out = self.out + "\n" * (thisrow - self.lastrow - 1)
             self.lastcol = 0
 
-#        if thiscol > self.lastcol :
-#            self.out=self.out+ " " * (thiscol - self.lastcol)
-#            self.please_indent = None
+        #        if thiscol > self.lastcol :
+        #            self.out=self.out+ " " * (thiscol - self.lastcol)
+        #            self.please_indent = None
 
-        self.thiscol=thiscol
-        #self.nextrow, self.nextcol = epos
+        self.thiscol = thiscol
+        # self.nextrow, self.nextcol = epos
 
         try:
             fn = getattr(self, tokenize.tok_name[ttype])
         except AttributeError:
-            print( "No match!", tokenize.tok_name[ttype], tstring)
+            print("No match!", tokenize.tok_name[ttype], tstring)
             return
 
         if ttype != tokenize.DEDENT and ttype != tokenize.INDENT and self.please_indent:
@@ -210,87 +210,95 @@ class PARSEUR_PYTHON(object):
         fn(tstring)
         self.lastrow, self.lastcol = epos
 
-    def output(self,tstring):
-        #print "output",tstring
+    def output(self, tstring):
+        # print "output",tstring
 
-        if self.thiscol > self.lastcol :
-            #print self.thiscol,self.lastcol
-            self.out=self.out+ " " * (self.thiscol - self.lastcol)
-            self.lastcol=self.thiscol
+        if self.thiscol > self.lastcol:
+            # print self.thiscol,self.lastcol
+            self.out = self.out + " " * (self.thiscol - self.lastcol)
+            self.lastcol = self.thiscol
 
-        self.out=self.out+tstring
+        self.out = self.out + tstring
 
-    def outputCom(self,tstring):
-        self.out=self.out+tstring
+    def outputCom(self, tstring):
+        self.out = self.out + tstring
 
     def updateIndent(self):
-        #print "updateIndent",len(self.indent_list[-1]),len(self.buffer_indent)
+        # print "updateIndent",len(self.indent_list[-1]),len(self.buffer_indent)
         if len(self.indent_list[-1]) > len(self.buffer_indent):
-            self.out=self.out+(len(self.indent_list[-1]) - len(self.buffer_indent))*" "
-            self.buffer_indent=self.indent_list[-1]
+            self.out = (
+                self.out + (len(self.indent_list[-1]) - len(self.buffer_indent)) * " "
+            )
+            self.buffer_indent = self.indent_list[-1]
 
     def doIndent(self):
-        #print "indentation dans doIndent",len(self.indent_list)
+        # print "indentation dans doIndent",len(self.indent_list)
 
-        self.out=self.out+self.indent_list[-1]
-        self.buffer_indent=self.indent_list[-1]
-        if self.lastcol+len(self.indent_list[-1]) > self.thiscol:
-            self.lastcol=self.thiscol
+        self.out = self.out + self.indent_list[-1]
+        self.buffer_indent = self.indent_list[-1]
+        if self.lastcol + len(self.indent_list[-1]) > self.thiscol:
+            self.lastcol = self.thiscol
         else:
-            self.lastcol=self.lastcol+len(self.indent_list[-1])
+            self.lastcol = self.lastcol + len(self.indent_list[-1])
         self.please_indent = None
 
     def flush_buffer(self):
-        #if self.buffer:
+        # if self.buffer:
         #   print len(self.indent_list),self.please_indent
         for ob in self.buffer:
-            self.out= self.out+ str(ob)
+            self.out = self.out + str(ob)
             self.doIndent()
-        self.buffer=[]
-        self.objet_courant=None
+        self.buffer = []
+        self.objet_courant = None
 
     def NL(self, tstring):
         if self.affectation:
             if self.paren_level == 0:
                 # affectation en cours mais complete
-                self.out= self.out+ str(self.affectation_courante)
-                self.affectation_courante=None
-                self.please_indent=1
-                self.affectation=0
+                self.out = self.out + str(self.affectation_courante)
+                self.affectation_courante = None
+                self.please_indent = 1
+                self.affectation = 0
             else:
                 # affectation en cours, on ajoute
-                if self.thiscol > self.lastcol :self.affectation_courante.appendText((self.thiscol - self.lastcol)*" ")
+                if self.thiscol > self.lastcol:
+                    self.affectation_courante.appendText(
+                        (self.thiscol - self.lastcol) * " "
+                    )
                 self.affectation_courante.appendText(tstring)
                 return
 
         if self.objet_courant:
-            self.objet_courant=None
+            self.objet_courant = None
             self.buffer.append(tstring)
-        #   self.please_indent = None
+            #   self.please_indent = None
             return
         self.output(tstring)
         self.please_indent = 1
 
     def COMMENT(self, tstring):
-        liste= string.split(self.line,"##",1)
+        liste = string.split(self.line, "##", 1)
         if len(liste) > 1:
             # On a trouve un double commentaire
-            before,after=liste
+            before, after = liste
             if self.affectation:
                 # affectation en cours, on ignore
                 pass
             elif self.paren_level > 0:
                 self.output(tstring)
-            elif self.comment_flag and not self.pattern_ligne_non_blanche.search(before):
+            elif self.comment_flag and not self.pattern_ligne_non_blanche.search(
+                before
+            ):
                 # il s'agit d'une commande commentarisee
                 if self.objet_courant == None:
-                    if not self.buffer:self.buffer_indent=self.indent_list[-1]
-                    self.objet_courant=COMMANDE_COMMENTARISEE()
+                    if not self.buffer:
+                        self.buffer_indent = self.indent_list[-1]
+                    self.objet_courant = COMMANDE_COMMENTARISEE()
                     self.buffer.append(self.objet_courant)
                     self.objet_courant.appendText(tstring)
                     self.please_indent = None
-                elif isinstance(self.objet_courant,COMMENTAIRE):
-                    self.objet_courant=COMMANDE_COMMENTARISEE()
+                elif isinstance(self.objet_courant, COMMENTAIRE):
+                    self.objet_courant = COMMANDE_COMMENTARISEE()
                     self.buffer.append(self.objet_courant)
                     self.objet_courant.appendText(tstring)
                     self.please_indent = None
@@ -305,22 +313,25 @@ class PARSEUR_PYTHON(object):
 
         else:
             # On a un commentaire simple
-            new_line = self.line.split('#')[0]
+            new_line = self.line.split("#")[0]
             if self.affectation:
                 # affectation en cours, on ignore
                 pass
             elif self.paren_level > 0:
                 self.output(tstring)
-            elif self.comment_flag and not self.pattern_ligne_non_blanche.search(new_line):
+            elif self.comment_flag and not self.pattern_ligne_non_blanche.search(
+                new_line
+            ):
                 # commentaire precede de blancs
                 if self.objet_courant == None:
-                    if not self.buffer:self.buffer_indent=self.indent_list[-1]
-                    self.objet_courant=COMMENTAIRE()
+                    if not self.buffer:
+                        self.buffer_indent = self.indent_list[-1]
+                    self.objet_courant = COMMENTAIRE()
                     self.buffer.append(self.objet_courant)
                     self.objet_courant.appendText(tstring)
                     self.please_indent = None
-                elif isinstance(self.objet_courant,COMMANDE_COMMENTARISEE):
-                    self.objet_courant=COMMENTAIRE()
+                elif isinstance(self.objet_courant, COMMANDE_COMMENTARISEE):
+                    self.objet_courant = COMMENTAIRE()
                     self.buffer.append(self.objet_courant)
                     self.objet_courant.appendText(tstring)
                     self.please_indent = None
@@ -341,141 +352,166 @@ class PARSEUR_PYTHON(object):
             self.updateIndent()
         self.flush_buffer()
 
-        if self.affectation ==1:
+        if self.affectation == 1:
             # on a une expression du type NAME=NAME
             # on ne veut pas des expressions qui commencent par NAME=NAME(NAME=
             # on en prend le chemin : on met affectation a 3 pour le signaler
             # on attend d'en savoir plus
-            if self.thiscol > self.lastcol :self.affectation_courante.appendText((self.thiscol - self.lastcol)*" ")
+            if self.thiscol > self.lastcol:
+                self.affectation_courante.appendText(
+                    (self.thiscol - self.lastcol) * " "
+                )
             self.affectation_courante.appendText(tstring)
-            self.affectation=3
+            self.affectation = 3
             return
-        elif self.affectation ==4:
+        elif self.affectation == 4:
             # on a une expression qui commence par NAME=NAME(NAME
             # il s'agit tres probablement d'une commande
             # on annule l'affectation en cours
-            if self.thiscol > self.lastcol :self.affectation_courante.appendText((self.thiscol - self.lastcol)*" ")
+            if self.thiscol > self.lastcol:
+                self.affectation_courante.appendText(
+                    (self.thiscol - self.lastcol) * " "
+                )
             self.affectation_courante.appendText(tstring)
-            self.affectation=5
+            self.affectation = 5
             return
         elif self.affectation == 2:
             # affectation en cours, on ajoute
-            if self.thiscol > self.lastcol :self.affectation_courante.appendText((self.thiscol - self.lastcol)*" ")
+            if self.thiscol > self.lastcol:
+                self.affectation_courante.appendText(
+                    (self.thiscol - self.lastcol) * " "
+                )
             self.affectation_courante.appendText(tstring)
-            self.affectation=2
+            self.affectation = 2
             return
-        self.affectation=0
-        self.name=None
+        self.affectation = 0
+        self.name = None
         if self.paren_level == 0 and self.affectation_flag:
             # si on est en dehors de parentheses et en mode transformation d'affectation
             # on initialise l'attribut name qui indique une affectation en cours
-            self.name=tstring
+            self.name = tstring
         self.output(tstring)
 
     def ident(self, tstring):
         self.flush_buffer()
-        self.affectation=0
+        self.affectation = 0
         self.output(tstring)
 
     def NUMBER(self, tstring):
         self.flush_buffer()
-        if self.affectation>=1:
+        if self.affectation >= 1:
             # affectation en cours, on ajoute
-            if self.thiscol > self.lastcol :self.affectation_courante.appendText((self.thiscol - self.lastcol)*" ")
+            if self.thiscol > self.lastcol:
+                self.affectation_courante.appendText(
+                    (self.thiscol - self.lastcol) * " "
+                )
             self.affectation_courante.appendText(tstring)
-            self.affectation=2
+            self.affectation = 2
             return
         self.output(tstring)
 
-    def OP(self,tstring):
+    def OP(self, tstring):
         self.flush_buffer()
-        if tstring in ('(','[','{'): self.paren_level=self.paren_level+1
-        if tstring in (')',']','}'): self.paren_level=self.paren_level-1
+        if tstring in ("(", "[", "{"):
+            self.paren_level = self.paren_level + 1
+        if tstring in (")", "]", "}"):
+            self.paren_level = self.paren_level - 1
 
-        if tstring == '=' and self.affectation ==5:
+        if tstring == "=" and self.affectation == 5:
             # on a une expression qui commence par NAME=NAME(NAME=)
             # il peut s'agir d'une commande
             # on annule l'affectation en cours
-            self.out= self.out+ self.affectation_courante.texte
-            self.affectation_courante=None
-            self.name=None
-            self.affectation=0
-        elif tstring == ')' and self.affectation ==4:
+            self.out = self.out + self.affectation_courante.texte
+            self.affectation_courante = None
+            self.name = None
+            self.affectation = 0
+        elif tstring == ")" and self.affectation == 4:
             # on a une expression qui commence par NAME=NAME()
             # il peut s'agir d'une commande
             # on annule l'affectation en cours
-            self.out= self.out+ self.affectation_courante.texte
-            self.affectation_courante=None
-            self.affectation=0
-        elif tstring == '(' and self.affectation == 3:
+            self.out = self.out + self.affectation_courante.texte
+            self.affectation_courante = None
+            self.affectation = 0
+        elif tstring == "(" and self.affectation == 3:
             # on a deja trouve NAME=NAME
             # on passe affectation a 4
-            if self.thiscol > self.lastcol :self.affectation_courante.appendText((self.thiscol - self.lastcol)*" ")
+            if self.thiscol > self.lastcol:
+                self.affectation_courante.appendText(
+                    (self.thiscol - self.lastcol) * " "
+                )
             self.affectation_courante.appendText(tstring)
-            self.affectation=4
+            self.affectation = 4
             return
-        elif tstring == ';' and self.affectation>=1:
+        elif tstring == ";" and self.affectation >= 1:
             # l'affectation est terminee
-            self.out= self.out+ str(self.affectation_courante)
-            self.affectation_courante=None
-            self.please_indent=1
-            self.affectation=0
-        elif self.affectation>=1:
+            self.out = self.out + str(self.affectation_courante)
+            self.affectation_courante = None
+            self.please_indent = 1
+            self.affectation = 0
+        elif self.affectation >= 1:
             # on complete l'affectation
-            if self.thiscol > self.lastcol :self.affectation_courante.appendText((self.thiscol - self.lastcol)*" ")
+            if self.thiscol > self.lastcol:
+                self.affectation_courante.appendText(
+                    (self.thiscol - self.lastcol) * " "
+                )
             self.affectation_courante.appendText(tstring)
-            self.affectation=2
+            self.affectation = 2
             return
 
-        self.affectation=0
-        if self.name and tstring=='=':
-            self.affectation=1
-            self.affectation_courante=AFFECTATION()
-            self.affectation_courante.name=self.name
+        self.affectation = 0
+        if self.name and tstring == "=":
+            self.affectation = 1
+            self.affectation_courante = AFFECTATION()
+            self.affectation_courante.name = self.name
         self.output(tstring)
 
     ENDMARKER = ident
-    NEWLINE=NL
+    NEWLINE = NL
 
     def INDENT(self, tstring):
-        #tstring=str(len(self.indent_list))*len(tstring)
+        # tstring=str(len(self.indent_list))*len(tstring)
         self.indent_list.append(tstring)
-        #print "indentation dans INDENT",len(self.indent_list),len(tstring)
-        self.affectation=0
+        # print "indentation dans INDENT",len(self.indent_list),len(tstring)
+        self.affectation = 0
         if self.buffer:
             self.updateIndent()
         self.flush_buffer()
 
     def DEDENT(self, tstring):
-        #print "DEDENT",tstring,len(tstring)
+        # print "DEDENT",tstring,len(tstring)
         if self.buffer:
-            self.out= self.out+ str(self.buffer[0])
+            self.out = self.out + str(self.buffer[0])
             if len(self.buffer) > 1:
                 for ob in self.buffer[1:]:
                     self.doIndent()
-                    self.out= self.out+ str(ob)
-            self.buffer=[]
-            self.objet_courant=None
-            self.please_indent=1
+                    self.out = self.out + str(ob)
+            self.buffer = []
+            self.objet_courant = None
+            self.please_indent = 1
 
-        self.affectation=0
+        self.affectation = 0
         self.indent_list = self.indent_list[:-1]
-        #print "indentation dans DEDENT",len(self.indent_list)
+        # print "indentation dans DEDENT",len(self.indent_list)
 
     def STRING(self, tstring):
         self.flush_buffer()
-        if self.affectation>=1:
+        if self.affectation >= 1:
             # affectation en cours, on ajoute
-            if self.thiscol > self.lastcol :self.affectation_courante.appendText((self.thiscol - self.lastcol)*" ")
+            if self.thiscol > self.lastcol:
+                self.affectation_courante.appendText(
+                    (self.thiscol - self.lastcol) * " "
+                )
             self.affectation_courante.appendText(tstring)
-            self.affectation=2
+            self.affectation = 2
             return
         self.output(tstring)
 
-if __name__ == "__main__" :
+
+if __name__ == "__main__":
     import sys
     import io
-    text="""
+
+    text = """
 #
 #   comment
 #   comment
@@ -895,13 +931,13 @@ def POST_GOUJ_ops(self,TABLE):
   ier=0
 
 """
-    if len(sys.argv)== 2:
+    if len(sys.argv) == 2:
         progname, input = sys.argv
-        f=open(input)
-        t=f.read()
+        f = open(input)
+        t = f.read()
         f.close()
     else:
-        t=text
+        t = text
     txt = PARSEUR_PYTHON(t).getTexte()
-    print (txt)
-    compile(txt,"<string>",'exec')
+    print(txt)
+    compile(txt, "<string>", "exec")
