@@ -1,5 +1,4 @@
 # coding=utf-8
-# person_in_charge: mathieu.courtois at edf.fr
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,12 +17,6 @@
 #
 #
 # ======================================================================
-
-
-from __future__ import absolute_import
-try :
-    from builtins import object
-except : pass
 
 class ENSEMBLE(object):
 
