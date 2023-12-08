@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2007-2021   EDF R&D
+# Copyright (C) 2007-2024   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -17,12 +17,12 @@
 #
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
-from __future__ import absolute_import
 from Noyau import N_JDC_CATA
+
 
 class JDC_CATA:
     def __init__(self):
-        self.l_noms_entites=[]
+        self.l_noms_entites = []
 
     def getListeCmd(self):
         self.l_noms_entites.sort()
@@ -31,12 +31,11 @@ class JDC_CATA:
     def getDocu(self):
         return
 
-
-#ATTENTION SURCHARGE: cette methode doit etre synchronisee avec celle du Noyau
-    def enregistre(self,commande):
+    # ATTENTION SURCHARGE: cette methode doit etre synchronisee avec celle du Noyau
+    def enregistre(self, commande):
         """
-            Cette methode surcharge la methode de la classe du Noyau
-            Marche avec Noyau
+        Cette methode surcharge la methode de la classe du Noyau
+        Marche avec Noyau
         """
-        N_JDC_CATA.JDC_CATA.enregistre(self,commande)
+        N_JDC_CATA.JDC_CATA.enregistre(self, commande)
         self.l_noms_entites.append(commande.nom)

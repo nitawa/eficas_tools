@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2007-2021   EDF R&D
+# Copyright (C) 2007-2024   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -18,92 +18,138 @@
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
 
-from __future__ import absolute_import
 from Noyau.N_VALIDATOR import *
+
 
 class Compulsory(Compulsory):
     def hasInto(self):
         return 0
-    def valideListePartielle(self,liste_courante=None):
+
+    def valideListePartielle(self, liste_courante=None):
         return 1
 
+
 class OrdList(OrdList):
-    def valideListePartielle(self,liste_courante=None):
+    def valideListePartielle(self, liste_courante=None):
         """
-         Methode de validation de liste partielle pour le validateur OrdList
+        Methode de validation de liste partielle pour le validateur OrdList
         """
         try:
             self.convert(liste_courante)
-            valid=1
-        except :
-            valid=0
+            valid = 1
+        except:
+            valid = 0
         return valid
-class compareAutreMC(Valid) :
-#----------------------------
-    def __init__(self,frere=None):
-        Valid.__init__(self, frere=frere)
-        self.nomFrere=frere
 
-    def set_MCSimp (self, MCSimp):
+
+class compareAutreMC(Valid):
+    # ----------------------------
+    def __init__(self, frere=None):
+        Valid.__init__(self, frere=frere)
+        self.nomFrere = frere
+
+    def set_MCSimp(self, MCSimp):
         debug = 1
-        if debug : print ('je passe la pour ', self, MCSimp.nom)
-        self.MCSimp=MCSimp
+        if debug:
+            print("je passe la pour ", self, MCSimp.nom)
+        self.MCSimp = MCSimp
+
 
 class infFrereMC(compareAutreMC):
-#-------------------------------
+    # -------------------------------
     def convert(self, valeur):
         # on sort de cardProto on a une liste
-        valeur=valeur[0]
-        try: MCFrere=self.MCSimp.parent.getChildOrChildInBloc(self.nomFrere)
-        except : return valeur
-        if not MCFrere    : return valeur
-        if MCFrere== None : return valeur
-        if MCFrere.valeur  == None : return valeur
-        if MCFrere.valeur  < valeur :
-           raise CataError('la valeur de '+self.nomFrere + ' est inferieure a la valeur entree ')
+        valeur = valeur[0]
+        try:
+            MCFrere = self.MCSimp.parent.getChildOrChildInBloc(self.nomFrere)
+        except:
+            return valeur
+        if not MCFrere:
+            return valeur
+        if MCFrere == None:
+            return valeur
+        if MCFrere.valeur == None:
+            return valeur
+        if MCFrere.valeur < valeur:
+            raise CataError(
+                "la valeur de " + self.nomFrere + " est inferieure a la valeur entree "
+            )
         return valeur
 
     def verifItem(self, valeur):
-        try: MCFrere=self.MCSimp.parent.getChildOrChildInBloc(self.nomFrere)
-        except : return valeur
-        if not MCFrere    : return valeur
-        if MCFrere== None : return valeur
-        if MCFrere.valeur  == None : return valeur
-        if MCFrere.valeur  < valeur :
-           raise CataError('la valeur de '+self.nomFrere + ' est inferieure a la valeur entree et doit etre superieure')
-           return 0
+        try:
+            MCFrere = self.MCSimp.parent.getChildOrChildInBloc(self.nomFrere)
+        except:
+            return valeur
+        if not MCFrere:
+            return valeur
+        if MCFrere == None:
+            return valeur
+        if MCFrere.valeur == None:
+            return valeur
+        if MCFrere.valeur < valeur:
+            raise CataError(
+                "la valeur de "
+                + self.nomFrere
+                + " est inferieure a la valeur entree et doit etre superieure"
+            )
+            return 0
         return 1
 
     def infoErreurItem(self, valeur):
-        return 'la valeur de '+self.nomFrere + ' est inferieure a la valeur entree et doit etre superieure'
+        return (
+            "la valeur de "
+            + self.nomFrere
+            + " est inferieure a la valeur entree et doit etre superieure"
+        )
 
     def info(self):
-        return 'la valeur de '+self.nomFrere + ' est inferieure a la valeur entree et doit etre superieure'
+        return (
+            "la valeur de "
+            + self.nomFrere
+            + " est inferieure a la valeur entree et doit etre superieure"
+        )
+
 
 class supFrereMC(compareAutreMC):
-#--------------------------------
+    # --------------------------------
     def convert(self, valeur):
         # on sort de cardProto on a une liste
-        valeur=valeur[0]
-        MCFrere=self.MCSimp.parent.getChildOrChildInBloc(self.nomFrere)
-        if not MCFrere    : return valeur
-        if MCFrere== None : return valeur
-        if MCFrere.valeur  > valeur :
-           raise CataError('la valeur de '+self.nomFrere + ' est superieure a la valeur entree et doit etre inferieure')
+        valeur = valeur[0]
+        MCFrere = self.MCSimp.parent.getChildOrChildInBloc(self.nomFrere)
+        if not MCFrere:
+            return valeur
+        if MCFrere == None:
+            return valeur
+        if MCFrere.valeur > valeur:
+            raise CataError(
+                "la valeur de "
+                + self.nomFrere
+                + " est superieure a la valeur entree et doit etre inferieure"
+            )
         return valeur
 
     def verifItem(self, valeur):
-        MCFrere=self.MCSimp.parent.getChildOrChildInBloc(self.nomFrere)
-        if not MCFrere    : return 1
-        if MCFrere== None : return 1
-        if MCFrere.valeur  > valeur :
-           raise CataError('la valeur de '+self.nomFrere + ' est superieure a la valeur entree et doit etre inferieure')
-           return 0
+        MCFrere = self.MCSimp.parent.getChildOrChildInBloc(self.nomFrere)
+        if not MCFrere:
+            return 1
+        if MCFrere == None:
+            return 1
+        if MCFrere.valeur > valeur:
+            raise CataError(
+                "la valeur de "
+                + self.nomFrere
+                + " est superieure a la valeur entree et doit etre inferieure"
+            )
+            return 0
         return 1
 
     def infoErreurItem(self, valeur):
-        return 'la valeur de '+self.nomFrere + ' est superieure a la valeur entree et doit etre inferieure'
+        return (
+            "la valeur de "
+            + self.nomFrere
+            + " est superieure a la valeur entree et doit etre inferieure"
+        )
 
     def info(self):
-        return 'la valeur de '+self.nomFrere + ' est superieure a la valeur entree '
-
+        return "la valeur de " + self.nomFrere + " est superieure a la valeur entree "

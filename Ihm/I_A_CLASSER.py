@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2007-2021   EDF R&D
+# Copyright (C) 2007-2024   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -19,20 +19,18 @@
 #
 """
 """
-
-from __future__ import absolute_import
-
 from . import I_REGLE
+
 
 class A_CLASSER(I_REGLE.REGLE):
     def getText(self):
-        text = 'Regle ' + self.__class__.__name__+ ' :\n'
-        t="  D'abord :\n"+' '*8
+        text = "Regle " + self.__class__.__name__ + " :\n"
+        t = "  D'abord :\n" + " " * 8
         for arg in self.args0:
-            t=t+arg.strip()+' ou '
-        text = text + t[0:-4] +'\n'
-        t = "  Ensuite :\n"+' '*8
+            t = t + arg.strip() + " ou "
+        text = text + t[0:-4] + "\n"
+        t = "  Ensuite :\n" + " " * 8
         for arg in self.args1:
-            t=t+arg.strip()+' ou '
-        text = text + t[0:-4] +'\n'
+            t = t + arg.strip() + " ou "
+        text = text + t[0:-4] + "\n"
         return text

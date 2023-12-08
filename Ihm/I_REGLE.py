@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2007-2021   EDF R&D
+# Copyright (C) 2007-2024   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -19,31 +19,31 @@
 #
 """
 """
-from __future__ import absolute_import
+
 
 class REGLE:
-
     def getText(self):
-        text = self.__class__.__name__+ ' :\n'
-        for mc in self.mcs :
-            text = text + '\t' + mc.strip() + '\n'
+        text = self.__class__.__name__ + " :\n"
+        for mc in self.mcs:
+            text = text + "\t" + mc.strip() + "\n"
         return text
 
-    def purgeListe(self,liste_a_purger,listeMcPresents):
+    def purgeListe(self, liste_a_purger, listeMcPresents):
         """
-             Cette methode doit retirer de la liste liste_a_purger
-             les elements qui ne doivent plus apparaitre en fonction du contexte
+        Cette methode doit retirer de la liste liste_a_purger
+        les elements qui ne doivent plus apparaitre en fonction du contexte
         """
         # Dans le cas general on ne touche pas a la liste
         return liste_a_purger
 
-    def hasOperande(self,nom):
+    def hasOperande(self, nom):
         # On peut faire aussi try:self.mcs.index(nom);return 1;except:return 0
         for mc in self.mcs:
-            if mc==nom : return 1
+            if mc == nom:
+                return 1
         return 0
 
-    def verifConditionRegle(self,liste,l_mc_presents):
+    def verifConditionRegle(self, liste, l_mc_presents):
         return []
 
 

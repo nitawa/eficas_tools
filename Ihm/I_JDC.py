@@ -1,5 +1,5 @@
 # -*- coding: iso-8859-1 -*-
-# Copyright (C) 2007-2021   EDF R&D
+# Copyright (C) 2007-2024   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -20,22 +20,22 @@
 """
 """
 # Modules Python
-from __future__ import absolute_import
-from __future__ import print_function
-import types,traceback,sys,os
+import types, traceback, sys, os
 import linecache
 from Extensions.i18n import tr
 from Extensions.eficas_exception import EficasException
 
 
+import Noyau
+
 # Modules Eficas
 from . import I_OBJECT
-import Noyau
 from Noyau.N_ASSD import ASSD
-#from Noyau.N_LASSD import LASSD
+
+# from Noyau.N_LASSD import LASSD
 from Noyau.N_ETAPE import ETAPE
 from Noyau.N_Exception import AsException
-from Extensions import commentaire ,parametre ,parametre_eval
+from Extensions import commentaire, parametre, parametre_eval
 from . import CONNECTOR
 import Validation
 
@@ -44,91 +44,95 @@ try:
 except NameError:
     basestring = str
 
+
 class LASSD:
     pass
 
+
 class JDC(I_OBJECT.OBJECT):
-    """
-    """
+    """ """
+
     def __init__(self):
-        self.editmode=0
-        self.etapes_niveaux=[]
-        self.niveau=self
-        self.params=[]
-        self.fonctions=[]
-        self._etape_context=None
-        self.recorded_units={}
-        self.old_recorded_units={}
+        self.editmode = 0
+        self.etapes_niveaux = []
+        self.niveau = self
+        self.params = []
+        self.fonctions = []
+        self._etape_context = None
+        self.recorded_units = {}
+        self.old_recorded_units = {}
 
-
-    def getIndex(self,objet):
+    def getIndex(self, objet):
         """
-          Retourne la position d'objet dans la liste self
+        Retourne la position d'objet dans la liste self
         """
         return self.etapes.index(objet)
 
-    def getSdAvantDuBonType(self,etape,types_permis):
+    def getSdAvantDuBonType(self, etape, types_permis):
         """
-            Retourne la liste des concepts avant etape d'un type acceptable
+        Retourne la liste des concepts avant etape d'un type acceptable
         """
-        #print ('getSdAvantDuBonType   ', types_permis)
-        d=self.getContexteAvant(etape)
+        # print ('getSdAvantDuBonType   ', types_permis)
+        d = self.getContexteAvant(etape)
 
-        l=[]
-        for k,v in d.items():
-            #if type(v) != types.InstanceType and not isinstance(v,object): continue
-            if  not isinstance(v,object): continue
+        l = []
+        for k, v in d.items():
+            # if type(v) != types.InstanceType and not isinstance(v,object): continue
+            if not isinstance(v, object):
+                continue
             # On considere que seul assd indique un type quelconque pas CO
-            elif self.assd in types_permis :
-                if v.etape.sdnom != "sansnom" : l.append(k)
-            elif self.estPermis(v,types_permis):
-                if v.etape.sdnom != "sansnom" : l.append(k)
+            elif self.assd in types_permis:
+                if v.etape.sdnom != "sansnom":
+                    l.append(k)
+            elif self.estPermis(v, types_permis):
+                if v.etape.sdnom != "sansnom":
+                    l.append(k)
         l.sort()
         return l
 
-    def getSdCreeParObjet(self,classeAChercher):
-        l=[]
+    def getSdCreeParObjet(self, classeAChercher):
+        l = []
         for v in list(self.sdsDict.keys()):
-            if (isinstance(self.sdsDict[v], classeAChercher)) :
+            if isinstance(self.sdsDict[v], classeAChercher):
                 l.append(self.sdsDict[v])
         return l
 
-
-    def getVariables(self,etape):
-        etapeStop=etape
-        l=[]
-        for etapeTraitee in self.etapes :
-            if etapeTraitee==etapeStop:
+    def getVariables(self, etape):
+        etapeStop = etape
+        l = []
+        for etapeTraitee in self.etapes:
+            if etapeTraitee == etapeStop:
                 break
-            if etapeTraitee.nom == 'VARIABLE' :
-                variable=etapeTraitee.getMocle('ModelVariable')
-                if variable != None :
+            if etapeTraitee.nom == "VARIABLE":
+                variable = etapeTraitee.getMocle("ModelVariable")
+                if variable != None:
                     l.append(variable.nom)
         return l
 
-    def getDistributions(self,etape):
-        etapeStop=etape
-        l=[]
-        for etapeTraitee in self.etapes :
-            if etapeTraitee==etapeStop: break
-            if etapeTraitee.nom == 'DISTRIBUTION' and etapeTraitee.sd !=None : l.append(etapeTraitee.sd.nom)
+    def getDistributions(self, etape):
+        etapeStop = etape
+        l = []
+        for etapeTraitee in self.etapes:
+            if etapeTraitee == etapeStop:
+                break
+            if etapeTraitee.nom == "DISTRIBUTION" and etapeTraitee.sd != None:
+                l.append(etapeTraitee.sd.nom)
         return l
 
-
-    #def set_Copules_recalcule_etat(self):
+    # def set_Copules_recalcule_etat(self):
     #   for etapeTraitee in self.etapes :
     #       if etapeTraitee.nom == 'CORRELATION' :
-                #Matrix=etapeTraitee.getChild('Matrix')
-                #if Matrix !=None :
+    # Matrix=etapeTraitee.getChild('Matrix')
+    # if Matrix !=None :
     #             Correlation=etapeTraitee.getChild('CorrelationMatrix')
     #             if Correlation !=None : Correlation.state='arecalculer'
-                #   Matrix.state='arecalculer'
+    #   Matrix.state='arecalculer'
 
-    #def recalculeEtatCorrelation(self):
+    # def recalculeEtatCorrelation(self):
     #   for etapeTraitee in self.etapes :
     #       if etapeTraitee.nom == 'CORRELATION' :
-                #Matrix=etapeTraitee.getChild('Matrix')
-                #if Matrix !=None :
+    # Matrix=etapeTraitee.getChild('Matrix')
+    # if Matrix !=None :
     #             Matrix.state='arecalculer'
     #             Correlation=Matrix.getChild('CorrelationMatrix')
     #             if Correlation !=None : Correlation.state='arecalculer'
@@ -138,45 +142,46 @@ class JDC(I_OBJECT.OBJECT):
     #          if etapeTraitee.state=='arecalculer': etapeTraitee.isValid()
 
     def recalculeEtatCorrelation(self):
-        for etapeTraitee in self.etapes :
-            if etapeTraitee.nom == 'CORRELATION' :
-                Correlation=etapeTraitee.getChild('CorrelationMatrix')
-                if Correlation !=None :
-                    Correlation.state='arecalculer'
+        for etapeTraitee in self.etapes:
+            if etapeTraitee.nom == "CORRELATION":
+                Correlation = etapeTraitee.getChild("CorrelationMatrix")
+                if Correlation != None:
+                    Correlation.state = "arecalculer"
                     Correlation.isValid()
                 etapeTraitee.isValid()
 
     def recalculeValiditeApresChangementGlobalJdc(self, motClef):
-            #print ("je passe dans recalculeValiditeApresChangementGlobalJdc")
-        try :
-            liste=self.getJdcRoot().cata.dict_condition[motClef.nom]
-        except :
-            liste=()
-        for etapeTraitee in self.etapes :
-            if etapeTraitee.nom not in liste: continue
-            #self.forceRecalculBloc(etapeTraitee)
-            etapeTraitee.state='arecalculer'
+        # print ("je passe dans recalculeValiditeApresChangementGlobalJdc")
+        try:
+            liste = self.getJdcRoot().cata.dict_condition[motClef.nom]
+        except:
+            liste = ()
+        for etapeTraitee in self.etapes:
+            if etapeTraitee.nom not in liste:
+                continue
+            # self.forceRecalculBloc(etapeTraitee)
+            etapeTraitee.state = "arecalculer"
             etapeTraitee.deepUpdateConditionBloc()
             etapeTraitee.isValid()
-            #print (etapeTraitee.nom ,etapeTraitee.isValid())
+            # print (etapeTraitee.nom ,etapeTraitee.isValid())
 
     def activeBlocsGlobaux(self):
-        for nomMotClef in self.mc_globaux :
-            motClef=self.mc_globaux[nomMotClef]
+        for nomMotClef in self.mc_globaux:
+            motClef = self.mc_globaux[nomMotClef]
             if nomMotClef in list(self.cata.dict_condition.keys()):
-                liste=self.cata.dict_condition[nomMotClef]
-            else : liste=()
-            for etapeTraitee in self.etapes :
-                if etapeTraitee.nom not in liste: continue
-                etapeTraitee.state='arecalculer'
+                liste = self.cata.dict_condition[nomMotClef]
+            else:
+                liste = ()
+            for etapeTraitee in self.etapes:
+                if etapeTraitee.nom not in liste:
+                    continue
+                etapeTraitee.state = "arecalculer"
                 etapeTraitee.deepUpdateConditionBlocApresCreation()
                 etapeTraitee.isValid()
 
-
-
-    #def forceRecalculBloc(self,objet):
-        # Attention : certains objets deviennent None quand on recalcule
-        # les conditions d existence des blocs
+    # def forceRecalculBloc(self,objet):
+    # Attention : certains objets deviennent None quand on recalcule
+    # les conditions d existence des blocs
     #    if objet != None:  objet.state='arecalculer'
     #    if hasattr(objet,'listeMcPresents'):
     #       for childNom in objet.listeMcPresents():
@@ -184,176 +189,186 @@ class JDC(I_OBJECT.OBJECT):
     #           if hasattr(objet,'_updateConditionBloc'):objet._updateConditionBloc()
     #           self.forceRecalculBloc(child)
 
-
-    def getSdAvantDuBonTypePourTypeDeBase(self,etape,type):
+    def getSdAvantDuBonTypePourTypeDeBase(self, etape, type):
         """
-            Retourne la liste des concepts avant etape d'1 type de base acceptable
-            Attention different de la routine precedente : 1 seul type passe en parametre
-            Teste sur issubclass et par sur le type permis
+        Retourne la liste des concepts avant etape d'1 type de base acceptable
+        Attention different de la routine precedente : 1 seul type passe en parametre
+        Teste sur issubclass et par sur le type permis
         """
-        d=self.getContexteAvant(etape)
-        l=[]
-        try :
-            typeverif=self.cata.__dict__[type]
-        except :
+        d = self.getContexteAvant(etape)
+        l = []
+        try:
+            typeverif = self.cata.__dict__[type]
+        except:
             return l
-        for k,v in d.items():
-            if issubclass(v.__class__,typeverif):
+        for k, v in d.items():
+            if issubclass(v.__class__, typeverif):
                 l.append(k)
         l.sort()
         return l
 
-    def chercheListAvant(self,etape,valeur):
-        d=self.getContexteAvant(etape)
-        for k,v in d.items():
-            if issubclass(v.__class__,LASSD):
-                if k == valeur :
+    def chercheListAvant(self, etape, valeur):
+        d = self.getContexteAvant(etape)
+        for k, v in d.items():
+            if issubclass(v.__class__, LASSD):
+                if k == valeur:
                     return k
-            # Attention pour enlever les . a la fin des pretendus reels
-                if k == valeur[0:-1] :
+                # Attention pour enlever les . a la fin des pretendus reels
+                if k == valeur[0:-1]:
                     return v
         return None
 
-    def estPermis(self,v,types_permis):
+    def estPermis(self, v, types_permis):
         for type_ok in types_permis:
-            if type_ok in ('R','I','C','TXM') and v in self.params :
+            if type_ok in ("R", "I", "C", "TXM") and v in self.params:
                 return 1
-            elif type_ok == 'R' and v.__class__.__name__ == 'reel' :
+            elif type_ok == "R" and v.__class__.__name__ == "reel":
                 return 1
-            elif type_ok == 'I' and v.__class__.__name__ == 'entier' :
+            elif type_ok == "I" and v.__class__.__name__ == "entier":
                 return 1
-            elif type_ok == 'C' and v.__class__.__name__ == 'complexe' :
+            elif type_ok == "C" and v.__class__.__name__ == "complexe":
                 return 1
-            elif type_ok == 'TXM' and v.__class__.__name__ == 'chaine' :
+            elif type_ok == "TXM" and v.__class__.__name__ == "chaine":
                 return 1
-            elif type(type_ok) != type and not isinstance(type_ok,type):
+            elif type(type_ok) != type and not isinstance(type_ok, type):
                 continue
-            elif v.__class__ == type_ok or issubclass(v.__class__,type_ok):
+            elif v.__class__ == type_ok or issubclass(v.__class__, type_ok):
                 return 1
         return 0
 
-    def addEntite(self,name,pos):
+    def addEntite(self, name, pos):
         """
-            Ajoute une entite :
-            Si name est le nom d une commande ou un commentaire ajoute
-            une etape au JDC
-            Sinon remonte une erreur
+        Ajoute une entite :
+        Si name est le nom d une commande ou un commentaire ajoute
+        une etape au JDC
+        Sinon remonte une erreur
         """
         self.initModif()
-        self.editmode=1
-        if name == "COMMENTAIRE" :
+        self.editmode = 1
+        if name == "COMMENTAIRE":
             from Extensions import commentaire
+
             # ajout d'un commentaire
             self.setCurrentStep()
             ind = 1
-            for child in self.etapes :
-                if isinstance(child,commentaire.COMMENTAIRE):
-                    ind = ind+1
-            objet = commentaire.COMMENTAIRE('',parent=self)
-            objet.nom = "_comm_"+repr(ind)
-            if pos == None : pos = 0
-            self.etapes.insert(pos,objet)
+            for child in self.etapes:
+                if isinstance(child, commentaire.COMMENTAIRE):
+                    ind = ind + 1
+            objet = commentaire.COMMENTAIRE("", parent=self)
+            objet.nom = "_comm_" + repr(ind)
+            if pos == None:
+                pos = 0
+            self.etapes.insert(pos, objet)
             self.resetContext()
-            self.editmode=0
+            self.editmode = 0
             self.activeEtapes()
-            CONNECTOR.Emit(self,"add",objet)
+            CONNECTOR.Emit(self, "add", objet)
             self.finModif()
             return objet
         elif name == "PARAMETRE":
             # ajout d'un parametre
             self.setCurrentStep()
-            nom_param = '_param_'+str(len(self.params)+1)
+            nom_param = "_param_" + str(len(self.params) + 1)
             objet = parametre.PARAMETRE(nom=nom_param)
-            if pos == None : pos = 0
-            self.etapes.insert(pos,objet)
+            if pos == None:
+                pos = 0
+            self.etapes.insert(pos, objet)
             self.resetContext()
-            self.editmode=0
+            self.editmode = 0
             self.activeEtapes()
-            CONNECTOR.Emit(self,"add",objet)
+            CONNECTOR.Emit(self, "add", objet)
             self.finModif()
             return objet
         elif name == "PARAMETRE_EVAL":
             # ajout d'un parametre EVAL
             self.setCurrentStep()
-            nom_param = '_param_'+str(len(self.params)+1)
+            nom_param = "_param_" + str(len(self.params) + 1)
             objet = parametre_eval.PARAMETRE_EVAL(nom=nom_param)
-            if pos == None : pos = 0
-            self.etapes.insert(pos,objet)
+            if pos == None:
+                pos = 0
+            self.etapes.insert(pos, objet)
             self.resetContext()
-            self.editmode=0
+            self.editmode = 0
             self.activeEtapes()
-            CONNECTOR.Emit(self,"add",objet)
+            CONNECTOR.Emit(self, "add", objet)
             self.finModif()
             return objet
-        elif not( isinstance(name, basestring)):
-        #elif type(name)==types.InstanceType:
-        #elif isinstance(name,object):
+        elif not (isinstance(name, basestring)):
+            # elif type(name)==types.InstanceType:
+            # elif isinstance(name,object):
             # on est dans le cas ou on veut ajouter une commande deja
             # existante (par copie donc)
             # on est donc necessairement en mode editeur ...
             objet = name
             # Il ne faut pas oublier de reaffecter le parent d'obj (si copie)
             from Extensions import commentaire
-            if not( isinstance (objet,commentaire.COMMENTAIRE)):
+
+            if not (isinstance(objet, commentaire.COMMENTAIRE)):
                 objet.reparent(self)
             self.setCurrentStep()
-            if isinstance(objet,ETAPE):
-                if objet.nom_niveau_definition == 'JDC':
+            if isinstance(objet, ETAPE):
+                if objet.nom_niveau_definition == "JDC":
                     # l'objet depend directement du JDC
                     objet.niveau = self
                 else:
                     # l'etape depend d'un niveau et non directement du JDC :
                     # il faut l'enregistrer dans le niveau de parent
-                    objet.parent.dict_niveaux[objet.nom_niveau_definition].register(objet)
-                    objet.niveau = objet.parent.dict_niveaux[objet.nom_niveau_definition]
-            self.etapes.insert(pos,objet)
+                    objet.parent.dict_niveaux[objet.nom_niveau_definition].register(
+                        objet
+                    )
+                    objet.niveau = objet.parent.dict_niveaux[
+                        objet.nom_niveau_definition
+                    ]
+            self.etapes.insert(pos, objet)
             self.resetContext()
             # il faut verifier que les concepts utilises par objet existent bien
             # a ce niveau d'arborescence
             objet.verifExistenceSd()
             objet.updateMcGlobal()
-            self.editmode=0
+            self.editmode = 0
             self.activeEtapes()
-            CONNECTOR.Emit(self,"add",objet)
+            CONNECTOR.Emit(self, "add", objet)
             self.finModif()
             return objet
-        else :
+        else:
             # On veut ajouter une nouvelle commande
             try:
                 self.setCurrentStep()
-                cmd=self.getCmd(name)
+                cmd = self.getCmd(name)
                 # L'appel a make_objet n'a pas pour effet d'enregistrer l'etape
                 # aupres du step courant car editmode vaut 1
                 # Par contre elle a le bon parent grace a setCurrentStep
-                e=cmd.make_objet()
-                if pos == None : pos = 0
-                self.etapes.insert(pos,e)
+                e = cmd.make_objet()
+                if pos == None:
+                    pos = 0
+                self.etapes.insert(pos, e)
                 self.resetCurrentStep()
                 self.resetContext()
-                self.editmode=0
+                self.editmode = 0
                 self.activeEtapes()
-                self.enregistreEtapePyxb(e,pos)
+                self.enregistreEtapePyxb(e, pos)
                 # PN fait ds self.activeEtapes
-                CONNECTOR.Emit(self,"add",e)
+                CONNECTOR.Emit(self, "add", e)
                 self.finModif()
                 return e
             except AsException as e:
                 traceback.print_exc()
                 self.resetCurrentStep()
-                self.editmode=0
-                raise AsException(tr("Impossible d'ajouter la commande")+name + '\n')
+                self.editmode = 0
+                raise AsException(tr("Impossible d'ajouter la commande") + name + "\n")
             except:
-            #else :
+                # else :
                 traceback.print_exc()
                 self.resetCurrentStep()
-                self.editmode=0
-                raise AsException(tr("Impossible d ajouter la commande")+name)
+                self.editmode = 0
+                raise AsException(tr("Impossible d ajouter la commande") + name)
 
     def close(self):
-        #print "JDC.close",self
+        # print "JDC.close",self
         for etape in self.etapes:
-            if hasattr(etape,"close"):etape.close()
-        CONNECTOR.Emit(self,"close")
+            if hasattr(etape, "close"):
+                etape.close()
+        CONNECTOR.Emit(self, "close")
 
     def setCurrentStep(self):
         CONTEXT.unsetCurrentStep()
@@ -365,31 +380,32 @@ class JDC(I_OBJECT.OBJECT):
     def listeMcPresents(self):
         return []
 
-    def getSdAvantEtape(self,nom_sd,etape):
-        return self.getContexteAvant(etape).get(nom_sd,None)
+    def getSdAvantEtape(self, nom_sd, etape):
+        return self.getContexteAvant(etape).get(nom_sd, None)
 
-    def getSdApresEtapeAvecDetruire(self,nom_sd,sd,etape,avec='non'):
+    def getSdApresEtapeAvecDetruire(self, nom_sd, sd, etape, avec="non"):
         """
-             Cette methode retourne la SD sd de nom nom_sd qui est eventuellement
-             definie apres etape en tenant compte des concepts detruits
-             Si avec vaut 'non' exclut etape de la recherche
+        Cette methode retourne la SD sd de nom nom_sd qui est eventuellement
+        definie apres etape en tenant compte des concepts detruits
+        Si avec vaut 'non' exclut etape de la recherche
         """
-        #print "JDC.getSdApresEtapeAvecDetruire",nom_sd,sd
-        ietap=self.etapes.index(etape)
-        if avec == 'non':ietap=ietap+1
-        d={nom_sd:sd}
+        # print "JDC.getSdApresEtapeAvecDetruire",nom_sd,sd
+        ietap = self.etapes.index(etape)
+        if avec == "non":
+            ietap = ietap + 1
+        d = {nom_sd: sd}
         for e in self.etapes[ietap:]:
             if e.isActif():
                 e.updateContext(d)
-                autre_sd=d.get(nom_sd,None)
+                autre_sd = d.get(nom_sd, None)
                 if autre_sd is None:
-                # Le concept a ete detruit. On interrompt la recherche car il n'y a
-                # pas eu de redefinition du concept (il n'y a pas de conflit potentiel).
+                    # Le concept a ete detruit. On interrompt la recherche car il n'y a
+                    # pas eu de redefinition du concept (il n'y a pas de conflit potentiel).
                     return None
-                if autre_sd is not sd :
+                if autre_sd is not sd:
                     # L'etape produit un concept different de meme nom. La situation n'est
                     # pas saine (sauf peut etre si reuse ???)
-                    if hasattr(e,'reuse') and e.reuse == autre_sd:
+                    if hasattr(e, "reuse") and e.reuse == autre_sd:
                         # Le concept etant reutilise, on interrompt la recherche.
                         # On considere qu'il n'y a pas de nouveau concept defini
                         # meme si dans les etapes suivantes le concept est detruit
@@ -405,100 +421,128 @@ class JDC(I_OBJECT.OBJECT):
         # concept initial
         return sd
 
-    def getSdApresEtape(self,nom_sd,etape,avec='non'):
+    def getSdApresEtape(self, nom_sd, etape, avec="non"):
         """
-             Cette methode retourne la SD de nom nom_sd qui est eventuellement
-             definie apres etape
-             Si avec vaut 'non' exclut etape de la recherche
+        Cette methode retourne la SD de nom nom_sd qui est eventuellement
+        definie apres etape
+        Si avec vaut 'non' exclut etape de la recherche
         """
-        ietap=self.etapes.index(etape)
-        if avec == 'non':ietap=ietap+1
+        ietap = self.etapes.index(etape)
+        if avec == "non":
+            ietap = ietap + 1
         for e in self.etapes[ietap:]:
-            sd=e.getSdprods(nom_sd)
+            sd = e.getSdprods(nom_sd)
             if sd:
-                if hasattr(e,'reuse'):
+                if hasattr(e, "reuse"):
                     if e.reuse != sd:
                         return sd
         return None
 
-    def getSdAutourEtape(self,nom_sd,etape,avec='non'):
+    def getSdAutourEtape(self, nom_sd, etape, avec="non"):
         """
-             Fonction: retourne la SD de nom nom_sd qui est eventuellement
-             definie avant ou apres etape
-             Permet de verifier si un concept de meme nom existe dans le perimetre
-             d'une etape
-             Si avec vaut 'non' exclut etape de la recherche
+        Fonction: retourne la SD de nom nom_sd qui est eventuellement
+        definie avant ou apres etape
+        Permet de verifier si un concept de meme nom existe dans le perimetre
+        d'une etape
+        Si avec vaut 'non' exclut etape de la recherche
         """
-        sd=self.getSdAvantEtape(nom_sd,etape)
-        if sd:return sd
-        sd=self.getSdApresEtape(nom_sd,etape,avec)
-        if sd:return sd
+        sd = self.getSdAvantEtape(nom_sd, etape)
+        if sd:
+            return sd
+        sd = self.getSdApresEtape(nom_sd, etape, avec)
+        if sd:
+            return sd
         # Pour tenir compte des UserASSD # et des UserASSDMultiple a affiner
-        if nom_sd in self.sdsDict.keys() :
-            sd=self.sdsDict[nom_sd]
+        if nom_sd in self.sdsDict.keys():
+            sd = self.sdsDict[nom_sd]
             return sd
 
-    def getContexte_apres(self,etape):
+    def getContexte_apres(self, etape):
         """
-           Retourne le dictionnaire des concepts connus apres etape
-           On tient compte des commandes qui modifient le contexte
-           comme DETRUIRE ou les macros
-           Si etape == None, on retourne le contexte en fin de JDC
+        Retourne le dictionnaire des concepts connus apres etape
+        On tient compte des commandes qui modifient le contexte
+        comme DETRUIRE ou les macros
+        Si etape == None, on retourne le contexte en fin de JDC
         """
-        if not etape: return self.getContexteAvant(etape)
+        if not etape:
+            return self.getContexteAvant(etape)
 
-        d=self.getContexteAvant(etape)
-        if etape.isActif():etape.updateContext(d)
-        self.index_etape_courante=self.index_etape_courante+1
+        d = self.getContexteAvant(etape)
+        if etape.isActif():
+            etape.updateContext(d)
+        self.index_etape_courante = self.index_etape_courante + 1
         return d
 
     def activeEtapes(self):
-        """
-        """
+        """ """
         for etape in self.etapes:
             etape.active()
 
-    def deplaceEntite(self,indexNoeudACopier,indexNoeudOuColler,pos):
+    def deplaceEntite(self, indexNoeudACopier, indexNoeudOuColler, pos):
         """
-            Pour le cut
+        Pour le cut
         """
-        if indexNoeudACopier==indexNoeudOuColler:return
-        etapeACopier=self.etapes[indexNoeudACopier]
-        try :
-            sd=self.etapes[indexNoeudACopier].sd
-        except :
-            sd=None
-        if pos=='before' and indexNoeudOuColler==0 :
-            self.etapes2=[etapeACopier,]+self.etapes[0:indexNoeudACopier]+self.etapes[indexNoeudACopier+1:]
-        elif indexNoeudACopier < indexNoeudOuColler :
-            self.etapes2=self.etapes[0:indexNoeudACopier]+self.etapes[indexNoeudACopier+1:indexNoeudOuColler+1]+[etapeACopier,]+self.etapes[indexNoeudOuColler+1:]
+        if indexNoeudACopier == indexNoeudOuColler:
+            return
+        etapeACopier = self.etapes[indexNoeudACopier]
+        try:
+            sd = self.etapes[indexNoeudACopier].sd
+        except:
+            sd = None
+        if pos == "before" and indexNoeudOuColler == 0:
+            self.etapes2 = (
+                [
+                    etapeACopier,
+                ]
+                + self.etapes[0:indexNoeudACopier]
+                + self.etapes[indexNoeudACopier + 1 :]
+            )
+        elif indexNoeudACopier < indexNoeudOuColler:
+            self.etapes2 = (
+                self.etapes[0:indexNoeudACopier]
+                + self.etapes[indexNoeudACopier + 1 : indexNoeudOuColler + 1]
+                + [
+                    etapeACopier,
+                ]
+                + self.etapes[indexNoeudOuColler + 1 :]
+            )
         else:
-            self.etapes2=self.etapes[0:indexNoeudOuColler+1]+[etapeACopier,]+self.etapes[indexNoeudOuColler+1:indexNoeudACopier]+self.etapes[indexNoeudACopier+1:]
-        self.etapes=self.etapes2
-        if indexNoeudACopier < indexNoeudOuColler :
-            self.deleteConceptEntreEtapes(indexNoeudACopier,indexNoeudOuColler,sd)
+            self.etapes2 = (
+                self.etapes[0 : indexNoeudOuColler + 1]
+                + [
+                    etapeACopier,
+                ]
+                + self.etapes[indexNoeudOuColler + 1 : indexNoeudACopier]
+                + self.etapes[indexNoeudACopier + 1 :]
+            )
+        self.etapes = self.etapes2
+        if indexNoeudACopier < indexNoeudOuColler:
+            self.deleteConceptEntreEtapes(indexNoeudACopier, indexNoeudOuColler, sd)
         self.resetContext()
-        for e in self.etapes :
-            e.state = 'modified'
+        for e in self.etapes:
+            e.state = "modified"
         self.controlContextApres(None)
         return 1
 
-
-    def suppEntite(self,etape) :
+    def suppEntite(self, etape):
         """
-            Cette methode a pour fonction de supprimer une etape dans
-            un jeu de commandes
-            Retourne 1 si la suppression a pu etre effectuee,
-            Retourne 0 dans le cas contraire
+        Cette methode a pour fonction de supprimer une etape dans
+        un jeu de commandes
+        Retourne 1 si la suppression a pu etre effectuee,
+        Retourne 0 dans le cas contraire
         """
-        #PN correction de bugs
-        #print ('suppEntite', etape.nom)
-        if etape not in self.etapes: return 0
+        # PN correction de bugs
+        # print ('suppEntite', etape.nom)
+        if etape not in self.etapes:
+            return 0
+        # print ('suppEntite', etape.nom)
+        if etape.nom == "ExpressionIncertitude":
+            etape.delieIncertitude()
 
         self.initModif()
-        index_etape=self.etapes.index(etape)
+        index_etape = self.etapes.index(etape)
 
-        #etape.delObjPyxb()
+        # etape.delObjPyxb()
         self.etapes.remove(etape)
 
         if etape.niveau is not self:
@@ -515,49 +559,49 @@ class JDC(I_OBJECT.OBJECT):
         # Apres suppression de l'etape il faut controler que les etapes
         # suivantes ne produisent pas des concepts DETRUITS dans op_init de etape
         if index_etape > 0:
-            index_etape=index_etape-1
-            etape=self.etapes[index_etape]
+            index_etape = index_etape - 1
+            etape = self.etapes[index_etape]
         else:
-            etape=None
+            etape = None
         self.controlContextApres(etape)
 
         self.resetContext()
-        CONNECTOR.Emit(self,"supp",etape)
+        CONNECTOR.Emit(self, "supp", etape)
         self.finModif()
         return 1
 
-    def controlContextApres(self,etape):
+    def controlContextApres(self, etape):
         """
-           Cette methode verifie que les etapes apres l'etape etape
-           ont bien des concepts produits acceptables (pas de conflit de
-           nom principalement)
-           Si des concepts produits ne sont pas acceptables ils sont supprimes.
-           Effectue les verifications sur les etapes du jdc mais aussi sur les
-           jdc parents s'ils existent.
+        Cette methode verifie que les etapes apres l'etape etape
+        ont bien des concepts produits acceptables (pas de conflit de
+        nom principalement)
+        Si des concepts produits ne sont pas acceptables ils sont supprimes.
+        Effectue les verifications sur les etapes du jdc mais aussi sur les
+        jdc parents s'ils existent.
         """
-        #print ("controlContextApres",self,etape)
-        #Regularise les etapes du jdc apres l'etape etape
+        # print ("controlContextApres",self,etape)
+        # Regularise les etapes du jdc apres l'etape etape
         self.controlJdcContextApres(etape)
 
-    def controlJdcContextApres(self,etape):
+    def controlJdcContextApres(self, etape):
         """
-            Methode semblable a controlContextApres mais ne travaille
-            que sur les etapes et sous etapes du jdc
+        Methode semblable a controlContextApres mais ne travaille
+        que sur les etapes et sous etapes du jdc
         """
-        #print ("controlJdcContextApres",self,etape)
+        # print ("controlJdcContextApres",self,etape)
         if etape is None:
             # on demarre de la premiere etape
-            index_etape=0
+            index_etape = 0
         else:
-            index_etape=self.etapes.index(etape)+1
+            index_etape = self.etapes.index(etape) + 1
 
         try:
-            etape=self.etapes[index_etape]
+            etape = self.etapes[index_etape]
         except:
-            #derniere etape du jdc : rien a faire
+            # derniere etape du jdc : rien a faire
             return
 
-        context=self.getContexteAvant(etape)
+        context = self.getContexteAvant(etape)
         for e in self.etapes[index_etape:]:
             e.controlSdprods(context)
             e.updateContext(context)
@@ -565,77 +609,100 @@ class JDC(I_OBJECT.OBJECT):
     def analyse(self):
         self.compile()
         self.execCompile()
-        if not self.cr.estvide():return
+        if not self.cr.estvide():
+            return
         self.activeEtapes()
-        if self.mc_globaux != {} : self.activeBlocsGlobaux()
+        if self.mc_globaux != {}:
+            self.activeBlocsGlobaux()
 
     def analyseXML(self):
-        #print ('analyseXML')
-        #print (self.procedure)
+        # print ('analyseXML')
+        # print (self.procedure)
         self.setCurrentContext()
-        self.analyseFromXML()
+        try:
+            self.analyseFromXML()
+        except Exception as e:
+            print("Erreur dans analyseXML a la generation du JDC a partir du xml")
+            # import traceback
+            # traceback.print_stack()
+            # Erreur lors de la conversion
+            l = traceback.format_exception(
+                sys.exc_info()[0], sys.exc_info()[1], sys.exc_info()[2]
+            )
+            self.cr.exception(
+                tr("Impossible de convertir le fichier XML\n %s", "".join(l))
+            )
+            print(e)
+            return
 
-    def registerParametre(self,param):
+    def registerParametre(self, param):
         """
-            Cette methode sert a ajouter un parametre dans la liste des parametres
+        Cette methode sert a ajouter un parametre dans la liste des parametres
         """
         self.params.append(param)
 
-    def registerFonction(self,fonction):
+    def registerFonction(self, fonction):
         """
-            Cette methode sert a ajouter une fonction dans la liste des fonctions
+        Cette methode sert a ajouter une fonction dans la liste des fonctions
         """
         self.fonctions.append(fonction)
 
-    def deleteParam(self,param):
+    def deleteParam(self, param):
         """
-            Supprime le parametre param de la liste des parametres
-            et du contexte gobal
+        Supprime le parametre param de la liste des parametres
+        et du contexte gobal
         """
-        if param in self.params : self.params.remove(param)
-        if param.nom in self.g_context : del self.g_context[param.nom]
+        if param in self.params:
+            self.params.remove(param)
+        if param.nom in self.g_context:
+            del self.g_context[param.nom]
 
-    def getParametresFonctionsAvantEtape(self,etape):
+    def getParametresFonctionsAvantEtape(self, etape):
         """
-            Retourne deux elements :
-            - une liste contenant les noms des parametres (constantes ou EVAL)
-              definis avant etape
-            - une liste contenant les formules definies avant etape
+        Retourne deux elements :
+        - une liste contenant les noms des parametres (constantes ou EVAL)
+          definis avant etape
+        - une liste contenant les formules definies avant etape
         """
         l_constantes = []
         l_fonctions = []
         # on recupere le contexte avant etape
         # on ne peut mettre dans les deux listes que des elements de ce contexte
-        d=self.getContexteAvant(etape)
+        d = self.getContexteAvant(etape)
         # construction de l_constantes
         for param in self.params:
             nom = param.nom
-            if not nom : continue
-            if nom in d: l_constantes.append(nom)
+            if not nom:
+                continue
+            if nom in d:
+                l_constantes.append(nom)
         # construction de l_fonctions
         for form in self.fonctions:
             nom = form.nom
-            if not nom : continue
-            if nom in d: l_fonctions.append(form.getFormule())
+            if not nom:
+                continue
+            if nom in d:
+                l_fonctions.append(form.getFormule())
 
         # on ajoute les concepts produits par DEFI_VALEUR
         # XXX On pourrait peut etre faire plutot le test sur le type
         # de concept : entier, reel, complexe, etc.
-        for k,v in d.items():
-            if hasattr(v,'etape') and v.etape.nom in ('DEFI_VALEUR',):
+        for k, v in d.items():
+            if hasattr(v, "etape") and v.etape.nom in ("DEFI_VALEUR",):
                 l_constantes.append(k)
 
         # on retourne les deux listes
-        return l_constantes,l_fonctions
+        return l_constantes, l_fonctions
 
-    def getNbEtapesAvant(self,niveau):
+    def getNbEtapesAvant(self, niveau):
         """
-            Retourne le nombre d etapes avant le debut de niveau
+        Retourne le nombre d etapes avant le debut de niveau
         """
-        nb=0
+        nb = 0
         for niv in self.etapes_niveaux:
-            if niv == niveau:break
-            nb=nb+len(niv.etapes)
+            if niv == niveau:
+                break
+            nb = nb + len(niv.etapes)
         return nb
 
     def initModif(self):
@@ -643,19 +710,19 @@ class JDC(I_OBJECT.OBJECT):
         Methode appelee au moment ou une modification va etre faite afin de
         declencher d'eventuels traitements pre-modification
         """
-        #print "initModif",self
-        self.state = 'modified'
+        # print "initModif",self
+        self.state = "modified"
 
     def finModif(self):
-        #print "finModif",self
-        CONNECTOR.Emit(self,"valid")
+        # print "finModif",self
+        CONNECTOR.Emit(self, "valid")
         self.isValid()
         pass
 
-    def deepUpdateConditionBloc(self,motClef=None):
+    def deepUpdateConditionBloc(self, motClef=None):
         # pour le moment, on ne fait rien
         self.getJdcRoot().recalculeValiditeApresChangementGlobalJdc(motClef)
-        #raise EficasException(tr("Pas implemente"))
+        # raise EficasException(tr("Pas implemente"))
 
     def updateConditionBloc(self):
         # pour le moment, on ne fait rien
@@ -667,240 +734,276 @@ class JDC(I_OBJECT.OBJECT):
         """
         # cette liste a le format suivant : [etape,(bloc,mcfact,...),nom_mc,valeur_mc]
         l_mc = []
-        for etape in self.etapes :
-            if etape.isActif() :
-                if not etape.isValid() :
+        for etape in self.etapes:
+            if etape.isActif():
+                if not etape.isValid():
                     l = etape.getListeMcInconnus()
-                    if l : l_mc.extend(l)
+                    if l:
+                        l_mc.extend(l)
         return l_mc
+
+    def getMCPath(self):
+        return []
 
     def getGenealogiePrecise(self):
         return []
 
+    def getObjetByMCPath(self, MCPath):
+        # Attention; le MCPath n est valide qu a la lecture du fichier
+        etape = None
+        nomEtape = MCPath[0]
+        nomSuivant = MCPath[1]
+        if nomSuivant.startswith("@sdname "):
+            nomEtape = nomSuivant.split(" ")[1]
+            etape = self.getEtapeByConceptName(nomEtape)
+        elif nomSuivant.startswith("@index "):
+            indexEtape = nomSuivant.split(" ")[1]
+            etape = self.getEtapesByName(nomEtape)[indexEtape]
+        if not etape:
+            return None
+        return etape.getObjetByMCPath(MCPath[2:])
+
     def getGenealogie(self):
         """
-            Retourne la liste des noms des ascendants de l'objet self
-            jusqu'a la premiere ETAPE parent.
+        Retourne la liste des noms des ascendants de l'objet self
+        jusqu'a la premiere ETAPE parent.
         """
         return []
 
     def getListeCmd(self):
         """
-            Retourne la liste des commandes du catalogue
+        Retourne la liste des commandes du catalogue
         """
         return self.niveau.definition.getListeCmd()
 
     def getGroups(self):
         """
-            Retourne la liste des groupes
+        Retourne la liste des groupes
         """
-        return self.niveau.definition.liste_groupes,self.niveau.definition.dict_groupes
+        return self.niveau.definition.liste_groupes, self.niveau.definition.dict_groupes
 
-    def setEtapeContext(self,etape):
+    def setEtapeContext(self, etape):
         """
-            Positionne l'etape qui sera utilisee dans NommerSdProd pour
-            decider si le concept passe pourra etre  nomme
+        Positionne l'etape qui sera utilisee dans NommerSdProd pour
+        decider si le concept passe pourra etre  nomme
         """
-        self._etape_context=etape
+        self._etape_context = etape
 
     def resetContext(self):
         """
-            Cette methode reinitialise le contexte glissant pour pouvoir
-            tenir compte des modifications de l'utilisateur : craation
-            de commandes, nommage de concepts, etc.
+        Cette methode reinitialise le contexte glissant pour pouvoir
+        tenir compte des modifications de l'utilisateur : craation
+        de commandes, nommage de concepts, etc.
         """
-        #print "resetContext",self,self.nom
-        self.currentContext={}
-        self.index_etape_courante=0
-        ind={}
-        for i,etape in enumerate(self.etapes):
-            ind[etape]=i
-        self.index_etapes=ind
+        # print "resetContext",self,self.nom
+        self.currentContext = {}
+        self.index_etape_courante = 0
+        ind = {}
+        for i, etape in enumerate(self.etapes):
+            ind[etape] = i
+        self.index_etapes = ind
 
     #   for etape in self.etapes:
     #       etape.resetContext()
 
-    def delSdprod(self,sd):
+    def delSdprod(self, sd):
         """
-            Supprime la SD sd de la liste des sd et des dictionnaires de contexte
+        Supprime la SD sd de la liste des sd et des dictionnaires de contexte
         """
-        #print "delSdprod",self,sd
-        #print "delSdprod",self.sds
-        #print "delSdprod",self.g_context
-        #print "delSdprod",self.sdsDict
-        #if sd in self.sds : self.sds.remove(sd)
-        if sd.nom in self.g_context : del self.g_context[sd.nom]
-        if sd.nom in self.sdsDict : del self.sdsDict[sd.nom]
+        # print "delSdprod",self,sd
+        # print "delSdprod",self.sds
+        # print "delSdprod",self.g_context
+        # print "delSdprod",self.sdsDict
+        # if sd in self.sds : self.sds.remove(sd)
+        if sd.nom in self.g_context:
+            del self.g_context[sd.nom]
+        if sd.nom in self.sdsDict:
+            del self.sdsDict[sd.nom]
 
-    def delParam(self,param):
+    def delParam(self, param):
         """
-            Supprime le parametre param de la liste des paramatres
-            et du contexte gobal
+        Supprime le parametre param de la liste des paramatres
+        et du contexte gobal
         """
-        if param in self.params : self.params.remove(param)
-        if param.nom in self.g_context : del self.g_context[param.nom]
+        if param in self.params:
+            self.params.remove(param)
+        if param.nom in self.g_context:
+            del self.g_context[param.nom]
 
-    def delFonction(self,fonction):
+    def delFonction(self, fonction):
         """
-            Supprime la fonction fonction de la liste des fonctions
-            et du contexte gobal
+        Supprime la fonction fonction de la liste des fonctions
+        et du contexte gobal
         """
-        if fonction in self.fonctions : self.fonctions.remove(fonction)
-        if fonction.nom in self.g_context: del self.g_context[fonction.nom]
+        if fonction in self.fonctions:
+            self.fonctions.remove(fonction)
+        if fonction.nom in self.g_context:
+            del self.g_context[fonction.nom]
 
-    def appendSdProd(self,sd):
+    def appendSdProd(self, sd):
         """
-            Ajoute la SD sd a la liste des sd en verifiant au prealable qu'une SD de
-            meme nom n'existe pas deja
+        Ajoute la SD sd a la liste des sd en verifiant au prealable qu'une SD de
+        meme nom n'existe pas deja
         """
-        if sd == None or sd.nom == None:return
-        o=self.sdsDict.get(sd.nom,None)
-        if isinstance(o,ASSD):
-            raise AsException(tr("Nom de concept deja defini "+ sd.nom))
-        self.sdsDict[sd.nom]=sd
+        if sd == None or sd.nom == None:
+            return
+        o = self.sdsDict.get(sd.nom, None)
+        if isinstance(o, ASSD):
+            raise AsException(tr("Nom de concept deja defini " + sd.nom))
+        self.sdsDict[sd.nom] = sd
         self.g_context[sd.nom] = sd
-        #if sd not in self.sds : self.sds.append(sd)
+        # if sd not in self.sds : self.sds.append(sd)
 
-    def appendParam(self,param):
+    def appendParam(self, param):
         """
-            Ajoute le parametre param a la liste des params
-            et au contexte global
+        Ajoute le parametre param a la liste des params
+        et au contexte global
         """
         # il faudrait verifier qu'un parametre de meme nom n'existe pas deja !!!
-        if param not in self.params : self.params.append(param)
-        self.g_context[param.nom]=param
+        if param not in self.params:
+            self.params.append(param)
+        self.g_context[param.nom] = param
 
-    def appendFonction(self,fonction):
+    def appendFonction(self, fonction):
         """
-            Ajoute la fonction fonction a la liste des fonctions
-            et au contexte global
+        Ajoute la fonction fonction a la liste des fonctions
+        et au contexte global
         """
         # il faudrait verifier qu'une fonction de meme nom n'existe pas deja !!!
-        if fonction not in self.fonctions : self.fonctions.append(fonction)
-        self.g_context[fonction.nom]=fonction
+        if fonction not in self.fonctions:
+            self.fonctions.append(fonction)
+        self.g_context[fonction.nom] = fonction
 
-    def deleteConcept(self,sd):
+    def deleteConcept(self, sd):
         """
-            Inputs :
-               - sd=concept detruit
-            Fonction :
-            Mettre a jour les etapes du JDC suite a la disparition du
-            concept sd
-            Seuls les mots cles simples MCSIMP font un traitement autre
-            que de transmettre aux fils
+        Inputs :
+           - sd=concept detruit
+        Fonction :
+        Mettre a jour les etapes du JDC suite a la disparition du
+        concept sd
+        Seuls les mots cles simples MCSIMP font un traitement autre
+        que de transmettre aux fils
         """
-        for etape in self.etapes :
+        for etape in self.etapes:
             etape.deleteConcept(sd)
-            #PN PN PN pour les matrices ????
-            #self.getVariables_avant(etape)
+            # PN PN PN pour les matrices ????
+            # self.getVariables_avant(etape)
 
-    def replaceConceptAfterEtape(self,etape,old_sd,sd):
+    def replaceConceptAfterEtape(self, etape, old_sd, sd):
         """
-            Met a jour les etapes du JDC qui sont apres etape en fonction
-            du remplacement du concept sd
+        Met a jour les etapes du JDC qui sont apres etape en fonction
+        du remplacement du concept sd
         """
-        index = self.etapes.index(etape)+1
-        if index == len(self.etapes) :
-            return # etape est la derniere etape du jdc ...on ne fait rien !
+        index = self.etapes.index(etape) + 1
+        if index == len(self.etapes):
+            return  # etape est la derniere etape du jdc ...on ne fait rien !
         for child in self.etapes[index:]:
-            child.replaceConcept(old_sd,sd)
+            child.replaceConcept(old_sd, sd)
 
-    def updateConceptAfterEtape(self,etape,sd):
+    def updateConceptAfterEtape(self, etape, sd):
         """
-            Met a jour les etapes du JDC qui sont apres etape en fonction
-            de la modification (principalement nommage) du concept sd
+        Met a jour les etapes du JDC qui sont apres etape en fonction
+        de la modification (principalement nommage) du concept sd
         """
         if etape is None:
-            #On traite toutes les etapes
-            index=0
+            # On traite toutes les etapes
+            index = 0
         else:
-            index = self.etapes.index(etape)+1
-        if index == len(self.etapes) :
-            return # etape est la derniere etape du jdc ...on ne fait rien !
+            index = self.etapes.index(etape) + 1
+        if index == len(self.etapes):
+            return  # etape est la derniere etape du jdc ...on ne fait rien !
         for child in self.etapes[index:]:
             child.updateConcept(sd)
 
     def dumpState(self):
-        #print(("JDC.state: ",self.state))
-        for etape in self.etapes :
-            print((etape.nom+".state: ",etape.state))
+        # print(("JDC.state: ",self.state))
+        for etape in self.etapes:
+            print((etape.nom + ".state: ", etape.state))
 
-    def changeUnit(self,unit,etape,old_unit):
-        #print "changeUnit",unit,etape,old_unit
-        #print id(self.recorded_units),self.recorded_units
-        #if self.recorded_units.has_key(old_unit):del self.recorded_units[old_unit]
-        self.recordUnit(unit,etape)
+    def changeUnit(self, unit, etape, old_unit):
+        # print "changeUnit",unit,etape,old_unit
+        # print id(self.recorded_units),self.recorded_units
+        # if self.recorded_units.has_key(old_unit):del self.recorded_units[old_unit]
+        self.recordUnit(unit, etape)
 
-    def recordUnit(self,unit,etape):
+    def recordUnit(self, unit, etape):
         """Enregistre les unites logiques incluses et les infos relatives a l'etape"""
-        #print "recordUnit",unit,etape
+        # print "recordUnit",unit,etape
         if unit is None:
             # Cas de POURSUITE
-            self.recorded_units[None]=(etape.fichier_ini ,etape.fichier_text,etape.recorded_units)
+            self.recorded_units[None] = (
+                etape.fichier_ini,
+                etape.fichier_text,
+                etape.recorded_units,
+            )
         else:
-            self.recorded_units[unit]=(etape.fichier_ini ,etape.fichier_text,etape.recorded_units)
-        #print id(self.recorded_units),self.recorded_units
-        #print self.recorded_units.get(None,(None,"",{}))[2]
-        #print self.recorded_units.get(None,(None,"",{}))[2].get(None,(None,"",{}))
+            self.recorded_units[unit] = (
+                etape.fichier_ini,
+                etape.fichier_text,
+                etape.recorded_units,
+            )
+        # print id(self.recorded_units),self.recorded_units
+        # print self.recorded_units.get(None,(None,"",{}))[2]
+        # print self.recorded_units.get(None,(None,"",{}))[2].get(None,(None,"",{}))
 
-    def changeFichier(self,fichier):
+    def changeFichier(self, fichier):
         self.finModif()
 
-    def evalInContext(self,valeur,etape):
-        """ Tente d'evaluer valeur dans le contexte courant de etape
-            Retourne le parametre valeur inchange si l'evaluation est impossible
+    def evalInContext(self, valeur, etape):
+        """Tente d'evaluer valeur dans le contexte courant de etape
+        Retourne le parametre valeur inchange si l'evaluation est impossible
         """
-        #contexte initial du jdc
-        context=self.condition_context.copy()
-        #contexte courant des concepts. Il contient les parametres
+        # contexte initial du jdc
+        context = self.condition_context.copy()
+        # contexte courant des concepts. Il contient les parametres
         context.update(self.getContexteAvant(etape))
-        try :
-            objet = eval(valeur,context)
+        try:
+            objet = eval(valeur, context)
             return objet
         except:
-            #traceback.print_exc()
+            # traceback.print_exc()
             pass
         return valeur
 
-#ATTENTION SURCHARGE : cette methode doit etre gardee en synchronisation avec celle de Noyau
+    # ATTENTION SURCHARGE : cette methode doit etre gardee en synchronisation avec celle de Noyau
     def supprime(self):
         Noyau.N_JDC.JDC.supprime(self)
         for etape in self.etapes:
             etape.supprime()
-        self.appliEficas=None
-        self.g_context={}
-        self.const_context={}
-        self.sdsDict={}
-        self.mc_globaux={}
-        self.currentContext={}
-        self.condition_context={}
-        self.etapes_niveaux=[]
-        self.niveau=None
-        self.params=[]
-        self.fonctions=[]
-        self._etape_context=None
-        self.etapes=[]
+        self.appliEficas = None
+        self.g_context = {}
+        self.const_context = {}
+        self.sdsDict = {}
+        self.mc_globaux = {}
+        self.currentContext = {}
+        self.condition_context = {}
+        self.etapes_niveaux = []
+        self.niveau = None
+        self.params = []
+        self.fonctions = []
+        self._etape_context = None
+        self.etapes = []
 
-#ATTENTION SURCHARGE : cette methode doit etre gardee en synchronisation avec celle de Noyau
-    def register(self,etape):
+    # ATTENTION SURCHARGE : cette methode doit etre gardee en synchronisation avec celle de Noyau
+    def register(self, etape):
         """
-             Cette methode ajoute  etape dans la liste
-             des etapes self.etapes et retourne l identificateur d'etape
-             fourni par l appel a gRegister
+        Cette methode ajoute  etape dans la liste
+        des etapes self.etapes et retourne l identificateur d'etape
+        fourni par l appel a gRegister
 
-             A quoi sert editmode ?
-                - Si editmode vaut 1, on est en mode edition de JDC. On cherche
-                  a enregistrer une etape que l'on a creee avec eficas (en passant
-                  par addEntite) auquel cas on ne veut recuperer que son numero
-                  d'enregistrement et c'est addEntite qui l'enregistre dans
-                  self.etapes a la bonne place...
-                - Si editmode vaut 0, on est en mode relecture d'un fichier de
-                  commandes et on doit enregistrer l'etape a la fin de self.etapes
-                  (dans ce cas l'ordre des etapes est bien l'ordre chronologique
-                  de leur creation   )
+        A quoi sert editmode ?
+           - Si editmode vaut 1, on est en mode edition de JDC. On cherche
+             a enregistrer une etape que l'on a creee avec eficas (en passant
+             par addEntite) auquel cas on ne veut recuperer que son numero
+             d'enregistrement et c'est addEntite qui l'enregistre dans
+             self.etapes a la bonne place...
+           - Si editmode vaut 0, on est en mode relecture d'un fichier de
+             commandes et on doit enregistrer l'etape a la fin de self.etapes
+             (dans ce cas l'ordre des etapes est bien l'ordre chronologique
+             de leur creation   )
         """
-        #import traceback
-        #traceback.print_stack()
+        # import traceback
+        # traceback.print_stack()
         if not self.editmode:
             self.etapes.append(etape)
             self.index_etapes[etape] = len(self.etapes) - 1
@@ -908,13 +1011,13 @@ class JDC(I_OBJECT.OBJECT):
             pass
         return self.gRegister(etape)
 
-#ATTENTION SURCHARGE : cette methode doit etre gardee en synchronisation avec celle de Noyau
-    def nommerSDProd(self,sd,sdnom,restrict='non'):
+    # ATTENTION SURCHARGE : cette methode doit etre gardee en synchronisation avec celle de Noyau
+    def nommerSDProd(self, sd, sdnom, restrict="non"):
         """
-            Nomme la SD apres avoir verifie que le nommage est possible :
-            nom non utilise
-            Si le nom est deja utilise, leve une exception
-            Met le concept cree dans le concept global g_context
+        Nomme la SD apres avoir verifie que le nommage est possible :
+        nom non utilise
+        Si le nom est deja utilise, leve une exception
+        Met le concept cree dans le concept global g_context
         """
         # XXX En mode editeur dans EFICAS, le nommage doit etre gere differemment
         # Le dictionnaire g_context ne represente pas le contexte
@@ -924,83 +1027,105 @@ class JDC(I_OBJECT.OBJECT):
         # Cette etape est indiquee par l'attribut _etape_context qui a ete
         # positionne prealablement par un appel a setEtapeContext
 
-        if CONTEXT.debug : print(("JDC.nommerSDProd ",sd,sdnom))
+        if CONTEXT.debug:
+            print(("JDC.nommerSDProd ", sd, sdnom))
 
         if self._etape_context:
-            o=self.getContexteAvant(self._etape_context).get(sdnom,None)
+            o = self.getContexteAvant(self._etape_context).get(sdnom, None)
         else:
-            o=self.sdsDict.get(sdnom,None)
+            o = self.sdsDict.get(sdnom, None)
 
-        if isinstance(o,ASSD):
-            raise AsException(tr(" Nom de concept deja defini : "+ sdnom))
+        if isinstance(o, ASSD):
+            raise AsException(tr(" Nom de concept deja defini : " + sdnom))
 
         # ATTENTION : Il ne faut pas ajouter sd dans sds car il s y trouve deja.
         # Ajoute a la creation (appel de regSD).
-        #print (' je pass ici, pour ', sdnom, self.sdsDict)
-        self.sdsDict[sdnom]=sd
-        sd.nom=sdnom
+        # print (' je pass ici, pour ', sdnom, self.sdsDict)
+        self.sdsDict[sdnom] = sd
+        sd.nom = sdnom
 
         # En plus si restrict vaut 'non', on insere le concept dans le contexte du JDC
-        if restrict == 'non':
-            self.g_context[sdnom]=sd
+        if restrict == "non":
+            self.g_context[sdnom] = sd
 
-    def deleteConceptEntreEtapes(self,index1,index2,sd):
-        if index2 <= index1 :return
+    def deleteConceptEntreEtapes(self, index1, index2, sd):
+        if index2 <= index1:
+            return
         for child in self.etapes[index1:index2]:
             child.deleteConcept(sd)
 
-    def deleteConceptAfterEtape(self,etape,sd):
+    def deleteConceptAfterEtape(self, etape, sd):
         """
-            Met a jour les etapes du JDC qui sont apres etape en fonction
-            de la disparition du concept sd
+        Met a jour les etapes du JDC qui sont apres etape en fonction
+        de la disparition du concept sd
         """
-        index = self.etapes.index(etape)+1
-        if index == len(self.etapes) :
-            return # etape est la derniere etape du jdc ...on ne fait rien !
+        index = self.etapes.index(etape) + 1
+        if index == len(self.etapes):
+            return  # etape est la derniere etape du jdc ...on ne fait rien !
         for child in self.etapes[index:]:
             child.deleteConcept(sd)
 
-#ATTENTION SURCHARGE : les methodes ci-dessus surchargent des methodes de Noyau et Validation : a reintegrer
+    def updateMCPath(self):
+        # Cette methode sert a recaluler les MCPaths qui peuvent avoir changer
+        # si il y a eu des suprressions dans des MCList freres ou oncles des motclefs incertains
+        etapeIncertitude = self.getEtapesByName("ExpressionIncertitude")
+        if etapeIncertitude == []:
+            return
+        mcVP = self.getChild("Input").getChild("VariableProbabiliste")
+        if mcVP == None:
+            return
+        for mc in mcVP:
+            itemMCPath = mc.getChild("MCPath")
+            itemMCPath.setValeur(mc.variableDeterministe.getMCPath())
 
-    def getFile(self,unite=None,fic_origine=''):
+    # ATTENTION SURCHARGE : les methodes ci-dessus surchargent des methodes de Noyau et Validation : a reintegrer
+
+    def getFile(self, unite=None, fic_origine=""):
         """
-            Retourne le nom du fichier correspondant a un numero d'unite
-            logique (entier) ainsi que le source contenu dans le fichier
+        Retourne le nom du fichier correspondant a un numero d'unite
+        logique (entier) ainsi que le source contenu dans le fichier
         """
         if self.appliEficas is not None:
             # Si le JDC est relie a une appliEficascation maitre, on delegue la recherche
-            file,text= self.appliEficas.getFile(unite,fic_origine)
+            file, text = self.appliEficas.getFile(unite, fic_origine)
         else:
             file = None
             if unite != None:
-                if os.path.exists(u"fort."+str(unite)):
-                    file= "fort."+str(unite)
-            if file == None :
-                raise AsException(tr("Impossible de trouver le fichier correspondant a l'unite "+str( unite)))
+                if os.path.exists("fort." + str(unite)):
+                    file = "fort." + str(unite)
+            if file == None:
+                raise AsException(
+                    tr(
+                        "Impossible de trouver le fichier correspondant a l'unite "
+                        + str(unite)
+                    )
+                )
             if not os.path.exists(file):
-                raise AsException(str(unite)+ tr(" n'est pas un fichier existant"))
-            fproc=open(file,'r')
-            text=fproc.read()
+                raise AsException(str(unite) + tr(" n'est pas un fichier existant"))
+            fproc = open(file, "r")
+            text = fproc.read()
             fproc.close()
-        #if file == None : return None,None
-        text=text.replace('\r\n','\n')
+        # if file == None : return None,None
+        text = text.replace("\r\n", "\n")
         if file:
-            linecache.cache[file]=0,0,text.split('\n'),file
-        return file,text
+            linecache.cache[file] = 0, 0, text.split("\n"), file
+        return file, text
 
-    def isValid(self,cr='non'):
-        if hasattr(self,'valid'): old_valid=self.valid
-        else:old_valid=0
-        valid=Validation.V_JDC.JDC.isValid(self,cr)
+    def isValid(self, cr="non"):
+        if hasattr(self, "valid"):
+            old_valid = self.valid
+        else:
+            old_valid = 0
+        valid = Validation.V_JDC.JDC.isValid(self, cr)
         if valid != old_valid:
-            CONNECTOR.Emit(self,"valid")
+            CONNECTOR.Emit(self, "valid")
         return valid
 
     def getLNomsEtapes(self):
         """
-            Retourne la liste des noms des etapes de self
+        Retourne la liste des noms des etapes de self
         """
-        l=[]
+        l = []
         for etape in self.etapes:
             l.append(etape.nom)
         return l

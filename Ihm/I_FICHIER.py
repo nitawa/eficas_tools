@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2007-2021   EDF R&D
+# Copyright (C) 2007-2024   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -17,25 +17,25 @@
 #
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
-from __future__ import absolute_import
 import types
 
+
 class Fichier:
+    def __init__(
+        self, filtre="All Files (*)", existence="NonExistant", repertoire=None
+    ):
+        self.filtre = filtre
+        self.existence = existence
+        self.repertoire = repertoire
 
-    def __init__(self,filtre='All Files (*)',existence='NonExistant',repertoire=None):
-        self.filtre=filtre
-        self.existence=existence
-        self.repertoire=repertoire
-
-    def __convert__(self,valeur):
+    def __convert__(self, valeur):
         # Attention ne verifie pas grand chose
-        if type(valeur) != bytes  and type(valeur) != str:
+        if type(valeur) != bytes and type(valeur) != str:
             return None
         return valeur
 
-
     def info(self):
-        return "Fichier de Type %s et %s" % (self.filtre,self.existence)
+        return "Fichier de Type %s et %s" % (self.filtre, self.existence)
 
-        __repr__=info
-        __str__=info
+        __repr__ = info
+        __str__ = info

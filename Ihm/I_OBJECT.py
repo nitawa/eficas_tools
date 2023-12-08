@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2007-2021   EDF R&D
+# Copyright (C) 2007-2024   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -19,12 +19,12 @@
 #
 """
 """
-from __future__ import absolute_import
-import Noyau
 
 from . import CONNECTOR
 import re
-conceptRE=re.compile(r'[a-zA-Z_]\w*$')
+
+conceptRE = re.compile(r"[a-zA-Z_]\w*$")
+
 
 class OBJECT:
     from Noyau.N_CO import CO
@@ -32,27 +32,27 @@ class OBJECT:
 
     def isMCList(self):
         """
-            Retourne 1 si self est une MCList (liste de mots-cles), 0 sinon (defaut)
+        Retourne 1 si self est une MCList (liste de mots-cles), 0 sinon (defaut)
         """
         return 0
 
     def getRegles(self):
         """
-           Retourne les regles de self
+        Retourne les regles de self
         """
-        if hasattr(self,'definition'):
+        if hasattr(self, "definition"):
             return self.definition.regles
-        elif hasattr(self,'regles'):
+        elif hasattr(self, "regles"):
             return self.regles
-        else :
+        else:
             return []
 
     def initModif(self):
         """
-           Met l'etat de l'objet a modified et propage au parent
-           qui vaut None s'il n'existe pas
+        Met l'etat de l'objet a modified et propage au parent
+        qui vaut None s'il n'existe pas
         """
-        self.state = 'modified'
+        self.state = "modified"
         if self.parent:
             self.parent.initModif()
 
@@ -61,22 +61,22 @@ class OBJECT:
         Methode appelee apres qu'une modification a ete faite afin de declencher
         d'eventuels traitements post-modification
         """
-        #print "finModif",self
+        # print "finModif",self
         # pour les objets autres que les commandes, aucun traitement specifique
         # on remonte l'info de fin de modif au parent
-        CONNECTOR.Emit(self,"valid")
+        CONNECTOR.Emit(self, "valid")
         if self.parent:
             self.parent.finModif()
 
     def isRepetable(self):
         """
-             Indique si l'objet est repetable
+        Indique si l'objet est repetable
         """
         return 0
 
     def listeMcPresents(self):
         """
-             Retourne la liste des noms des mots cles presents
+        Retourne la liste des noms des mots cles presents
         """
         return []
 
@@ -89,42 +89,82 @@ class OBJECT:
         """
         return []
 
-    def verifConditionRegles(self,liste_presents):
+    def verifConditionRegles(self, liste_presents):
         """
-            Retourne la liste des mots-cles a rajouter pour satisfaire les regles
-            en fonction de la liste des mots-cles presents
+        Retourne la liste des mots-cles a rajouter pour satisfaire les regles
+        en fonction de la liste des mots-cles presents
         """
-        liste=[]
+        liste = []
         for regle in self.definition.regles:
-            liste=regle.verifConditionRegle(liste,liste_presents)
+            liste = regle.verifConditionRegle(liste, liste_presents)
         return liste
 
     def verifConditionBloc(self):
         """
-            Evalue les conditions de tous les blocs fils possibles
-            (en fonction du catalogue donc de la definition) de self et
-            retourne deux listes :
-              - la premiere contient les noms des blocs a rajouter
-              - la seconde contient les noms des blocs a supprimer
+        Evalue les conditions de tous les blocs fils possibles
+        (en fonction du catalogue donc de la definition) de self et
+        retourne deux listes :
+          - la premiere contient les noms des blocs a rajouter
+          - la seconde contient les noms des blocs a supprimer
         """
-        return [],[]
+        return [], []
 
     def getGenealogiePrecise(self):
         if self.parent:
-            l=self.parent.getGenealogiePrecise()
+            l = self.parent.getGenealogiePrecise()
             l.append(self.nom.strip())
             return l
         else:
             return [self.nom.strip()]
 
+    def getMCPath(self):
+        if self.parent:
+            l = self.parent.getMCPath()
+            l.append(self.nom.strip())
+            return l
+        else:
+            # a priori on ne devrait pas passer la
+            print("Erreur dans getMCPath de I_OBJECT")
+            return [self.nom.strip()]
+
+    def getObjetByMCPath(self, MCPath):
+        debug = 0
+        if debug:
+            print("getObjetByMCPath pour", self, self.nom, MCPath)
+        nomFils = MCPath[0]
+        if debug:
+            print("self", self.nom)
+        if debug:
+            print("MCPath restant", MCPath[1:])
+        if MCPath[1:] == [] or MCPath[1:] == ():
+            if debug:
+                print("objFils", self.getChildOrChildInBloc(nomFils))
+            return self.getChildOrChildInBloc(nomFils)
+        else:
+            objetFils = self.getChildOrChildInBloc(nomFils)
+            if debug:
+                print("dans else", self, self.nom, objetFils, nomFils)
+            if MCPath[1].startswith("@index "):
+                indexObj = MCPath[1].split(" ")[1]
+                indexObj = int(indexObj.split(" ")[0])
+                if debug:
+                    print("index de l objet", indexObj)
+                objetFils = objetFils.data[indexObj]
+                if debug:
+                    print("objetFils cas Mclist", objetFils)
+                if MCPath[2:] == [] or MCPath[2:] == ():
+                    return objetFils
+                else:
+                    return objetFils.getObjetByMCPath(MCPath[2:])
+            return objetFils.getObjetByMCPath(MCPath[1:])
 
     def getGenealogie(self):
         """
-            Retourne la liste des noms des ascendants (noms de MCSIMP,MCFACT,MCBLOC
-            ou ETAPE) de self jusqu'au premier objet etape rencontre
+        Retourne la liste des noms des ascendants (noms de MCSIMP,MCFACT,MCBLOC
+        ou ETAPE) de self jusqu'au premier objet etape rencontre
         """
         if self.parent:
-            l=self.parent.getGenealogie()
+            l = self.parent.getGenealogie()
             l.append(self.nom.strip())
             return l
         else:
@@ -132,28 +172,28 @@ class OBJECT:
 
     def getFr(self):
         """
-            Retourne la chaine d'aide contenue dans le catalogue
-            en tenant compte de la langue
+        Retourne la chaine d'aide contenue dans le catalogue
+        en tenant compte de la langue
         """
         try:
-        #if 1 :
-            c=getattr(self.definition,self.jdc.lang)
+            # if 1 :
+            c = getattr(self.definition, self.jdc.lang)
             return c
         except:
-        #else:
-            try :
-                c=getattr(self.definition,"fr")
+            # else:
+            try:
+                c = getattr(self.definition, "fr")
                 return c
-            except :
-                return ''
+            except:
+                return ""
 
-    def updateConcept(self,sd):
+    def updateConcept(self, sd):
         pass
 
     def normalize(self):
-        """ Retourne l'objet normalise. En general self sauf si
-            pour etre insere dans l'objet pere il doit etre
-            wrappe dans un autre objet (voir mot cle facteur).
+        """Retourne l'objet normalise. En general self sauf si
+        pour etre insere dans l'objet pere il doit etre
+        wrappe dans un autre objet (voir mot cle facteur).
         """
         return self
 
@@ -163,38 +203,40 @@ class OBJECT:
     def updateMcGlobal(self):
         return
 
-    #def __del__(self):
+    # def __del__(self):
     #   print "__del__",self
 
     def nommeSd(self):
-    # surcharge dans I_ETAPE.py
-        if ( nom in dir(self.jdc.cata)) : return (0, nom + tr("mot reserve"))
+        # surcharge dans I_ETAPE.py
+        if nom in dir(self.jdc.cata):
+            return (0, nom + tr("mot reserve"))
         if not conceptRE.match(nom):
             return 0, tr("Un nom de concept doit etre un identificateur Python")
         self.initModif()
-        #self.getSdProd()
-        #self.sd.nom = nom
-        #self.sdnom=nom
-        #self.parent.updateConceptAfterEtape(self,self.sd)
-        #self.finModif()
-        #return 1, tr("Nommage du concept effectue")
+        # self.getSdProd()
+        # self.sd.nom = nom
+        # self.sdnom=nom
+        # self.parent.updateConceptAfterEtape(self,self.sd)
+        # self.finModif()
+        # return 1, tr("Nommage du concept effectue")
 
     def deleteRef(self):
-    # est surcharge dans  MC_SIMP et dans MC_List
-        #print ('je suis dans deleteRef pour', self.nom)
-        for obj in (self.mcListe):
+        # est surcharge dans  MC_SIMP et dans MC_List
+        # print ('je suis dans deleteRef pour', self.nom)
+        for obj in self.mcListe:
             obj.deleteRef()
 
     def supprimeUserAssd(self):
         pass
 
     def demandeRedessine(self):
-        #print ('demandeRedessine pour', self.nom, self, tout)
-        CONNECTOR.Emit(self,"redessine")
+        # print ('demandeRedessine pour', self.nom, self, tout)
+        CONNECTOR.Emit(self, "redessine")
 
     def isUQActivate(self):
         # valide uniquement pour les MCSIMP
         return True
 
 
-class ErrorObj(OBJECT):pass
+class ErrorObj(OBJECT):
+    pass

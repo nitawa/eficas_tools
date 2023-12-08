@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2007-2021   EDF R&D
+# Copyright (C) 2007-2024   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -20,16 +20,17 @@
 """
 """
 
-from __future__ import absolute_import
 from . import I_REGLE
 
+
 class PRESENT_PRESENT(I_REGLE.REGLE):
-    def verifConditionRegle(self,liste,l_mc_presents):
-        mc0=self.mcs[0]
+    def verifConditionRegle(self, liste, l_mc_presents):
+        mc0 = self.mcs[0]
         for mc_present in l_mc_presents:
-            if mc_present == mc0 :
+            if mc_present == mc0:
                 for mc in self.mcs[1:]:
                     nb = l_mc_presents.count(mc)
-                    if nb == 0 : liste.append(mc)
+                    if nb == 0:
+                        liste.append(mc)
                 return liste
         return liste

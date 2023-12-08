@@ -1,4 +1,4 @@
-# Copyright (C) 2007-2021   EDF R&D
+# Copyright (C) 2007-2024   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -19,22 +19,23 @@
 """
 """
 
-class EVAL :
-    """
-    """
-    def __init__(self,str):
+
+class EVAL:
+    """ """
+
+    def __init__(self, str):
         """
-           L'objet EVAL est initialise avec une chaine de caracteres (str)
+        L'objet EVAL est initialise avec une chaine de caracteres (str)
         """
         self.valeur = str
-        self.val=None
+        self.val = None
 
     def __repr__(self):
-        return 'EVAL("""'+self.valeur+'""")'
+        return 'EVAL("""' + self.valeur + '""")'
 
-    def accept(self,visitor):
+    def accept(self, visitor):
         """
-           Cette methode permet de parcourir l'arborescence des objets
-           en utilisant le pattern VISITEUR
+        Cette methode permet de parcourir l'arborescence des objets
+        en utilisant le pattern VISITEUR
         """
         visitor.visitEVAL(self)

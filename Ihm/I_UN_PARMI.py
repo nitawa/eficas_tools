@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2007-2021   EDF R&D
+# Copyright (C) 2007-2024   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -20,18 +20,18 @@
 """
 """
 
-from __future__ import absolute_import
 from . import I_REGLE
 
-class UN_PARMI(I_REGLE.REGLE):
 
-    def purgeListe(self,liste_a_purger,listeMcPresents):
-        regle_active=0
+class UN_PARMI(I_REGLE.REGLE):
+    def purgeListe(self, liste_a_purger, listeMcPresents):
+        regle_active = 0
         for mc_present in listeMcPresents:
             if mc_present in self.mcs:
-                regle_active=1
+                regle_active = 1
                 break
-        if not regle_active : return liste_a_purger
+        if not regle_active:
+            return liste_a_purger
 
         # Si un des mots cles est present, on les enleve tous
         # sauf celui ci

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2007-2021   EDF R&D
+# Copyright (C) 2007-2024   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -18,9 +18,30 @@
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
 
+
 class I_Matrice:
     def activeCouleur(self):
-        self.dictCouleurs={}
-        self.indiceCouleur=1
-        self.listeCouleurs=((10, 186, 181),(204, 204, 255),(121, 248, 248),(254, 231, 240),(250, 234, 115), (254, 191, 210),(248, 142, 85),(133, 193, 126),(210, 202, 236),(225, 206, 154), (187, 174, 152),(240, 195, 0),(242, 255, 255),(239, 239, 239),(149, 165, 149), (150, 131, 236),(201, 160, 220),(103, 159, 90),(176, 242, 182),(233, 201, 177))
-
+        self.dictCouleurs = {}
+        self.indiceCouleur = 1
+        self.listeCouleurs = (
+            (10, 186, 181),
+            (204, 204, 255),
+            (121, 248, 248),
+            (254, 231, 240),
+            (250, 234, 115),
+            (254, 191, 210),
+            (248, 142, 85),
+            (133, 193, 126),
+            (210, 202, 236),
+            (225, 206, 154),
+            (187, 174, 152),
+            (240, 195, 0),
+            (242, 255, 255),
+            (239, 239, 239),
+            (149, 165, 149),
+            (150, 131, 236),
+            (201, 160, 220),
+            (103, 159, 90),
+            (176, 242, 182),
+            (233, 201, 177),
+        )
