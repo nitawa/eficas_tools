@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2007-2021   EDF R&D
+# Copyright (C) 2007-2024   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -17,51 +17,42 @@
 #
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
-from __future__ import absolute_import
-from __future__ import print_function
-try :
-    from builtins import str
-    from builtins import object
-except :
-    pass
-import re,os
+from builtins import str
+from builtins import object
+import re, os
 
 from Extensions.i18n import tr
-#
-__Id__="$Id: analyseCatalogue_initial.py,v 1.2.4.1.2.2.2.4 2017-04-09 14:04:44 pnoyret Exp $"
-__version__="$Name: V7_main $"
-#
 
 
-class Catalogue_initial(object):
-    def __init__(self,fichier):
-        self.liste_commandes=[]
-        self.lignes=[]
-        self.fichier=fichier
+class catalogueInitial(object):
+    def __init__(self, fichier):
+        self.listeCommandes = []
+        self.lignes = []
+        self.fichier = fichier
         self.ouvrirFichier()
         self.constrListTxtCmd()
 
     def ouvrirFichier(self):
-        try :
+        try:
             with open(self.fichier) as fd:
-                self.lignes=fd.readlines()
-        except :
+                self.lignes = fd.readlines()
+        except:
             print(tr("Impossible d'ouvrir le fichier : %s", str(self.fichier)))
 
     def constrListTxtCmd(self):
-        pattern = '^# Ordre Catalogue '
-        for i in self.lignes :
-            if (re.search(pattern,i)):
-                i=i.replace('# Ordre Catalogue ','')
-                i=i.replace('\n','')
-                self.liste_commandes.append(i)
+        pattern = "^# Ordre Catalogue "
+        for i in self.lignes:
+            if re.search(pattern, i):
+                i = i.replace("# Ordre Catalogue ", "")
+                i = i.replace("\n", "")
+                self.listeCommandes.append(i)
 
 
-def analyseCatalogue(nom_cata):
-    cata = Catalogue_initial(nom_cata)
-    return cata.liste_commandes
+def analyseCatalogue(nomCata):
+    cata = catalogueInitial(nomCata)
+    return cata.listeCommandes
 
 
-if __name__ == "__main__" :
-    monCata="/local/noyret/Install_Eficas/EficasQT4/Openturns_StudyOpenTURNS_Cata_Study_V4.py"
+if __name__ == "__main__":
+    monCata = "/local/noyret/Install_Eficas/EficasQT4/Openturns_StudyOpenTURNS_Cata_Study_V4.py"
     analyseCatalogue(monCata)

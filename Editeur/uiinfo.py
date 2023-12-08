@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2007-2021   EDF R&D
+# Copyright (C) 2007-2024   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -21,90 +21,97 @@
    Ce module sert a construire les structures de donnees porteuses
    des informations liees aux groupes de commandes
 """
-from __future__ import absolute_import
 import types
+
 
 class UIINFO:
     """
-        Pour le moment la classe UIINFO ne sait traiter que des infos
-        portant sur la definition des groupes de commandes
-        Les autres informations sont ignorees
+    Pour le moment la classe UIINFO ne sait traiter que des infos
+    portant sur la definition des groupes de commandes
+    Les autres informations sont ignorees
     """
-    def __init__(self,parent,groupes=None,**args):
+
+    def __init__(self, parent, groupes=None, **args):
         """
-           Initialiseur de la classe UIINFO.
-           Initialise a partir du dictionnaire UIinfo passe a
-           un objet ENTITE les attributs de la classe
+        Initialiseur de la classe UIINFO.
+        Initialise a partir du dictionnaire UIinfo passe a
+        un objet ENTITE les attributs de la classe
         """
         # L'attribut parent stocke le lien vers l'objet ENTITE relie a UIINFO
-        self.parent=parent
-        self.groupes=groupes
+        self.parent = parent
+        self.groupes = groupes
         if groupes == None:
             # L'entite n'a pas de groupe associe. On lui associe le groupe "DEFAUT"
-            self.groupes=("DEFAUT",)
+            self.groupes = ("DEFAUT",)
         if type(self.groupes) != tuple:
-            self.groupes=(self.groupes,)
+            self.groupes = (self.groupes,)
 
-def traiteCommande(commande,niveau):
+
+def traiteCommande(commande, niveau):
     """
-        Cette fonction cree l'attribut UI de l'objet commande
-        a partir des informations contenues dans UIinfo
+    Cette fonction cree l'attribut UI de l'objet commande
+    a partir des informations contenues dans UIinfo
     """
-    uiinfo=commande.UIinfo or {}
-    UI=UIINFO(commande,**uiinfo)
-    commande.UI=UI
-    #if "CACHE" in UI.groupes:
-        # La commande est cachee aux utilisateurs
-        #niveau.dict_groupes["CACHE"].append(commande.nom)
-        #pass
-    #else:
-        # On ajoute la commande dans tous les groupes specifies
+    uiinfo = commande.UIinfo or {}
+    UI = UIINFO(commande, **uiinfo)
+    commande.UI = UI
+    # if "CACHE" in UI.groupes:
+    # La commande est cachee aux utilisateurs
+    # niveau.dict_groupes["CACHE"].append(commande.nom)
+    # pass
+    # else:
+    # On ajoute la commande dans tous les groupes specifies
     for grp in UI.groupes:
-        if not grp in niveau.dict_groupes: niveau.dict_groupes[grp]=[]
+        if not grp in niveau.dict_groupes:
+            niveau.dict_groupes[grp] = []
         niveau.dict_groupes[grp].append(commande.nom)
 
+
 def traiteNiveau(niveau):
-    if niveau.l_niveaux == ():
+    if niveau.lNiveaux == ():
         # Il n'y a pas de sous niveaux. niveau.entites ne contient que des commandes
-        niveau.dict_groupes={}
+        niveau.dict_groupes = {}
         for oper in niveau.entites:
-            traiteCommande(oper,niveau)
+            traiteCommande(oper, niveau)
         # A la fin les cles du dictionnaire dict_groupes donnent la liste des groupes
         # sans doublon
-        niveau.liste_groupes=list(niveau.dict_groupes.keys())
+        niveau.liste_groupes = list(niveau.dict_groupes.keys())
         # On ordonne les listes alphabetiquement
         niveau.liste_groupes.sort()
-        for v in niveau.dict_groupes.values():v.sort()
-        #print niveau.liste_groupes
-        #print niveau.dict_groupes
+        for v in niveau.dict_groupes.values():
+            v.sort()
+        # print niveau.liste_groupes
+        # print niveau.dict_groupes
     else:
-        for niv in niveau.l_niveaux:
+        for niv in niveau.lNiveaux:
             traiteNiveau(niv)
+
 
 def traite_UIinfo(cata):
     """
-       Cette fonction parcourt la liste des commandes d'un catalogue (cata)
-       construit les objets UIINFO a partir de l'attribut UIinfo de la commande
-       et construit la liste complete de tous les groupes presents
+    Cette fonction parcourt la liste des commandes d'un catalogue (cata)
+    construit les objets UIINFO a partir de l'attribut UIinfo de la commande
+    et construit la liste complete de tous les groupes presents
     """
-    #dict_groupes["CACHE"]=[]
-    #XXX Ne doit pas marcher avec les niveaux
-    if cata.JdC.l_niveaux == ():
+    # dict_groupes["CACHE"]=[]
+    # XXX Ne doit pas marcher avec les niveaux
+    if cata.JdC.lNiveaux == ():
         # Il n'y a pas de niveaux
         # On stocke la liste des groupes et leur contenu dans le JdC
         # dans les attributs liste_groupes et dict_groupes
-        cata.JdC.dict_groupes={}
+        cata.JdC.dict_groupes = {}
         for commande in cata.JdC.commandes:
-            traiteCommande(commande,cata.JdC)
+            traiteCommande(commande, cata.JdC)
         # A la fin les cles du dictionnaire dict_groupes donnent la liste des groupes
         # sans doublon
-        cata.JdC.liste_groupes=list(cata.JdC.dict_groupes.keys())
+        cata.JdC.liste_groupes = list(cata.JdC.dict_groupes.keys())
         # On ordonne les listes alphabetiquement
         cata.JdC.liste_groupes.sort()
-        for v in cata.JdC.dict_groupes.values():v.sort()
-        #print cata.JdC.liste_groupes
-        #print cata.JdC.dict_groupes
+        for v in cata.JdC.dict_groupes.values():
+            v.sort()
+        # print cata.JdC.liste_groupes
+        # print cata.JdC.dict_groupes
     else:
         # Le catalogue de commandes contient des definitions de niveau
-        for niv in cata.JdC.l_niveaux:
+        for niv in cata.JdC.lNiveaux:
             traiteNiveau(niv)

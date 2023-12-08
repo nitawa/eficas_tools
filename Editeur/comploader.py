@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2007-2021   EDF R&D
+# Copyright (C) 2007-2024   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -30,36 +30,39 @@
      - makeObjecttreeitem(appliEficas,labeltext, object, setFunction=None) -> item : fonction qui retourne un item
        correspondant a l'objet noyau fourni.
 """
-# import generaux
-from __future__ import absolute_import
-import os,glob,types
+import os, glob, types
 
 # Dictionnaire {object : item} permettant d'associer un item a un object
 # Ce dictionnaire est renseigne par la methode chargerComposants
 composants = {}
 
-def chargerComposants(Ihm="QT"):
+
+def chargerComposants(GUIPath):
+    # PN changer Ihm pour avoir le repertoire en parametre
     """
-        Cette fonction a pour but de charger tous les modules composants graphiques
-        (fichiers compo*.py dans le meme repertoire que ce module )
-        et de remplir le dictionnaire composants utilise par makeObjecttreeitem
+    Cette fonction a pour but de charger tous les modules composants graphiques
+    (fichiers compo*.py dans le meme repertoire que ce module )
+    et de remplir le dictionnaire composants utilise par makeObjecttreeitem
     """
-    reper=os.path.dirname(__file__)
-    repertoire=reper+"/../InterfaceQT4"
-    package="InterfaceQT4"
-    listfich=glob.glob(os.path.join(repertoire, "compo*.py"))
+    debug = 0
+    repertoire = os.path.join("..", GUIPath)
+    package = GUIPath
+    listfich = glob.glob(os.path.join(repertoire, "compo*.py"))
     for fichier in listfich:
-        m= os.path.basename(fichier)[:-3]
-        module=__import__(package,globals(),locals(),[m])
+        m = os.path.basename(fichier)[:-3]
+        module = __import__(package, globals(), locals(), [m])
         module = getattr(module, m)
-        composants[module.objet]=module.treeitem
+        composants[module.objet] = module.treeitem
+    if debug:
+        print("fin chargerComposants, composants : ", composants)
     return composants
+
 
 def gettreeitem(object):
     """
-      Cette fonction retourne la classe item associee a l'objet object.
-      Cette classe item depend bien sur de la nature de object, d'ou
-      l'interrogation du dictionnaire composants
+    Cette fonction retourne la classe item associee a l'objet object.
+    Cette classe item depend bien sur de la nature de object, d'ou
+    l'interrogation du dictionnaire composants
     """
     # Si la definition de l'objet a un attribut itemeditor, il indique
     # la classe a utiliser pour l'item
@@ -68,27 +71,36 @@ def gettreeitem(object):
     except:
         pass
 
+    # voir avec Eric ? side car ou 2 try
+    # try:
+    #    return object.definition.itemeditor
+    # except:
+    #    pass
     # On cherche ensuite dans les composants (plugins)
     try:
-        itemtype= composants[object.__class__]
+        itemtype = composants[object.__class__]
         return itemtype
     except:
         pass
 
     # Puis une eventuelle classe heritee (aleatoire car sans ordre)
     for e in list(composants.keys()):
-        if e and isinstance(object,e):
-            itemtype= composants[e]
+        if e and isinstance(object, e):
+            itemtype = composants[e]
             return itemtype
 
     # Si on n'a rien trouve dans les composants on utilise l'objet par defaut
-    itemtype=composants[None]
+    itemtype = composants[None]
     return itemtype
 
-def makeObjecttreeitem(appliEficas,labeltext, object, setFunction=None):
+
+def makeObjecttreeitem(appliEficas, labeltext, object, setFunction=None):
     """
-       Cette fonction permet de construire et de retourner un objet
-       de type item associe a l'object passe en argument.
+    Cette fonction permet de construire et de retourner un objet
+    de type item associe a l'object passe en argument.
     """
+    debug = 0
+    if debug:
+        print(appliEficas, labeltext, object, setFunction)
     c = gettreeitem(object)
-    return c(appliEficas,labeltext, object, setFunction)
+    return c(appliEficas, labeltext, object, setFunction)
