@@ -79,9 +79,9 @@ class JDCEditorSsIhm:
             or self.appliEficas.multi == True
         ):
             if self.maConfiguration.typeDeCata == "XML":
-                from InterfaceQT4 import readercataXML as readercata
+                from InterfaceGUI import readercataXML as readercata
             else:
-                from InterfaceQT4 import readercata
+                from InterfaceGUI import readercata
             self.readercata = readercata.ReaderCata(self, self.appliEficas)
             self.appliEficas.readercata = self.readercata
             self.appliEficas.code = self.code
@@ -1344,7 +1344,7 @@ class JDCEditorSsIhm:
         )
         QSfichier = QSfichier[0]
         self.fichierMED = QSfichier
-        from acquiertGroupes import getGroupes
+        from Extension.acquiertGroupes import getGroupes
 
         erreur, self.listeGroupes, self.nomMaillage, self.dicoCoord = getGroupes(
             self.fichierMED

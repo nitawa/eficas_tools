@@ -18,16 +18,16 @@
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
 # Modules Python
+
 import types, os
 import traceback
 
-
-from PyQt5.QtWidgets import QLineEdit, QLabel, QFileDialog, QMessageBox
+from PyQt5.QtWidgets import QLineEdit, QLabel, QFileDialog, QWidget
 from PyQt5.QtCore import QEvent, Qt, QTimer
 from PyQt5.QtGui import QIcon, QPalette
 
 from Extensions.i18n import tr
-from InterfaceQT4.monViewTexte import ViewText
+from InterfaceGUI.QT5.monViewTexte import ViewText
 
 
 # ---------------------- #
@@ -39,26 +39,28 @@ class LECustom(QLineEdit):
         """
         QLineEdit.__init__(self, parent)
 
+        self.valeur = None
+        self.aEuLeFocus = False
         self.parentQt = parentQt
+        self.parent = parent
         self.num = i
         self.dansUnTuple = False
         self.numDsLaListe = -1
-        self.parentTuple = None
-        self.valeur = None
-        self.aEuLeFocus = True
+        self.returnPressed.connect(self.litValeur)
 
     def focusInEvent(self, event):
-        # print ("dans focusInEvent de LECustom")
+        # print ("dans focusInEvent de LECustom",self.parentQt)
+        print("dans focusInEvent de LECustom", self.num, self.numDsLaListe)
         self.parentQt.aEuLeFocus = True
         self.aEuLeFocus = True
-        self.parentQt.lineEditEnCours = self
+        self.parentQt.LineEditEnCours = self
         self.parentQt.numLineEditEnCours = self.num
         self.parentQt.textSelected = self.text()
         self.setStyleSheet("border: 2px solid gray")
         QLineEdit.focusInEvent(self, event)
 
     def focusOutEvent(self, event):
-        # print ('focusOutEvent', self.aEuLeFocus)
+        # print ("dans focusOutEvent de LECustom",self.num,self.numDsLaListe, self.aEuLeFocus)
         self.setStyleSheet("border: 0px")
         if self.dansUnTuple:
             self.setStyleSheet("background:rgb(235,235,235); border: 0px;")
@@ -66,15 +68,13 @@ class LECustom(QLineEdit):
             self.setStyleSheet("background:rgb(210,210,210)")
         else:
             self.setStyleSheet("background:rgb(235,235,235)")
+
         if self.aEuLeFocus:
             self.aEuLeFocus = False
             self.litValeur()
-            if self.dansUnTuple:
-                self.parentTuple.getValeur()
         QLineEdit.focusOutEvent(self, event)
 
     def litValeur(self):
-        # print ("dans litValeur de LECustom")
         self.aEuLeFocus = False
         val = str(self.text())
         if str(val) == "" or val == None:
@@ -90,19 +90,21 @@ class LECustom(QLineEdit):
                 valeur = eval(val, d)
             except:
                 valeur = val
+
         self.valeur = valeur
-        # print ('self.valeur', self.valeur)
 
     def clean(self):
         self.setText("")
 
     def getValeur(self):
-        # return self.text()
-        self.litValeur()
-        return self.valeur
+        return self.text()
 
     def setValeur(self, valeur):
         self.setText(valeur)
+        self.valeur = valeur
+
+    # def leaveEvent(self,event):
+    #   ne sert a rien. quand on modifie la valeur on prend le focus
 
 
 # --------------------------- #
@@ -132,8 +134,17 @@ class MonLabelListeClic(QLabel):
 # ------------- #
 class GereListe(object):
     # ------------- #
+
     def __init__(self):
+        self.aEuLeFocus = False
         self.connecterSignaux()
+
+    def leaveEvent(self, event):
+        if self.aEuLeFocus:
+            print("appel de changeValeur")
+            self.changeValeur()
+            self.aEuLeFocus = False
+        QWidget.leaveEvent(self, event)
 
     def connecterSignaux(self):
         if hasattr(self, "RBHaut"):
@@ -147,8 +158,6 @@ class GereListe(object):
             self.PBAlpha.clicked.connect(self.alphaPushed)
             self.PBFind.clicked.connect(self.findPushed)
             self.LEFiltre.returnPressed.connect(self.LEFiltreReturnPressed)
-        if hasattr(self, "PBValideFeuille"):
-            self.PBValideFeuille.clicked.connect(self.changeValeur)
 
     def filtreListe(self):
         l = []
@@ -182,53 +191,42 @@ class GereListe(object):
         self.prepareListeResultat()
 
     def hautPushed(self):
-        # print ('hautPushed')
-        if self.numLineEditEnCours == 0:
-            return
         if self.numLineEditEnCours == 1:
             return
         else:
             numEchange = self.numLineEditEnCours - 1
         self.echange(self.numLineEditEnCours, numEchange)
-        self.lineEditEnCours.setFocus(True)
-        self.scrollArea.ensureWidgetVisible(self.lineEditEnCours)
+        self.LineEditEnCours.setFocus(True)
+        self.scrollArea.ensureWidgetVisible(self.LineEditEnCours)
 
     def basPushed(self):
-        # print ('hautPushed')
-        if self.numLineEditEnCours == 0:
-            return
         if self.numLineEditEnCours == self.indexDernierLabel:
             return
         else:
             numEchange = self.numLineEditEnCours + 1
         self.echange(self.numLineEditEnCours, numEchange)
-        self.lineEditEnCours.setFocus(True)
-        self.scrollArea.ensureWidgetVisible(self.lineEditEnCours)
+        self.LineEditEnCours.setFocus(True)
+        self.scrollArea.ensureWidgetVisible(self.LineEditEnCours)
 
     def echange(self, num1, num2):
         # on donne le focus au a celui ou on a bouge
         # par convention le 2
-        # print ('echange')
         nomLineEdit = self.nomLine + str(num1)
-        # print (nomLineEdit)
+        # print nomLineEdit
         courant = getattr(self, nomLineEdit)
         valeurAGarder = courant.text()
         nomLineEdit2 = self.nomLine + str(num2)
-        # print (nomLineEdit2)
+        # print nomLineEdit2
         courant2 = getattr(self, nomLineEdit2)
         courant.setText(courant2.text())
         courant2.setText(valeurAGarder)
-        # pour monWidgetCreeUserAssd
-        self.num1 = num1
-        self.num2 = num2
         self.changeValeur(changeDePlace=False)
         self.numLineEditEnCours = num2
-        self.lineEditEnCours = courant2
-        self.lineEditEnCours.setFocus(True)
+        self.LineEditEnCours = courant2
+        self.LineEditEnCours.setFocus(True)
 
     def moinsPushed(self):
         # on supprime le dernier
-        # print ('moinsPushed')
         if self.numLineEditEnCours == 0:
             return
         if self.indexDernierLabel == 0:
@@ -256,7 +254,6 @@ class GereListe(object):
         self.setValide()
 
     def plusPushed(self):
-        # print ('plusPushed gereliste')
         if self.indexDernierLabel == self.monSimpDef.max:
             if len(self.listeValeursCourantes) < self.monSimpDef.max:
                 self.chercheLigneVide()
@@ -272,17 +269,16 @@ class GereListe(object):
         QTimer.singleShot(1, self.rendVisibleLigne)
 
     def chercheLigneVide(self):
-        # print ('chercheLigneVide')
         for i in range(self.indexDernierLabel):
             nomLineEdit = self.nomLine + str(i + 1)
             courant = getattr(self, nomLineEdit)
             valeur = courant.getValeur()
-            if valeur == "" or valeur == None:
+            if valeur == "":
                 courant.setFocus(True)
                 self.estVisible = courant
+                return
 
     def descendLesLignes(self):
-        # print ('descendLesLignes')
         if self.numLineEditEnCours == self.indexDernierLabel:
             return
         nomLineEdit = self.nomLine + str(self.numLineEditEnCours + 1)
@@ -297,8 +293,8 @@ class GereListe(object):
             courant.setValeur(valeurADescendre)
             valeurADescendre = valeurAGarder
         self.changeValeur(changeDePlace=False)
-        if hasattr(self, "lineEditEnCours"):
-            self.scrollArea.ensureWidgetVisible(self.lineEditEnCours)
+        if hasattr(self, "LineEditEnCours"):
+            self.scrollArea.ensureWidgetVisible(self.LineEditEnCours)
 
     def voisListePushed(self):
         texteValeurs = ""
@@ -323,7 +319,8 @@ class GereListe(object):
             return
         if fn == "":
             return
-        ulfile = os.path.abspath(fn)
+        import six
+        ulfile = os.path.abspath(six.text_type(fn))
         self.editor.maConfiguration.savedir = os.path.split(ulfile)[0]
 
         from .monSelectVal import MonSelectVal

@@ -18,8 +18,8 @@
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
 
-from InterfaceQT4 import browser
-from InterfaceQT4 import typeNode
+from InterfaceGUI.QT5 import browser
+from InterfaceGUI.QT5 import typeNode
 from Extensions.i18n import tr
 
 from Editeur import Objecttreeitem
@@ -38,7 +38,7 @@ class Node(browser.JDCNode, typeNode.PopUpMenuNodePartiel):
         else:
             self.niveau = 1
         if hasattr(self, "plie") and self.plie == True:
-            from InterfaceQT4.monWidgetFactPlie import MonWidgetFactPlie
+            from InterfaceGUI.QT5.monWidgetFactPlie import MonWidgetFactPlie
 
             widget = MonWidgetFactPlie(
                 self,
@@ -52,7 +52,7 @@ class Node(browser.JDCNode, typeNode.PopUpMenuNodePartiel):
         elif self.editor.maConfiguration.afficheFirstPlies and self.firstAffiche:
             self.firstAffiche = False
             self.setPlie()
-            from InterfaceQT4.monWidgetFactPlie import MonWidgetFactPlie
+            from InterfaceGUI.QT5.monWidgetFactPlie import MonWidgetFactPlie
 
             widget = MonWidgetFactPlie(
                 self,
@@ -64,7 +64,7 @@ class Node(browser.JDCNode, typeNode.PopUpMenuNodePartiel):
                 maCommande,
             )
         else:
-            from InterfaceQT4.monWidgetFact import MonWidgetFact
+            from InterfaceGUI.QT5.monWidgetFact import MonWidgetFact
 
             widget = MonWidgetFact(
                 self,

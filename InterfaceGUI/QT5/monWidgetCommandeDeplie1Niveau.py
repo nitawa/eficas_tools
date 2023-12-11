@@ -23,7 +23,7 @@ import types, os
 import traceback
 
 from PyQt5.QtGui import QIcon
-from InterfaceQT4.monWidgetCommande import MonWidgetCommande
+from InterfaceGUI.QT5.monWidgetCommande import MonWidgetCommande
 from PyQt5.QtWidgets import QSpacerItem, QSizePolicy
 
 

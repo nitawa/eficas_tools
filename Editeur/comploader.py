@@ -45,7 +45,7 @@ def chargerComposants(GUIPath):
     et de remplir le dictionnaire composants utilise par makeObjecttreeitem
     """
     debug = 0
-    repertoire = os.path.join("..", GUIPath)
+    repertoire = os.path.join("..", "Interface",GUIPath)
     package = GUIPath
     listfich = glob.glob(os.path.join(repertoire, "compo*.py"))
     for fichier in listfich:

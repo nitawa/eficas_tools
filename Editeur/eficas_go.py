@@ -9,7 +9,6 @@
 #
 # This library is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 # Lesser General Public License for more details.
 #
 # You should have received a copy of the GNU Lesser General Public
@@ -24,26 +23,16 @@
 import sys, os
 
 repIni = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
-ihmQTDir = os.path.join(repIni, "UiQT5")
-editeurDir = os.path.join(repIni, "Editeur")
-ihmDir = os.path.join(repIni, "InterfaceQT4")
-
-if ihmDir not in sys.path:
-    sys.path.append(ihmDir)
-if ihmQTDir not in sys.path:
-    sys.path.append(ihmQTDir)
-if editeurDir not in sys.path:
-    sys.path.append(editeurDir)
 
 if sys.version_info[0] < 3:
     print("Must be using Python 3")
     sys.exit()
 
 
-def lanceEficas(code=None, multi=False, langue="en", labelCode=None):
-    # -------------------------------------------------------------------
+def lanceEficas(code=None, multi=False, langue="en", labelCode=None, GUI='QT5', salome=0):
+# ---------------------------------------------------------------------------------------
     """
-    Lance l'appli EFICAS avec Ihm
+      Lance l'appli EFICAS avec Ihm QT
     """
     try:
         from PyQt5.QtWidgets import QApplication
@@ -57,30 +46,22 @@ def lanceEficas(code=None, multi=False, langue="en", labelCode=None):
     if options.code != None:
         code = options.code
 
-    from InterfaceQT4.qtEficas import Appli
+    pathGui='InterfaceGUI.QT5.qtEficas'
+    qtEficas =__import__(pathGui, globals(), locals(), ['qtEficas',])
 
     app = QApplication(sys.argv)
-
-    Eficas = Appli(code=code, salome=0, multi=multi, langue=langue, labelCode=labelCode)
+    Eficas = qtEficas.Appli(code=code, salome=salome, multi=multi, langue=langue, labelCode=labelCode, GUI=GUI)
     Eficas.show()
 
     res = app.exec_()
     sys.exit(res)
 
 
-def getEficasSsIhm(
-    code=None,
-    multi=False,
-    langue="en",
-    ssCode=None,
-    labelCode=None,
-    forceXML=False,
-    genereXSD=False,
-    fichierCata=None,
-):
-    # -------------------------------------------------------------------------------------------------------------------------
+def getEficasSsIhm( code=None, multi=False, langue="en", ssCode=None, labelCode=None,
+    forceXML=False, genereXSD=False, fichierCata=None,):
+# -----------------------------------------------------------------------------------
     """
-    Lance l'appli EFICAS sans Ihm
+    instancie l'appli EFICAS sans Ihm
     """
     from Editeur import session
 
@@ -92,21 +73,13 @@ def getEficasSsIhm(
 
     from InterfaceQT4.qtEficasSsIhm import AppliSsIhm
 
-    Eficas = AppliSsIhm(
-        code=code,
-        salome=0,
-        multi=multi,
-        langue=langue,
-        ssCode=ssCode,
-        labelCode=labelCode,
-        genereXSD=genereXSD,
-        fichierCata=fichierCata,
-    )
+    Eficas = AppliSsIhm( code=code, salome=0, multi=multi, langue=langue,
+        ssCode=ssCode, labelCode=labelCode, genereXSD=genereXSD, fichierCata=fichierCata,)
     return Eficas
 
 
 def genereXSD(code=None):
-    # ------------------------
+# -----------------------
     from Editeur import session
 
     options = session.parse(sys.argv)

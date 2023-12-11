@@ -22,11 +22,11 @@ import types, os
 
 from copy import copy, deepcopy
 import traceback
-from InterfaceQT4 import typeNode
+from InterfaceGUI.QT5 import typeNode
 
 # Modules Eficas
 from Editeur import Objecttreeitem
-from InterfaceQT4 import browser
+from InterfaceGUI.QT5 import browser
 from Noyau.N_CR import justifyText
 from Accas import SalomeEntry
 from Accas import ASSD
@@ -49,7 +49,7 @@ class Node(browser.JDCNode, typeNode.PopUpMenuNodeMinimal):
             return None
         # label informatif
         if monObjet.isInformation():
-            from InterfaceQT4.monWidgetInfo import MonWidgetInfo
+            from InterfaceGUI.QT5.monWidgetInfo import MonWidgetInfo
 
             widget = MonWidgetInfo(
                 self, maDefinition, monNom, monObjet, parentQt, maCommande
@@ -62,7 +62,7 @@ class Node(browser.JDCNode, typeNode.PopUpMenuNodeMinimal):
         # a gerer comme dans composimp
         # Gestion des matrices
         if self.item.waitMatrice():
-            from InterfaceQT4.monWidgetMatrice import MonWidgetMatrice
+            from InterfaceGUI.QT5.monWidgetMatrice import MonWidgetMatrice
 
             widget = MonWidgetMatrice(
                 self, maDefinition, monNom, monObjet, parentQt, maCommande
@@ -82,26 +82,26 @@ class Node(browser.JDCNode, typeNode.PopUpMenuNodeMinimal):
         if maDefinition.max == 1:
             # A verifier
             if maDefinition.intoSug != [] and maDefinition.intoSug != None:
-                from InterfaceQT4.monWidgetCBIntoSug import MonWidgetCBIntoSug
+                from InterfaceGUI.QT5.monWidgetCBIntoSug import MonWidgetCBIntoSug
 
                 widget = MonWidgetCBIntoSug(
                     self, maDefinition, monNom, monObjet, parentQt, maCommande
                 )
             elif maDefinition.into != [] and maDefinition.into != None:
                 if maDefinition.fenetreIhm == "menuDeroulant":
-                    from InterfaceQT4.monWidgetCB import MonWidgetCB
+                    from InterfaceGUI.QT5.monWidgetCB import MonWidgetCB
 
                     widget = MonWidgetCB(
                         self, maDefinition, monNom, monObjet, parentQt, maCommande
                     )
                 elif len(monInto) < 4:
-                    from InterfaceQT4.monWidgetRadioButton import MonWidgetRadioButton
+                    from InterfaceGUI.QT5.monWidgetRadioButton import MonWidgetRadioButton
 
                     widget = MonWidgetRadioButton(
                         self, maDefinition, monNom, monObjet, parentQt, maCommande
                     )
                 elif len(monInto) < 7:
-                    from InterfaceQT4.monWidget4a6RadioButton import (
+                    from InterfaceGUI.QT5.monWidget4a6RadioButton import (
                         MonWidget4a6RadioButton,
                     )
 
@@ -109,20 +109,20 @@ class Node(browser.JDCNode, typeNode.PopUpMenuNodeMinimal):
                         self, maDefinition, monNom, monObjet, parentQt, maCommande
                     )
                 else:
-                    from InterfaceQT4.monWidgetCB import MonWidgetCB
+                    from InterfaceGUI.QT5.monWidgetCB import MonWidgetCB
 
                     widget = MonWidgetCB(
                         self, maDefinition, monNom, monObjet, parentQt, maCommande
                     )
 
             elif self.item.waitBool():
-                from InterfaceQT4.monWidgetSimpBool import MonWidgetSimpBool
+                from InterfaceGUI.QT5.monWidgetSimpBool import MonWidgetSimpBool
 
                 widget = MonWidgetSimpBool(
                     self, maDefinition, monNom, monObjet, parentQt, maCommande
                 )
             elif self.item.waitFichier():
-                from InterfaceQT4.monWidgetSimpFichier import MonWidgetSimpFichier
+                from InterfaceGUI.QT5.monWidgetSimpFichier import MonWidgetSimpFichier
 
                 widget = MonWidgetSimpFichier(
                     self, maDefinition, monNom, monObjet, parentQt, maCommande
@@ -130,13 +130,13 @@ class Node(browser.JDCNode, typeNode.PopUpMenuNodeMinimal):
 
             # PNPNPN - a faire
             elif self.item.waitDate():
-                from InterfaceQT4.monWidgetDate import MonWidgetDate
+                from InterfaceGUI.QT5.monWidgetDate import MonWidgetDate
 
                 widget = MonWidgetDate(
                     self, maDefinition, monNom, monObjet, parentQt, maCommande
                 )
             elif self.item.waitHeure():
-                from InterfaceQT4.monWidgetHeure import MonWidgetHeure
+                from InterfaceGUI.QT5.monWidgetHeure import MonWidgetHeure
 
                 widget = MonWidgetHeure(
                     self, maDefinition, monNom, monObjet, parentQt, maCommande
@@ -145,7 +145,7 @@ class Node(browser.JDCNode, typeNode.PopUpMenuNodeMinimal):
             elif self.item.waitTuple():
                 num = self.item.object.definition.type[0].ntuple
                 nomDeLaClasse = "MonWidgetSimpTuple" + str(num)
-                nomDuFichier = "InterfaceQT4.monWidgetSimpTupleN"
+                nomDuFichier = "InterfaceGUI.QT5.monWidgetSimpTupleN"
                 try:
                     # if 1 :
                     _temp = __import__(
@@ -162,7 +162,7 @@ class Node(browser.JDCNode, typeNode.PopUpMenuNodeMinimal):
                 )
 
             elif self.item.waitComplex():
-                from InterfaceQT4.monWidgetSimpComplexe import MonWidgetSimpComplexe
+                from InterfaceGUI.QT5.monWidgetSimpComplexe import MonWidgetSimpComplexe
 
                 widget = MonWidgetSimpComplexe(
                     self, maDefinition, monNom, monObjet, parentQt, maCommande
@@ -170,13 +170,13 @@ class Node(browser.JDCNode, typeNode.PopUpMenuNodeMinimal):
 
             elif self.item.waitCo():
                 if len(self.item.getSdAvantDuBonType()) == 0:
-                    from InterfaceQT4.monWidgetUniqueSDCO import MonWidgetUniqueSDCO
+                    from InterfaceGUI.QT5.monWidgetUniqueSDCO import MonWidgetUniqueSDCO
 
                     widget = MonWidgetUniqueSDCO(
                         self, maDefinition, monNom, monObjet, parentQt, maCommande
                     )
                 else:
-                    from InterfaceQT4.monWidgetSDCOInto import MonWidgetSDCOInto
+                    from InterfaceGUI.QT5.monWidgetSDCOInto import MonWidgetSDCOInto
 
                     widget = MonWidgetSDCOInto(
                         self, maDefinition, monNom, monObjet, parentQt, maCommande
@@ -186,28 +186,28 @@ class Node(browser.JDCNode, typeNode.PopUpMenuNodeMinimal):
                 if not (self.item.waitUserAssdOrAssdMultipleEnCreation()):
                     maListe = self.item.getSdAvantDuBonType()
                 if self.item.waitUserAssdOrAssdMultipleEnCreation():
-                    from InterfaceQT4.monWidgetCreeUserAssd import MonWidgetCreeUserAssd
+                    from InterfaceGUI.QT5.monWidgetCreeUserAssd import MonWidgetCreeUserAssd
 
                     widget = MonWidgetCreeUserAssd(
                         self, maDefinition, monNom, monObjet, parentQt, maCommande
                     )
                 # elif len(self.item.getSdAvantDuBonType()) == 0 :
                 elif len(maListe) == 0:
-                    from InterfaceQT4.monWidgetVide import MonWidgetVide
+                    from InterfaceGUI.QT5.monWidgetVide import MonWidgetVide
 
                     widget = MonWidgetVide(
                         self, maDefinition, monNom, monObjet, parentQt, maCommande
                     )
                 # elif len(self.item.getSdAvantDuBonType()) < 4 :
                 elif len(maListe) < 4:
-                    from InterfaceQT4.monWidgetRadioButton import MonWidgetRadioButtonSD
+                    from InterfaceGUI.QT5.monWidgetRadioButton import MonWidgetRadioButtonSD
 
                     widget = MonWidgetRadioButtonSD(
                         self, maDefinition, monNom, monObjet, parentQt, maCommande
                     )
                 # elif len(self.item.getSdAvantDuBonType()) < 7 :
                 elif len(maListe) < 7:
-                    from InterfaceQT4.monWidget4a6RadioButton import (
+                    from InterfaceGUI.QT5.monWidget4a6RadioButton import (
                         MonWidget4a6RadioButtonSD,
                     )
 
@@ -215,27 +215,27 @@ class Node(browser.JDCNode, typeNode.PopUpMenuNodeMinimal):
                         self, maDefinition, monNom, monObjet, parentQt, maCommande
                     )
                 else:
-                    from InterfaceQT4.monWidgetCB import MonWidgetCBSD
+                    from InterfaceGUI.QT5.monWidgetCB import MonWidgetCBSD
 
                     widget = MonWidgetCBSD(
                         self, maDefinition, monNom, monObjet, parentQt, maCommande
                     )
 
             elif self.item.waitSalome() and self.editor.salome:
-                from InterfaceQT4.monWidgetSimpSalome import MonWidgetSimpSalome
+                from InterfaceGUI.QT5.monWidgetSimpSalome import MonWidgetSimpSalome
 
                 widget = MonWidgetSimpSalome(
                     self, maDefinition, monNom, monObjet, parentQt, maCommande
                 )
 
             elif self.item.waitTxm():
-                from InterfaceQT4.monWidgetSimpTxt import MonWidgetSimpTxt
+                from InterfaceGUI.QT5.monWidgetSimpTxt import MonWidgetSimpTxt
 
                 widget = MonWidgetSimpTxt(
                     self, maDefinition, monNom, monObjet, parentQt, maCommande
                 )
             else:
-                from InterfaceQT4.monWidgetSimpBase import MonWidgetSimpBase
+                from InterfaceGUI.QT5.monWidgetSimpBase import MonWidgetSimpBase
 
                 widget = MonWidgetSimpBase(
                     self, maDefinition, monNom, monObjet, parentQt, maCommande
@@ -247,13 +247,13 @@ class Node(browser.JDCNode, typeNode.PopUpMenuNodeMinimal):
                 if self.item in self.editor.listeDesListesOuvertes or not (
                     self.editor.afficheListesPliees
                 ):
-                    from InterfaceQT4.monWidgetIntoSug import MonWidgetIntoSug
+                    from InterfaceGUI.QT5.monWidgetIntoSug import MonWidgetIntoSug
 
                     widget = MonWidgetIntoSug(
                         self, maDefinition, monNom, monObjet, parentQt, maCommande
                     )
                 else:
-                    from InterfaceQT4.monWidgetPlusieursPlie import (
+                    from InterfaceGUI.QT5.monWidgetPlusieursPlie import (
                         MonWidgetPlusieursPlie,
                     )
 
@@ -265,13 +265,13 @@ class Node(browser.JDCNode, typeNode.PopUpMenuNodeMinimal):
             elif self.item.waitAssd() and self.item.isListSansOrdreNiDoublon():
                 listeAAfficher = self.item.getSdAvantDuBonType()
                 if len(listeAAfficher) == 0:
-                    from InterfaceQT4.monWidgetVide import MonWidgetVide
+                    from InterfaceGUI.QT5.monWidgetVide import MonWidgetVide
 
                     widget = MonWidgetVide(
                         self, maDefinition, monNom, monObjet, parentQt, maCommande
                     )
                 else:
-                    from InterfaceQT4.monWidgetPlusieursInto import (
+                    from InterfaceGUI.QT5.monWidgetPlusieursInto import (
                         MonWidgetPlusieursInto,
                     )
 
@@ -295,7 +295,7 @@ class Node(browser.JDCNode, typeNode.PopUpMenuNodeMinimal):
                     )
                 )
                 if enable_salome_selection:
-                    from InterfaceQT4.monWidgetPlusieursBase import (
+                    from InterfaceGUI.QT5.monWidgetPlusieursBase import (
                         MonWidgetPlusieursBase,
                     )
 
@@ -303,7 +303,7 @@ class Node(browser.JDCNode, typeNode.PopUpMenuNodeMinimal):
                         self, maDefinition, monNom, monObjet, parentQt, maCommande
                     )
                 elif len(listeAAfficher) == 0:
-                    from InterfaceQT4.monWidgetVide import MonWidgetVide
+                    from InterfaceGUI.QT5.monWidgetVide import MonWidgetVide
 
                     widget = MonWidgetVide(
                         self, maDefinition, monNom, monObjet, parentQt, maCommande
@@ -311,7 +311,7 @@ class Node(browser.JDCNode, typeNode.PopUpMenuNodeMinimal):
                 elif self.item in self.editor.listeDesListesOuvertes or not (
                     self.editor.afficheListesPliees
                 ):
-                    from InterfaceQT4.monWidgetPlusieursASSDIntoOrdonne import (
+                    from InterfaceGUI.QT5.monWidgetPlusieursASSDIntoOrdonne import (
                         MonWidgetPlusieursASSDIntoOrdonne,
                     )
 
@@ -319,7 +319,7 @@ class Node(browser.JDCNode, typeNode.PopUpMenuNodeMinimal):
                         self, maDefinition, monNom, monObjet, parentQt, maCommande
                     )
                 else:
-                    from InterfaceQT4.monWidgetPlusieursPlie import (
+                    from InterfaceGUI.QT5.monWidgetPlusieursPlie import (
                         MonWidgetPlusieursPlieASSD,
                     )
 
@@ -328,7 +328,7 @@ class Node(browser.JDCNode, typeNode.PopUpMenuNodeMinimal):
                     )
             elif self.item.waitTuple():
                 if self.item.object.definition.fenetreIhm == "Tableau":
-                    from InterfaceQT4.monWidgetTableau import MonWidgetTableau
+                    from InterfaceGUI.QT5.monWidgetTableau import MonWidgetTableau
 
                     widget = MonWidgetTableau(
                         self, maDefinition, monNom, monObjet, parentQt, maCommande
@@ -336,7 +336,7 @@ class Node(browser.JDCNode, typeNode.PopUpMenuNodeMinimal):
                 else:
                     num = self.item.object.definition.type[0].ntuple
                     nomDeLaClasse = "MonWidgetPlusieursTuple" + str(num)
-                    nomDuFichier = "InterfaceQT4.monWidgetPlusieursTupleN"
+                    nomDuFichier = "InterfaceGUI.QT5.monWidgetPlusieursTupleN"
                     try:
                         _temp = __import__(
                             nomDuFichier, globals(), locals(), [nomDeLaClasse], 0
@@ -354,7 +354,7 @@ class Node(browser.JDCNode, typeNode.PopUpMenuNodeMinimal):
                     if self.item in self.editor.listeDesListesOuvertes or not (
                         self.editor.afficheListesPliees
                     ):
-                        from InterfaceQT4.monWidgetPlusieursInto import (
+                        from InterfaceGUI.QT5.monWidgetPlusieursInto import (
                             MonWidgetPlusieursInto,
                         )
 
@@ -362,7 +362,7 @@ class Node(browser.JDCNode, typeNode.PopUpMenuNodeMinimal):
                             self, maDefinition, monNom, monObjet, parentQt, maCommande
                         )
                     else:
-                        from InterfaceQT4.monWidgetPlusieursPlie import (
+                        from InterfaceGUI.QT5.monWidgetPlusieursPlie import (
                             MonWidgetPlusieursPlie,
                         )
 
@@ -373,7 +373,7 @@ class Node(browser.JDCNode, typeNode.PopUpMenuNodeMinimal):
                     if self.item in self.editor.listeDesListesOuvertes or not (
                         self.editor.afficheListesPliees
                     ):
-                        from InterfaceQT4.monWidgetPlusieursIntoOrdonne import (
+                        from InterfaceGUI.QT5.monWidgetPlusieursIntoOrdonne import (
                             MonWidgetPlusieursIntoOrdonne,
                         )
 
@@ -381,7 +381,7 @@ class Node(browser.JDCNode, typeNode.PopUpMenuNodeMinimal):
                             self, maDefinition, monNom, monObjet, parentQt, maCommande
                         )
                     else:
-                        from InterfaceQT4.monWidgetPlusieursPlie import (
+                        from InterfaceGUI.QT5.monWidgetPlusieursPlie import (
                             MonWidgetPlusieursPlie,
                         )
 
@@ -390,7 +390,7 @@ class Node(browser.JDCNode, typeNode.PopUpMenuNodeMinimal):
                         )
             else:
                 if self.item.waitUserAssdOrAssdMultipleEnCreation():
-                    from InterfaceQT4.monWidgetPlusieursCreeUserAssd import (
+                    from InterfaceGUI.QT5.monWidgetPlusieursCreeUserAssd import (
                         MonWidgetPlusieursCreeUserAssd,
                     )
 
@@ -400,7 +400,7 @@ class Node(browser.JDCNode, typeNode.PopUpMenuNodeMinimal):
                 elif self.item in self.editor.listeDesListesOuvertes or not (
                     self.editor.afficheListesPliees
                 ):
-                    from InterfaceQT4.monWidgetPlusieursBase import (
+                    from InterfaceGUI.QT5.monWidgetPlusieursBase import (
                         MonWidgetPlusieursBase,
                     )
 
@@ -408,7 +408,7 @@ class Node(browser.JDCNode, typeNode.PopUpMenuNodeMinimal):
                         self, maDefinition, monNom, monObjet, parentQt, maCommande
                     )
                 else:
-                    from InterfaceQT4.monWidgetPlusieursPlie import (
+                    from InterfaceGUI.QT5.monWidgetPlusieursPlie import (
                         MonWidgetPlusieursPlie,
                     )
 

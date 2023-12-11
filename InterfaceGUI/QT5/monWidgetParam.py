@@ -21,7 +21,7 @@ import os, re
 import types
 
 from desWidgetParam import Ui_WidgetParam
-from InterfaceQT4.gereIcones import FacultatifOuOptionnel
+from InterfaceGUI.QT5.gereIcones import FacultatifOuOptionnel
 from PyQt5.QtWidgets import QWidget, QMessageBox
 from PyQt5.QtGui import QIcon
 

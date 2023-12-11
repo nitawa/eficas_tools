@@ -399,7 +399,7 @@ class MyViewManager(object):
                     include=include,
                 )
             else:
-                from InterfaceQT4.editor import JDCEditor
+                from InterfaceGUI.QT5.editor import JDCEditor
             editor = JDCEditor(
                 self.appliEficas,
                 fichier,

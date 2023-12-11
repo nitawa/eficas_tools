@@ -154,7 +154,7 @@ class JDCTree(QTreeWidget, GereRegles):
     # ----------------------------------
         # print ("je passe dans handleOnItem pour ",self, item.item.nom, item, item.item, item.item.getLabelText())
 
-        from InterfaceQT4 import composimp
+        from InterfaceGUI.QT5 import composimp
 
         self.inhibeExpand = True
         self.itemCourant = item
@@ -242,9 +242,9 @@ class JDCNode(QTreeWidgetItem, GereRegles):
         self.childrenComplete = []
         self.item._object.node = self
 
-        from InterfaceQT4 import compocomm
-        from InterfaceQT4 import compoparam
-        from InterfaceQT4 import composimp
+        from InterfaceGUI.QT5 import compocomm
+        from InterfaceGUI.QT5 import compoparam
+        from InterfaceGUI.QT5 import composimp
 
         if isinstance(self.item, compocomm.COMMTreeItem):
             name = tr("Commentaire")
@@ -286,8 +286,8 @@ class JDCNode(QTreeWidgetItem, GereRegles):
         if isinstance(self.item, composimp.SIMPTreeItem):
             self.plie = False
 
-        from InterfaceQT4 import compobloc
-        from InterfaceQT4 import compomclist
+        from InterfaceGUI.QT5 import compobloc
+        from InterfaceGUI.QT5 import compomclist
 
         ajoutAuParentduNoeud = 0
         self.treeParent = treeParent
@@ -432,7 +432,7 @@ class JDCNode(QTreeWidgetItem, GereRegles):
         if self.fenetreIhm == None:
             return None
         if self.fenetreIhm == "deplie1Niveau":
-            from InterfaceQT4.monWidgetCommandeDeplie1Niveau import (
+            from InterfaceGUI.QT5.monWidgetCommandeDeplie1Niveau import (
                 MonWidgetCommandeDeplie1Niveau,
             )
 
@@ -581,7 +581,7 @@ class JDCNode(QTreeWidgetItem, GereRegles):
         """
         self.editor.initModif()
 
-        from InterfaceQT4 import compojdc
+        from InterfaceGUI.QT5 import compojdc
 
         if (isinstance(self.treeParent, compojdc.Node)) and not self.verifiePosition(
             name, pos
@@ -759,7 +759,7 @@ class JDCNode(QTreeWidgetItem, GereRegles):
         else:
             toselect.select()
 
-        from InterfaceQT4 import compojdc
+        from InterfaceGUI.QT5 import compojdc
 
         # cas ou on detruit dans l arbre sans affichage
         if isinstance(self.treeParent, compojdc.Node):
@@ -775,7 +775,7 @@ class JDCNode(QTreeWidgetItem, GereRegles):
         """
         Methode externe pour la destruction d une liste de noeud
         """
-        from InterfaceQT4 import compojdc
+        from InterfaceGUI.QT5 import compojdc
 
         self.editor.initModif()
         index = 9999
@@ -1018,7 +1018,7 @@ class JDCNode(QTreeWidgetItem, GereRegles):
     def plieToutEtReafficheSaufItem(self, itemADeplier):
     # ---------------------------------------------------
         self.inhibeExpand = True
-        from InterfaceQT4 import compojdc
+        from InterfaceGUI.QT5 import compojdc
 
         if isinstance(self, compojdc.Node):
             self.affichePanneau()
@@ -1027,7 +1027,7 @@ class JDCNode(QTreeWidgetItem, GereRegles):
         self.editor.deplier = False
         for item in self.children:
             # il ne faut pas plier les blocs
-            from InterfaceQT4 import compobloc
+            from InterfaceGUI.QT5 import compobloc
 
             if isinstance(item, compobloc.Node):
                 continue
@@ -1040,7 +1040,7 @@ class JDCNode(QTreeWidgetItem, GereRegles):
     def plieToutEtReaffiche(self):
     # -----------------------------
         # print ('plieToutEtReaffiche', self.item.getNom())
-        from InterfaceQT4 import compojdc
+        from InterfaceGUI.QT5 import compojdc
 
         if isinstance(self, compojdc.Node):
             self.affichePanneau()
@@ -1049,7 +1049,7 @@ class JDCNode(QTreeWidgetItem, GereRegles):
         self.editor.deplier = False
         for item in self.children:
             # il ne faut pas plier les blocs
-            from InterfaceQT4 import compobloc
+            from InterfaceGUI.QT5 import compobloc
 
             if isinstance(item, compobloc.Node):
                 continue
@@ -1088,7 +1088,7 @@ class JDCNode(QTreeWidgetItem, GereRegles):
     def setPlieChildren(self):
     # -----------------------------
         self.plie = True
-        from InterfaceQT4 import composimp
+        from InterfaceGUI.QT5 import composimp
 
         if isinstance(self, composimp.Node):
             return
@@ -1103,8 +1103,8 @@ class JDCNode(QTreeWidgetItem, GereRegles):
 
         # Pour les blocs et les motcles list
         # on affiche un niveau de plus
-        from InterfaceQT4 import compobloc
-        from InterfaceQT4 import compomclist
+        from InterfaceGUI.QT5 import compobloc
+        from InterfaceGUI.QT5 import compomclist
 
         if isinstance(self, compobloc.Node) or (
             isinstance(self, compomclist.Node) and self.item.isMCList()

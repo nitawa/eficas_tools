@@ -19,24 +19,18 @@
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
 import os, sys
+#pathUi = os.path.abspath(os.path.dirname(__file__), '..', '..', 'UiQT5')
+#if not pathUi not in sys.path : sys.path.append(pathUi)
 
-from PyQt5.QtWidgets import (
-    QApplication,
-    QMainWindow,
-    QGridLayout,
-    QBoxLayout,
-    QMenu,
-    QAction,
-    QMessageBox,
-)
+from PyQt5.QtWidgets import ( QApplication, QMainWindow, QGridLayout, QBoxLayout, QMenu, QAction, QMessageBox,)
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import Qt, QSize
 
 
 from Editeur import session
-from myMain import Ui_Eficas
-from InterfaceQT4.viewManager import MyViewManager
-from InterfaceQT4.qtEficasSsIhm import AppliSsIhm
+from UiQT5.myMain import Ui_Eficas
+from InterfaceGUI.QT5.viewManager import MyViewManager
+from InterfaceGUI.qtEficasSsIhm import AppliSsIhm
 
 from Extensions.i18n import tr
 from Extensions.eficas_exception import EficasException
@@ -57,7 +51,7 @@ class Appli(AppliSsIhm, Ui_Eficas, QMainWindow):
         langue="en",
         ssIhm=False,
         labelCode=None,
-        GUIPath="InterfaceQT4",
+        GUIPath="InterfaceGUI.QT5",
     ):
         """
         Constructor
@@ -96,7 +90,7 @@ class Appli(AppliSsIhm, Ui_Eficas, QMainWindow):
         self.suiteTelemac = False
         if hasattr(self, "maConfiguration"):
             if self.maConfiguration.demandeLangue:
-                from InterfaceQT4.monChoixLangue import MonChoixLangue
+                from InterfaceGUI.QT5.monChoixLangue import MonChoixLangue
 
                 widgetLangue = MonChoixLangue(self)
                 ret = widgetLangue.exec_()
@@ -212,7 +206,7 @@ class Appli(AppliSsIhm, Ui_Eficas, QMainWindow):
         self.ssCode = ssCode
         if self.code == None:
             self.cleanPath()
-            from InterfaceQT4.monChoixCode import MonChoixCode
+            from InterfaceGUI.QT5.monChoixCode import MonChoixCode
 
             widgetChoix = MonChoixCode(self)
             ret = widgetChoix.exec_()

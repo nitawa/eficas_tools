@@ -21,8 +21,8 @@ import os, sys
 
 from Extensions.eficas_exception import EficasException
 from Extensions import param2
-from InterfaceQT4.getVersion import getEficasVersion
-from InterfaceQT4.viewManagerSsIhm import MyViewManagerSsIhm
+from InterfaceGUI.getVersion import getEficasVersion
+from viewManagerSsIhm import MyViewManagerSsIhm
 from Editeur import session
 
 
@@ -111,11 +111,8 @@ class AppliSsIhm:
         self.withXSD = session.d_env.withXSD
 
         if self.salome:
-            import Accas
-
             try:
-                import eficasSalome
-
+                from Accas import eficasSalome
                 Accas.SalomeEntry = eficasSalome.SalomeEntry
             except:
                 print("eficas hors salome")

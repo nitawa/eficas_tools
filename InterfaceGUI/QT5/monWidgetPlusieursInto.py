@@ -26,12 +26,12 @@ from PyQt5.QtCore import Qt
 
 from Extensions.i18n import tr
 
-from InterfaceQT4.feuille import Feuille
+from InterfaceGUI.QT5.feuille import Feuille
 from desWidgetPlusieursInto import Ui_WidgetPlusieursInto
-from InterfaceQT4.politiquesValidation import PolitiquePlusieurs
-from InterfaceQT4.qtSaisie import SaisieValeur
-from InterfaceQT4.gereListe import GerePlie
-from InterfaceQT4.gereListe import GereListe
+from InterfaceGUI.QT5.politiquesValidation import PolitiquePlusieurs
+from InterfaceGUI.QT5.qtSaisie import SaisieValeur
+from InterfaceGUI.QT5.gereListe import GerePlie
+from InterfaceGUI.QT5.gereListe import GereListe
 
 
 class MonWidgetPlusieursInto(Ui_WidgetPlusieursInto, Feuille, GerePlie, GereListe):

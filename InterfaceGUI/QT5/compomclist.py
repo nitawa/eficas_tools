@@ -47,7 +47,7 @@ class Node(browser.JDCNode, typeNode.PopUpMenuNodeMinimal):
         # attention si l objet est une mclist on utilise bloc
         if not (monObjet.isMCList()):
             if hasattr(self, "plie") and self.plie == True:
-                from InterfaceQT4.monWidgetFactPlie import MonWidgetFactPlie
+                from InterfaceGUI.QT5.monWidgetFactPlie import MonWidgetFactPlie
 
                 widget = MonWidgetFactPlie(
                     self,
@@ -61,7 +61,7 @@ class Node(browser.JDCNode, typeNode.PopUpMenuNodeMinimal):
             elif self.editor.maConfiguration.afficheFirstPlies and self.firstAffiche:
                 self.firstAffiche = False
                 self.setPlie()
-                from InterfaceQT4.monWidgetFactPlie import MonWidgetFactPlie
+                from InterfaceGUI.QT5.monWidgetFactPlie import MonWidgetFactPlie
 
                 widget = MonWidgetFactPlie(
                     self,
@@ -73,7 +73,7 @@ class Node(browser.JDCNode, typeNode.PopUpMenuNodeMinimal):
                     maCommande,
                 )
             else:
-                from InterfaceQT4.monWidgetFact import MonWidgetFact
+                from InterfaceGUI.QT5.monWidgetFact import MonWidgetFact
 
                 widget = MonWidgetFact(
                     self,
@@ -85,7 +85,7 @@ class Node(browser.JDCNode, typeNode.PopUpMenuNodeMinimal):
                     maCommande,
                 )
         else:
-            from InterfaceQT4.monWidgetBloc import MonWidgetBloc
+            from InterfaceGUI.QT5.monWidgetBloc import MonWidgetBloc
 
             widget = MonWidgetBloc(
                 self,

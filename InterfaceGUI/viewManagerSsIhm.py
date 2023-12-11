@@ -18,14 +18,6 @@
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
 
-
-
-try:
-    from builtins import str
-    from builtins import object
-except:
-    pass
-
 import os
 from Extensions.i18n import tr
 
@@ -127,7 +119,7 @@ class MyViewManagerSsIhm(object):
         # avec handler pour les utilisateurs avance
         # sans pour les utilisateurs encore plus ancvances et les tests
 
-        from InterfaceQT4.editorSsIhm import JDCEditorSsIhm
+        from editorSsIhm import JDCEditorSsIhm
 
         editor = JDCEditorSsIhm(
             self.appliEficas, fichier, jdc, units=units, include=include
@@ -145,7 +137,7 @@ class MyViewManagerSsIhm(object):
     def getNewEditorNormal(self, fichier=None, jdc=None, units=None, include=0):
         #  --------------------------------------------------------------------------------
 
-        from InterfaceQT4.editorSsIhm import JDCEditorSsIhm
+        from editorSsIhm import JDCEditorSsIhm
 
         editor = JDCEditorSsIhm(
             self.appliEficas, fichier, jdc, units=units, include=include

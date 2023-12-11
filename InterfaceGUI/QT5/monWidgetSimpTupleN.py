@@ -23,8 +23,8 @@
 # from PyQt4.QtCore import *
 from Extensions.i18n import tr
 
-from InterfaceQT4.feuille import Feuille
-from InterfaceQT4.monWidgetSimpTuple import MonWidgetSimpTuple
+from InterfaceGUI.QT5.feuille import Feuille
+from InterfaceGUI.QT5.monWidgetSimpTuple import MonWidgetSimpTuple
 from desWidgetTuple2 import Ui_WidgetTuple2
 from desWidgetTuple3 import Ui_WidgetTuple3
 from desWidgetTuple4 import Ui_WidgetTuple4

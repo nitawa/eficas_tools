@@ -18,9 +18,10 @@
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
 """
-    Ce module sert a lire un catalogue et a construire
+    Ce module SERVAIT a lire un catalogue et a construire
     un objet CataItem pour Eficas.
     Il s'appuie sur la classe READERCATA
+    OBSOLETE
 """
 import autre_analyse_cata
 import uiinfo
@@ -31,10 +32,9 @@ import uiinfo
 from monChoixCata import MonChoixCata
 from Extensions.i18n import tr
 from Extensions.eficas_exception import EficasException
-from Efi2Xsd import readerEfiXsd
+#from Efi2Xsd import readerEfiXsd
 from autre_analyse_cata import analyseCatalogue
 
-# ATtention pas teste depuis le chgt de nom
 
 from readercata import ReaderCataCommun
 

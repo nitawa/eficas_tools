@@ -27,9 +27,9 @@ import traceback
 # Modules Eficas
 from Editeur import Objecttreeitem
 from Extensions.i18n import tr
-from InterfaceQT4 import compooper
-from InterfaceQT4 import browser
-from InterfaceQT4 import typeNode
+from InterfaceGUI.QT5 import compooper
+from InterfaceGUI.QT5 import browser
+from InterfaceGUI.QT5 import typeNode
 
 
 class MACRONode(browser.JDCNode, typeNode.PopUpMenuNode):

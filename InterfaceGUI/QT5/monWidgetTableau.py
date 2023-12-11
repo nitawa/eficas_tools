@@ -22,8 +22,8 @@
 from PyQt5.QtWidgets import QLabel, QSizePolicy, QSpacerItem
 from PyQt5.QtCore import QSize
 
-from InterfaceQT4.feuille import Feuille
-from InterfaceQT4.monWidgetPlusieursTuple import MonWidgetPlusieursTuple
+from InterfaceGUI.QT5.feuille import Feuille
+from InterfaceGUI.QT5.monWidgetPlusieursTuple import MonWidgetPlusieursTuple
 from desWidgetPlusieursTuple import Ui_WidgetPlusieursTuple
 from desWidgetTableau import Ui_WidgetTableau
 

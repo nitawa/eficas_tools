@@ -34,17 +34,17 @@ from Extensions.i18n import tr
 from Editeur import session
 from Editeur import comploader
 from Editeur import Objecttreeitem
-from InterfaceQT4 import browser
+from InterfaceGUI.QT5 import browser
 
 from desBaseWidget import Ui_baseWidget
-from InterfaceQT4.monViewTexte import ViewText
+from InterfaceGUI.QT5.monViewTexte import ViewText
 from monWidgetCreeParam import MonWidgetCreeParam
 
 DictExtensions = {"MAP": ".map", "TELEMAC": ".cas"}
 debug = False
 
 
-from InterfaceQT4.editorSsIhm import JDCEditorSsIhm
+from InterfaceGUI.editorSsIhm import JDCEditorSsIhm
 
 
 class JDCEditor(JDCEditorSsIhm, Ui_baseWidget, QWidget):
@@ -513,7 +513,7 @@ class JDCEditor(JDCEditorSsIhm, Ui_baseWidget, QWidget):
         listeIndex = []
         listeChild = []
         listeItem = []
-        from InterfaceQT4 import compojdc
+        from InterfaceGUI.QT5 import compojdc
 
         noeudOuColler = self.node_selected[0]
         if not (isinstance(noeudOuColler.treeParent, compojdc.Node)):

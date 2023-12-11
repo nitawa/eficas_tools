@@ -22,8 +22,8 @@ from PyQt5.QtWidgets import QWidget
 from PyQt5.QtGui import QIcon
 
 from desWidgetNiveauFact import Ui_WidgetNiveauFact
-from InterfaceQT4.monWidgetOptionnel import MonWidgetOptionnel
-from InterfaceQT4.groupe import Groupe
+from InterfaceGUI.QT5.monWidgetOptionnel import MonWidgetOptionnel
+from InterfaceGUI.QT5.groupe import Groupe
 
 from Extensions.i18n import tr
 
@@ -34,7 +34,7 @@ class MonWidgetNiveauFact(Ui_WidgetNiveauFact, Groupe):
         self.listeAffichageWidget = []
         self.listeBoutonAChanger = []
         Groupe.__init__(self, node, editor, None, definition, obj, 1, self)
-        from InterfaceQT4 import composimp
+        from InterfaceGUI.QT5 import composimp
 
         if isinstance(self.node, composimp.Node):
             widget = self.node.getPanelGroupe(self, self.maCommande)

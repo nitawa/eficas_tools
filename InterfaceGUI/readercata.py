@@ -59,7 +59,7 @@ class ReaderCataCommun(object):
         else:
             title = tr("Choix d une version ")
 
-        from InterfaceQT4.monChoixCata import MonChoixCata
+        from InterfaceGUI.QT5.monChoixCata import MonChoixCata
 
         widgetChoix = MonChoixCata(
             self.appliEficas, [cata.labelCode for cata in cataListeChoix], title
