@@ -20,12 +20,6 @@
 
 
 
-try:
-    from builtins import str
-    from builtins import object
-except:
-    pass
-
 import os
 from Extensions.i18n import tr
 from PyQt5.QtWidgets import QFileDialog, QMessageBox

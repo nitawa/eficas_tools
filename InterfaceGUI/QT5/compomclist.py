@@ -22,9 +22,9 @@
 import types
 import traceback
 
-from . import compofact
-from . import browser
-from . import typeNode
+from InterfaceGUI.QT5 import compofact
+from InterfaceGUI.QT5 import browser
+from InterfaceGUI.QT5 import typeNode
 from Extensions.i18n import tr
 
 from Editeur import Objecttreeitem

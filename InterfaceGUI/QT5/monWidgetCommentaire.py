@@ -23,7 +23,7 @@ from PyQt5.QtWidgets import QWidget
 from PyQt5.QtCore import Qt
 
 from desWidgetCommentaire import Ui_WidgetCommentaire
-from .gereIcones import FacultatifOuOptionnel
+from InterfaceGUI.QT5.gereIcones import FacultatifOuOptionnel
 from Extensions.i18n import tr
 import Accas
 import os

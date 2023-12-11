@@ -24,21 +24,20 @@ from PyQt5.QtCore import QSize, Qt, QTimer
 
 from Extensions.i18n import tr
 
-
 from InterfaceGUI.QT5.feuille import Feuille
 from InterfaceGUI.QT5.politiquesValidation import PolitiquePlusieurs
 from InterfaceGUI.QT5.qtSaisie import SaisieValeur
 from InterfaceGUI.QT5.gereListe import GereListe
 from InterfaceGUI.QT5.gereListe import LECustom
-from Tuple2 import Ui_Tuple2
-from Tuple3 import Ui_Tuple3
-from Tuple4 import Ui_Tuple4
-from Tuple5 import Ui_Tuple5
-from Tuple6 import Ui_Tuple6
-from Tuple7 import Ui_Tuple7
-from Tuple8 import Ui_Tuple8
-from Tuple9 import Ui_Tuple9
-from Tuple10 import Ui_Tuple10
+from UiQT5.Tuple2 import Ui_Tuple2
+from UiQT5.Tuple3 import Ui_Tuple3
+from UiQT5.Tuple4 import Ui_Tuple4
+from UiQT5.Tuple5 import Ui_Tuple5
+from UiQT5.Tuple6 import Ui_Tuple6
+from UiQT5.Tuple7 import Ui_Tuple7
+from UiQT5.Tuple8 import Ui_Tuple8
+from UiQT5.Tuple9 import Ui_Tuple9
+from UiQT5.Tuple10 import Ui_Tuple10
 
 
 # --------------------------

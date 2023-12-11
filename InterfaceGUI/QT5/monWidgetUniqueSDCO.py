@@ -20,14 +20,13 @@
 # Modules Python
 
 # Modules Eficas
-from PyQt4.QtGui import *
-from PyQt4.QtCore import *
+
 from Extensions.i18n import tr
 
-from .feuille import Feuille
-from desWidgetUniqueSDCO import Ui_WidgetUniqueSDCO
-from .politiquesValidation import PolitiqueUnique
-from .qtSaisie import SaisieSDCO
+from InterfaceGUI.QT5.feuille import Feuille
+from UiQT5.desWidgetUniqueSDCO import Ui_WidgetUniqueSDCO
+from InterfaceGUI.QT5.politiquesValidation import PolitiqueUnique
+from InterfaceGUI.QT5.qtSaisie import SaisieSDCO
 
 
 class MonWidgetUniqueSDCO(Ui_WidgetUniqueSDCO, Feuille, SaisieSDCO):

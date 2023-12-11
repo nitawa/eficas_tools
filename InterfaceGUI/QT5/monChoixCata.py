@@ -20,7 +20,7 @@
 # Modules Python
 # Modules Eficas
 
-from desChoixCata import Ui_DChoixCata
+from InterfaceGUI.QT5.desChoixCata import Ui_DChoixCata
 from PyQt5.QtWidgets import QDialog
 from Extensions.i18n import tr
 

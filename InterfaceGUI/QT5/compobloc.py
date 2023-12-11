@@ -20,9 +20,9 @@
 
 from Editeur import Objecttreeitem
 
-from . import compofact
-from . import browser
-from . import typeNode
+from InterfaceGUI.QT5 import compofact
+from InterfaceGUI.QT5 import browser
+from InterfaceGUI.QT5 import typeNode
 
 
 class Node(browser.JDCNode, typeNode.PopUpMenuNodeMinimal):
@@ -38,7 +38,7 @@ class Node(browser.JDCNode, typeNode.PopUpMenuNodeMinimal):
             self.niveau = parentQt.niveau + 1
         else:
             self.niveau = 1
-        from .monWidgetBloc import MonWidgetBloc
+        from InterfaceGUI.QT5.monWidgetBloc import MonWidgetBloc
 
         widget = MonWidgetBloc(
             self, self.editor, parentQt, maDefinition, monObjet, self.niveau, maCommande

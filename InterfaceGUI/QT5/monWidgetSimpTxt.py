@@ -21,8 +21,8 @@
 # Modules Eficas
 from Extensions.i18n import tr
 
-from desWidgetSimpTxt import Ui_WidgetSimpTxt
-from .monWidgetSimpBase import MonWidgetSimpBase
+from UiQT5.desWidgetSimpTxt import Ui_WidgetSimpTxt
+from InterfaceGUI.QT5.monWidgetSimpBase import MonWidgetSimpBase
 
 
 class MonWidgetSimpTxt(Ui_WidgetSimpTxt, MonWidgetSimpBase):

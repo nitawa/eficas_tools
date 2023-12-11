@@ -27,7 +27,7 @@ pattern_name = re.compile(r"^[^\d\W]\w*\Z")
 from PyQt5.QtWidgets import QDialog, QMessageBox
 from PyQt5.QtCore import Qt
 from Extensions.i18n import tr
-from desWidgetCreeParam import Ui_desWidgetCreeParam
+from UiQT5.desWidgetCreeParam import Ui_desWidgetCreeParam
 
 
 class MonWidgetCreeParam(Ui_desWidgetCreeParam, QDialog):
@@ -95,7 +95,7 @@ class MonWidgetCreeParam(Ui_desWidgetCreeParam, QDialog):
         valString = str(self.lineEditVal.text())
         self.val = ""
         contexte = {}
-        exec("from math import *", contexte)
+        exec("from InterfaceGUI.QT5.ath import *", contexte)
         jdc = self.editor.jdc
         if jdc == None:
             self.editor.afficheInfos(

@@ -25,16 +25,16 @@ import types, os
 # Modules Eficas
 from Extensions.i18n import tr
 
-from .feuille import Feuille
-from .politiquesValidation import PolitiqueUnique
-from .qtSaisie import SaisieValeur
-from desWidgetCBIntoSug import Ui_WidgetCBIntoSug
+from InterfaceGUI.QT5.feuille import Feuille
+from InterfaceGUI.QT5.politiquesValidation import PolitiqueUnique
+from InterfaceGUI.QT5.qtSaisie import SaisieValeur
+from UiQT5.desWidgetCBIntoSug import Ui_WidgetCBIntoSug
 
 from PyQt5.QtWidgets import QComboBox, QCompleter
 from PyQt5.QtCore import Qt
 
-from monWidgetCB import MonWidgetCBCommun
-from monWidgetIntoSug import GereAjoutDsPossible
+from InterfaceGUI.QT5.monWidgetCB import MonWidgetCBCommun
+from InterfaceGUI.QT5.monWidgetIntoSug import GereAjoutDsPossible
 
 
 class MonWidgetCBIntoSug(MonWidgetCBCommun, Ui_WidgetCBIntoSug, GereAjoutDsPossible):

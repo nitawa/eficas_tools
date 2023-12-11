@@ -24,7 +24,7 @@ from PyQt5.QtCore import Qt
 
 from Extensions.i18n import tr
 
-from .gereIcones import FacultatifOuOptionnel
+from InterfaceGUI.QT5.gereIcones import FacultatifOuOptionnel
 import traceback
 
 
@@ -132,7 +132,7 @@ class Groupe(QWidget, FacultatifOuOptionnel):
         # ce cas est le cas machine tournant sr le plie
         try:
             while i < self.commandesLayout.count():
-                from .monWidgetBloc import MonWidgetBloc
+                from InterfaceGUI.QT5.monWidgetBloc import MonWidgetBloc
 
                 widget = self.commandesLayout.itemAt(i).widget()
                 i = i + 1

@@ -20,8 +20,8 @@
 from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtWidgets import QWidget
 
-from .groupe import Groupe
-from desWidgetFact import Ui_WidgetFact
+from InterfaceGUI.QT5.groupe import Groupe
+from UiQT5.desWidgetFact import Ui_WidgetFact
 from Extensions.i18n import tr
 
 # Import des panels
@@ -74,7 +74,7 @@ class MonWidgetFactCommun(Groupe):
     def ajouteMCParPB(self):
         texteListeNom = "+" + self.obj.nom
         parentOuAjouter = self.parentQt
-        from .monWidgetBloc import MonWidgetBloc
+        from InterfaceGUI.QT5.monWidgetBloc import MonWidgetBloc
 
         while parentOuAjouter and isinstance(parentOuAjouter, MonWidgetBloc):
             parentOuAjouter = parentOuAjouter.parentQt

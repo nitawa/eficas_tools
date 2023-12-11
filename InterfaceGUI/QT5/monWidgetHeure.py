@@ -23,9 +23,9 @@ import types, os
 # Modules Eficas
 from Extensions.i18n import tr
 
-from .feuille import Feuille
-from .monWidgetSimpBase import MonWidgetSimpBase
-from desWidgetHeure import Ui_WidgetHeure
+from InterfaceGUI.QT5.feuille import Feuille
+from InterfaceGUI.QT5.monWidgetSimpBase import MonWidgetSimpBase
+from UiQT5.desWidgetHeure import Ui_WidgetHeure
 
 
 class MonWidgetHeure(Ui_WidgetHeure, MonWidgetSimpBase):

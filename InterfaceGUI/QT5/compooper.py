@@ -17,7 +17,6 @@
 #
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
-from builtins import str
 import os
 import tempfile
 
@@ -25,8 +24,8 @@ from Extensions.i18n import tr
 from Extensions.eficas_exception import EficasException
 
 from Editeur import Objecttreeitem
-from . import browser
-from . import typeNode
+from InterfaceGUI.QT5 import browser
+from InterfaceGUI.QT5 import typeNode
 
 
 class Node(browser.JDCNode, typeNode.PopUpMenuNode):
@@ -56,7 +55,7 @@ class Node(browser.JDCNode, typeNode.PopUpMenuNode):
                 pass
 
     def getPanel(self):
-        from .monWidgetCommande import MonWidgetCommande
+        from InterfaceGUI.QT5.monWidgetCommande import MonWidgetCommande
 
         return MonWidgetCommande(self, self.editor, self.item.object)
 
@@ -65,7 +64,7 @@ class Node(browser.JDCNode, typeNode.PopUpMenuNode):
 
 
 #    def view3D(self) :
-#        from Editeur import TroisDPal
+#        from InterfaceGUI.QT5.Editeur import TroisDPal
 #        troisD=TroisDPal.TroisDPilote(self.item,self.editor.appliEficas)
 #        troisD.envoievisu()
 

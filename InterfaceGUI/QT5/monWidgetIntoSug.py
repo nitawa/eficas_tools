@@ -28,8 +28,8 @@ from PyQt5.QtCore import Qt
 
 from Extensions.i18n import tr
 
-from desWidgetIntoSug import Ui_WidgetIntoSug
-from monWidgetPlusieursInto import MonWidgetPlusieursInto
+from UiQT5.desWidgetIntoSug import Ui_WidgetIntoSug
+from InterfaceGUI.QT5.monWidgetPlusieursInto import MonWidgetPlusieursInto
 
 
 class GereAjoutDsPossible:

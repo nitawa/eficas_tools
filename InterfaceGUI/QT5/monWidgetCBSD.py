@@ -24,10 +24,10 @@ import types, os
 # Modules Eficas
 from Extensions.i18n import tr
 
-from .feuille import Feuille
-from desWidgetCB import Ui_WidgetCB
-from .politiquesValidation import PolitiqueUnique
-from .qtSaisie import SaisieValeur
+from InterfaceGUI.QT5.feuille import Feuille
+from UiQT5.desWidgetCB import Ui_WidgetCB
+from InterfaceGUI.QT5.politiquesValidation import PolitiqueUnique
+from InterfaceGUI.QT5.qtSaisie import SaisieValeur
 
 
 from PyQt5.QtWidgets import QComboBox, QCompleter

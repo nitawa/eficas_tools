@@ -25,7 +25,7 @@ import traceback
 from Extensions.i18n import tr
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QDialog, QListWidgetItem
-from desViewRegles import Ui_viewRegles
+from UiQT5.desViewRegles import Ui_viewRegles
 
 
 # ------------------------------------ #

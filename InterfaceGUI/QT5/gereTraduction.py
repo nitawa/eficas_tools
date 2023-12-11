@@ -82,7 +82,7 @@ def traduction(directPath, editor, version):
         except:
             pass
 
-    from .monVisu import DVisu
+    from InterfaceGUI.QT5.monVisu import DVisu
 
     titre = "conversion de " + FichieraTraduire
     monVisuDialg = DVisu(parent=editor.appliEficas, fl=0)

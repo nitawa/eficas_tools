@@ -21,7 +21,7 @@ import types, os
 from PyQt5.QtWidgets import QWidget
 from PyQt5.QtGui import QIcon
 
-from desWidgetNiveauFact import Ui_WidgetNiveauFact
+from UiQT5.desWidgetNiveauFact import Ui_WidgetNiveauFact
 from InterfaceGUI.QT5.monWidgetOptionnel import MonWidgetOptionnel
 from InterfaceGUI.QT5.groupe import Groupe
 

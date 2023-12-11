@@ -22,7 +22,7 @@
 
 
 import os, sys, re
-from desChoixLangue import Ui_ChoixLangue
+from  InterfaceGUI.QT5.desChoixLangue import Ui_ChoixLangue
 
 from PyQt5.QtWidgets import QDialog, QRadioButton, QGroupBox, QButtonGroup
 from PyQt5.QtGui import QPalette

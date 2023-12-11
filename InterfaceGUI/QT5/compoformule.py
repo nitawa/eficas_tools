@@ -24,14 +24,14 @@ representant un objet de type FORMULE, cad le panneau et l'item de l'arbre
 d'EFICAS
 """
 
-from . import compooper
-from . import browser
-from . import typeNode
+from InterfaceGUI.QT5 import compooper
+from InterfaceGUI.QT5 import browser
+from InterfaceGUI.QT5 import typeNode
 
 
 class FormuleNode(browser.JDCNode, typeNode.PopUpMenuNode):
     def getPanel(self):
-        from .monWidgetFormule import MonWidgetFormule
+        from InterfaceGUI.QT5.monWidgetFormule import MonWidgetFormule
 
         return MonWidgetFormule(self, self.editor, self.item.object)
 

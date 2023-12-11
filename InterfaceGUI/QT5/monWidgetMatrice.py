@@ -22,11 +22,11 @@ import types, os, sys
 
 # Modules Eficas
 from Extensions.i18n import tr
-from .feuille import Feuille
+from InterfaceGUI.QT5..feuille import Feuille
 from Extensions.eficas_exception import EficasException
 
 
-from desWidgetMatrice import Ui_desWidgetMatrice
+from UiQT5.desWidgetMatrice import Ui_desWidgetMatrice
 
 from PyQt5.QtCore import QSize, Qt
 from PyQt5.QtWidgets import QTableWidgetItem, QTableWidget

@@ -18,8 +18,8 @@
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
 from Editeur import Objecttreeitem
-from . import browser
-from . import typeNode
+from InterfaceGUI.QT5 import browser
+from InterfaceGUI.QT5 import typeNode
 from Extensions.i18n import tr
 from Extensions.eficas_exception import EficasException
 
@@ -27,7 +27,7 @@ from Extensions.eficas_exception import EficasException
 class Node(browser.JDCNode, typeNode.PopUpMenuNodePartiel):
     def getPanel(self):
         """ """
-        from .monWidgetCommentaire import MonWidgetCommentaire
+        from InterfaceGUI.QT5.monWidgetCommentaire import MonWidgetCommentaire
 
         return MonWidgetCommentaire(self, self.editor, self.item.object)
 

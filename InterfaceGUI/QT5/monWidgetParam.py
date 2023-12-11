@@ -20,7 +20,7 @@
 import os, re
 import types
 
-from desWidgetParam import Ui_WidgetParam
+from UiQT5.desWidgetParam import Ui_WidgetParam
 from InterfaceGUI.QT5.gereIcones import FacultatifOuOptionnel
 from PyQt5.QtWidgets import QWidget, QMessageBox
 from PyQt5.QtGui import QIcon
@@ -113,7 +113,7 @@ class MonWidgetParam(QWidget, Ui_WidgetParam, FacultatifOuOptionnel):
         valString = str(self.lineEditVal.text())
 
         contexte = {}
-        exec("from math import *", contexte)
+        exec("from InterfaceGUI.QT5.ath import *", contexte)
         jdc = self.node.item.getJdc()
         for p in jdc.params:
             try:

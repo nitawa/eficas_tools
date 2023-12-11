@@ -25,8 +25,8 @@ from PyQt5.QtCore import Qt, QRect
 from PyQt5.QtGui import QPalette
 
 from Extensions.i18n import tr
-from desGroupeOptionnel import Ui_groupeOptionnel
-from desPBOptionnelMT import Ui_customPB
+from InterfaceGUI.QT5.desGroupeOptionnel import Ui_groupeOptionnel
+from InterfaceGUI.QT5.desPBOptionnelMT import Ui_customPB
 
 
 # Import des panels

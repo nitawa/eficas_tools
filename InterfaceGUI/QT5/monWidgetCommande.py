@@ -21,9 +21,9 @@
 
 import types
 
-from desWidgetCommande import Ui_WidgetCommande
-from .groupe import Groupe
-from .gereIcones import FacultatifOuOptionnel
+from UiQT5.desWidgetCommande import Ui_WidgetCommande
+from InterfaceGUI.QT5.groupe import Groupe
+from InterfaceGUI.QT5.gereIcones import FacultatifOuOptionnel
 
 from PyQt5.QtWidgets import (
     QApplication,
@@ -120,7 +120,7 @@ class MonWidgetCommande(Ui_WidgetCommande, Groupe):
         if self.editor.maConfiguration.pasDeMCOptionnels:
             return  # Pas de MC Optionnels pour Carmel
 
-        from .monWidgetOptionnel import MonWidgetOptionnel
+        from InterfaceGUI.QT5.monWidgetOptionnel import MonWidgetOptionnel
 
         if self.editor.widgetOptionnel != None:
             self.monOptionnel = self.editor.widgetOptionnel
@@ -239,7 +239,7 @@ class MonWidgetCommande(Ui_WidgetCommande, Groupe):
 
         # Notation scientifique
         if test:
-            from .politiquesValidation import Validation
+            from InterfaceGUI.QT5.politiquesValidation import Validation
 
             validation = Validation(self.node, self.editor)
             validation.ajoutDsDictReelEtape()

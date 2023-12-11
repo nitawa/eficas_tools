@@ -24,8 +24,8 @@ from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import QSize
 from Extensions.i18n import tr
 
-from desWidgetSimpFichier import Ui_WidgetSimpFichier
-from .monWidgetSimpBase import MonWidgetSimpBase
+from UiQT5.desWidgetSimpFichier import Ui_WidgetSimpFichier
+from InterfaceGUI.QT5.monWidgetSimpBase import MonWidgetSimpBase
 
 
 class MonWidgetSimpFichier(Ui_WidgetSimpFichier, MonWidgetSimpBase):

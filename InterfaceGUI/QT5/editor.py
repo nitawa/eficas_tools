@@ -36,9 +36,9 @@ from Editeur import comploader
 from Editeur import Objecttreeitem
 from InterfaceGUI.QT5 import browser
 
-from desBaseWidget import Ui_baseWidget
+from UiQT5.desBaseWidget import Ui_baseWidget
 from InterfaceGUI.QT5.monViewTexte import ViewText
-from monWidgetCreeParam import MonWidgetCreeParam
+from InterfaceGUI.QT5.monWidgetCreeParam import MonWidgetCreeParam
 
 DictExtensions = {"MAP": ".map", "TELEMAC": ".cas"}
 debug = False
@@ -334,7 +334,7 @@ class JDCEditor(JDCEditorSsIhm, Ui_baseWidget, QWidget):
     # ---------------------#
     def handleRechercher(self):
     # ---------------------#
-        from .monRecherche import DRecherche
+        from InterfaceGUI.QT5.monRecherche import DRecherche
 
         monRechercheDialg = DRecherche(parent=self, fl=0)
         monRechercheDialg.show()
@@ -342,7 +342,7 @@ class JDCEditor(JDCEditorSsIhm, Ui_baseWidget, QWidget):
     # --------------------------------#
     def handleRechercherDsCatalogue(self):
     # -----------------------------#
-        from .monRechercheCatalogue import DRechercheCatalogue
+        from InterfaceGUI.QT5.monRechercheCatalogue import DRechercheCatalogue
 
         monRechercheDialg = DRechercheCatalogue(self.QWParent, self)
         monRechercheDialg.show()
@@ -896,7 +896,7 @@ class JDCEditor(JDCEditorSsIhm, Ui_baseWidget, QWidget):
     # -----------------------------------------#
         try:
             # if 1:
-            from ajoutGroupe import handleAjoutGroupFiltre
+            from InterfaceGUI.QT5.ajoutGroupe import handleAjoutGroupFiltre
 
             # print listeGroup
             handleAjoutGroupFiltre(self, listeGroup)
@@ -1458,7 +1458,7 @@ class JDCEditor(JDCEditorSsIhm, Ui_baseWidget, QWidget):
 
         print("in runPSEN_N1", dico)
         print(dico)
-        from Run import run
+        from InterfaceGUI.QT5.un import run
 
         run(dico)
         # res,txt_exception=run(dico)

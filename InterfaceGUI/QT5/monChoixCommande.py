@@ -19,7 +19,7 @@
 # Modules Python
 # Modules Eficas
 
-from desChoixCommandes import Ui_ChoixCommandes
+from UiQT5.desChoixCommandes import Ui_ChoixCommandes
 from PyQt5.QtWidgets import QWidget, QButtonGroup, QRadioButton, QLabel, QPushButton, QGridLayout
 from PyQt5.QtGui import QIcon, QPixmap
 from PyQt5.QtCore import QSize, QRect

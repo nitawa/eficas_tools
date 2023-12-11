@@ -18,9 +18,9 @@
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
 
-from .feuille import Feuille
-from .monWidgetPlusieursTuple import MonWidgetPlusieursTuple
-from desWidgetPlusieursTuple import Ui_WidgetPlusieursTuple
+from InterfaceGUI.QT5.feuille import Feuille
+from InterfaceGUI.QT5.monWidgetPlusieursTuple import MonWidgetPlusieursTuple
+from UiQT5.desWidgetPlusieursTuple import Ui_WidgetPlusieursTuple
 
 
 class MonWidgetPlusieursTuple2(Ui_WidgetPlusieursTuple, MonWidgetPlusieursTuple):

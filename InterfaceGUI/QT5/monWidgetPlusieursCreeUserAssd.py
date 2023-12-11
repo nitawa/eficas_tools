@@ -20,8 +20,8 @@
 
 # Modules Eficas
 from Extensions.i18n import tr
-from .monWidgetSimpTxt import MonWidgetSimpTxt
-from .monWidgetPlusieursBase import MonWidgetPlusieursBase
+from InterfaceGUI.QT5.monWidgetSimpTxt import MonWidgetSimpTxt
+from InterfaceGUI.QT5.monWidgetPlusieursBase import MonWidgetPlusieursBase
 from copy import copy, deepcopy
 from PyQt5.QtCore import Qt
 

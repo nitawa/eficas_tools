@@ -19,14 +19,14 @@
 #
 
 from Editeur import Objecttreeitem
-from . import browser
-from . import typeNode
+from InterfaceGUI.QT5 import browser
+from InterfaceGUI.QT5 import typeNode
 from Extensions.i18n import tr
 
 
 class Node(browser.JDCNode, typeNode.PopUpMenuRacine):
     def getPanel(self):
-        from .monChoixCommande import MonChoixCommande
+        from InterfaceGUI.QT5.monChoixCommande import MonChoixCommande
         return MonChoixCommande(self, self.item, self.editor)
 
     def createPopUpMenu(self):

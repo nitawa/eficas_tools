@@ -22,7 +22,7 @@
 
 
 import os, sys, re
-from desChoixCode import Ui_ChoixCode
+from InterfaceGUI.QT5.desChoixCode import Ui_ChoixCode
 from PyQt5.QtWidgets import QDialog, QRadioButton, QGroupBox, QButtonGroup
 from PyQt5.QtGui import QPalette
 from PyQt5.QtCore import QProcess, QFileInfo, Qt, QSize

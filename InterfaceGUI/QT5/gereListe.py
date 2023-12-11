@@ -326,7 +326,7 @@ class GereListe(object):
         ulfile = os.path.abspath(fn)
         self.editor.maConfiguration.savedir = os.path.split(ulfile)[0]
 
-        from .monSelectVal import MonSelectVal
+        from InterfaceGUI.QT5.monSelectVal import MonSelectVal
 
         MonSelectVal(file=fn, parent=self).show()
 

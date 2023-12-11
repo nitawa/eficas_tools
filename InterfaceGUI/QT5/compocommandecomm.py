@@ -22,7 +22,7 @@ import traceback
 
 from Editeur import Objecttreeitem
 from Extensions.eficas_exception import EficasException
-from . import compocomm
+from InterfaceGUI.QT5 import compocomm
 
 
 class COMMANDE_COMMTreeItem(Objecttreeitem.ObjectTreeItem):

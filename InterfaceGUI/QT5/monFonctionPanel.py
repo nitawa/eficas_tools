@@ -24,8 +24,8 @@ from PyQt5.QtCore import Qt
 
 
 # Modules Eficas
-from .qtSaisie import SaisieValeur
-from monPlusieursBasePanel import MonPlusieursBasePanel
+from InterfaceGUI.QT5.qtSaisie import SaisieValeur
+from InterfaceGUI.QT5.monPlusieursBasePanel import MonPlusieursBasePanel
 
 from Extensions.i18n import tr
 

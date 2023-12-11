@@ -28,9 +28,9 @@ from PyQt5.QtCore import Qt
 
 from Extensions.i18n import tr
 
-from .gereIcones import ContientIcones
-from .gereIcones import FacultatifOuOptionnel
-from .qtSaisie import SaisieValeur
+from InterfaceGUI.QT5.gereIcones import ContientIcones
+from InterfaceGUI.QT5.gereIcones import FacultatifOuOptionnel
+from InterfaceGUI.QT5.qtSaisie import SaisieValeur
 
 nomMax = 230
 

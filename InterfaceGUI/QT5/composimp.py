@@ -49,7 +49,7 @@ class Node(browser.JDCNode, typeNode.PopUpMenuNodeMinimal):
             return None
         # label informatif
         if monObjet.isInformation():
-            from InterfaceGUI.QT5.monWidgetInfo import MonWidgetInfo
+            from InterfaceGUI.QT5.nterfaceGUI.QT5.monWidgetInfo import MonWidgetInfo
 
             widget = MonWidgetInfo(
                 self, maDefinition, monNom, monObjet, parentQt, maCommande

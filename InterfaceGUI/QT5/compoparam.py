@@ -28,14 +28,14 @@ from Extensions.i18n import tr
 
 # import modules EFICAS
 from Editeur import Objecttreeitem
-from . import browser
-from . import typeNode
+from InterfaceGUI.QT5 import browser
+from InterfaceGUI.QT5 import typeNode
 
 
 class Node(browser.JDCNode, typeNode.PopUpMenuNodePartiel):
     def getPanel(self):
         """ """
-        from .monWidgetParam import MonWidgetParam
+        from InterfaceGUI.QT5.monWidgetParam import MonWidgetParam
 
         return MonWidgetParam(self, self.editor, self.item.object)
 

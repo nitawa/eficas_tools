@@ -24,8 +24,8 @@ from PyQt5.QtCore import QSize
 
 from InterfaceGUI.QT5.feuille import Feuille
 from InterfaceGUI.QT5.monWidgetPlusieursTuple import MonWidgetPlusieursTuple
-from desWidgetPlusieursTuple import Ui_WidgetPlusieursTuple
-from desWidgetTableau import Ui_WidgetTableau
+from UiQT5.desWidgetPlusieursTuple import Ui_WidgetPlusieursTuple
+from UiQT5.desWidgetTableau import Ui_WidgetTableau
 
 maxLen = 3
 

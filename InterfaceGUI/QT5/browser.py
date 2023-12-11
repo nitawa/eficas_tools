@@ -21,7 +21,7 @@
 import re
 import types, sys, os
 import traceback
-from . import typeNode
+from InterfaceGUI.QT5 import typeNode
 
 
 from PyQt5.QtWidgets import QTreeWidget, QTreeWidgetItem, QApplication, QMessageBox
@@ -29,8 +29,8 @@ from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import Qt
 
 from Extensions.i18n import tr
-from .gereRegles import GereRegles
-from .monChoixCommande import MonChoixCommande
+from InterfaceGUI.QT5.gereRegles import GereRegles
+from InterfaceGUI.QT5.monChoixCommande import MonChoixCommande
 
 
 # ------------------------------------------
@@ -407,7 +407,7 @@ class JDCNode(QTreeWidgetItem, GereRegles):
             self.editor.fenetreCentraleAffichee.close()
             self.editor.fenetreCentraleAffichee.deleteLater()
 
-        from monWidgetNiveauFact import MonWidgetNiveauFact, MonWidgetNiveauFactTableau
+        from InterfaceGUI.QT5.monWidgetNiveauFact import MonWidgetNiveauFact, MonWidgetNiveauFactTableau
 
         maDefinition = self.item.get_definition()
         monObjet = self.item.object
@@ -444,7 +444,7 @@ class JDCNode(QTreeWidgetItem, GereRegles):
         # print ('_________________ds affichePanneau pour', self.item.nom)
         # pour l instant pas d inactif
         if not (self.item.isActif()):
-            from .monWidgetInactif import MonWidgetInactif
+            from InterfaceGUI.QT5.monWidgetInactif import MonWidgetInactif
 
             self.fenetre = MonWidgetInactif(self, self.editor)
         else:
@@ -1068,7 +1068,7 @@ class JDCNode(QTreeWidgetItem, GereRegles):
     # -----------------
         # print "je mets inhibeExpand a true dans setPlie"
         # print ("je suis dans plieTout", self.item.getNom())
-        from . import compojdc
+        from InterfaceGUI.QT5 import compojdc
 
         if self.fenetre == self.editor.fenetreCentraleAffichee and isinstance(
             self.treeParent, compojdc.Node

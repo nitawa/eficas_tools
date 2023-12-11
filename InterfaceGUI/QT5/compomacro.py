@@ -34,7 +34,7 @@ from InterfaceGUI.QT5 import typeNode
 
 class MACRONode(browser.JDCNode, typeNode.PopUpMenuNode):
     def getPanel(self):
-        from .monWidgetCommande import MonWidgetCommande
+        from InterfaceGUI.QT5.monWidgetCommande import MonWidgetCommande
 
         return MonWidgetCommande(self, self.editor, self.item.object)
 
@@ -43,7 +43,7 @@ class MACRONode(browser.JDCNode, typeNode.PopUpMenuNode):
 
 
 #    def view3D(self) :
-#        from Editeur import TroisDPal
+#        from InterfaceGUI.QT5.Editeur import TroisDPal
 #        troisD=TroisDPal.TroisDPilote(self.item,self.editor.appliEficas)
 #        troisD.envoievisu()
 
@@ -70,7 +70,7 @@ class INCLUDETreeItemBase(MACROTreeItem):
 
 class INCLUDENode(browser.JDCNode, typeNode.PopUpMenuNode):
     def getPanel(self):
-        from .monWidgetCommande import MonWidgetCommande
+        from InterfaceGUI.QT5.monWidgetCommande import MonWidgetCommande
 
         return MonWidgetCommande(self, self.editor, self.item.object)
 
@@ -107,7 +107,7 @@ class INCLUDETreeItem(INCLUDETreeItemBase):
 
 class POURSUITENode(browser.JDCNode, typeNode.PopUpMenuNode):
     def getPanel(self):
-        from .monWidgetCommande import MonWidgetCommande
+        from InterfaceGUI.QT5.monWidgetCommande import MonWidgetCommande
 
         return MonWidgetCommande(self, self.editor, self.item.object)
 
@@ -144,7 +144,7 @@ class POURSUITETreeItem(INCLUDETreeItemBase):
 
 class MATERIAUNode(MACRONode):
     def getPanel(self):
-        from .monWidgetCommande import MonWidgetCommande
+        from InterfaceGUI.QT5.monWidgetCommande import MonWidgetCommande
 
         return MonWidgetCommande(self, self.editor, self.item.object)
 
@@ -165,7 +165,7 @@ class MATERIAUNode(MACRONode):
         f = open(self.item.object.fichier_ini, "rb")
         texte = f.read()
         f.close()
-        from desVisu import DVisu
+        from InterfaceGUI.QT5.desVisu import DVisu
 
         monVisuDialg = DVisu(parent=self.editor.appliEficas, fl=0)
         monVisuDialg.TB.setText(texte)

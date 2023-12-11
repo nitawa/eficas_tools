@@ -23,9 +23,9 @@ import types, os
 # Modules Eficas
 from Extensions.i18n import tr
 
-from .feuille import Feuille
-from .monWidgetSimpTuple import MonWidgetSimpTuple
-from desWidgetDate import Ui_WidgetDate
+from InterfaceGUI.QT5.feuille import Feuille
+from InterfaceGUI.QT5.monWidgetSimpTuple import MonWidgetSimpTuple
+from UiQT5.desWidgetDate import Ui_WidgetDate
 
 
 class MonWidgetDate(Ui_WidgetDate, MonWidgetSimpTuple):

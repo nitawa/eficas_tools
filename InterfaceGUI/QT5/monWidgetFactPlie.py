@@ -17,8 +17,8 @@
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
 
-from desWidgetFactPlie import Ui_WidgetFactPlie
-from .groupe import Groupe
+from UiQT5.desWidgetFactPlie import Ui_WidgetFactPlie
+from InterfaceGUI.QT5.groupe import Groupe
 from Extensions.i18n import tr
 
 class MonWidgetFactPlie(Ui_WidgetFactPlie, Groupe):

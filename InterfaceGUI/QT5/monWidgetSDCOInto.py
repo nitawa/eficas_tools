@@ -23,10 +23,10 @@ from PyQt5.QtWidgets import QLineEdit
 from PyQt5.QtCore import Qt
 from Extensions.i18n import tr
 
-from .feuille import Feuille
-from desWidgetSDCOInto import Ui_WidgetSDCOInto
-from .qtSaisie import SaisieSDCO
-from .politiquesValidation import PolitiqueUnique
+from InterfaceGUI.QT5.feuille import Feuille
+from UiQT5.desWidgetSDCOInto import Ui_WidgetSDCOInto
+from InterfaceGUI.QT5.qtSaisie import SaisieSDCO
+from InterfaceGUI.QT5.politiquesValidation import PolitiqueUnique
 
 
 class MonWidgetSDCOInto(Ui_WidgetSDCOInto, Feuille, SaisieSDCO):

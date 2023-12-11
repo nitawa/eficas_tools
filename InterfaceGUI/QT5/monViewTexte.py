@@ -26,7 +26,7 @@ from Extensions.i18n import tr
 
 from PyQt5.QtWidgets import QDialog, QMessageBox, QFileDialog
 from PyQt5.QtCore import QSize
-from desViewTexte import Ui_dView
+from UiQT5.desViewTexte import Ui_dView
 
 
 # ------------------------------- #

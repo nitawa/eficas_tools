@@ -21,7 +21,7 @@
 from PyQt5.QtWidgets import QWidget
 
 from Extensions.i18n import tr
-from desWidgetInactif import Ui_WidgetInactif
+from UiQT5.desWidgetInactif import Ui_WidgetInactif
 import Accas
 import os
 
@@ -37,7 +37,7 @@ class MonWidgetInactif(QWidget, Ui_WidgetInactif):
         self.node = node
         self.editor = editor
         self.setupUi(self)
-        from .monWidgetOptionnel import MonWidgetOptionnel
+        from InterfaceGUI.QT5.monWidgetOptionnel import MonWidgetOptionnel
 
         if self.editor.widgetOptionnel != None:
             self.monOptionnel = self.editor.widgetOptionnel

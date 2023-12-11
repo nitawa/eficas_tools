@@ -57,7 +57,7 @@ class FacultatifOuOptionnel(object):
         icon = QIcon(self.repIcon + "/point-interrogation30.png")
         self.RBInfo.setIcon(icon)
 
-        from .monWidgetCommande import MonWidgetCommande
+        from InterfaceGUI.QT5.monWidgetCommande import MonWidgetCommande
         if isinstance(self, MonWidgetCommande) and self.editor.code == "MAP":
             self.cle_doc = self.chercheDocMAP()
         else:
@@ -259,7 +259,7 @@ class ContientIcones(object):
         fichier = self.lineEditVal.text()
         if fichier == None or str(fichier) == "":
             return
-        from .monViewTexte import ViewText
+        from InterfaceGUI.QT5.monViewTexte import ViewText
 
         try:
             if sys.platform[0:5] == "linux":
@@ -405,8 +405,7 @@ class ContientIcones(object):
             self.LEvaleurPressed()
 
     def BSelectInFilePressed(self):
-        from monSelectImage import MonSelectImage
-
+        from InterfaceGUI.QT5.monSelectImage import MonSelectImage
         MonSelectImage(file=self.image, parent=self).show()
 
     def BSalomePressed(self):
@@ -487,6 +486,5 @@ class ContientIcones(object):
 
     def BParametresPressed(self):
         liste = self.node.item.getListeParamPossible()
-        from monListeParamPanel import MonListeParamPanel
-
+        from InterfaceGUI.QT5.monListeParamPanel import MonListeParamPanel
         MonListeParamPanel(liste=liste, parent=self).show()

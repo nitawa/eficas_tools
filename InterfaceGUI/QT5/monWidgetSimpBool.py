@@ -22,10 +22,10 @@
 from PyQt5.QtWidgets import QRadioButton
 from Extensions.i18n import tr
 
-from .feuille import Feuille
-from desWidgetSimpBool import Ui_WidgetSimpBool
-from .politiquesValidation import PolitiqueUnique
-from .qtSaisie import SaisieValeur
+from InterfaceGUI.QT5.feuille import Feuille
+fromUiQT5.desWidgetSimpBool import Ui_WidgetSimpBool
+from InterfaceGUI.QT5.politiquesValidation import PolitiqueUnique
+from InterfaceGUI.QT5.qtSaisie import SaisieValeur
 
 
 class MonWidgetSimpBool(Ui_WidgetSimpBool, Feuille):

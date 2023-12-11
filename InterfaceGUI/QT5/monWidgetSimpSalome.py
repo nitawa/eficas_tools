@@ -23,10 +23,10 @@ from PyQt5.QtCore import Qt
 
 from Extensions.i18n import tr
 
-from .feuille import Feuille
-from desWidgetSimpSalome import Ui_WidgetSimpSalome
-from .politiquesValidation import PolitiqueUnique
-from .qtSaisie import SaisieValeur
+from InterfaceGUI.QT5.feuille import Feuille
+from UiQT5.desWidgetSimpSalome import Ui_WidgetSimpSalome
+from InterfaceGUI.QT5.politiquesValidation import PolitiqueUnique
+from InterfaceGUI.QT5.qtSaisie import SaisieValeur
 
 
 class MonWidgetSimpSalome(Ui_WidgetSimpSalome, Feuille):

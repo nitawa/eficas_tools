@@ -20,7 +20,7 @@
 # Modules Python
 # Modules Eficas
 
-from desSelectVal import Ui_DSelVal
+from InterfaceGUI.QT5.desSelectVal import Ui_DSelVal
 from Extensions.i18n import tr
 
 from PyQt5.QtWidgets import QDialog, QFileDialog, QMessageBox

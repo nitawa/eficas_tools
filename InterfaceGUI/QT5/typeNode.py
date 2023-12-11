@@ -19,10 +19,6 @@
 #
 
 
-try:
-    from builtins import object
-except:
-    pass
 
 from PyQt5.QtWidgets import QAction, QMenu, QMessageBox
 

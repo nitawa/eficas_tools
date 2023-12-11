@@ -17,8 +17,8 @@
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
 
-from desWidgetFormule import Ui_WidgetFormule
-from .gereIcones import FacultatifOuOptionnel
+from UiQT5.desWidgetFormule import Ui_WidgetFormule
+from InterfaceGUI.QT5.gereIcones import FacultatifOuOptionnel
 
 from PyQt5.QtWidgets import QWidget
 from PyQt5.QtGui import QIcon

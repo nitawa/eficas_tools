@@ -22,8 +22,8 @@ from PyQt5.QtWidgets import QCheckBox, QWidget
 from PyQt5.QtCore import Qt
 
 from Extensions.i18n import tr
-from desWidgetOptionnel import Ui_WidgetOptionnel
-from .monGroupeOptionnel import MonGroupeOptionnel
+from UiQT5.desWidgetOptionnel import Ui_WidgetOptionnel
+from InterfaceQT5.QT5.monGroupeOptionnel import MonGroupeOptionnel
 
 
 # Import des panels

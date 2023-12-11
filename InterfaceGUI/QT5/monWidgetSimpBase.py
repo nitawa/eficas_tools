@@ -23,10 +23,10 @@ from PyQt5.QtWidgets import QLineEdit
 from PyQt5.QtCore import Qt
 from Extensions.i18n import tr
 
-from .feuille import Feuille
-from desWidgetSimpBase import Ui_WidgetSimpBase
-from .politiquesValidation import PolitiqueUnique
-from .qtSaisie import SaisieValeur
+from InterfaceGUI.QT5.feuille import Feuille
+from UiQT5.desWidgetSimpBase import Ui_WidgetSimpBase
+from InterfaceGUI.QT5.politiquesValidation import PolitiqueUnique
+from InterfaceGUI.QT5.qtSaisie import SaisieValeur
 
 
 class MonWidgetSimpBase(Ui_WidgetSimpBase, Feuille):
@@ -69,7 +69,7 @@ class MonWidgetSimpBase(Ui_WidgetSimpBase, Feuille):
         chaine = ""
 
         if valeurTexte != None:
-            from decimal import Decimal
+            from InterfaceGUI.QT5.ecimal import Decimal
 
             if isinstance(valeurTexte, Decimal):
                 chaine = str(valeurTexte)

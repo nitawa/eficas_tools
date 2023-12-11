@@ -21,14 +21,14 @@
 import types, os
 
 # Modules Eficas
-from .feuille import Feuille
-from desWidgetPlusieursIntoOrdonne import Ui_WidgetPlusieursIntoOrdonne
-from .politiquesValidation import PolitiquePlusieurs
-from .qtSaisie import SaisieValeur
-from .gereListe import GereListe
-from .gereListe import GerePlie
-from .gereListe import LECustom
-from .gereListe import MonLabelListeClic
+from InterfaceGUI.QT5.feuille import Feuille
+from UiQT5.desWidgetPlusieursIntoOrdonne import Ui_WidgetPlusieursIntoOrdonne
+from InterfaceGUI.QT5.politiquesValidation import PolitiquePlusieurs
+from InterfaceGUI.QT5.qtSaisie import SaisieValeur
+from InterfaceGUI.QT5.gereListe import GereListe
+from InterfaceGUI.QT5.gereListe import GerePlie
+from InterfaceGUI.QT5.gereListe import LECustom
+from InterfaceGUI.QT5.gereListe import MonLabelListeClic
 from Extensions.i18n import tr
 
 from PyQt5.QtWidgets import QFrame, QApplication, QScrollBar

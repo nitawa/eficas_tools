@@ -21,8 +21,8 @@
 # Modules Eficas
 from Extensions.i18n import tr
 
-from .feuille import Feuille
-from desWidgetVide import Ui_WidgetVide
+from InterfaceGUI.QT5.feuille import Feuille
+from UiQT5.desWidgetVide import Ui_WidgetVide
 from InterfaceGUI.QT5.politiquesValidation import PolitiqueUnique
 
 

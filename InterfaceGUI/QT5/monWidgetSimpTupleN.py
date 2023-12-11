@@ -19,21 +19,20 @@
 #
 
 # Modules Eficas
-# from PyQt4.QtGui import *
-# from PyQt4.QtCore import *
+
 from Extensions.i18n import tr
 
 from InterfaceGUI.QT5.feuille import Feuille
 from InterfaceGUI.QT5.monWidgetSimpTuple import MonWidgetSimpTuple
-from desWidgetTuple2 import Ui_WidgetTuple2
-from desWidgetTuple3 import Ui_WidgetTuple3
-from desWidgetTuple4 import Ui_WidgetTuple4
-from desWidgetTuple5 import Ui_WidgetTuple5
-from desWidgetTuple6 import Ui_WidgetTuple6
-from desWidgetTuple7 import Ui_WidgetTuple7
-from desWidgetTuple8 import Ui_WidgetTuple8
-from desWidgetTuple9 import Ui_WidgetTuple9
-from desWidgetTuple10 import Ui_WidgetTuple10
+from UiQT5.desWidgetTuple2 import Ui_WidgetTuple2
+from UiQT5.desWidgetTuple3 import Ui_WidgetTuple3
+from UiQT5.desWidgetTuple4 import Ui_WidgetTuple4
+from UiQT5.desWidgetTuple5 import Ui_WidgetTuple5
+from UiQT5.desWidgetTuple6 import Ui_WidgetTuple6
+from UiQT5.desWidgetTuple7 import Ui_WidgetTuple7
+from UiQT5.desWidgetTuple8 import Ui_WidgetTuple8
+from UiQT5.desWidgetTuple9 import Ui_WidgetTuple9
+from UiQT5.desWidgetTuple10 import Ui_WidgetTuple10
 
 
 class MonWidgetSimpTuple2(Ui_WidgetTuple2, MonWidgetSimpTuple):

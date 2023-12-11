@@ -42,16 +42,8 @@ class Appli(AppliSsIhm, Ui_Eficas, QMainWindow):
     Class implementing the main user interface.
     """
 
-    def __init__(
-        self,
-        code=None,
-        salome=1,
-        parent=None,
-        multi=False,
-        langue="en",
-        ssIhm=False,
-        labelCode=None,
-        GUIPath="InterfaceGUI.QT5",
+    def __init__( self, code=None, salome=1, parent=None, multi=False, langue="en", ssIhm=False,
+        labelCode=None, GUIPath="InterfaceGUI.QT5",
     ):
         """
         Constructor
@@ -831,22 +823,22 @@ class Appli(AppliSsIhm, Ui_Eficas, QMainWindow):
             pass
 
     def traductionV11V12(self):
-        from .gereTraduction import traduction
+        from InterfaceGUI.QT5.gereTraduction import traduction
 
         traduction(self.maConfiguration.repIni, self.viewmanager, "V11V12")
 
     def traductionV10V11(self):
-        from .gereTraduction import traduction
+        from InterfaceGUI.QT5.gereTraduction import traduction
 
         traduction(self.maConfiguration.repIni, self.viewmanager, "V10V11")
 
     def traductionV9V10(self):
-        from .gereTraduction import traduction
+        from InterfaceGUI.QT5.gereTraduction import traduction
 
         traduction(self.maConfiguration.repIni, self.viewmanager, "V9V10")
 
     def version(self):
-        from .monVisu import DVisu
+        from InterfaceGUI.QT5.monVisu import DVisu
 
         titre = tr("version ")
         monVisuDialg = DVisu(parent=self, fl=0)
@@ -929,7 +921,7 @@ class Appli(AppliSsIhm, Ui_Eficas, QMainWindow):
         monOption.show()
 
     def optionPdf(self):
-        from monOptionsPdf import OptionPdf
+        from InterfaceGUI.QT5.monOptionsPdf import OptionPdf
 
         monOption = OptionPdf(parent=self, modal=0, configuration=self.maConfiguration)
         monOption.show()
@@ -1098,7 +1090,7 @@ class Appli(AppliSsIhm, Ui_Eficas, QMainWindow):
             return
         if not hasattr(self, "readercata"):
             return
-        from monLayoutBouton import MonLayoutBouton
+        from InterfaceGUI.QT5.monLayoutBouton import MonLayoutBouton
 
         if hasattr(self, "monLayoutBoutonRempli"):
             return

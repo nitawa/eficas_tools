@@ -18,10 +18,7 @@
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
 #    permet de lancer  EFICAS en n affichant rien
-try:
-    from builtins import object
-except:
-    pass
+
 
 
 class appliEficasSSIhm(object):

@@ -20,8 +20,8 @@
 # Modules Eficas
 
 
-from desWidgetBloc import Ui_WidgetBloc
-from .groupe import Groupe
+from InterfaceGUI.QT5.desWidgetBloc import Ui_WidgetBloc
+from InterfaceGUI.QT5.groupe import Groupe
 from Extensions.i18n import tr
 
 # Import des panels

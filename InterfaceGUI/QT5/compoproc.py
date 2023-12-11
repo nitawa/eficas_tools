@@ -19,15 +19,15 @@
 #
 
 from Editeur import Objecttreeitem
-from . import compooper
-from . import browser
-from . import typeNode
+from InterfaceGUI.QT5 import compooper
+from InterfaceGUI.QT5 import browser
+from InterfaceGUI.QT5 import typeNode
 
 
 class Node(browser.JDCNode, typeNode.PopUpMenuNode):
     def getPanel(self):
         # print "getPanel de compoproc"
-        from .monWidgetCommande import MonWidgetCommande
+        from InterfaceGUI.QT5.monWidgetCommande import MonWidgetCommande
 
         return MonWidgetCommande(self, self.editor, self.item.object)
 

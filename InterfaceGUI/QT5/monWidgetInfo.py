@@ -24,7 +24,7 @@ import types, os
 from PyQt5.QtWidgets import QWidget
 from Extensions.i18n import tr
 
-from desWidgetInformation import Ui_WidgetInformative
+from UiQT5.desWidgetInformation import Ui_WidgetInformative
 
 
 class MonWidgetInfo(Ui_WidgetInformative, QWidget):
