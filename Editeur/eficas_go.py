@@ -29,8 +29,8 @@ if sys.version_info[0] < 3:
     sys.exit()
 
 
-def lanceEficas(code=None, multi=False, langue="en", labelCode=None, GUI='QT5', salome=0):
-# ---------------------------------------------------------------------------------------
+def lanceEficas(code=None, multi=False, langue="en", labelCode=None, GUIPath='QT5', salome=0):
+# -------------------------------------------------------------------------------------------
     """
       Lance l'appli EFICAS avec Ihm QT
     """
@@ -46,11 +46,15 @@ def lanceEficas(code=None, multi=False, langue="en", labelCode=None, GUI='QT5', 
     if options.code != None:
         code = options.code
 
-    pathGui='InterfaceGUI.QT5.qtEficas'
+    if GUIPath == 'QT5' :
+        pathUi=os.path.abspath(os.path.join(os.path.dirname(__file__),'..','InterfaceGUI',GUIPath))
+        if pathUi not in sys.path : sys.path.append(pathUi)
+
+    pathGui='InterfaceGUI.'+ GUIPath + '.qtEficas'
     qtEficas =__import__(pathGui, globals(), locals(), ['qtEficas',])
 
     app = QApplication(sys.argv)
-    Eficas = qtEficas.Appli(code=code, salome=salome, multi=multi, langue=langue, labelCode=labelCode, GUI=GUI)
+    Eficas = qtEficas.Appli(code=code, salome=salome, multi=multi, langue=langue, labelCode=labelCode, GUIPath=GUIPath)
     Eficas.show()
 
     res = app.exec_()
@@ -242,179 +246,7 @@ def createFromDocumentAccas(fichierCata=None, fichier=None, code=None):
     monEficasSsIhm = getEficasSsIhm(code="Essai", fichierCata=fichierCata)
     monEditeur = JDCEditorSsIhm(monEficasSsIhm, fichier)
     return monEditeur.jdc
-    # from Noyau
-
-
-# --------------------------- toutes les fonctions après sont obseletes
-def lanceEficas_ssIhm(
-    code=None, fichier=None, ssCode=None, version=None, debug=False, langue="en"
-):
-    """
-    Lance l'appli EFICAS SsIhm
-    """
-    # Analyse des arguments de la ligne de commande
-    print("deprecated")
-    from Editeur import session
-
-    options = session.parse(sys.argv)
-    if version != None and options.version == None:
-        options.version = version
-    if fichier == None:
-        fichier = options.comm[0]
-    if code == None:
-        code = options.code
-
-    from .qtEficas import Appli
-
-    Eficas = Appli(code=code, salome=0, ssCode=ssCode, ssIhm=True, langue=langue)
-
-    from .ssIhm import QWParentSSIhm
-
-    parent = QWParentSSIhm(code, Eficas, version)
-
-    from . import readercata
-
-    if not hasattr(Eficas, "readercata"):
-        monreadercata = readercata.ReaderCata(parent, Eficas)
-        Eficas.readercata = monreadercata
-
-    from .editor import JDCEditor
-
-    monEditeur = JDCEditor(Eficas, fichier)
-    return monEditeur
-
-
-def lanceEficas_ssIhm_chercheGroupes(
-    code=None, fichier=None, ssCode=None, version=None
-):
-    print("deprecated")
-    monEditeur = lanceEficas_ssIhm(code, fichier, ssCode, version)
-    print((monEditeur.chercheGroupes()))
-
-
-def lanceEficas_ssIhm_cherche_cr(code=None, fichier=None, ssCode=None, version=None):
-    print("deprecated")
-    monEditeur = lanceEficas_ssIhm(code, fichier, ssCode, version)
-    print((monEditeur.jdc.cr))
-
-
-def lanceEficas_ssIhm_reecrit(
-    code=None,
-    fichier=None,
-    ssCode=None,
-    version=None,
-    ou=None,
-    cr=False,
-    debug=False,
-    leger=False,
-    langue="ang",
-):
-    print("deprecated")
-    # print 'lanceEficas_ssIhm_reecrit', fichier
-    monEditeur = lanceEficas_ssIhm(code, fichier, ssCode, version, langue=langue)
-    if ou == None:
-        fileName = fichier.split(".")[0] + "_reecrit.comm"
-        fn = fichier.split(".")[0] + "_cr.txt"
-    else:
-        f = fichier.split(".")[0] + "_reecrit.comm"
-        f1 = os.path.basename(f)
-        fn = fichier.split(".")[0] + "_cr.txt"
-        f2 = os.path.basename(fn)
-        fileName = os.path.join(ou, f1)
-        fileCr = os.path.join(ou, f2)
-    debut = False
-    if debug:
-        import cProfile, pstats, StringIO
-
-        pr = cProfile.Profile()
-        pr.enable()
-        monEditeur.saveFileAs(fileName=fileName)
-        pr.disable()
-        s = StringIO.StringIO()
-        sortby = "cumulative"
-        ps = pstats.Stats(pr, stream=s).sort_stats(sortby)
-        ps.print_stats()
-        print(s.getValue())
-
-    elif not leger:
-        monEditeur.saveFileAs(fileName=fileName)
-    else:
-        monEditeur.saveFileLegerAs(fileName=fileName)
-    if cr:
-        f = open(fileCr, "w")
-        f.write(str(monEditeur.jdc.report()))
-        f.close()
-
-
-def lanceEficas_param(
-    code="Adao", fichier=None, version="V0", macro="ASSIMILATION_STUDY"
-):
-    """
-    Lance l'appli EFICAS pour trouver les noms des groupes
-    """
-    print("deprecated")
-    # Analyse des arguments de la ligne de commande
-    from Editeur import session
-
-    options = session.parse(sys.argv)
-
-    from .qtEficas import Appli
-
-    from .ssIhm import QWParentSSIhm
-
-    Eficas = QWParentSSIhm(code, version)
-
-    from . import readercata
-
-    if not hasattr(Eficas, "readercata"):
-        monreadercata = readercata.ReaderCata(parent, Eficas)
-        Eficas.readercata = monreadercata
-
-    from .editor import JDCEditor
-
-    monEditeur = JDCEditor(Eficas, fichier)
-    texte = loadJDC(fichier)
-    parameters = getJdcParameters(texte, macro)
-    return parameters
-
-
-def getJdcParameters(jdc, macro):
-    """
-    This function converts the data from the specified macro of the
-    specified jdc text to a python dictionnary whose keys are the
-    names of the data of the macro.
-    """
-    print("deprecated")
-    context = {}
-    source = "def args_to_dict(**kwargs): return kwargs \n"
-    source += "%s = _F = args_to_dict          \n" % macro
-    source += "parameters=" + jdc + "                        \n"
-    source += "context['parameters'] = parameters         \n"
-    code = compile(source, "file.py", "exec")
-    eval(code)
-    parameters = context["parameters"]
-    return parameters
-
-
-def loadJDC(filename):
-    """
-    This function loads the text from the specified JdC file. A JdC
-    file is the persistence file of Eficas (*.comm).
-    """
-    print("deprecated")
-    fcomm = open(filename, "r")
-    jdc = ""
-    for line in fcomm.readlines():
-        if not (line[0] == "#"):
-            jdc += "%s" % line
-
-    # Warning, we have to make sure that the jdc comes as a simple
-    # string without any extra spaces/newlines
-    return jdc.strip()
 
 
 if __name__ == "__main__":
-    import sys
-
-    sys.path.insert(0, os.path.abspath(os.path.join(os.getcwd(), "..")))
-    lanceEficas(code=None, multi=True)
+    pass

@@ -27,8 +27,8 @@ sous_menus = {}
 
 class listePatrons(object):
     def __init__(self, code="ASTER"):
-        repIni = os.path.dirname(os.path.abspath(__file__))
-        self.rep_patrons = repIni + "/Patrons/" + code
+        rep = os.path.dirname(os.path.abspath(__file__))
+        self.repPatrons = rep + "/Patrons/" + code
         self.sous_menu = {}
         if code in sous_menus:
             self.sous_menu = sous_menus[code]
@@ -39,9 +39,9 @@ class listePatrons(object):
     def traiteListe(self):
         if not (self.code in sous_menus):
             return
-        if not (os.path.exists(self.rep_patrons)):
+        if not (os.path.exists(self.repPatrons)):
             return
-        for file in os.listdir(self.rep_patrons):
+        for file in os.listdir(self.repPatrons):
             for i in range(len(self.sous_menu)):
                 clef = list(self.sous_menu[i].keys())[0]
                 chaine = self.sous_menu[i][clef]

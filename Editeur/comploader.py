@@ -45,10 +45,14 @@ def chargerComposants(GUIPath):
     et de remplir le dictionnaire composants utilise par makeObjecttreeitem
     """
     debug = 0
-    repertoire = os.path.join("..", "Interface",GUIPath)
-    package = GUIPath
+    ici=os.path.dirname(os.path.abspath(__file__))
+    repertoire = os.path.join(ici,"..", "InterfaceGUI",GUIPath)
+    if debug : print ('repertoire', repertoire)
+    package = 'InterfaceGUI.'+GUIPath
     listfich = glob.glob(os.path.join(repertoire, "compo*.py"))
+    if debug : print ('listfich', listfich)
     for fichier in listfich:
+        if debug : print (fichier)
         m = os.path.basename(fichier)[:-3]
         module = __import__(package, globals(), locals(), [m])
         module = getattr(module, m)
@@ -71,12 +75,6 @@ def gettreeitem(object):
     except:
         pass
 
-    # voir avec Eric ? side car ou 2 try
-    # try:
-    #    return object.definition.itemeditor
-    # except:
-    #    pass
-    # On cherche ensuite dans les composants (plugins)
     try:
         itemtype = composants[object.__class__]
         return itemtype

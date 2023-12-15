@@ -1,5 +1,0 @@
-DEBUT()
-inf=1
-p2=inf+1
-p3=sin(p2)
-FIN()

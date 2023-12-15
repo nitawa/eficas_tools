@@ -38,25 +38,6 @@ def substractList(liste1,liste2):
             pass
     return liste1
 
-def getRepUser(dir):
-    """
-        Determine sur quelle plate-forme s'execute Eficas et recherche
-        le repertoire de l'utilisateur /$home/Eficas_install
-    """
-
-    #rep_user_eficas= os.path.join(os.environ['HOME'],dir)
-    rep_user_eficas= os.path.join(os.path.expanduser("~"),dir)
-    if os.path.exists(rep_user_eficas):
-        if os.path.isfile(rep_user_eficas) :
-            print (tr("Un fichier de nom %s existe deja : impossible de creer un repertoire de meme nom", rep_user_eficas))
-            rep_user_eficas=None
-    else :
-        try:
-            os.mkdir(rep_user_eficas)
-        except:
-            print (tr("Creation du repertoire %s impossible\n Verifiez vos droits d'acces", rep_user_eficas))
-    return rep_user_eficas
-
 def read_file(file):
     """
         ouvre le fichier file et retourne son contenu

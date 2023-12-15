@@ -20,7 +20,6 @@
 
 from .N_ASSD import ASSD
 from .N_Exception import AsException
-from .N_VALIDATOR import ValError
 from . import N_utils
 
 
