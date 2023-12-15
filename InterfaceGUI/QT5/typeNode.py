@@ -209,7 +209,7 @@ class PopUpMenuNodeMinimal(object):
                 tr("Aucune documentation n'est associee a ce noeud"),
             )
             return
-        commande = self.editor.appliEficas.maConfiguration.exec_acrobat
+        commande = self.editor.appliEficas.maConfiguration.PedfReader
         try:
             f = open(commande, "rb")
         except:
@@ -222,7 +222,7 @@ class PopUpMenuNodeMinimal(object):
             fichier = cle_doc
         else:
             fichier = os.path.abspath(
-                os.path.join(self.editor.maConfiguration.path_doc, cle_doc)
+                os.path.join(self.editor.maConfiguration.pathDoc, cle_doc)
             )
             try:
                 f = open(fichier, "rb")

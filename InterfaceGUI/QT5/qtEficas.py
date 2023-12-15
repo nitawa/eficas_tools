@@ -52,29 +52,17 @@ class Appli(AppliSsIhm, Ui_Eficas, QMainWindow):
             print("mauvaise utilisation de la classe Appli. Utiliser AppliSsIm SVP")
             exit()
 
-        AppliSsIhm.__init__(
-            self,
-            code,
-            salome,
-            parent,
-            multi=multi,
-            langue=langue,
-            ssIhm=True,
-            labelCode=labelCode,
-        )
         QMainWindow.__init__(self, parent)
         Ui_Eficas.__init__(self)
+        AppliSsIhm.__init__( self, code, salome, parent, multi=multi, langue=langue, ssIhm=True, labelCode=labelCode,)
 
         self.ssIhm = False
         self.multi = multi
         self.demande = multi  # voir PSEN
         self.GUIPath = GUIPath
 
-        if self.multi == False:
-            self.definitCode(code, None)
-            if self.code == None:
-                return
-        else:
+
+        if self.multi : 
             self.definitCode(code, None)
             if self.code == None:
                 return
@@ -175,7 +163,7 @@ class Appli(AppliSsIhm, Ui_Eficas, QMainWindow):
         if self.code != None:
             self.construitMenu()
 
-        self.setWindowTitle(self.VERSION_EFICAS)
+        self.setWindowTitle(self.versionEficas)
         try:
             # if 1 :
             # print ('attention try devient if 1')
@@ -199,7 +187,6 @@ class Appli(AppliSsIhm, Ui_Eficas, QMainWindow):
         if self.code == None:
             self.cleanPath()
             from InterfaceGUI.QT5.monChoixCode import MonChoixCode
-
             widgetChoix = MonChoixCode(self)
             ret = widgetChoix.exec_()
             # widgetChoix.show()
@@ -207,13 +194,6 @@ class Appli(AppliSsIhm, Ui_Eficas, QMainWindow):
             return  # pour le cancel de la fenetre choix code
         AppliSsIhm.definitCode(self, self.code, ssCode)
 
-        # PN --> pb d exception qui font planter salome
-        # plus supporte en python 3
-        # app=QApplication
-        # if hasattr(prefsCode,'encoding'):
-        #   import sys
-        #   reload(sys)
-        #   sys.setdefaultencoding(prefsCode.encoding)
 
     def construitMenu(self):
         self.initPatrons()
@@ -269,34 +249,6 @@ class Appli(AppliSsIhm, Ui_Eficas, QMainWindow):
         self.actionCode.setEnabled(True)
         self.menuAide.addAction(self.actionCode)
 
-    def newN1(self):
-        ssCode = None
-        code = "PSEN_N1"
-        self.cleanPath()
-        dirCode = os.path.abspath(
-            os.path.join(os.path.abspath(__file__), "../..", "ProcessOutputs_Eficas")
-        )
-        sys.path.insert(0, dirCode)
-        self.code = code
-        self.definitCode(code, ssCode)
-        self.initRecents()
-        self.multi = True
-        self.demande = False
-        self.fileNew()
-
-    def newPSEN(self):
-        ssCode = None
-        code = "PSEN"
-        self.cleanPath()
-        dirCode = os.path.abspath(
-            os.path.join(os.path.abspath(__file__), "../..", code)
-        )
-        sys.path.insert(0, dirCode)
-        self.code = code
-        self.definitCode(code, ssCode)
-        self.multi = True
-        self.demande = False
-        self.fileNew()
 
     def ajoutUQ(self):
         AppliSsIhm.ajoutUQ(self)
@@ -318,21 +270,6 @@ class Appli(AppliSsIhm, Ui_Eficas, QMainWindow):
         # self.actionEnregistrer.setDisabled(True)
         # self.actionEnregistrer_sous.setDisabled(True)
 
-    def ajoutN1(self):
-        return
-        self.menuN1 = self.menubar.addMenu(tr("Process Output"))
-        self.actionN1 = QAction(self)
-        self.actionN1.setText(tr("Process Output"))
-        self.menuN1.addAction(self.actionN1)
-        self.actionN1.triggered.connect(self.newN1)
-
-        if hasattr(self, "actionOpenProcess"):
-            return
-
-        self.actionOpenProcess = QAction(self)
-        self.actionOpenProcess.setText(tr("Open Process_Output File"))
-        self.menuN1.addAction(self.actionOpenProcess)
-        self.actionOpenProcess.triggered.connect(self.openProcess)
 
     def ajoutExecution(self):
         self.menuExecution = self.menubar.addMenu(tr("&Run"))
@@ -405,96 +342,11 @@ class Appli(AppliSsIhm, Ui_Eficas, QMainWindow):
         )
         self.actionSortieComplete.triggered.connect(self.handleSortieComplete)
 
-    def MT(self):
-        self.enlevernewInclude()
-        self.toolBar.addSeparator()
-
-    def ZCRACKS(self):
-        self.enlevernewInclude()
-        self.toolBar.addSeparator()
-        self.ajoutExecution()
-
-        self.menuOptions = self.menubar.addMenu("menuOptions")
-        self.menuOptions.addAction(self.actionParametres_Eficas)
-        self.menuOptions.setTitle(tr("Options"))
 
     def ADAO(self):
         self.enleverActionsStructures()
         self.enlevernewInclude()
 
-    def ASTER(self):
-        self.menuTraduction = self.menubar.addMenu("menuTraduction")
-        self.menuTraduction.addAction(self.actionTraduitV11V12)
-        self.menuTraduction.addAction(self.actionTraduitV10V11)
-        self.menuTraduction.addAction(self.actionTraduitV9V10)
-        self.menuTraduction.setTitle(tr("Traduction"))
-
-        self.menuFichier.addAction(self.actionSauveLigne)
-
-        self.menuOptions = self.menubar.addMenu("menuOptions")
-        self.menuOptions.addAction(self.actionParametres_Eficas)
-        self.menuOptions.addAction(self.actionLecteur_Pdf)
-        self.menuOptions.setTitle(tr("Options"))
-
-    def CARMEL3D(self):
-        # if self.salome == 0 : return
-        self.enlevernewInclude()
-        self.menuMesh = self.menubar.addMenu(tr("Gestion Maillage"))
-        self.menuMesh.setObjectName("Mesh")
-        self.menuMesh.addAction(self.actionChercheGrpMaille)
-        # self.griserActionsStructures()
-
-    def CARMELCND(self):
-        self.enlevernewInclude()
-        self.enleverRechercherDsCatalogue()
-        self.ajoutExecution()
-        self.ajoutSauveExecution()
-        self.griserActionsStructures()
-
-    def MAP(self):
-        self.enlevernewInclude()
-        self.toolBar.addSeparator()
-        self.ajoutExecution()
-        self.ajoutSauveExecution()
-        self.menuOptions = self.menubar.addMenu("menuOptions")
-        self.menuOptions.addAction(self.actionParametres_Eficas)
-        self.menuOptions.setTitle(tr("Options"))
-
-    def MAPIDENTIFICATION(self):
-        self.enlevernewInclude()
-        self.enleverSupprimer()
-        # self.ajoutExecution()
-        self.enleverRechercherDsCatalogue()
-        self.enleverActionsStructures()
-        self.enleverParametres()
-
-    def PSEN(self):
-        try:
-            self.action_Nouveau.triggered.disconnect(self.fileNew)
-        except:
-            pass
-        try:
-            self.action_Nouveau.triggered.disconnect(self.newPSEN)
-        except:
-            pass
-
-        self.action_Nouveau.triggered.connect(self.newPSEN)
-        self.enleverActionsStructures()
-        self.enleverParametres()
-        self.enleverRechercherDsCatalogue()
-        self.enlevernewInclude()
-        self.ajoutExecution()
-        self.ajoutN1()
-        self.ajoutHelpPSEN()
-        self.ajoutIcones()
-
-    def PSEN_N1(self):
-        self.enleverActionsStructures()
-        self.enleverParametres()
-        self.enleverRechercherDsCatalogue()
-        self.enlevernewInclude()
-        self.ajoutExecution()
-        self.ajoutIcones()
 
     def TELEMAC(self):
         self.enleverActionsStructures()
@@ -508,10 +360,6 @@ class Appli(AppliSsIhm, Ui_Eficas, QMainWindow):
         self.enleverParametres()
         self.enleverSupprimer()
         self.enleverRechercherDsCatalogue()
-
-    def ajoutHelpPSEN(self):
-        self.actionParametres_Eficas.setText("Help PSEN")
-        self.actionParametres_Eficas.triggered.connect(self.aidePSEN)
 
     def ChercheGrpMesh(self):
         Msg, listeGroup = self.ChercheGrpMeshInSalome()
@@ -532,13 +380,6 @@ class Appli(AppliSsIhm, Ui_Eficas, QMainWindow):
         else:
             print("il faut gerer les erreurs")
 
-    def ChercheGrp(self):
-        # Msg,listeGroup=self.ChercheGrpMailleInSalome()
-        # if Msg == None :
-        #   self.viewmanager.handleAjoutGroup(listeGroup)
-        # else :
-        # print "il faut gerer "
-        pass
 
     def ajoutIcones(self):
         # Pour pallier les soucis de repertoire d icone
@@ -554,86 +395,6 @@ class Appli(AppliSsIhm, Ui_Eficas, QMainWindow):
         icon7 = QIcon(self.repIcon + "/roue.png")
         self.actionExecution.setIcon(icon7)
 
-    def connecterSignauxQT4(self):
-        self.connect(
-            self.recentMenu, SIGNAL("aboutToShow()"), self.handleShowRecentMenu
-        )
-
-        self.connect(self.action_Nouveau, SIGNAL("triggered()"), self.fileNew)
-        self.connect(self.actionNouvel_Include, SIGNAL("triggered()"), self.newInclude)
-        self.connect(self.actionOuvrir, SIGNAL("triggered()"), self.fileOpen)
-        self.connect(self.actionEnregistrer, SIGNAL("triggered()"), self.fileSave)
-        self.connect(
-            self.actionEnregistrer_sous, SIGNAL("triggered()"), self.fileSaveAs
-        )
-        self.connect(self.actionFermer, SIGNAL("triggered()"), self.fileClose)
-        self.connect(self.actionFermer_tout, SIGNAL("triggered()"), self.fileCloseAll)
-        self.connect(self.actionQuitter, SIGNAL("triggered()"), self.fileExit)
-
-        self.connect(self.actionEficas, SIGNAL("triggered()"), self.aidePPal)
-        self.connect(self.actionVersion, SIGNAL("triggered()"), self.version)
-        self.connect(self.actionParametres, SIGNAL("triggered()"), self.gestionParam)
-
-        self.connect(self.actionCouper, SIGNAL("triggered()"), self.editCut)
-        self.connect(self.actionCopier, SIGNAL("triggered()"), self.editCopy)
-        self.connect(self.actionColler, SIGNAL("triggered()"), self.editPaste)
-        self.connect(self.actionSupprimer, SIGNAL("triggered()"), self.supprimer)
-        self.connect(self.actionRechercher, SIGNAL("triggered()"), self.rechercher)
-        self.connect(
-            self.actionDeplier_replier, SIGNAL("triggered()"), self.handleDeplier
-        )
-
-        self.connect(
-            self.actionRapport_de_Validation, SIGNAL("triggered()"), self.jdcRapport
-        )
-        self.connect(self.actionRegles_du_JdC, SIGNAL("triggered()"), self.jdcRegles)
-        self.connect(
-            self.actionFichier_Source, SIGNAL("triggered()"), self.jdcFichierSource
-        )
-        self.connect(self.actionFichier_Resultat, SIGNAL("triggered()"), self.visuJdcPy)
-
-        # Pour Aster
-        self.actionTraduitV9V10 = QAction(self)
-        self.actionTraduitV9V10.setObjectName("actionTraduitV9V10")
-        self.actionTraduitV9V10.setText(tr("TraduitV9V10"))
-        self.actionTraduitV10V11 = QAction(self)
-        self.actionTraduitV10V11.setObjectName("actionTraduitV10V11")
-        self.actionTraduitV10V11.setText(tr("TraduitV10V11"))
-        self.actionTraduitV11V12 = QAction(self)
-        self.actionTraduitV11V12.setObjectName("actionTraduitV11V12")
-        self.actionTraduitV11V12.setText(tr("TraduitV11V12"))
-        self.actionSauveLigne = QAction(self)
-        self.actionSauveLigne.setText(tr("Sauve Format Ligne"))
-
-        # self.connect(self.actionParametres_Eficas,SIGNAL("triggered()"),self.optionEditeur)
-        self.connect(self.actionLecteur_Pdf, SIGNAL("triggered()"), self.optionPdf)
-        self.connect(
-            self.actionTraduitV9V10, SIGNAL("triggered()"), self.traductionV9V10
-        )
-        self.connect(
-            self.actionTraduitV10V11, SIGNAL("triggered()"), self.traductionV10V11
-        )
-        self.connect(
-            self.actionTraduitV11V12, SIGNAL("triggered()"), self.traductionV11V12
-        )
-        self.connect(self.actionSauveLigne, SIGNAL("triggered()"), self.sauveLigne)
-
-        # Pour Carmel
-        self.actionChercheGrpMaille = QAction(self)
-        self.actionChercheGrpMaille.setText(tr("Acquiert groupe mailles"))
-        self.connect(
-            self.actionChercheGrpMaille, SIGNAL("triggered()"), self.ChercheGrpMaille
-        )
-
-        # Pour CarmelCND
-        self.actionChercheGrp = QAction(self)
-        self.actionChercheGrp.setText(tr("Acquisition Groupe Maille"))
-        self.connect(self.actionChercheGrp, SIGNAL("triggered()"), self.ChercheGrp)
-
-        # Pour Aide
-        self.actionCode = QAction(self)
-        self.actionCode.setText(tr("Specificites Maille"))
-        self.connect(self.actionCode, SIGNAL("triggered()"), self.aideCode)
 
     def connecterSignaux(self):
         self.recentMenu.aboutToShow.connect(self.handleShowRecentMenu)
@@ -688,10 +449,6 @@ class Appli(AppliSsIhm, Ui_Eficas, QMainWindow):
         self.actionChercheGrpMaille = QAction(self)
         self.actionChercheGrpMaille.setText(tr("Acquiert Groupe Maille"))
 
-        # Pour CarmelCND
-        self.actionChercheGrp = QAction(self)
-        self.actionChercheGrp.setText(tr("Accquisition Groupe Maille"))
-        self.actionChercheGrp.triggered.connect(self.ChercheGrp)
 
         # Pour Aide
         self.actionCode = QAction(self)
@@ -802,7 +559,7 @@ class Appli(AppliSsIhm, Ui_Eficas, QMainWindow):
 
     def sauveRecents(self):
         try:
-            rep = self.maConfiguration.rep_user
+            rep = self.maConfiguration.repUser
             monFichier = rep + "/listefichiers_" + self.code
         except:
             return
@@ -824,18 +581,22 @@ class Appli(AppliSsIhm, Ui_Eficas, QMainWindow):
 
     def traductionV11V12(self):
         from InterfaceGUI.QT5.gereTraduction import traduction
-
         traduction(self.maConfiguration.repIni, self.viewmanager, "V11V12")
 
     def traductionV10V11(self):
         from InterfaceGUI.QT5.gereTraduction import traduction
-
         traduction(self.maConfiguration.repIni, self.viewmanager, "V10V11")
 
     def traductionV9V10(self):
         from InterfaceGUI.QT5.gereTraduction import traduction
-
         traduction(self.maConfiguration.repIni, self.viewmanager, "V9V10")
+
+    def afficheMessage(self, titre, texte,critical=True):
+        if critical :
+          QMessageBox.critical( None, tr(titre), tr(texte))
+        else : 
+          QMessageBox.warning( None, tr(titre), tr(texte))
+
 
     def version(self):
         from InterfaceGUI.QT5.monVisu import DVisu
@@ -844,9 +605,9 @@ class Appli(AppliSsIhm, Ui_Eficas, QMainWindow):
         monVisuDialg = DVisu(parent=self, fl=0)
         monVisuDialg.setWindowTitle(titre)
         if self.code != None:
-            monVisuDialg.TB.setText(self.VERSION_EFICAS + tr(" pour ") + self.code)
+            monVisuDialg.TB.setText(self.versionEficas + tr(" pour ") + self.code)
         else:
-            monVisuDialg.TB.setText(self.VERSION_EFICAS)
+            monVisuDialg.TB.setText(self.versionEficas)
         monVisuDialg.adjustSize()
         monVisuDialg.show()
 
@@ -975,20 +736,6 @@ class Appli(AppliSsIhm, Ui_Eficas, QMainWindow):
             if msg != "":
                 QMessageBox.warning(self, tr("Erreur"), msg)
 
-    def openProcess(self):
-        ssCode = None
-        code = "PSEN_N1"
-        self.cleanPath()
-        dirCode = os.path.abspath(
-            os.path.join(os.path.abspath(__file__), "../..", "ProcessOutputs_Eficas")
-        )
-        sys.path.insert(0, dirCode)
-        self.code = code
-        self.definitCode(code, ssCode)
-        self.multi = True
-        self.demande = False
-        self.initRecents()
-        self.fileOpen()
 
     def fileOpen(self):
         try:
@@ -1066,15 +813,7 @@ class Appli(AppliSsIhm, Ui_Eficas, QMainWindow):
         self.viewmanager.newIncludeEditor()
 
     def cleanPath(self):
-        for pathCode in self.ListePathCode:
-            try:
-                aEnlever = os.path.abspath(
-                    os.path.join(os.path.dirname(__file__), "..", pathCode)
-                )
-                sys.path.remove(aEnlever)
-            except:
-                pass
-        for pathCode in self.listeAEnlever:
+        for pathCode in self.listeAPathEnlever:
             try:
                 sys.path.remove(aEnlever)
             except:

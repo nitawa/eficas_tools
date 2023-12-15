@@ -313,7 +313,7 @@ class ContientIcones(object):
             fichier = QFileDialog.getSaveFileName(
                 self.appliEficas,
                 tr("Use File"),
-                self.appliEficas.maConfiguration.savedir,
+                self.appliEficas.maConfiguration.saveDir,
                 filters,
             )
         else:
@@ -321,14 +321,14 @@ class ContientIcones(object):
             fichier = QFileDialog.getOpenFileName(
                 self.appliEficas,
                 tr("Ouvrir Fichier"),
-                self.appliEficas.maConfiguration.savedir,
+                self.appliEficas.maConfiguration.saveDir,
                 filters,
             )
 
         fichier = fichier[0]
         if not (fichier == ""):
             ulfile = os.path.abspath(fichier)
-            self.appliEficas.maConfiguration.savedir = os.path.split(ulfile)[0]
+            self.appliEficas.maConfiguration.saveDir = os.path.split(ulfile)[0]
             self.lineEditVal.setText(fichier)
             self.editor.afficheCommentaire(tr("Fichier selectionne"))
             self.LEvaleurPressed()
@@ -394,13 +394,13 @@ class ContientIcones(object):
     def BRepertoirePressed(self):
         directory = QFileDialog.getExistingDirectory(
             self.appliEficas,
-            directory=self.appliEficas.maConfiguration.savedir,
+            directory=self.appliEficas.maConfiguration.saveDir,
             options=QFileDialog.ShowDirsOnly,
         )
 
         if not (directory == ""):
             absdir = os.path.abspath(directory)
-            self.appliEficas.maConfiguration.savedir = os.path.dirname(absdir)
+            self.appliEficas.maConfiguration.saveDir = os.path.dirname(absdir)
             self.lineEditVal.setText(directory)
             self.LEvaleurPressed()
 

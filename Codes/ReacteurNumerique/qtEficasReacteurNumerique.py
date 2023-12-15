@@ -25,13 +25,11 @@
 # Modules Eficas
 import prefs
 name='prefs_'+prefs.code
-__import__(name)
+#__import__(name)
 
 import os, sys
-
 sys.path.append(os.path.join(os.path.abspath(os.path.dirname(__file__)),'..','..'))
 
-import prefs
-from InterfaceQT4 import eficas_go
+from Editeur import eficas_go
 print (prefs.code)
-eficas_go.lanceEficas(code=prefs.code)
+eficas_go.lanceEficas(code=prefs.code, GUIPath='QT5')

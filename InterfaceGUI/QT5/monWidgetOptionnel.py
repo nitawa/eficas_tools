@@ -23,7 +23,7 @@ from PyQt5.QtCore import Qt
 
 from Extensions.i18n import tr
 from UiQT5.desWidgetOptionnel import Ui_WidgetOptionnel
-from InterfaceQT5.QT5.monGroupeOptionnel import MonGroupeOptionnel
+from InterfaceGUI.QT5.monGroupeOptionnel import MonGroupeOptionnel
 
 
 # Import des panels

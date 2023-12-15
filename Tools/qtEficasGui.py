@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # Copyright (C) 2007-2024   EDF R&D
 #
@@ -17,32 +18,29 @@
 #
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
+"""
+   Ce module sert a lancer EFICAS  contre l avis de Pascale sans directory associee
+   Dans ce cas on peut taper
+   a) de n importe ou sans avoir rien positionne :
+           /leCheminVersTools/qtEficasGui.py -c leFichierCatalogueAvecSonPathComplet
+   b) En ayant positionne le PYTHONPATH avec la directory qui contient ce qu il faut
+      c est a dire le prefs.py et prefs_leCode.py
+      exemple pour Adao
+          /leCheminVersTools/qtEficasGui.py -k Adao
+          /leCheminVersTools/qtEficasGui.py -k Adao -v V95
+   version du 23 avril
+
+"""
 # Modules Python
 # Modules Eficas
 
-from UiQT5.desChoixCata import Ui_DChoixCata
-from PyQt5.QtWidgets import QDialog
-from Extensions.i18n import tr
+import sys
+import os
 
-# Import des panels
-class MonChoixCata(Ui_DChoixCata, QDialog):
-    """ """
+repIni=os.path.dirname(os.path.abspath(__file__))
+INSTALLDIR=os.path.join(repIni,'..')
+sys.path[:0]=[INSTALLDIR]
+#sys.path.append(os.path.join(os.path.abspath(os.path.dirname(__file__)),'../..'))
 
-    def __init__(self, QWparent, listeCata, title=None):
-        QDialog.__init__(self, QWparent)
-        self.setModal(True)
-        self.setupUi(self)
-        self.CBChoixCata.addItems(listeCata)
-        self.TLNb.setText(
-            tr("%d versions du catalogue sont disponibles", len(listeCata))
-        )
-        if title is not None:
-            self.setWindowTitle(tr(title))
-        self.buttonOk.clicked.connect(self.cataChoisi)
-        self.buttonCancel.clicked.connect(self.sortSansChoix)
-
-    def sortSansChoix(self):
-        QDialog.reject(self)
-
-    def cataChoisi(self):
-        QDialog.accept(self)
+from Editeur import eficas_go
+eficas_go.lanceEficas(code='NonConnu')

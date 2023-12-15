@@ -22,24 +22,23 @@ from PyQt5.QtWidgets import QFileDialog, QApplication
 from Extensions.i18n import tr
 
 
-def traduction(directPath, editor, version):
+def traduction( editor, version):
     if version == "V9V10":
         from Traducteur import traduitV9V10
-
         suffixe = "v10.comm"
+
     if version == "V10V11":
         from Traducteur import traduitV10V11
-
         suffixe = "v11.comm"
+
     if version == "V11V12":
         from Traducteur import traduitV11V12
-
         suffixe = "v12.comm"
 
     fn = QFileDialog.getOpenFileName(
         editor.appliEficas,
         tr("Traduire Fichier"),
-        directPath,
+        editor.maConfiguration.repUser,
         tr("Fichiers JDC  (*.comm);;" "Tous les Fichiers (*)"),
     )
 

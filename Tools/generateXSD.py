@@ -1,4 +1,6 @@
-# Copyright (C) 2007-2024   EDF R&D
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+# Copyright (C) 2007-2013   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -16,23 +18,16 @@
 #
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
+"""
+  cree le .xsd associe au .py
+  generateXSD.py -c leCatalogueAVECSONNOMCOMPLET POUR TROUVER LE DRIVER
+  23 avril
+"""
 # Modules Python
 # Modules Eficas
+import sys
+import os
+sys.path.append(os.path.join(os.path.abspath(os.path.dirname(__file__)),'..'))
 
-
-from UiQT5.desWidgetBloc import Ui_WidgetBloc
-from InterfaceGUI.QT5.groupe import Groupe
-from Extensions.i18n import tr
-
-# Import des panels
-class MonWidgetBloc(Ui_WidgetBloc, Groupe):
-    """ """
-
-    def __init__(self, node, editor, parentQt, definition, obj, niveau, commande):
-        # print ("bloc : ",node.item.nom)
-        Groupe.__init__(self, node, editor, parentQt, definition, obj, niveau, commande)
-        # if self.editor.maConfiguration.afficheCommandesPliees ==True:  self.node.plieToutEtReaffiche()
-        self.parentQt.commandesLayout.insertWidget(-1, self, 1)
-
-    def afficheOptionnel(self):
-        return
+from InterfaceQT4 import eficas_go
+eficas_go.genereXSD(code='NonConnu')

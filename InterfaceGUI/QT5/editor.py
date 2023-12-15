@@ -181,7 +181,7 @@ class JDCEditor(JDCEditorSsIhm, Ui_baseWidget, QWidget):
     # ---------------------------------------------
 
     # -----------------------------------------------------------------------#
-    def _viewText(self, txt, caption="FILE_VIEWER", largeur=1200, hauteur=600):
+    def _viewText(self, txt, caption="File_viewer", largeur=1200, hauteur=600):
     # --------------------------------------------------------------------#
         w = ViewText(self.QWParent, self, caption, txt, largeur, hauteur)
         w.show()
@@ -611,7 +611,7 @@ class JDCEditor(JDCEditorSsIhm, Ui_baseWidget, QWidget):
         fichier = QFileDialog.getOpenFileName(
             self.appliEficas,
             tr("Ouvrir Fichier"),
-            self.appliEficas.maConfiguration.savedir,
+            self.appliEficas.maConfiguration.saveDir,
             tr("Wrapper Files (*.xml);;" "All Files (*)"),
         )
         return fichier
@@ -777,11 +777,8 @@ class JDCEditor(JDCEditorSsIhm, Ui_baseWidget, QWidget):
             extensions = extensions + ";; Run (*.input);;"
 
         fn = QFileDialog.getSaveFileName(
-            self,
-            tr("sauvegarde"),
-            path,
-            extensions,
-            None,
+            self, tr("sauvegarde"),
+            path, extensions, None,
             QFileDialog.DontConfirmOverwrite,
         )
         if fn == None:
@@ -825,10 +822,7 @@ class JDCEditor(JDCEditorSsIhm, Ui_baseWidget, QWidget):
                 tr("Choix du composant obligatoire"),
             )
             return
-        if hasattr(self.maConfiguration, "savedir"):
-            path = self.maConfiguration.savedir
-        else:
-            path = "C:/"
+        path = self.maConfiguration.saveDir
 
         monNomFichier = ""
         if self.fichier is not None and self.fichier != "":
@@ -916,7 +910,7 @@ class JDCEditor(JDCEditorSsIhm, Ui_baseWidget, QWidget):
         ]()
         if self.fichierComplet is None or saveas:
             if path is None:
-                path = self.maConfiguration.savedir
+                path = self.maConfiguration.saveDir
             bOK, fn = self.determineNomFichier(path, extension)
             if bOK == 0:
                 return (0, None)
@@ -926,7 +920,7 @@ class JDCEditor(JDCEditorSsIhm, Ui_baseWidget, QWidget):
                 return (0, None)
 
             ulfile = os.path.abspath(fn)
-            self.appliEficas.maConfiguration.savedir = os.path.split(ulfile)[0]
+            self.appliEficas.maConfiguration.saveDir = os.path.split(ulfile)[0]
             fn = QDir.toNativeSeparators(fn)
 
         self.fichierComplet = os.path.splitext(fn)[0] + extension
@@ -973,7 +967,7 @@ class JDCEditor(JDCEditorSsIhm, Ui_baseWidget, QWidget):
         fn = self.fichier
         if self.fichier is None or saveas:
             if path is None:
-                path = self.maConfiguration.savedir
+                path = self.maConfiguration.saveDir
             bOK, fn = self.determineNomFichier(path, extension)
             if bOK == 0:
                 return (0, None)
@@ -983,7 +977,7 @@ class JDCEditor(JDCEditorSsIhm, Ui_baseWidget, QWidget):
                 return (0, None)
 
             ulfile = os.path.abspath(fn)
-            self.appliEficas.maConfiguration.savedir = os.path.split(ulfile)[0]
+            self.appliEficas.maConfiguration.saveDir = os.path.split(ulfile)[0]
             fn = QDir.toNativeSeparators(fn)
             newName = fn
 
@@ -1050,7 +1044,7 @@ class JDCEditor(JDCEditorSsIhm, Ui_baseWidget, QWidget):
             return
         if self.fichier is None:
             if path is None:
-                path = self.maConfiguration.savedir
+                path = self.maConfiguration.saveDir
             bOK, fn = self.determineNomFichier(path, "comm")
             if bOK == 0:
                 return (0, None)
@@ -1059,7 +1053,7 @@ class JDCEditor(JDCEditorSsIhm, Ui_baseWidget, QWidget):
             if fn == "":
                 return (0, None)
             ulfile = os.path.abspath(fn)
-            self.appliEficas.maConfiguration.savedir = os.path.split(ulfile)[0]
+            self.appliEficas.maConfiguration.saveDir = os.path.split(ulfile)[0]
             fn = QDir.toNativeSeparators(fn)
             self.fichier = fn
         else:
@@ -1076,7 +1070,7 @@ class JDCEditor(JDCEditorSsIhm, Ui_baseWidget, QWidget):
     # ------------------------------------------------#
         if self.fichier is None:
             if path is None:
-                path = self.maConfiguration.savedir
+                path = self.maConfiguration.saveDir
             bOK, fn = self.determineNomFichier(path, "comm")
             if bOK == 0:
                 return (0, None)
@@ -1085,7 +1079,7 @@ class JDCEditor(JDCEditorSsIhm, Ui_baseWidget, QWidget):
             if fn == "":
                 return (0, None)
             ulfile = os.path.abspath(fn)
-            self.appliEficas.maConfiguration.savedir = os.path.split(ulfile)[0]
+            self.appliEficas.maConfiguration.saveDir = os.path.split(ulfile)[0]
             print(fn)
             fn = QDir.toNativeSeparators(fn)
             self.fichier = fn
@@ -1207,7 +1201,7 @@ class JDCEditor(JDCEditorSsIhm, Ui_baseWidget, QWidget):
 
         QMessageBox.information(self, titre, texte)
         fn = QFileDialog.getOpenFileName(
-            self.appliEficas, titre, self.appliEficas.maConfiguration.savedir
+            self.appliEficas, titre, self.appliEficas.maConfiguration.saveDir
         )
 
         # ce retour est impose par le getFile d'I_JDC
@@ -1218,7 +1212,7 @@ class JDCEditor(JDCEditorSsIhm, Ui_baseWidget, QWidget):
         fn = fn[0]
 
         ulfile = os.path.abspath(fn)
-        self.appliEficas.maConfiguration.savedir = os.path.split(ulfile)[0]
+        self.appliEficas.maConfiguration.saveDir = os.path.split(ulfile)[0]
 
         # On utilise le convertisseur defini par formatFichierIn
         source = self.getSource(ulfile)
@@ -1401,121 +1395,6 @@ class JDCEditor(JDCEditorSsIhm, Ui_baseWidget, QWidget):
                 pass
             pass
         return indexNoeud
-
-    # -------------------#  Pour execution avec output et error dans le bash
-    def runPSEN(self):
-    # -------------------#
-
-        # if self.modified or self.fichier==None  : self.saveFile()
-        self.saveFile()
-
-        # lancement avec le .bat
-        path1 = os.path.abspath(
-            os.path.join(os.path.abspath(__file__), "../", "../", "PSEN_Eficas", "PSEN")
-        )
-        WrapperFilePath = os.path.join(path1, "PSSEWrapper.py")
-        import subprocess
-
-        p = subprocess.Popen(["python", WrapperFilePath])
-        (out, err) = p.communicate()
-        print(out)
-        print(err)
-
-    # -------------------#  Pour execution avec output et error dans le bash
-    def runPSEN_N1(self):
-    # -------------------#
-
-        self.saveFile()
-        path1 = os.path.abspath(
-            os.path.join(
-                os.path.abspath(__file__),
-                "../",
-                "../",
-                "ProcessOutputs_Eficas",
-                "TreatOutputs",
-            )
-        )
-        sys.path.append(path1)
-
-        if not (self.jdc.isValid()):
-            QMessageBox.information(
-                self, tr("Unvalid JDC"), tr("incorrect keywords will be ignored")
-            )
-        if "dicoImbrique" in generator.plugins:
-            self.generator = generator.plugins["dicoImbrique"]()
-            jdc_formate = self.generator.gener(self.jdc)
-            dico = self.generator.Dico
-
-            ###to delete
-            # fileDico =  r'C:\Logiciels DER\PSEN_V16\Code\ProcessOutputs_Eficas\TreatOutputs\dicoN1.py'
-            fileDico = os.path.join(
-                path1, "dicoN1.py"
-            )  # r'C:\Logiciels DER\PSEN_V16\Code\ProcessOutputs_Eficas\TreatOutputs\dicoN1.py'
-            f = open(str(fileDico), "w")
-            f.write("Dico =" + str(dico))
-            f.close()
-            ###
-
-        print("in runPSEN_N1", dico)
-        print(dico)
-        from InterfaceGUI.QT5.un import run
-
-        run(dico)
-        # res,txt_exception=run(dico)
-        # if res : QMessageBox.information( self, tr("fin de script run"), txt_exception)
-        # else  : QMessageBox.critical( self, tr("Erreur fatale script run"), txt_exception)
-
-    # -------------------#  Pour execution avec output et error dans le bash
-    def process_N1(self):
-    # -------------------#
-
-        path1 = os.path.abspath(
-            os.path.join(
-                os.path.abspath(__file__),
-                "../",
-                "../",
-                "ProcessOutputs_Eficas",
-                "TreatOutputs",
-            )
-        )
-        sys.path.append(path1)
-
-        if "dicoImbrique" in generator.plugins:
-            self.generator = generator.plugins["dicoImbrique"]()
-            jdc_formate = self.generator.gener(self.jdc)
-            dico = self.getDico()  # generator.Dico
-
-            for k in dico["CONTINGENCY_PROCESSING"]:
-                # print (k)
-                if (
-                    k[0:19] == "Component_List_For_"
-                    or k[0:21] == "Contingency_List_For_"
-                ):
-                    newK = k.replace("__", " ")
-                    l = "'" + str(newK) + "'"
-                    dico["CONTINGENCY_PROCESSING"][l] = dico["CONTINGENCY_PROCESSING"][
-                        k
-                    ]
-                    del dico["CONTINGENCY_PROCESSING"][k]
-
-            ###to delete
-            fileDico = os.path.join(path1, "dicoN1_process.py")
-            f = open(str(fileDico), "w")
-            f.write("Dico =" + str(dico))
-            f.close()
-            ###
-            return dico
-
-        # return self.getDico()
-
-    # -------------------#  Pour execution avec output et error dans le bash
-    def process_VP(self):
-    # -------------------#
-        if "dicoImbrique" in generator.plugins:
-            self.generator = generator.plugins["dicoImbrique"]()
-            jdc_formate = self.generator.gener(self.jdc)
-            dico = self.getDico()  # generator.Dico
-            return dico
 
 
 if __name__ == "__main__":

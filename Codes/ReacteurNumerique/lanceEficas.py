@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # Copyright (C) 2007-2012   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
@@ -30,11 +31,11 @@ sys.path.append(os.path.join(os.path.abspath(eficasPath)))
 
 name='prefs_' + code
 prefFile = Path(name + ".py")
-if (prefFile .is_file():
+if prefFile.is_file():
     try : 
         __import__(name)
     except : 
         print ('Unable to import {}').format(prefFile)
         exit(1)
-from InterfaceQT4 import eficas_go
-eficas_go.lanceEficas(code=prefs.code,GUI='QT5')
+from Editeur import eficas_go
+eficas_go.lanceEficas(code=code,GUIPath='QT5')

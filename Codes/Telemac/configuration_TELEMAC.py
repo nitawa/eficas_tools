@@ -22,7 +22,7 @@
     Ce module sert pour charger les paramètres de configuration d'EFICAS
 """
 # Modules Python
-from InterfaceQT4 import configuration
+from InterfaceGUI import configuration
 import os
 
 

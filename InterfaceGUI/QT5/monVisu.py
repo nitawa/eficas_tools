@@ -21,7 +21,7 @@
 # Modules Eficas
 
 
-from InterfaceGUI.QT5.desVisu import Ui_DVisu
+from UiQT5.desVisu import Ui_DVisu
 from PyQt5.QtWidgets import QDialog
 
 

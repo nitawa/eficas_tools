@@ -20,9 +20,8 @@
 import os, sys
 
 from Extensions.eficas_exception import EficasException
-from Extensions import param2
 from InterfaceGUI.getVersion import getEficasVersion
-from viewManagerSsIhm import MyViewManagerSsIhm
+from InterfaceGUI.viewManagerSsIhm import MyViewManagerSsIhm
 from Editeur import session
 
 
@@ -31,31 +30,17 @@ class AppliSsIhm:
     Class implementing the main user interface.
     """
 
-    def __init__(
-        self,
-        code=None,
-        salome=1,
-        parent=None,
-        multi=False,
-        langue="fr",
-        ssIhm=True,
-        labelCode=None,
-        genereXSD=False,
-        versionCode=None,
-        ssCode=None,
-        fichierCata=None,
-        GUIDir=None,
+    def __init__( self, code=None, salome=1, parent=None, multi=False, langue="fr",
+        ssIhm=True, labelCode=None, genereXSD=False, versionCode=None, ssCode=None, fichierCata=None,
+        GUIPath=None,
     ):
         """
         Constructor
         """
         version = getEficasVersion()
-        self.VERSION_EFICAS = "Eficas QT5 Salome " + version
+        self.versionEficas = "Eficas QT5 Salome " + version
         self.labelCode = labelCode
-        if not GUIDir:
-            self.GUIDir = "InterfaceQT4"
-        else:
-            self.GUIDir = GUIDir
+        self.GUIPath = None
 
         self.salome = salome
         self.ssIhm = True
@@ -71,43 +56,13 @@ class AppliSsIhm:
         self.recent = []
         self.ficRecents = {}
         self.mesScripts = {}
-        self.listeAEnlever = []
-        self.ListePathCode = [
-            "Adao",
-            "ADAO",
-            "Carmel3D",
-            "Telemac",
-            "CF",
-            "MAP",
-            "ZCracks",
-            "SEP",
-            "SPECA",
-            "PSEN_Eficas",
-            "PSEN_N1",
-        ]
-        self.listeCode = [
-            "Adao",
-            "ADAO",
-            "Carmel3D",
-            "Telemac",
-            "CF",
-            "MAP",
-            "ZCracks",
-            "SEP",
-            "SPECA",
-            "PSEN_Eficas",
-            "PSEN_N1",
-        ]
-        self.repIcon = os.path.join(
-            os.path.dirname(os.path.abspath(__file__)), "..", "Editeur", "icons"
-        )
+        self.listePathAEnlever = []
+        self.repIcon = os.path.join( os.path.dirname(os.path.abspath(__file__)), "..", "Editeur", "icons")
 
-        if fichierCata == None:
-            self.fichierCata = session.d_env.fichierCata
-        else:
-            self.fichierCata = fichierCata
-        if session.d_env.labelCode:
-            self.labelCode = session.d_env.labelCode
+        if fichierCata == None: self.fichierCata = session.d_env.fichierCata
+        else: self.fichierCata = fichierCata
+
+        if session.d_env.labelCode: self.labelCode = session.d_env.labelCode
         self.withXSD = session.d_env.withXSD
 
         if self.salome:
@@ -118,18 +73,14 @@ class AppliSsIhm:
                 print("eficas hors salome")
 
         self.multi = multi
-        if self.multi:
-            print("pas de multi sans ihm")
+        if self.multi: print("pas de multi sans ihm")
 
-        if langue == "fr":
-            self.langue = langue
-        else:
-            self.langue = "ang"
+        if langue == "fr": self.langue = langue
+        else: self.langue = "ang"
 
         if self.multi == False:
             self.definitCode(code, ssCode)
-            if code == None:
-                return
+            if code == None: return
 
         self.suiteTelemac = False
         self.viewmanager = MyViewManagerSsIhm(self)
@@ -140,17 +91,11 @@ class AppliSsIhm:
         self.formatFichierIn = "pythonUQ"  # par defaut
 
     def definitCode(self, code, ssCode):
+        # ssCode sert pour Map
         self.code = code
         self.ssCode = ssCode
         if self.code == None:
             return  # pour le cancel de la fenetre choix code
-
-        try:
-            name = "prefs_" + self.code
-            prefsCode = __import__(name)
-            self.repIni = prefsCode.repIni
-        except:
-            self.repIni = os.path.dirname(os.path.abspath(__file__))
 
         if ssCode != None:
             self.formatFichierOut = ssCode  # par defaut
@@ -159,22 +104,13 @@ class AppliSsIhm:
             self.formatFichierIn = "python"  # par defaut
             self.formatFichierOut = "python"  # par defaut
 
-        nameConf = "configuration_" + self.code
-        try:
-            configuration = __import__(nameConf)
-            self.maConfiguration = configuration.make_config(self, self.repIni)
-        except:
-            from InterfaceQT4.configuration import makeConfig
-
-            # self.maConfiguration = configuration.makeConfig(self,prefsCode.repIni)
-            self.maConfiguration = makeConfig(self, self.repIni)
+#ooooo
+        from InterfaceGUI.configuration import configBase
+        self.maConfiguration = configBase(self)
 
         if hasattr(self, "maConfiguration") and self.maConfiguration.translatorFichier:
             from Extensions import localisation
-
-            localisation.localise(
-                None,
-                self.langue,
+            localisation.localise( None, self.langue,
                 translatorFichier=self.maConfiguration.translatorFichier,
             )
         if self.withXSD:
@@ -236,8 +172,13 @@ class AppliSsIhm:
         currentCata = CONTEXT.getCurrentCata()
         texteXSD = currentCata.dumpXsd(avecEltAbstrait)
         return texteXSD
-        # if self.maConfiguration.afficheIhm==False : exit()
-        # else : return texteXSD
+
+    def afficheMessage(self, titre, texte,critical=True):
+        print ('__________________________')
+        print (tr(titre))
+        print ('')
+        print (tr(texte))
+        print ('__________________________')
 
 
 # ,self.fileSaveAs

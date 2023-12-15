@@ -69,7 +69,7 @@ class MonWidgetSimpBase(Ui_WidgetSimpBase, Feuille):
         chaine = ""
 
         if valeurTexte != None:
-            from InterfaceGUI.QT5.ecimal import Decimal
+            from decimal import Decimal
 
             if isinstance(valeurTexte, Decimal):
                 chaine = str(valeurTexte)

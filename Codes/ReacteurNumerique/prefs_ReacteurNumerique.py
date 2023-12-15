@@ -19,23 +19,17 @@
 #
 # ======================================================================
 
-import traceback
-traceback.print_stack()
 import os,sys
 # repIni sert a localiser le fichier editeur.ini
 # Obligatoire
 repIni=os.path.dirname(os.path.abspath(__file__))
-INSTALLDIR=os.path.join(repIni,'..')
+INSTALLDIR=os.path.join(repIni,'..','..')
 sys.path[:0]=[INSTALLDIR]
 
 
 # lang indique la langue utilisee pour les chaines d'aide : fr ou ang
 lang='fr'
 
-# Codage des strings qui accepte les accents (en remplacement de 'ascii')
-encoding='iso-8859-1'
-
-#
 #typeDeCata='XML'
 catalogues=(
     ('ReacteurNumerique','Version Beta',os.path.join(repIni,'cata_RN_UQ.py'),'python','python'),

@@ -20,7 +20,7 @@
 # Modules Python
 # Modules Eficas
 
-from InterfaceGUI.QT5.desRechercheCatalogue import Ui_desRechercheCatalogue
+from UiQT5.desRechercheCatalogue import Ui_desRechercheCatalogue
 from PyQt5.QtWidgets import QDialog, QCompleter
 from PyQt5.QtCore import Qt
 

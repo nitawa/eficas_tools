@@ -40,10 +40,10 @@ from readercata import ReaderCataCommun
 
 
 class ReaderCata(ReaderCataCommun):
-    def __init__(self, QWParent, appliEficas):
-        self.QWParent = QWParent
+    def __init__(self, appliEficas, editor):
         self.appliEficas = appliEficas
-        self.VERSION_EFICAS = self.appliEficas.VERSION_EFICAS
+        self.editor = editor
+        self.versionEficas = self.appliEficas.versionEficas
         self.code = self.appliEficas.code
         self.ssCode = self.appliEficas.ssCode
         # PN ?? bizarre le 22/04/20

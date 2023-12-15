@@ -5,7 +5,6 @@ if os.path.dirname(repInitial) not in sys.path : sys.path.insert(0,repInitial)
 if os.path.dirname(repEficas) not in sys.path  : sys.path.insert(0,repEficas)
 import types
 
-from Noyau.N_VALIDATOR import Valid
 from cata_RN import *
 
 # sert a activer les options d incertitude dans eficas

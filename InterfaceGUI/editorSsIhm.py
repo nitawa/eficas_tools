@@ -73,16 +73,15 @@ class JDCEditorSsIhm:
         self.code = self.appliEficas.maConfiguration.code
         self.maConfiguration = self.appliEficas.maConfiguration
 
-        if (
-            not hasattr(self.appliEficas, "readercata")
+        if ( not hasattr(self.appliEficas, "readercata")
             or self.appliEficas.readercata.demandeCatalogue == True
-            or self.appliEficas.multi == True
-        ):
+            or self.appliEficas.multi == True):
+
             if self.maConfiguration.typeDeCata == "XML":
                 from InterfaceGUI import readercataXML as readercata
             else:
                 from InterfaceGUI import readercata
-            self.readercata = readercata.ReaderCata(self, self.appliEficas)
+            self.readercata = readercata.ReaderCata(self.appliEficas, self)
             self.appliEficas.readercata = self.readercata
             self.appliEficas.code = self.code
         else:
@@ -261,7 +260,7 @@ class JDCEditorSsIhm:
             cata=self.readercata.cata,
             cata_ord_dico=self.readercata.cata_ordonne_dico,
             nom=jdcName,
-            rep_mat=self.maConfiguration.rep_mat,
+            repMat=self.maConfiguration.repMat,
         )
         self.modified = False
         self.monConvert = monConvert
@@ -294,7 +293,7 @@ class JDCEditorSsIhm:
             appliEficas=self.appliEficas,
             cata=self.readercata.cata,
             cata_ord_dico=self.readercata.cata_ordonne_dico,
-            rep_mat=self.maConfiguration.rep_mat,
+            repMat=self.maConfiguration.repMat,
         )
 
         jdc.lang = self.appliEficas.langue
@@ -324,7 +323,7 @@ class JDCEditorSsIhm:
             appliEficas=self.appliEficas,
             cata=self.readercata.cata,
             cata_ord_dico=self.readercata.cata_ordonne_dico,
-            rep_mat=self.maConfiguration.rep_mat,
+            repMat=self.maConfiguration.repMat,
         )
         jaux.editor = self
         jaux.analyse()
@@ -335,7 +334,7 @@ class JDCEditorSsIhm:
             cata=self.readercata.cata,
             cata_ord_dico=self.readercata.cata_ordonne_dico,
             jdc_pere=jaux,
-            rep_mat=self.maConfiguration.rep_mat,
+            repMat=self.maConfiguration.repMat,
         )
         J.editor = self
         J.analyse()

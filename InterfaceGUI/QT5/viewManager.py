@@ -75,7 +75,7 @@ class MyViewManager(object):
             fichier = QFileDialog.getOpenFileName(
                 self.appliEficas,
                 tr("Ouvrir Fichier"),
-                self.appliEficas.maConfiguration.savedir,
+                self.appliEficas.maConfiguration.saveDir,
                 extensions,
             )
             fichier = fichier[0]
@@ -83,7 +83,7 @@ class MyViewManager(object):
             return None
         fichier = os.path.abspath(fichier)
         ulfile = os.path.abspath(fichier)
-        self.appliEficas.maConfiguration.savedir = os.path.split(ulfile)[0]
+        self.appliEficas.maConfiguration.saveDir = os.path.split(ulfile)[0]
         self.appliEficas.addToRecentList(fichier)
         maPage = self.getEditor(fichier, units=units)
         if maPage:
@@ -394,14 +394,14 @@ class MyViewManager(object):
                 )
             else:
                 from InterfaceGUI.QT5.editor import JDCEditor
-            editor = JDCEditor(
-                self.appliEficas,
-                fichier,
-                jdc,
-                self.myQtab,
-                units=units,
-                include=include,
-            )
+                editor = JDCEditor(
+                    self.appliEficas,
+                    fichier,
+                    jdc,
+                    self.myQtab,
+                    units=units,
+                    include=include,
+                 )
             if double != None:
                 self.doubles[editor] = double
             if editor.jdc:  # le fichier est bien un jdc

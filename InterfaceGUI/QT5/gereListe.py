@@ -309,7 +309,7 @@ class GereListe(object):
         f.show()
 
     def selectInFile(self):
-        init = str(self.editor.maConfiguration.savedir)
+        init = str(self.editor.maConfiguration.saveDir)
         fn = QFileDialog.getOpenFileName(
             self.node.appliEficas,
             tr("Fichier de donnees"),
@@ -324,7 +324,7 @@ class GereListe(object):
         if fn == "":
             return
         ulfile = os.path.abspath(fn)
-        self.editor.maConfiguration.savedir = os.path.split(ulfile)[0]
+        self.editor.maConfiguration.saveDir = os.path.split(ulfile)[0]
 
         from InterfaceGUI.QT5.monSelectVal import MonSelectVal
 
