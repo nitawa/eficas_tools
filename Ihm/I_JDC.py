@@ -763,6 +763,66 @@ class JDC(I_OBJECT.OBJECT):
             return None
         return etape.getObjetByMCPath(MCPath[2:])
 
+    def selectXYWhereCondition(self, MCPath1, MCPath2, MCARetourner, MCCondition, valeur):
+   #---------------------------------------------------------------------------------------
+   # est-ce que cette signature va bien  ?
+   # elle permet de selection MCARetourner sous MCPath2 si MCCondition sous MCPath2 == valeur
+   # il y aura surement d  autres cas
+   # est-ce qu il ne faut pas deja prevoir les etapes nommees
+   # retourne la valeur de MCPath1 et de MCARetourner 
+   # si dans le fact decrit par MCPath2, le MCCOndition == Valeur
+   # fact
+  
+        debug=0
+        from Accas import MCList
+        if MCPath1[0] != MCPath2[0] :
+           print (' les MCPaths n indiquent pas la meme etape' )
+           return []
+        listeDonnees=[]
+        if debug : print ('McPath1 ', MCPath1)
+        if debug : print ('McPath2 ', MCPath2)
+        if debug : print ('McARetourner ', MCARetourner)
+        if debug : print ('MCCondition ', MCCondition)
+        if debug : print ('valeur ', valeur)
+        for e in self.etapes:
+            if e.nom != MCPath1[0] : continue
+            obj2=e.getObjetByMCPath(MCPath2[1:])
+            if not obj2 : continue 
+            if not (isinstance(obj2,MCList) and len(obj2) > 1) : obj2=(obj2,)
+            if debug : print ('obj2', obj2)
+            for o in obj2 :
+                objCondition = o.getChild(MCCondition)
+                if debug : print ('objCondition', objCondition)
+                if objCondition.valeur != valeur : continue
+                if debug : print ('la condition est vraie')
+
+                objX=e.getObjetByMCPath(MCPath1[1:])
+                objY=o.getChild(MCARetourner)
+                if not objX or not objY : continue
+                listeDonnees.append((objX.valeur,objY.valeur))
+        return listeDonnees
+
+
+    def selectXY(self, MCPath1, MCPath2):
+    #------------------------------------
+        debug=0
+        from Accas import MCList
+        if MCPath1[0] != MCPath2[0] :
+           print (' les MCPaths n indiquent pas la meme etape' )
+           return []
+        listeDonnees=[]
+        if debug : print ('McPath1 ', MCPath1)
+        if debug : print ('McPath2 ', MCPath2)
+        for e in self.etapes:
+            if debug : print (e, e.nom)
+            if e.nom != MCPath1[0] : continue
+            objX=e.getObjetByMCPath(MCPath1[1:])
+            if debug : print ('objX', objX)
+            objY=e.getObjetByMCPath(MCPath2[1:])
+            if debug : print ('objY', objY)
+            if not objX or not objY : continue
+            listeDonnees.append((objX.valeur,objY.valeur))
+        return listeDonnees
     def getGenealogie(self):
         """
         Retourne la liste des noms des ascendants de l'objet self
@@ -1129,3 +1189,31 @@ class JDC(I_OBJECT.OBJECT):
         for etape in self.etapes:
             l.append(etape.nom)
         return l
+    def getValuesOfAllMC(self,McPath):
+        from Accas.A_MCLIST import MCList
+        debug=0
+        l=set()
+        listeObj=[]
+        for etape in self.etapes :
+            if etape.nom == McPath[0] : listeObj.append(etape)
+        if debug : print (listeObj)
+        if debug : print (len(listeObj))
+        for nom in McPath [1:] :
+            if debug : print ('traitement de ', nom)
+            newList=[]
+            for obj in listeObj:
+                newObj=obj.getChildOrChildInBloc(nom)
+                if debug : print (newObj)
+                if newObj : 
+                    if isinstance(newObj,MCList):
+                        for o in newObj : newList.append(o)
+                    else :
+                        newList.append(newObj)
+            if debug : print (newList)
+            listeObj=newList
+        for obj in listeObj :
+            if debug : print (obj)
+            l.add(obj.valeur)
+        if debug : print (l)
+        return l
+

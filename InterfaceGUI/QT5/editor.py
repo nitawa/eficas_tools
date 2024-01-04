@@ -1072,15 +1072,13 @@ class JDCEditor(JDCEditorSsIhm, Ui_baseWidget, QWidget):
             if path is None:
                 path = self.maConfiguration.saveDir
             bOK, fn = self.determineNomFichier(path, "comm")
-            if bOK == 0:
-                return (0, None)
-            if fn == None:
-                return (0, None)
-            if fn == "":
-                return (0, None)
+
+            if bOK == 0: return (0, None)
+            if fn == None: return (0, None)
+            if fn == "": return (0, None)
+
             ulfile = os.path.abspath(fn)
             self.appliEficas.maConfiguration.saveDir = os.path.split(ulfile)[0]
-            print(fn)
             fn = QDir.toNativeSeparators(fn)
             self.fichier = fn
         else:
@@ -1396,6 +1394,54 @@ class JDCEditor(JDCEditorSsIhm, Ui_baseWidget, QWidget):
             pass
         return indexNoeud
 
+
+    # ------------------#
+    def _newJDCCND(self):
+    # ------------------#
+        """ obsolete """
+    # allait chercher les groupes moed. gardé pour l exemple
+        extensions = tr("Fichiers Med (*.med);;" "Tous les Fichiers (*)")
+        QMessageBox.information(
+            self, tr("Fichier Med"), tr("Veuillez selectionner un fichier Med")
+        )
+        QSfichier = QFileDialog.getOpenFileName(
+            self.appliEficas, caption="Fichier Med", filter=extensions
+        )
+        QSfichier = QSfichier[0]
+        self.fichierMED = QSfichier
+        from Extension.acquiertGroupes import getGroupes
+        erreur, self.listeGroupes, self.nomMaillage, self.dicoCoord = getGroupes(
+            self.fichierMED
+        )
+        if erreur != "": print("a traiter")
+        texteComm = (
+            "COMMENTAIRE(u'Cree - fichier : "
+            + self.fichierMED
+            + " - Nom Maillage : "
+            + self.nomMaillage
+            + "');\nPARAMETRES()\n"
+        )
+        texteSources = ""
+        texteCond = ""
+        texteNoCond = ""
+        texteVcut = ""
+        texteZs = ""
+        for groupe in self.listeGroupes:
+            if groupe[0:8] == "CURRENT_":
+                texteSources += groupe[8:] + "=SOURCE("
+                texteSources += "VecteurDirecteur=(1.0,2.0,3.0,),);\n"
+            if groupe[0:5] == "COND_":
+                texteCond += groupe[5:] + "=CONDUCTEUR();\n"
+            if groupe[0:7] == "NOCOND_":
+                texteNoCond += groupe[7:] + "=NOCOND();\n"
+            if groupe[0:5] == "VCUT_":
+                texteVcut += "V_" + groupe[5:] + "=VCUT();\n"
+            if groupe[0:3] == "ZS_":
+                texteZs += groupe[3:] + "=ZS();\n"
+        texte = texteComm + texteSources + texteCond + texteNoCond + texteVcut + texteZs
+        self.newTexteCND = texte
+        self.modified = 1
+                             
 
 if __name__ == "__main__":
     print("in main")

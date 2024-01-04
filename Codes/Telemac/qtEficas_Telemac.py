@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# Copyright (C) 2007-2012   EDF R&D
+# Copyright (C) 2007-2021   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -19,15 +19,17 @@
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
 """
-   Ce module sert a lancer EFICAS configure pour Code_Aster
+   Ce module sert a lancer EFICAS configure pour MAP 
 """
 # Modules Python
 # Modules Eficas
-
-from __future__ import absolute_import
-import sys,os
-sys.path.append(os.path.join(os.path.abspath(os.path.dirname(__file__)),'..'))
-
 import prefs
-from InterfaceQT4 import eficas_go
-eficas_go.lanceEficas(code=prefs.code)
+name='prefs_'+prefs.code
+#__import__(name)
+
+import os, sys
+sys.path.append(os.path.join(os.path.abspath(os.path.dirname(__file__)),'..','..'))
+
+from Editeur import eficas_go
+print (prefs.code)
+eficas_go.lanceEficas(code=prefs.code, GUIPath='QT5')

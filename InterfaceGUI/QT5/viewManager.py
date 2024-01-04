@@ -380,28 +380,8 @@ class MyViewManager(object):
                     break
                 double = editor
         else:
-            # PNPN A reflechir avec le GUIPath
-            if self.appliEficas.code == "5C":
-                from InterfaceQT5C.editor5C import JDCEditor5C
-
-                editor = JDCEditor5C(
-                    self.appliEficas,
-                    fichier,
-                    jdc,
-                    self.myQtab,
-                    units=units,
-                    include=include,
-                )
-            else:
-                from InterfaceGUI.QT5.editor import JDCEditor
-                editor = JDCEditor(
-                    self.appliEficas,
-                    fichier,
-                    jdc,
-                    self.myQtab,
-                    units=units,
-                    include=include,
-                 )
+            from editor import JDCEditor
+            editor = JDCEditor( self.appliEficas, fichier, jdc, self.myQtab, units=units, include=include,)
             if double != None:
                 self.doubles[editor] = double
             if editor.jdc:  # le fichier est bien un jdc

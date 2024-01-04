@@ -41,20 +41,19 @@ def lanceEficas(code=None, multi=False, langue="en", labelCode=None, GUIPath='QT
         return
 
     from Editeur import session
+    import sys
 
     options = session.parse(sys.argv)
     if options.code != None:
         code = options.code
 
-    if GUIPath == 'QT5' :
-        pathUi=os.path.abspath(os.path.join(os.path.dirname(__file__),'..','InterfaceGUI',GUIPath))
-        if pathUi not in sys.path : sys.path.append(pathUi)
+    if GUIPath == 'QT5' or GUIPath == 'cinqC' :
+        pathAbso=os.path.abspath(os.path.join(os.path.dirname(__file__),'..','InterfaceGUI',GUIPath))
+        if pathAbso not in sys.path : sys.path.insert(0,pathAbso)
 
-    pathGui='InterfaceGUI.'+ GUIPath + '.qtEficas'
-    qtEficas =__import__(pathGui, globals(), locals(), ['qtEficas',])
-
+    from qtEficas import Appli
     app = QApplication(sys.argv)
-    Eficas = qtEficas.Appli(code=code, salome=salome, multi=multi, langue=langue, labelCode=labelCode, GUIPath=GUIPath)
+    Eficas = Appli(code=code, salome=salome, multi=multi, langue=langue, labelCode=labelCode, GUIPath=GUIPath)
     Eficas.show()
 
     res = app.exec_()

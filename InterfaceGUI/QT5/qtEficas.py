@@ -19,10 +19,8 @@
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
 import os, sys
-#pathUi = os.path.abspath(os.path.dirname(__file__), '..', '..', 'UiQT5')
-#if not pathUi not in sys.path : sys.path.append(pathUi)
 
-from PyQt5.QtWidgets import ( QApplication, QMainWindow, QGridLayout, QBoxLayout, QMenu, QAction, QMessageBox,)
+from PyQt5.QtWidgets import QApplication, QMainWindow, QGridLayout, QBoxLayout, QMenu, QAction, QMessageBox
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import Qt, QSize
 
@@ -43,8 +41,7 @@ class Appli(AppliSsIhm, Ui_Eficas, QMainWindow):
     """
 
     def __init__( self, code=None, salome=1, parent=None, multi=False, langue="en", ssIhm=False,
-        labelCode=None, GUIPath="InterfaceGUI.QT5",
-    ):
+        labelCode=None, GUIPath="InterfaceGUI.QT5",):
         """
         Constructor
         """
@@ -54,13 +51,14 @@ class Appli(AppliSsIhm, Ui_Eficas, QMainWindow):
 
         QMainWindow.__init__(self, parent)
         Ui_Eficas.__init__(self)
+        print (Appli.__mro__)
         AppliSsIhm.__init__( self, code, salome, parent, multi=multi, langue=langue, ssIhm=True, labelCode=labelCode,)
+        app = QApplication
 
         self.ssIhm = False
         self.multi = multi
         self.demande = multi  # voir PSEN
         self.GUIPath = GUIPath
-
 
         if self.multi : 
             self.definitCode(code, None)
@@ -68,57 +66,33 @@ class Appli(AppliSsIhm, Ui_Eficas, QMainWindow):
                 return
 
         self.suiteTelemac = False
-        if hasattr(self, "maConfiguration"):
-            if self.maConfiguration.demandeLangue:
-                from InterfaceGUI.QT5.monChoixLangue import MonChoixLangue
+        if self.maConfiguration.demandeLangue:
+            from InterfaceGUI.QT5.monChoixLangue import MonChoixLangue
+            widgetLangue = MonChoixLangue(self)
+            ret = widgetLangue.exec_()
+        self.suiteTelemac = self.maConfiguration.suiteTelemac
 
-                widgetLangue = MonChoixLangue(self)
-                ret = widgetLangue.exec_()
-            self.suiteTelemac = self.maConfiguration.suiteTelemac
-
-        if (
-            not self.salome
-            and hasattr(self, "maConfiguration")
-            and hasattr(self.maConfiguration, "lang")
-        ):
-            self.langue = self.maConfiguration.lang
         from Extensions import localisation
-
-        app = QApplication
-        if hasattr(self, "maConfiguration"):
-            localisation.localise(
-                None,
-                self.langue,
-                translatorFichier=self.maConfiguration.translatorFichier,
-            )
+        localisation.localise(None, self.langue, translatorFichier=self.maConfiguration.translatorFichier,)
         self.setupUi(self)
 
-        # if parent != None : self.parentCentralWidget = parent.centralWidget()
-        # else              : self.parentCentralWidget = None
 
         if not self.salome:
-            if hasattr(self, "maConfiguration") and hasattr(
-                self.maConfiguration, "taille"
-            ):
-                self.taille = self.maConfiguration.taille
-            else:
-                self.taille = 1700
+            self.resize(self.maConfiguration.taille, self.height())
 
-            self.resize(self.taille, self.height())
+        if hasattr (self, 'actionParametres') :
+            icon = QIcon(self.repIcon + "/parametres.png")
+            self.actionParametres.setIcon(icon)
 
-        icon = QIcon(self.repIcon + "/parametres.png")
-        self.actionParametres.setIcon(icon)
-        if hasattr(self, "maConfiguration") and self.maConfiguration.boutonDsMenuBar:
+        if self.maConfiguration.boutonDsMenuBar:
             self.frameEntete.setMaximumSize(QSize(16777215, 100))
             self.frameEntete.setMinimumSize(QSize(0, 100))
-        if (
-            hasattr(self, "maConfiguration")
-            and self.maConfiguration.enleverActionStructures
-        ):
+
+        if self.maConfiguration.enleverActionStructures:
             self.enleverActionsStructures()
-        if hasattr(self, "maConfiguration") and self.maConfiguration.enleverParametres:
+        if self.maConfiguration.enleverParametres:
             self.enleverParametres()
-        if hasattr(self, "maConfiguration") and self.maConfiguration.enleverSupprimer:
+        if self.maConfiguration.enleverSupprimer:
             self.enleverSupprimer()
 
         if hasattr(self, "frameEntete"):
@@ -132,49 +106,40 @@ class Appli(AppliSsIhm, Ui_Eficas, QMainWindow):
             self.blEntete.insertWidget(0, self.menubar)
             self.blEnteteGlob.insertLayout(0, self.blEntete)
 
-        if hasattr(self, "maConfiguration") and self.maConfiguration.boutonDsMenuBar:
+        if self.maConfiguration.boutonDsMenuBar:
             self.blEnteteCommmande = QBoxLayout(0)
             self.blEnteteCommmande.insertWidget(0, self.toolBarCommande)
             self.toolBarCommande.setIconSize(QSize(96, 96))
             self.blEnteteGlob.insertLayout(-1, self.blEnteteCommmande)
         else:
-            self.toolBarCommande.close()
+            if hasattr(self, 'toolBarCommande') :self.toolBarCommande.close()
 
-        if (
-            hasattr(self, "maConfiguration")
-            and self.maConfiguration.closeEntete == True
-            and self.salome
-        ):
+        if self.maConfiguration.closeEntete :
             self.closeEntete()
 
-        eficas_root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
         self.viewmanager = MyViewManager(self)
         self.recentMenu = QMenu(tr("&Recents"))
-        # self.menuFichier.insertMenu(self.actionOuvrir,self.recentMenu)
 
         # actionARemplacer ne sert que pour l insert Menu
         if hasattr(self, "actionARemplacer"):
             self.menuFichier.insertMenu(self.actionARemplacer, self.recentMenu)
             self.menuFichier.removeAction(self.actionARemplacer)
-            self.connecterSignaux()
-        self.toolBar.addSeparator()
+        self.connecterSignaux()
+        if hasattr(self, 'toolBar') : self.toolBar.addSeparator()
 
         if self.code != None:
             self.construitMenu()
-
         self.setWindowTitle(self.versionEficas)
+
         try:
             # if 1 :
             # print ('attention try devient if 1')
             self.ouvreFichiers()
         except EficasException as exc:
             # except:
-            print("je suis dans le except")
-            if self.salome == 0:
-                exit()
-
-        # self.adjustSize()
+            print("je suis dans le except du ouvreFichier")
+            if self.salome == 0 : exit(1)
 
     def closeEntete(self):
         self.menuBar().close()
@@ -204,7 +169,6 @@ class Appli(AppliSsIhm, Ui_Eficas, QMainWindow):
             "menuOptions",
             "menuMesh",
             "menuExecution",
-            "menuN1",
         ):
             if hasattr(self, intituleMenu):
                 menu = getattr(self, intituleMenu)
@@ -216,9 +180,7 @@ class Appli(AppliSsIhm, Ui_Eficas, QMainWindow):
                 action = getattr(self, intituleAction)
                 self.toolBar.removeAction(action)
         if self.code.upper() in Appli.__dict__:
-            Appli.__dict__[self.code.upper()](
-                self,
-            )
+            Appli.__dict__[self.code.upper()]( self,)
         if self.suiteTelemac:
             self.lookSuiteTelemac()
         self.metMenuAJourUtilisateurs()

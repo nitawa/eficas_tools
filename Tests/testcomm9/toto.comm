@@ -1,7 +1,0 @@
-DEBUT()
-
-MA=LIRE_MAILLAGE(UNITE=20,
-#cocococo=LIRE_MAILLAGE(UNITE=20,
-                 VERI_MAIL=_F(VERIF='OUI',),
-                 INFO=1,);
-FIN()

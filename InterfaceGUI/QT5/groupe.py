@@ -34,7 +34,7 @@ import traceback
 class Groupe(QWidget, FacultatifOuOptionnel):
     """ """
 
-    def __init__(self, node, editor, parentQt, definition, obj, niveau, commande=None):
+    def __init__(self, node, editor, parentQt, definition, obj=None, niveau=None, commande=None):
         # print ("groupe : ",self.node.item.nom," ",self.node.fenetre)
         QWidget.__init__(self, None)
         self.node = node

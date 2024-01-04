@@ -1,4 +1,0 @@
-editorSsIhm.py:        from acquiertGroupes import getGroupes
-qtEficasSsIhm.py:from getVersion import getEficasVersion
-qtEficasSsIhm.py:                from Accas import eficasSalome
-readercataXML.py:from readercata import ReaderCataCommun

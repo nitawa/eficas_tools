@@ -18,22 +18,9 @@
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
 
-from builtins import str
-from builtins import object
-import math
-import types
-
-
-try:
-    import Numeric
-except:
-    try:
-        import numpy
-
-        Numeric = numpy
-    except ImportError:
-        Numeric = None
-
+# Classe qui permet d entrer des formules comme
+# comme a=3cos(30) sans qu elles soient caculees a l exec
+# attention toutes les fonctions mathematiques ne sont pas surchargées
 
 def mkf(value):
     if type(value) in (type(1), type(1), type(1.5), type(1j), type("hh")):
@@ -47,7 +34,6 @@ def mkf(value):
         raise TypeError("Can't make formula from", value)
 
 
-# class Formula(object):
 class Formula(object):
     def __len__(self):
         val = self.eval()
@@ -153,7 +139,7 @@ class Formula(object):
 
 def _div(a, b):
     import six
-
+    import types
     if isinstance(a, six.integer_types) and isinstance(b, six.integer_types):
         if a % b:
             return a / b
@@ -303,7 +289,7 @@ def sin(f):
 
 
 def array(f, *tup, **args):
-    """array de Numeric met en defaut la mecanique des parametres
+    """array de numpy met en defaut la mecanique des parametres
     on la supprime dans ce cas. Il faut que la valeur du parametre soit bien definie
     """
     originalMath = OriginalMath()
@@ -344,6 +330,7 @@ class OriginalMath(object):
         if hasattr(self, "pi"):
             return
         import math
+        import numpy
 
         try:
             self.toSurcharge()
@@ -351,29 +338,29 @@ class OriginalMath(object):
             pass
 
     def toSurcharge(self):
-        self.numeric_ncos = Numeric.cos
-        self.numeric_nsin = Numeric.sin
-        self.numeric_narray = Numeric.array
+        self.numeric_ncos = numpy.cos
+        self.numeric_nsin = numpy.sin
+        self.numeric_narray = numpy.array
         self.sin = math.sin
         self.cos = math.cos
         self.sqrt = math.sqrt
         self.ceil = math.ceil
         self.pi = math.pi
 
-        # surcharge de la fonction cos de Numeric pour les parametres
-        original_ncos = Numeric.cos
+        # surcharge de la fonction cos de numpy pour les parametres
+        original_ncos = numpy.cos
         Unop.opmap["ncos"] = lambda x: original_ncos(x)
-        Numeric.cos = cos
+        numpy.cos = cos
 
-        # surcharge de la fonction sin de Numeric pour les parametres
-        original_nsin = Numeric.sin
+        # surcharge de la fonction sin de numpy pour les parametres
+        original_nsin = numpy.sin
         Unop.opmap["nsin"] = lambda x: original_nsin(x)
-        Numeric.sin = sin
+        numpy.sin = sin
 
-        # surcharge de la fonction array de Numeric pour les parametres
-        original_narray = Numeric.array
-        self.original_narray = Numeric.array
-        Numeric.array = array
+        # surcharge de la fonction array de numpy pour les parametres
+        original_narray = numpy.array
+        self.original_narray = numpy.array
+        numpy.array = array
 
         # surcharge de la fonction sin de math pour les parametres
         original_sin = math.sin
@@ -402,18 +389,11 @@ class OriginalMath(object):
 
     def toOriginal(self):
         import math
-
+        import numpy
         try:
-            import Numeric
-        except:
-            import numpy
-
-            Numeric = numpy
-
-        try:
-            Numeric.cos = originalMath.numeric_ncos
-            Numeric.sin = originalMath.numeric_nsin
-            Numeric.array = originalMath.numeric_narray
+            numpy.cos = originalMath.numeric_ncos
+            numpy.sin = originalMath.numeric_nsin
+            numpy.array = originalMath.numeric_narray
         except:
             pass
         math.sin = originalMath.sin

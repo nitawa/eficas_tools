@@ -81,7 +81,6 @@ class ReaderCataCommun(object):
     # ____________________
 
         listeCataPossibles = []
-        #self.commandesOrdreCatalogue = []
 
         listeTousLesCatas = []
         for catalogue in self.appliEficas.maConfiguration.catalogues:
@@ -332,7 +331,6 @@ class ReaderCata(ReaderCataCommun):
         # retrouveOrdreCataStandard fait une analyse textuelle du catalogue
         # remplace par retrouveOrdreCataStandardAutre qui utilise une numerotation
         # des mots cles a la creation
-        # print (dir(self.cata))
         self.retrouveOrdreCataStandardAutre()
         if self.appliEficas.maConfiguration.modeNouvCommande == "initial":
             self.retrouveOrdreCataStandard()
@@ -446,7 +444,6 @@ class ReaderCata(ReaderCataCommun):
         nomCata = os.path.splitext(os.path.basename(self.fichierCata))[0]
         repCata = os.path.dirname(self.fichierCata)
         self.commandesOrdreCatalogue = analyse_catalogue_initial.analyseCatalogue( self.fichierCata)
-        # print self.commandesOrdreCatalogue
 
     def traiteIcones(self):
         if self.appliEficas.maConfiguration.ficIcones == None:

@@ -19,8 +19,6 @@
 #
 _no = 0
 
-
-# import Accas
 def numberEntite(entite):
     """
     Fonction qui attribue un numero unique a tous les objets du catalogue

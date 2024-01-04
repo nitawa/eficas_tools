@@ -51,7 +51,7 @@ class configBase(object):
 
         if self.salome: name = "prefs_eficas_salome.ini"
         else: name = "prefs_eficas.ini"
-        if sys.platform == 'linux' : repUser = os.path.join( os.path.expanduser("~"))
+        if sys.platform == 'linux' : repUser = os.path.join( os.path.expanduser("~"), '.config/Eficas',self.code)
         else : repUser = os.path.join('C:/','.config/Eficas',self.code)
         self.fichierPrefsUtilisateur = os.path.join(repUser, name)
 
@@ -62,10 +62,11 @@ class configBase(object):
            'repIcones', 'differencieSiDefaut', 'typeDeCata', 'closeParenthese', 'closeOptionnel', 
            'afficheFactOptionnel', 'enleverActionStructures', 'enleverPoubellePourCommande', 'enleverParametres',
            'enleverSupprimer', 'ajoutExecution', 'utilParExtensions', 'rendVisiblesLesCaches',
-           'pasDeMCOptionnels', 'dumpXSD', 'withXSD', 'afficheIhm', 'catalogues' )
+           'pasDeMCOptionnels', 'dumpXSD', 'withXSD', 'afficheIhm', 'catalogues', 'taille' )
 
-        self.labelsUser = ('PdfReader', 'saveDir', ' closeArbre', 'demandeLangue', 
+        self.labelsUser = ('PdfReader', 'saveDir', ' closeArbre', 'demandeLangue','taille' ,
            'nombreDeBoutonParLigne', 'translatorFichier', 'afficheCommandesPliees', 'afficheFirstPlies',
+
            'simpleClic', 'afficheOptionnelVide', 'afficheListesPliees', 'differencieSiDefaut') 
 
 
@@ -129,6 +130,7 @@ class configBase(object):
         self.utilParExtensions = []
         self.rendVisiblesLesCaches = False
         self.pasDeMCOptionnels = False
+        self.taille=1700
 
         self.dumpXSD = False
         self.withXSD = False
@@ -152,12 +154,13 @@ class configBase(object):
             prefsCode = __import__(name)
         except:
             self.catalogues = []
-            print("pas de fichier de prefs")
+            print("pas de fichier de prefs {} dans eficas".format(name))
             return
         for k in dir(prefsCode):
             if k in self.labelsEficas:
                 valeur=getattr(prefsCode,k)
                 setattr(self,k,valeur)
+        print("prise en compte du  fichier de prefs {} dans eficas".format(name))
 
     # --------------------------------------
     def lectureFichierIniIntegrateur(self):
@@ -166,9 +169,13 @@ class configBase(object):
         # appelle la lecture de ce fichier
         clef = "PREFS_CATA_" + self.code
         if clef in os.environ.keys(): fic = os.environ[clef]
-        else : return
+        else : 
+            print("pas de fichier defini pour les preferences integrateur")
+            return
         fichierPrefsIntegrateur = os.path.abspath(fic)
-        if not os.path.isfile(fichierPrefsIntegrateur): return
+        if not os.path.isfile(fichierPrefsIntegrateur): 
+            print("impossible de trouver le fichier {}".format(fichierPrefsIntegrateur))
+            return
         try : 
             with open(fichierPrefsIntegrateur) as fd: txt = fd.read()
         except:
@@ -191,17 +198,20 @@ class configBase(object):
                     setattr(self, k, d[k])
                 except:
                     pass
+        print("le fichier {} de preferences integateur a ete pris en compte".format(fichierPrefsIntegrateur))
 
     # --------------------------------------
     def lectureFichierIniUtilisateur(self):
     # --------------------------------------
         # Surcharge les parametres standards par les parametres utilisateur s'ils existent
-        if not os.path.isfile(self.fichierPrefsUtilisateur): return
+        if not os.path.isfile(self.fichierPrefsUtilisateur): 
+            print("Pas de fichier {} de preference utilisateur".format(self.fichierPrefsUtilisateur))
+            return
         try :
             with open(self.fichierPrefsUtilisateur) as fd: txt = fd.read()
         except:
             titre = tr("Import du fichier de Configuration"),
-            texte = "Erreur a la lecture du fichier de configuration {} ".format(str(fichierPrefsUtilisateur))
+            texte = "Erreur a la lecture du fichier de configuration {} ".format(str(fself.ichierPrefsUtilisateur))
             self.appliEficas.afficheMessage(titre, texte)
             return
         d = {}
@@ -209,7 +219,7 @@ class configBase(object):
             exec(txt, d)
         except:
             titre = tr("Import du fichier de Configuration"),
-            texte = "Erreur a la l execution du fichier de configuration {} ".format(str(fichierPrefsUtilisateur))
+            texte = "Erreur a la l execution du fichier de configuration {} ".format(str(self.fichierPrefsUtilisateur))
             self.appliEficas.afficheMessage(titre, texte)
             return
         for k in d:
@@ -218,6 +228,7 @@ class configBase(object):
                     setattr(self, k, d[k])
                 except:
                     pass
+        print("le fichier {} de preferences utilisateurs a ete pris en compte".format(self.fichierPrefsUtilisateur))
 
     # --------------------------------------
     def saveParams(self):

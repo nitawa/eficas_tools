@@ -31,8 +31,8 @@ class CONFIG(configuration.CONFIG_BASE):
   def __init__(self,appli,repIni):
   #-----------------------------------
 
-      self.labels_user=['exec_acrobat', 'catalogues','savedir']
-      self.labels_eficas=['path_doc','exec_acrobat','lang','rep_cata','catalogues']
+      self.labels_user=['PedfReader', 'catalogues','savedir']
+      self.labels_eficas=['path_doc','PedfReader','lang','rep_cata','catalogues']
 
       self.INSTALLDIR =os.path.dirname(__file__)
       configuration.CONFIG_BASE.__init__(self,appli,repIni)

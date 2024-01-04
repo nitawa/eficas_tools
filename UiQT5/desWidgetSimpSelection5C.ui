@@ -136,7 +136,7 @@ border:0px;</string>
   <customwidget>
    <class>MonLabelClic</class>
    <extends>QLabel</extends>
-   <header>monLabelClic.h</header>
+   <header>InterfaceGUI.QT5.monLabelClic.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

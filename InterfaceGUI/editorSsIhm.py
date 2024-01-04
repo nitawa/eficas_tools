@@ -34,7 +34,7 @@ debug = False
 
 
 class JDCEditorSsIhm:
-    # ------------------- #
+# ------------------- #
     """
     Editeur de jdc
     """
@@ -266,24 +266,14 @@ class JDCEditorSsIhm:
         self.monConvert = monConvert
         return jdc
 
-    # --------------------------------#
-    def _newJDC(self, units=None):
-    # --------------------------------#
+    # ---------------------------------------#
+    def _newJDC(self, texte = "", units=None):
+    # ---------------------------------------#
         """
-        Initialise un nouveau JDC vierge
+        Initialise un nouveau JDC avec le texte passe en parametre
         """
         self.modified = 1
         CONTEXT.unsetCurrentStep()
-
-        texte = ""
-        if self.code == "CARMELCND":
-            texte = self._newJDCCND()
-        if self.code == "ZCRACKS":
-            texte = self._newZCRACKS()
-        if self.code == "PSEN":
-            texte = self._newPSEN()
-        if self.code == "PSEN_N1":
-            texte = self._newPSEN_N1()
 
         if hasattr(self.readercata.cata, "TEXTE_NEW_JDC"):
             texte = self.readercata.cata.TEXTE_NEW_JDC
@@ -300,9 +290,6 @@ class JDCEditorSsIhm:
         if units is not None:
             jdc.recorded_units = units
             jdc.old_recorded_units = units
-        # chgt le 15/10/19
-        # Attention positionne  contexte ?
-        # est ce qu on ne doit pas changer le format en Accas si on vient d accas ?
         jdc.editor = self
         return jdc
 
@@ -1276,20 +1263,8 @@ class JDCEditorSsIhm:
     # -------------------------------#
     def traduitCatalogue(self, texte):
     # -------------------------------#
-        nomTraducteur = (
-            "traduit"
-            + self.readercata.code
-            + self.versionCataDuJDC
-            + "To"
-            + self.versionCata
-        )
-        sys.path.append(
-            os.path.abspath(
-                os.path.join(
-                    os.path.dirname(os.path.abspath(__file__)), "../Traducteur"
-                )
-            )
-        )
+        nomTraducteur = ( "traduit" + self.readercata.code + self.versionCataDuJDC + "To" + self.versionCata)
+        sys.path.append( os.path.abspath( os.path.join( os.path.dirname(__file__), "..","Traducteur")))
         try:
             traducteur = __import__(nomTraducteur)
             monTraducteur = traducteur.MonTraducteur(texte)
@@ -1297,87 +1272,6 @@ class JDCEditorSsIhm:
             return nouveauTexte
         except:
             return texte
-
-    # Methodes a resorber
-    # il faut mettre a jour les catalogues avec
-    # TEXTE_NEW_JDC
-    #
-
-    # ---------------------------#
-    def _new_CF(self):
-    # ---------------------------#
-        texte = "CONDUITE_FORCEE();"
-        return texte
-
-    # ---------------------------#
-    def _newPSEN(self):
-    # ---------------------------#
-        texte = "DIRECTORY() ; PSSE_PARAMETERS() ; SIMULATION() ; sansnom=DISTRIBUTION() ; sansnom=DISTRIBUTION() ; CORRELATION() ;"
-        # texte=""
-        return texte
-
-    # ---------------------------#
-    def _newPSEN_N1(self):
-    # ---------------------------#
-        texte = "CASE_SELECTION();N_PROCESSING_OPTIONS();CONTINGENCY_OPTIONS();CONTINGENCY_SELECTION();\nCONTINGENCY_PROCESSING(); "
-        # texte="CONTINGENCY_SELECTION();\nCONTINGENCY_PROCESSING(); "
-        return texte
-
-    # ---------------------------#
-    def _newZCRACKS(self):
-    # ---------------------------#
-        texte = "MAILLAGES();REMESHING();"
-        return texte
-
-    # ---------------------------#
-    def _newJDCCND(self):
-    # ---------------------------#
-        extensions = tr("Fichiers Med (*.med);;" "Tous les Fichiers (*)")
-
-        # if self.salome == 0 :
-        QMessageBox.information(
-            self, tr("Fichier Med"), tr("Veuillez selectionner un fichier Med")
-        )
-        QSfichier = QFileDialog.getOpenFileName(
-            self.appliEficas, caption="Fichier Med", filter=extensions
-        )
-        QSfichier = QSfichier[0]
-        self.fichierMED = QSfichier
-        from Extension.acquiertGroupes import getGroupes
-
-        erreur, self.listeGroupes, self.nomMaillage, self.dicoCoord = getGroupes(
-            self.fichierMED
-        )
-        if erreur != "":
-            print("a traiter")
-        texteComm = (
-            "COMMENTAIRE(u'Cree - fichier : "
-            + self.fichierMED
-            + " - Nom Maillage : "
-            + self.nomMaillage
-            + "');\nPARAMETRES()\n"
-        )
-        texteSources = ""
-        texteCond = ""
-        texteNoCond = ""
-        texteVcut = ""
-        texteZs = ""
-        for groupe in self.listeGroupes:
-            if groupe[0:8] == "CURRENT_":
-                texteSources += groupe[8:] + "=SOURCE("
-                texteSources += "VecteurDirecteur=(1.0,2.0,3.0,),);\n"
-            if groupe[0:5] == "COND_":
-                texteCond += groupe[5:] + "=CONDUCTEUR();\n"
-            if groupe[0:7] == "NOCOND_":
-                texteNoCond += groupe[7:] + "=NOCOND();\n"
-            if groupe[0:5] == "VCUT_":
-                texteVcut += "V_" + groupe[5:] + "=VCUT();\n"
-            if groupe[0:3] == "ZS_":
-                texteZs += groupe[3:] + "=ZS();\n"
-        texte = texteComm + texteSources + texteCond + texteNoCond + texteVcut + texteZs
-        self.newTexteCND = texte
-        self.modified = 1
-        return texte
 
     # ------------------#
     def insertInDB(self):
@@ -1389,11 +1283,10 @@ class JDCEditorSsIhm:
         if debug:
             print(texte)
 
+    # -------------------------------------------------#
     def dumpStringDataBase(self, nomDataBaseACreer=None):
-    # --------------------------------------------------#
-        texteStringDataBase = self.readercata.cata.JdC.dumpStringDataBase(
-            nomDataBaseACreer
-        )
+    # -------------------------------------------------#
+        texteStringDataBase = self.readercata.cata.JdC.dumpStringDataBase( nomDataBaseACreer)
         return texteStringDataBase
 
 

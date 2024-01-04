@@ -81,6 +81,8 @@ class AppliSsIhm:
         if self.multi == False:
             self.definitCode(code, ssCode)
             if code == None: return
+        else : 
+            self.maConfiguration = configBase(self)
 
         self.suiteTelemac = False
         self.viewmanager = MyViewManagerSsIhm(self)
@@ -104,7 +106,6 @@ class AppliSsIhm:
             self.formatFichierIn = "python"  # par defaut
             self.formatFichierOut = "python"  # par defaut
 
-#ooooo
         from InterfaceGUI.configuration import configBase
         self.maConfiguration = configBase(self)
 

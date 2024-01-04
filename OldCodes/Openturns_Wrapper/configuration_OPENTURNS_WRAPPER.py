@@ -32,8 +32,8 @@ class CONFIG(configuration.CONFIG_BASE):
   #-----------------------------------
 
 
-      self.labels_user=['exec_acrobat', 'catalogues','savedir','path_doc']
-      self.labels_eficas=["OpenTURNS_path","path_doc","exec_acrobat"]
+      self.labels_user=['PedfReader', 'catalogues','savedir','path_doc']
+      self.labels_eficas=["OpenTURNS_path","path_doc","PedfReader"]
       self.labels_eficas=self.labels_eficas+["rep_cata","lang","catalogues"]
       configuration.CONFIG_BASE.__init__(self,appli,repIni)
 

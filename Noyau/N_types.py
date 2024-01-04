@@ -21,16 +21,6 @@
    Ce module contient des fonctions utilitaires pour tester les types
 """
 
-# eficas sentinel
-
-
-try:
-    import numpy as NP
-
-    _np_arr = NP.ndarray
-except ImportError:
-    _np_arr = None
-
 # use isinstance() instead of type() because objects returned from numpy arrays
 # inherit from python scalars but are numpy.float64 or numpy.int32...
 
@@ -74,6 +64,8 @@ def isTuple(obj):
 
 def isArray(obj):
     """a numpy array ?"""
+    import numpy as NP
+    _np_arr = NP.ndarray
     return type(obj) is _np_arr
 
 

@@ -36,9 +36,9 @@ encoding='iso-8859-1'
 # Utilisateur/Developpeur
 isdeveloppeur   =       "NON"
 
-rep_mat_STA88=os.path.join(rep_cata,'cataSTA8','materiau')
-rep_mat_STA98=os.path.join(rep_cata,'cataSTA9','materiau')
-rep_mat_STA103=os.path.join(rep_cata,'cataSTA10','materiau')
+repMat_STA88=os.path.join(rep_cata,'cataSTA8','materiau')
+repMat_STA98=os.path.join(rep_cata,'cataSTA9','materiau')
+repMat_STA103=os.path.join(rep_cata,'cataSTA10','materiau')
  
 #path_doc="/local/noyret/Docs"
 rep_doc_STA88="/local/noyret/Docs"
@@ -53,7 +53,7 @@ catalogues=(
 #('ASTER','STA11',os.path.join(rep_cata,'cataSTA11'),'python','defaut'),
 ('ASTER','STA12',os.path.join(rep_cata,'cataSTA12'),'python','defaut'),
 )
-exec_acrobat    = '/usr/bin/xgd-open'
+PedfReader    = '/usr/bin/xgd-open'
 
 
 def addCatalog(catalogName, catalogPath):

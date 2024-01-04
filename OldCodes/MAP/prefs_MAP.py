@@ -36,7 +36,7 @@ encoding='iso-8859-1'
 
 # Acces a la documentation
 path_doc        = os.path.join(repIni,'Doc')
-exec_acrobat    = "/usr/bin/xpdf"
+PedfReader    = "/usr/bin/xpdf"
 savedir         = os.environ['HOME']
 affiche         = "groupe"
 taille          = 1400
