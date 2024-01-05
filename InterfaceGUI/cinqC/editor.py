@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2007-2021   EDF R&D
+# Copyright (C) 2007-2024   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -66,6 +66,7 @@ class JDCEditor(Ui_editor5C, JDCEditorSsIhm, QWidget):
         self.lesIds = []
         self.lesLabels = []
         self.dictLabels = {}
+        self.enteteQTree = 'premier'
 
         # a envisager si on garde une selection ?
         self.initSelection()

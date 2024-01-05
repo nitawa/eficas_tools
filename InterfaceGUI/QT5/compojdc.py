@@ -127,7 +127,6 @@ class JDCTreeItem(Objecttreeitem.ObjectTreeItem):
         return listeCmd
 
 
-import Accas
-
+from Accas import JDC
 treeitem = JDCTreeItem
-objet = Accas.JDC
+objet = JDC

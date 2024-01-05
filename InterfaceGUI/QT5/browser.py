@@ -24,7 +24,7 @@ import traceback
 from InterfaceGUI.QT5 import typeNode
 
 
-from PyQt5.QtWidgets import QTreeWidget, QTreeWidgetItem, QApplication, QMessageBox
+from PyQt5.QtWidgets import QTreeWidget, QTreeWidgetItem, QMessageBox
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import Qt
 

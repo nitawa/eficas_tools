@@ -104,10 +104,8 @@ class JDCEditor(JDCEditorSsIhm, Ui_baseWidget, QWidget):
             self.afficheApresInsert = True
         if self.code in ["Adao", "ADAO", "MAP"]:
             self.afficheApresInsert = True
-        if self.code in [ "TELEMAC", ]:
-            self.enteteQTree = "premier"
-        else:
-            self.enteteQTree = "complet"
+        if self.code in [ "TELEMAC", ]: self.enteteQTree = "premier"
+        else: self.enteteQTree = "complet"
         if self.code in ["Adao", "ADAO", "TELEMAC", "VP"]:
             self.affichePlie = True
         else:

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2007-2021   EDF R&D
+# Copyright (C) 2007-2024   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -20,87 +20,97 @@
 
 import traceback
 
-#---------------
-class JDCTree():
-#----------------
 
-    def __init__( self, jdcItem, editor):
-    #------------------------------------
-        self.editor       = editor
-        self.item         = jdcItem
-        self.tree         = self
-        self.appliEficas  = self.editor.appliEficas
+# -------------
+class JDCTree:
+# --------------
+
+    def __init__(self, jdcItem, editor):
+    # ----------------------------------
+        self.editor = editor
+        self.item = jdcItem
+        self.tree = self
+        self.appliEficas = self.editor.appliEficas
         self.childrenComplete = []
-        self.racine       = self.item.itemNode(self,self.item)
+        print (self.item.__class__)
+        print (self.item.itemNode.__class__)
+        self.racine = self.item.itemNode(self, self.item)
+        self.affichePremier()
 
-    
-    # def affichePremier(self):
-    #--------------------------
-        if self.racine.children !=[] :
-           self.racine.children[0].affichePanneau()
+    def affichePremier(self):
+    # -----------------------
+        if self.racine.children != []:
+            self.racine.children[0].affichePanneau()
 
 
-#---------------
-class JDCNode():
-#---------------
-     def __init__( self, treeParent, item, itemExpand=False, ancien=False, creeChildren=True ):
-     #-----------------------------------------------------------------------------------------
-        #print ("creation d'un noeud : ", item, " ",item.nom,"", treeParent, self)
-        self.item        = item
-        self.vraiParent  = treeParent
-        self.treeParent  = treeParent
-        self.tree        = self.treeParent.tree
-        self.editor      = self.treeParent.editor
+# -----------
+class JDCNode:
+# -------------
+    def __init__(
+        self, treeParent, item, itemExpand=False, ancien=False, creeChildren=True
+    ):
+        # -----------------------------------------------------------------------------------------
+        # print ("creation d'un noeud : ", item, " ",item.nom,"", treeParent, self)
+        self.item = item
+        self.vraiParent = treeParent
+        self.treeParent = treeParent
+        self.tree = self.treeParent.tree
+        self.editor = self.treeParent.editor
         self.appliEficas = treeParent.appliEficas
         self.appartientAUnNoeudPlie = False
-        self.childrenComplete =[]
+        self.childrenComplete = []
 
-
-        self.treeParent=treeParent
-        #while (isinstance(self.treeParent,compobloc.Node) or ( isinstance(self.treeParent,compomclist.Node) and self.treeParent.item.isMCList())) :
+        self.treeParent = treeParent
+        # while (isinstance(self.treeParent,compobloc.Node) or ( isinstance(self.treeParent,compomclist.Node) and self.treeParent.item.isMCList())) :
         #    self.treeParent.childrenComplete.append(self)
         #    self.treeParent=self.treeParent.vraiParent
         self.treeParent.childrenComplete.append(self)
 
         self.buildChildren()
 
-
-     def buildChildren(self):
-     #-----------------------
-        """ Construit la liste des enfants de self """
+    def buildChildren(self):
+        # -----------------------
+        """Construit la liste des enfants de self"""
         """ Se charge de remettre les noeuds Expanded dans le meme etat """
         debug = 0
-        if debug :
-            print ("*********** buildChildren ",self,self.item, self.item.nom)
+        if debug:
+            print("*********** buildChildren ", self, self.item, self.item.nom)
         #   import traceback
         #   traceback.print_stack()
 
-        self.listeItemExpanded=[]
-        self.listeItemPlie=[]
+        self.listeItemExpanded = []
+        self.listeItemPlie = []
 
-        for enfant in self.childrenComplete :
-            if enfant.plie : self.listeItemPlie.append(enfant.item)
-            else : self.listeItemExpanded.append(enfant.item)
+        for enfant in self.childrenComplete:
+            if enfant.plie:
+                self.listeItemPlie.append(enfant.item)
+            else:
+                self.listeItemExpanded.append(enfant.item)
 
         self.children = []
         self.childrenComplete = []
         sublist = self.item._getSubList()
 
-        for item in sublist :
-            itemExpand=False
-            ancien=False
-            if item in self.listeItemExpanded : itemExpand=True;  ancien=True
-            if item in self.listeItemPlie     : itemExpand=False; ancien=True
-            nouvelItem=item.itemNode(self,item,itemExpand,ancien)
+        for item in sublist:
+            itemExpand = False
+            ancien = False
+            if item in self.listeItemExpanded:
+                itemExpand = True
+                ancien = True
+            if item in self.listeItemPlie:
+                itemExpand = False
+                ancien = True
+            nouvelItem = item.itemNode(self, item, itemExpand, ancien)
             self.children.append(nouvelItem)
 
-     def affichePanneau(self) :
-     #-------------------------
-         #itemParent=self
-         #while not (hasattr (itemParent,'getPanel')) : itemParent=itemParent.treeParent
-         #if itemParent != self :
-         #   itemParent.affichePanneau()
-         #   return
-         debug = False
-         if debug : print ('dans affichePanneau pour', self.item.nom)
-         self.fenetre = self.getPanel()
+    def affichePanneau(self):
+        # -------------------------
+        # itemParent=self
+        # while not (hasattr (itemParent,'getPanel')) : itemParent=itemParent.treeParent
+        # if itemParent != self :
+        #   itemParent.affichePanneau()
+        #   return
+        debug = False
+        if debug:
+            print("dans affichePanneau pour", self.item.nom)
+        self.fenetre = self.getPanel()
