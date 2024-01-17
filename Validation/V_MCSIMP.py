@@ -134,6 +134,15 @@ class MCSIMP(object):
                 typeProto = self.typeProto
                 intoProto = self.intoProto
                 cardProto = self.cardProto
+                if self.definition.filtre != None:
+                    listePossibles = self.getUserAssdPossible()
+                    self.intoProto = IntoProtocol(
+                        "into",
+                        into=listePossibles,
+                        val_min=self.definition.val_min,
+                        val_max=self.definition.val_max,
+                    )
+                    intoProto = self.intoProto
                 if cr == "oui":
                     # un cr est demande : on collecte tous les types d'erreur
                     try:

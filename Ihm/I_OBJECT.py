@@ -229,13 +229,74 @@ class OBJECT:
     def supprimeUserAssd(self):
         pass
 
+    def getDicoForFancy(self):
+        # print ('OBJECT getDicoForFancy ',self, self.nature)
+        monDico = {}
+        leNom = self.nom
+
+        if self.nature == "MCFACT":
+            leNom = self.getLabelText()
+            monDico["statut"] = self.definition.statut
+            monDico["nomCommande"] = self.nom
+
+        if self.nature == "MCLIST":
+            monDico["validite"] = 0
+        elif self.nature == "MCBLOC":
+            monDico["validite"] = 0
+        else:
+            monDico["validite"] = self.getValid()
+            if monDico["validite"] == None:
+                monDico["validite"] = 0
+
+        if self.nature == "OPERATEUR" or self.nature == "PROCEDURE":
+            monDico["statut"] = "f"
+        if self.nature == "OPERATEUR":
+            if hasattr(self, "sdnom") and self.sdnom != "sansnom":
+                monDico["sdnom"] = self.sdnom
+            else:
+                monDico["sdnom"] = ""
+                if monDico["validite"] == 0:
+                    monDico["validite"] = 2
+        monDico["title"] = leNom
+        monDico["key"] = self.idUnique
+        monDico["classeAccas"] = self.nature
+
+        listeNodes = []
+        # Cas d un fichier vide
+        if not hasattr(self, "mcListe"):
+           self.mcListe = []
+        for obj in self.mcListe:
+            lesNodes = obj.getDicoForFancy()
+            if not (isinstance(lesNodes, list)):
+                listeNodes.append(lesNodes)
+            else:
+                for leNode in lesNodes:
+                    listeNodes.append(leNode)
+        monDico["children"] = listeNodes
+        print (self.nature)
+        if self.nature != "MCSIMP" and self.nature != "MCLIST" and self.nature != "JDC":
+            monDico["infoOptionnels"] = self.calculOptionnelInclutBlocs()
+        return monDico
+
+    def getNomClassWeb(self):
+        # code mort
+        laClasse = self.nature
+        if self.isValid():
+            laClasse += "Valide"
+        else:
+            laClasse += "NonValide"
+        return laClasse
+
+    def demandeUpdateOptionnels(self):
+        CONNECTOR.Emit(self, "demandeUpdateOptionnels")
+        for mc in self.mcListe:
+            mc.demandeUpdateOptionnels()
     def demandeRedessine(self):
         # print ('demandeRedessine pour', self.nom, self, tout)
         CONNECTOR.Emit(self, "redessine")
 
-    def isUQActivate(self):
-        # valide uniquement pour les MCSIMP
-        return True
+    def getIndexDsParent(self):
+        return self.parent.mcListe.index(self)
 
 
 class ErrorObj(OBJECT):

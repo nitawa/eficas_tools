@@ -92,3 +92,9 @@ class MCFACT(V_MCCOMPO.MCCOMPO):
             if not old_valid or old_valid != self.valid:
                 self.initModifUp()
             return self.valid
+    def getValid(self):
+        if hasattr(self, "valid"):
+            return self.valid
+        else:
+            self.valid = None
+            return None

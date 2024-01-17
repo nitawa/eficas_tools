@@ -21,14 +21,23 @@ from Accas import PARAMETRE
 from Extensions.i18n import tr
 
 
-# ---------------------
-class Validation(object):
-# ---------------------
+# ----------------------------
+class ValidationSaisie(object):
+# ----------------------------
+    """
+    classe mere des classes de politique de validation des CHAMPS SAISIS 
+    les valeurs saisies sont toutes des CHAINES DE CARACTERE
+    il faut transformer '5' en 5 ou en 5. selon le type de l objet attendu
+    et 'MonNomDObjet' en MonNomDObjet
+    mais garder 'voici ma chaine de caractere '...
+    """
     def __init__(self, node, parent):
+    # -------------------------------
         self.node = node
         self.parent = parent
 
     def testeUneValeur(self, valeurentree):
+    # -------------------------------------
         commentaire = None
         # import traceback
         # traceback.print_stack()
@@ -60,6 +69,7 @@ class Validation(object):
     #   a mettre au point
     # ----------------------------------------------------------------------------------------
     def setValeurTexte(self, texteValeur):
+    # ------------------------------------
         try:
             if "R" in self.node.item.object.definition.type:
                 if texteValeur[0] != "'":
@@ -72,21 +82,16 @@ class Validation(object):
                         self.parent.appliEficas.dict_reels[clefobj][clef] = texteValeur
                         self.parent.appliEficas.dict_reels[clefobj]
                         if clefobj == "":
-                            if (
-                                not self.node.item.object.etape
-                                in self.parent.appliEficas.dict_reels
-                            ):
-                                self.parent.appliEficas.dict_reels[
-                                    self.node.item.object.etape
-                                ] = {}
-                            self.parent.appliEficas.dict_reels[
-                                self.node.item.object.etape
-                            ][clef] = texteValeur
+                            if ( not self.node.item.object.etape in self.parent.appliEficas.dict_reels):
+                                self.parent.appliEficas.dict_reels[ self.node.item.object.etape ] = {}
+                            self.parent.appliEficas.dict_reels[ self.node.item.object.etape ][clef] = texteValeur
                         self.node.item.object.finModif()
         except:
             pass
 
+    # --------------------------------
     def getValeurTexte(self, valeur):
+    # --------------------------------
         valeurTexte = valeur
         if valeur == None:
             return valeur
@@ -103,32 +108,30 @@ class Validation(object):
                 if valeur in self.parent.appliEficas.dict_reels[clefobj]:
                     valeurTexte = self.parent.appliEficas.dict_reels[clefobj][valeur]
             else:
-                if (
-                    str(valeur).find(".") == -1
-                    and str(valeur).find("e") == -1
-                    and str(valeur).find("E")
-                ):
-                    # aucun '.' n'a ete trouve dans valeur --> on en rajoute un a la fin
-                    if self.isParam(valeur):
-                        return valeur
-                    else:
-                        try:
-                            val2 = eval(str(valeur) + ".")
-                        except:
-                            pass
+                if ( str(valeur).find(".") == -1 and str(valeur).find("e") == -1 and str(valeur).find("E")):
+                # aucun '.' n'a ete trouve dans valeur --> on en rajoute un a la fin
+                    if self.isParam(valeur): return valeur
+                    
+                    #else:
+                    #    try:
+                    #        val2 = eval(str(valeur) + ".")
+                    #    except: pass
         return valeurTexte
 
+    # --------------------------------
     def isParam(self, valeur):
+    # --------------------------------
         for param in self.node.item.jdc.params:
             if (repr(param) == repr(valeur)) or (str(param) == str(valeur)):
                 return 1
         return 0
 
+    # -------------------------------------
     def ajoutDsDictReel(self, texteValeur):
+    # -----------------------------------
         # le try except est necessaire pour saisir les parametres
         # on enleve l erreur de saisie 00 pour 0
-        if str(texteValeur) == "00":
-            return
+        if str(texteValeur) == "00": return
         try:
             if "R" in self.node.item.object.definition.type:
                 if str(texteValeur)[0] != "'":
@@ -139,60 +142,53 @@ class Validation(object):
                             self.parent.appliEficas.dict_reels[clefobj] = {}
                         self.parent.appliEficas.dict_reels[clefobj][clef] = texteValeur
                         if clefobj == "":
-                            if (
-                                not self.node.item.object.etape
-                                in self.parent.appliEficas.dict_reels
-                            ):
-                                self.parent.appliEficas.dict_reels[
-                                    self.node.item.object.etape
-                                ] = {}
-                            self.parent.appliEficas.dict_reels[
-                                self.node.item.object.etape
-                            ][clef] = texteValeur
-
+                            if ( not self.node.item.object.etape in self.parent.appliEficas.dict_reels):
+                                self.parent.appliEficas.dict_reels[ self.node.item.object.etape ] = {}
+                            self.parent.appliEficas.dict_reels[ self.node.item.object.etape ][clef] = texteValeur
         except:
             pass
 
+    # -----------------------------
     def ajoutDsDictReelEtape(self):
+    # -----------------------------
+        # janvier 24. Utile pour les formules ?
+        # a reconsiderer
+        # ajout du return
+        # a tester correctement
+        return
         try:
             if self.node.item.object in self.parent.appliEficas.dict_reels:
-                self.parent.appliEficas.dict_reels[
-                    self.node.item.sdnom
-                ] = self.parent.appliEficas.dict_reels[self.node.item.object]
+                self.parent.appliEficas.dict_reels[ self.node.item.sdnom ] = self.parent.appliEficas.dict_reels[self.node.item.object]
                 del self.parent.appliEficas.dict_reels[self.node.item.object]
         except:
             pass
 
 
-# ------------------------------------
-class PolitiqueUnique(Validation):
-    # ------------------------------------
+# --------------------------------------
+class PolitiqueUnique(ValidationSaisie):
+# ---------------------_----------------
     """
     classe servant pour les entrees ne demandant qu un mot clef
     """
-
     def __init__(self, node, parent):
-        Validation.__init__(self, node, parent)
+    #--------------------------------
+        super().__init__()
+
 
     def recordValeur(self, valeurentree):
+    #------------------------------------
         if self.parent.modified == "n":
             self.parent.initModif()
         ancienneVal = self.node.item.getValeur()
         valeur, validite, commentaire = self.testeUneValeur(valeurentree)
-        if (
-            validite
-            and ("R" in self.node.item.object.definition.type)
-            and not (isinstance(valeur, PARAMETRE))
-        ):
+        if ( validite and ("R" in self.node.item.object.definition.type) and not (isinstance(valeur, PARAMETRE))):
             s = valeurentree
-            if s.find(".") == -1 and s.find("e") == -1 and s.find("E") == -1:
-                s = s + "."
+            if s.find(".") == -1 and s.find("e") == -1 and s.find("E") == -1: s = s + "."
             valeur, validite, commentaire = self.testeUneValeur(s)
         if validite:
             validite = self.node.item.setValeur(valeur)
             if self.node.item.isValid():
                 commentaire = tr("Valeur du mot-cle enregistree")
-                # commentaire = "Valeur du mot-cle enregistree"
                 self.setValeurTexte(str(valeurentree))
             else:
                 cr = self.node.item.getCr()
@@ -202,20 +198,14 @@ class PolitiqueUnique(Validation):
 
 
 # --------------------------------------
-class PolitiquePlusieurs(Validation):
-    # --------------------------------------
+class PolitiquePlusieurs(ValidationSaisie):
+# --------------------------------------
     """
     classe servant pour les entrees ne demandant qu un mot clef
     """
 
-    def __init__(self, node, parent):
-        # print "ds PolitiquePlusieurs"
-        self.node = node
-        self.parent = parent
-        # print self.node
-        # print self.parent
-
     def ajoutValeurs(self, listevaleur, index, listecourante):
+    #--------------------------------------------------------
         listeRetour = []
         commentaire = "Nouvelle valeur acceptee"
         commentaire2 = ""

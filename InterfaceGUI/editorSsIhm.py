@@ -86,13 +86,9 @@ class JDCEditorSsIhm:
             self.appliEficas.code = self.code
         else:
             self.readercata = self.appliEficas.readercata
-        if self.readercata.fichierCata == None:
-            return  # Sortie Salome
-        if self.readercata.cata == None:
-            return  # Sortie Salome
-        if self.readercata.cata == 0:
-            return  # Sortie Salome
-        self.titre = self.readercata.titre
+
+        if self.readercata : 
+            self.titre = self.readercata.titre
 
         self.formatFichierOut = self.appliEficas.formatFichierOut
         self.formatFichierIn = self.appliEficas.formatFichierIn
@@ -122,14 +118,10 @@ class JDCEditorSsIhm:
 
         self.maConfiguration.mesGenerators = generator
         self.maConfiguration.mesconvertisseurs = convert
-        try:
-            self.XMLGenerator = generator.plugins["xml"]()
-        except:
-            self.XMLGenerator = None
-        try:
-            self.pythonGenerator = generator.plugins["python"]()
-        except:
-            self.pythonGenerator = None
+        try: self.XMLGenerator = generator.plugins["xml"]()
+        except: self.XMLGenerator = None
+        try: self.pythonGenerator = generator.plugins["python"]()
+        except: self.pythonGenerator = None
 
         if self.formatFichierOut in generator.plugins.keys():
             self.generator = generator.plugins[self.formatFichierOut]()
@@ -141,6 +133,11 @@ class JDCEditorSsIhm:
         self.isReadOnly = False
 
         # ------- construction du jdc --------------
+
+        if self.readercata.cata == None: 
+           if self.fichier is not None: 
+              print ('fichier comm mais pas de cata')
+           return  # Sortie Salome
 
         self.nouveau = 0
         if self.fichier is not None:  #  fichier jdc fourni
@@ -367,8 +364,23 @@ class JDCEditorSsIhm:
     # -----------------------#
         if "dico" in generator.plugins:
             self.generator = generator.plugins["dico"]()
-            texte_jdc = self.generator.gener(self.jdc)
-            return texte_jdc
+            # print (self.generator)
+            jdc_formate = self.generator.gener(self.jdc)
+            # print (jdc_formate)
+            dico = self.generator.Dico
+            # print (dico)
+            return dico
+
+    # --------------------------------#
+    def generDicoPourWeb(self, obj=None):
+        # --------------------------------#
+        if obj == None:
+            obj = self.jdc
+        if "dico" in generator.plugins:
+            self.generator = generator.plugins["dico"]()
+            jdc_formate = self.generator.gener(self.jdc)
+            dico = self.generator.Dico
+            return dico
 
     # -----------------------#
     def generDicoPython(self):

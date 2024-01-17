@@ -41,8 +41,6 @@ def lanceEficas(code=None, multi=False, langue="en", labelCode=None, GUIPath='QT
         return
 
     from Editeur import session
-    import sys
-
     options = session.parse(sys.argv)
     if options.code != None:
         code = options.code
@@ -61,23 +59,25 @@ def lanceEficas(code=None, multi=False, langue="en", labelCode=None, GUIPath='QT
 
 
 def getEficasSsIhm( code=None, multi=False, langue="en", ssCode=None, labelCode=None,
-    forceXML=False, genereXSD=False, fichierCata=None,):
+    forceXML=False, genereXSD=False, fichierCata=None,GUIPath=None, salome = False):
 # -----------------------------------------------------------------------------------
     """
     instancie l'appli EFICAS sans Ihm
     """
-    from Editeur import session
 
+    from Editeur import session
     options = session.parse(sys.argv)
     if options.code != None:
         code = options.code
-    if forceXML:
-        options.withXSD = True
+    if forceXML: options.withXSD = True
 
-    from InterfaceQT4.qtEficasSsIhm import AppliSsIhm
+    if GUIPath in ('QT5',  'cinqC', 'Web') :
+        pathAbso=os.path.abspath(os.path.join(os.path.dirname(__file__),'..','InterfaceGUI',GUIPath))
+        if pathAbso not in sys.path : sys.path.insert(0,pathAbso)
 
-    Eficas = AppliSsIhm( code=code, salome=0, multi=multi, langue=langue,
-        ssCode=ssCode, labelCode=labelCode, genereXSD=genereXSD, fichierCata=fichierCata,)
+    from InterfaceGUI.appliSsIhm import AppliSsIhm
+    Eficas = AppliSsIhm( code=code, salome=salome, multi=multi, langue=langue,
+        ssCode=ssCode, labelCode=labelCode, genereXSD=genereXSD, fichierCata=fichierCata)
     return Eficas
 
 

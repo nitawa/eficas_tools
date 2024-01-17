@@ -30,17 +30,18 @@ class MCFACT(I_MCCOMPO.MCCOMPO):
         Retourne 1 si le mot-cle facteur self peut etre repete
         Retourne 0 dans le cas contraire
         """
-        if self.definition.max > 1:
-            # marche avec '**'
+        objet = self.parent.getChild(self.nom)
+        lenDejaLa = len(objet)
+        if self.definition.max > 1 and lenDejaLa < self.definition.max:
             return 1
         else:
             return 0
 
     def isOblig(self):
-        if self.definition.statut != "o":
+        if self.definition.statut != "f":
             return 0
         objet = self.parent.getChild(self.nom)
-        if len(objet) > 1:
+        if len(objet) > self.definition.min:
             return 0
         else:
             return 1
@@ -65,6 +66,25 @@ class MCFACT(I_MCCOMPO.MCCOMPO):
                 nom = self.nom + "[0]"
         nomDsXML = self.parent.getNomDsXML() + "." + nom
         return nomDsXML
+
+    def getStatutEtRepetable(self):
+        """
+        Retourne l index du MCFACT ds la MCList
+        """
+        objet = self.parent.getChild(self.nom, restreint="oui")
+        if len(objet) > 1:
+            index = objet.getIndex(self) + 1
+        else:
+            index = 1
+        if self.definition.max > index:
+            repetable = 1
+        else:
+            repetable = 0
+        if self.definition.min < index or self.definition.statut == "f":
+            statut = "f"
+        else:
+            statut = "o"
+        return (statut, repetable)
 
     def getLabelText(self):
         """
@@ -151,3 +171,40 @@ class MCFACT(I_MCCOMPO.MCCOMPO):
     def supprime(self):
         self.alt_parent = None
         N_MCFACT.MCFACT.supprime(self)
+
+    def getDicoForFancy(self):
+        # print ('MCFACT getDicoForFancy ')
+        monDico = {}
+        leNom = self.nom
+
+        leNom = self.getLabelText()
+        monDico["statut"] = self.definition.statut
+        monDico["nomCommande"] = self.nom
+        if self.state == "undetermined":
+            self.isValid()
+
+        monDico["title"] = leNom
+        monDico["key"] = self.idUnique
+        monDico["classeAccas"] = self.nature
+        monDico["validite"] = self.getValid()
+        if not (monDico["validite"]):
+            monDico["validite"] = 0
+
+        (statut, repetable) = self.getStatutEtRepetable()
+        monDico["statut"] = statut
+        monDico["repetable"] = repetable
+        if monDico["validite"] == 0 and monDico["statut"] == "f":
+            monDico["validite"] = 2
+
+        listeNodes = []
+        for obj in self.mcListe:
+            lesNodes = obj.getDicoForFancy()
+            if not (isinstance(lesNodes, list)):
+                listeNodes.append(lesNodes)
+            else:
+                for leNode in lesNodes:
+                    listeNodes.append(leNode)
+        monDico["children"] = listeNodes
+        if self.nature != "MCSIMP" and self.nature != "MCLIST":
+            monDico["infoOptionnels"] = self.calculOptionnelInclutBlocs()
+        return monDico

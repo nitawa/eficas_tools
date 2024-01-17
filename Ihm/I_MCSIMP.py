@@ -375,6 +375,7 @@ class MCSIMP(I_OBJECT.OBJECT):
         """Met a jour les blocs conditionnels dependant du mot cle simple self"""
         if self.definition.position == "global":
             self.etape.deepUpdateConditionBloc()
+            self.etape.demandeUpdateOptionnels()
         elif self.definition.position == "reCalculeEtape":
             # print ('je passe par updateConditionBloc pour ', self.nom)
             self.etape.deepUpdateConditionBloc()
@@ -387,6 +388,8 @@ class MCSIMP(I_OBJECT.OBJECT):
         else:
             self.parent.updateConditionBloc()
 
+    def demandeUpdateOptionnels(self):
+        pass
     def setValeur(self, new_valeur, evaluation="oui"):
         self.initModif()
         self.valeur = new_valeur
@@ -474,7 +477,7 @@ class MCSIMP(I_OBJECT.OBJECT):
             return valeur
         else:
             try:
-                valeur = eval(val)
+                valeur = eval(new_valeur)
                 return valeur
             except:
                 # traceback.print_exc()

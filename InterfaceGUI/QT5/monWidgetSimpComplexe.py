@@ -29,7 +29,7 @@ from Extensions.i18n import tr
 
 from InterfaceGUI.QT5.feuille import Feuille
 from UiQT5.desWidgetSimpComplexe import Ui_WidgetSimpComplexe
-from InterfaceGUI.QT5.politiquesValidation import PolitiqueUnique
+from InterfaceGUI.politiquesValidation import PolitiqueUnique
 from InterfaceGUI.QT5.qtSaisie import SaisieValeur
 
 

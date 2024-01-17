@@ -28,7 +28,7 @@ from PyQt5.QtCore import Qt, QSize
 from Editeur import session
 from UiQT5.myMain import Ui_Eficas
 from InterfaceGUI.QT5.viewManager import MyViewManager
-from InterfaceGUI.qtEficasSsIhm import AppliSsIhm
+from InterfaceGUI.appliSsIhm import AppliSsIhm
 
 from Extensions.i18n import tr
 from Extensions.eficas_exception import EficasException

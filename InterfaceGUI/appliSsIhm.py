@@ -73,7 +73,8 @@ class AppliSsIhm:
                 print("eficas hors salome")
 
         self.multi = multi
-        if self.multi: print("pas de multi sans ihm")
+        # on peut avoir multi et sans Ihm si on est en Web
+        # if self.multi: print("pas de multi sans ihm")
 
         if langue == "fr": self.langue = langue
         else: self.langue = "ang"
@@ -82,6 +83,8 @@ class AppliSsIhm:
             self.definitCode(code, ssCode)
             if code == None: return
         else : 
+            # Est-ce que configBase a un interet avec le web 
+            from InterfaceGUI.configuration import configBase
             self.maConfiguration = configBase(self)
 
         self.suiteTelemac = False

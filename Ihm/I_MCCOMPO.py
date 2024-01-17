@@ -150,6 +150,54 @@ class MCCOMPO(I_OBJECT.OBJECT):
                     liste.remove(k)
         return liste
 
+    def calculOptionnel(self):
+        self.listeMc = []
+        self.listeMcRegle = []
+        self.dictToolTipMc = {}
+        genea = self.getGenealogie()
+        # Attention : les mots clefs listes (+sieurs fact )
+        # n ont pas toutes ces methodes. a priori pas appele mais
+        if self.nature != "MCLIST":
+            self.listeMc = self.getListeMcOrdonnee(genea, self.jdc.cata_ordonne_dico)
+            listeNomsPresents = self.dictMcPresents()
+            for regle in self.getRegles():
+                (monToolTip, regleOk) = regle.verif(listeNomsPresents)
+                if regleOk:
+                    continue
+                for mc in regle.mcs:
+                    self.listeMcRegle.append(mc)
+                    self.dictToolTipMc[mc] = monToolTip
+        return (self.listeMc, self.listeMcRegle, self.dictToolTipMc)
+
+    def calculOptionnelInclutBlocs(self):
+        debug = 0
+        if debug:
+            print("-------------- calculOptionnelInclutBlocs", self.nom)
+        self.dictMCVenantDesBlocs = {}
+        liste, listeRouge, dictToolTipMc = self.calculOptionnel()
+        dictNomsPresents = self.dictMcPresents()
+        for mc in liste:
+            self.dictMCVenantDesBlocs[mc] = self
+        for mc in self.listeMcPresents():
+            obj = dictNomsPresents[mc]
+            if obj.nature != "MCBLOC":
+                continue
+            if debug:
+                print(mc, "est present")
+            (l, lr, d) = obj.calculOptionnelInclutBlocs()
+            # print ('optionnels', l)
+            liste = liste + l
+            listeRouge = listeRouge + lr
+            for k in d:
+                dicToolTipMC[k] = d[k]
+            for k, v in obj.dictMCVenantDesBlocs.items():
+                self.dictMCVenantDesBlocs[k] = v
+
+        if debug:
+            print("ccOptio", self.nom, self.dictMCVenantDesBlocs)
+        if debug:
+            print("fin calculOPtionnel", self.nom, "_____________")
+        return (liste, listeRouge, dictToolTipMc)
     def listeMcPresents(self):
         """
         Retourne la liste des noms des mots-cles fils de self presents construite

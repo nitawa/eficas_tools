@@ -239,8 +239,7 @@ class MonWidgetCommande(Ui_WidgetCommande, Groupe):
 
         # Notation scientifique
         if test:
-            from InterfaceGUI.QT5.politiquesValidation import Validation
-
+            from InterfaceGUI.politiquesValidation import Validation
             validation = Validation(self.node, self.editor)
             validation.ajoutDsDictReelEtape()
 

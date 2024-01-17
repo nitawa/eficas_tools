@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2007-2024   EDF R&D
+# Copyright (C) 2007-2021   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -17,28 +17,20 @@
 #
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
-from . import I_MCCOMPO
+from Editeur     import Objecttreeitem
+from InterfaceGUI.Web import compooper
+from InterfaceGUI.Web import browser
+from InterfaceGUI.Web import typeNode
 
 
-class MCBLOC(I_MCCOMPO.MCCOMPO):
-    def getNomDsXML(self):
-        return self.parent.getNomDsXML()
+class Node(browser.JDCNode,typeNode.PopUpMenuNode):
 
-    def getDicoForFancy(self):
-        listeNodes = []
-        for obj in self.mcListe:
-            lesNodes = obj.getDicoForFancy()
-            if not (isinstance(lesNodes, list)):
-                listeNodes.append(lesNodes)
-            else:
-                for leNode in lesNodes:
-                    listeNodes.append(leNode)
-        return listeNodes
+    pass
 
-    def getParentsJusqua(self, jusqua):
-        listeDesParents = []
-        aTraiter = self
-        while aTraiter != jusqua.getObject():
-            listeDesParents.append(aTraiter.parent)
-            aTraiter = aTraiter.parent
-        return listeDesParents
+
+class ProcEtapeTreeItem(compooper.EtapeTreeItem):
+    itemNode=Node
+
+import Accas
+treeitem = ProcEtapeTreeItem
+objet = Accas.PROC_ETAPE

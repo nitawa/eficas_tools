@@ -81,6 +81,12 @@ class JDC(V_MCCOMPO.MCCOMPO):
             self.valid = valid
             return self.valid
 
+    def getValid(self, cr="non"):
+        if self.state == "unchanged":
+            return self.valid
+        else:
+            return self.isValid()
+
     def verifRegles(self):
         """
         Effectue la verification de validite des regles du jeu de commandes

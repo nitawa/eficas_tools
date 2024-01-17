@@ -28,7 +28,7 @@ from Extensions.i18n import tr
 from InterfaceGUI.QT5.feuille import Feuille
 from UiQT5.desWidgetPlusieursPlie import Ui_WidgetPlusieursPlie
 
-from InterfaceGUI.QT5.politiquesValidation import PolitiquePlusieurs
+from InterfaceGUI.politiquesValidation import PolitiquePlusieurs
 from InterfaceGUI.QT5.qtSaisie import SaisieValeur
 
 pattern_blanc = re.compile(r"^\s*$")

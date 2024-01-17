@@ -63,6 +63,26 @@ class MCList:
         else:
             return 0
 
+    def getDicoObjetsCompletsPourTree(self):
+        # print ('MCList getDicoObjetsCompletsPourTree pour ', self)
+        listeDict = []
+        for i in self.data:
+            listeDict.append(i.getDicoObjetsCompletsPourTree())
+        return listeDict
+
+    def getDicoForFancy(self):
+        listeDict = []
+        nbFactDejaLa = len(self.data)
+        for i in self.data:
+            dico = i.getDicoForFancy()
+            if nbFactDejaLa > i.definition.min:
+                dico["statut"] = "f"
+            if nbFactDejaLa < i.definition.max:
+                dico["repetable"] = 1
+            else:
+                dico["repetable"] = 0
+            listeDict.append(dico)
+        return listeDict
     def isOblig(self):
         """
         Une MCList n'est jamais obligatoire (meme si le MCFACT qu'elle represente l'est
@@ -101,7 +121,7 @@ class MCList:
 
         if not self.ajoutPossible():
             self.jdc.editor.afficheAlerte(
-                tr("Erreur"), tr("L'objet %s ne peut pas etre ajoute", obj.nom)
+                tr("Erreur"), tr("L'objet {} ne peut pas etre ajoute").format(obj.nom)
             )
             return None
 
@@ -131,6 +151,9 @@ class MCList:
     def updateConcept(self, sd):
         for child in self.data:
             child.updateConcept(sd)
+    def demandeUpdateOptionnels(self):
+        for child in self.data:
+            child.demandeUpdateOptionnels()
 
     def deleteRef(self):
         for child in self.data:

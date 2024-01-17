@@ -26,8 +26,6 @@ from Extensions.i18n import tr
 from Extensions.eficas_exception import EficasException
 
 
-import Noyau
-
 # Modules Eficas
 from . import I_OBJECT
 from Noyau.N_ASSD import ASSD

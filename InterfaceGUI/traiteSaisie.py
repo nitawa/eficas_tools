@@ -21,27 +21,35 @@
 import types
 from Extensions.i18n import tr
 
-from PyQt5.QtCore import Qt
-
-
-# Import des panels
-
-
+#--------------------------
 class SaisieValeur(object):
+#--------------------------
     """
     Classe contenant les methodes communes aux  panels
     permettant de choisir des valeurs
     """
 
-    def __init__(self):
-        pass
+    def valeurChanged(self,valeur=None):
+    #-----------------------------------
+    # pour la partie Web
+        debug=0
+        if debug :  print('valeurChanged', valeur, type(valeur))
+        nouvelleValeurFormat=self.politique.getValeurTexte(nouvelleValeur)
+        validite,commentaire=self.politique.recordValeur(nouvelleValeurFormat)
+        if commentaire != "" :
+            if validite : self.editor.afficheCommentaire(commentaire)
+            else        : self.editor.afficheInfos(commentaire,'red')
+        self.inSaisieValeur=False
+        self.setValide()
+
 
     def LEvaleurPressed(self, valeur=None):
-        # print('LEvaleurPressed', valeur, type(valeur))
-        if not hasattr(self, "inSaisieValeur"):
-            self.inSaisieValeur = False
-        if self.inSaisieValeur:
-            return
+    #---------------------------------------
+    # pour la partie Qt
+        debug=0
+        if debug :  print('LEvaleurPressed', valeur, type(valeur))
+        if not hasattr(self, "inSaisieValeur"): self.inSaisieValeur = False
+        if self.inSaisieValeur: return
         self.inSaisieValeur = True
 
         if valeur == None:
@@ -58,11 +66,9 @@ class SaisieValeur(object):
             try:
                 # la 1 ligne est tres bizarre. remplacee par le 3nd le 01 10 19
                 # if hasattr(self,"lineEditVal"):self.lineEditVal.setText(tr(valeur.nom))
-                if hasattr(self, "lineEditVal"):
-                    self.lineEditVal.setText(tr(valeur))
+                if hasattr(self, "lineEditVal"): self.lineEditVal.setText(tr(valeur))
             except:
-                if hasattr(self, "lineEditVal"):
-                    self.lineEditVal.setText(valeur)
+                if hasattr(self, "lineEditVal"): self.lineEditVal.setText(valeur)
             nouvelleValeur = valeur
 
         if self.node.item.definition.validators != None:
@@ -75,29 +81,35 @@ class SaisieValeur(object):
         nouvelleValeurFormat = self.politique.getValeurTexte(nouvelleValeur)
         validite, commentaire = self.politique.recordValeur(nouvelleValeurFormat)
         if commentaire != "":
-            if validite:
-                self.editor.afficheCommentaire(commentaire)
-            else:
-                self.editor.afficheInfos(commentaire, Qt.red)
+            if validite: self.editor.afficheCommentaire(commentaire)
+            else: self.editor.afficheInfos(commentaire, 'red')
         self.inSaisieValeur = False
         self.setValide()
 
     def TraiteLEValeur(self, valeurTraitee=None):
-        # lit la chaine entree dans le line edit
+    #---------------------------------------------
+        # pour Qt
+        # lit la chaine entree dans le lineedit
         # et la tranforme en chaine de valeurs
-        # a traiter. renvoie eventuellement des complexes
+        # attention eventuellement aux complexes
+
         listeValeurs = []
         if valeurTraitee == None:
             valeurBrute = str(self.LEValeur.text())
         else:
             valeurBrute = valeurTraitee
-        if valeurBrute == str(""):
-            return listeValeurs, 1
+        if valeurBrute == str(""): return listeValeurs, 1
 
-        try:
-            valeur = eval(valeurBrute, {})
-        except:
-            valeur = valeurBrute
+         return self.traiteValeurSaisie(valeurBrute)
+
+    def traiteValeurSaisie(self, valeurSaisie):
+    #---------------------------------------
+        # appelé directerment pour le web 
+        # ou pour QT via la fonction TraiteLEValeur 
+        listeValeurs = []
+        valeurBrute = valeurSaisie
+        try:    valeur = eval(valeurBrute, {})
+        except: valeur = valeurBrute
 
         # pour traiter 11.0 - 30.0 pour le CIST
         # if (valeurTraitee and (type(valeurTraitee) in types.StringTypes) and (self.node.item.waitTxm())) :

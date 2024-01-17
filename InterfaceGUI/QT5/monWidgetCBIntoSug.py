@@ -26,7 +26,7 @@ import types, os
 from Extensions.i18n import tr
 
 from InterfaceGUI.QT5.feuille import Feuille
-from InterfaceGUI.QT5.politiquesValidation import PolitiqueUnique
+from InterfaceGUI.politiquesValidation import PolitiqueUnique
 from InterfaceGUI.QT5.qtSaisie import SaisieValeur
 from UiQT5.desWidgetCBIntoSug import Ui_WidgetCBIntoSug
 

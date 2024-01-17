@@ -113,6 +113,7 @@ class JDCEditor(JDCEditorSsIhm, Ui_baseWidget, QWidget):
 
         #self.commandesOrdreCatalogue = self.readercata.commandesOrdreCatalogue
 
+        #PN ??? probablement bug
         if self.appliEficas.readercata.demandeCatalogue == True:
             nomFichierTranslation = (
                 "translatorFichier" + "_" + str(self.appliEficas.readercata.labelCode)
@@ -278,8 +279,7 @@ class JDCEditor(JDCEditorSsIhm, Ui_baseWidget, QWidget):
     # ----------------------------------------------#
     def afficheInfos(self, message, couleur=Qt.black):
     # ----------------------------------------------#
-        if couleur == "red":
-            couleur = Qt.red
+        if couleur == "red": couleur = Qt.red
         if self.sb:
             mapalette = self.sb.palette()
             mapalette.setColor(QPalette.WindowText, couleur)

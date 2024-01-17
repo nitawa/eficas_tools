@@ -23,9 +23,10 @@ from builtins import str
 from builtins import object
 import types, os, sys
 from copy import copy, deepcopy
+from uuid import uuid1
 
 # import du chargeur de composants
-from .comploader import makeObjecttreeitem
+from Editeur.comploader import makeObjecttreeitem
 from Ihm import CONNECTOR
 from Extensions.i18n import tr
 from Extensions.eficas_exception import EficasException
@@ -161,6 +162,28 @@ class ObjectTreeItem(TreeItem, Delegate):
         self.expandable = 1
         self.sublist = []
         self.init()
+
+
+        # La partie suivante  ne sert que pour le Web
+        # on met le meme id au noeud et a l objet
+        # a priori inutile sauf pour les MCList
+        if hasattr(object, "idUnique"):
+            self.idUnique = object.idUnique
+        else:
+            self.idUnique = uuid1().hex
+
+        if self._object.nature == "MCList" and len(self._object.data) == 1:
+            # pour les suppressions on met le meme id a l objet et a la lis
+            self._object.data[0].idUnique = self.idUnique
+            self._object.idUnique = self._object.data[0].idUnique
+            if hasattr(self.appliEficas, "dicoIdNode"):
+                self.appliEficas.dicoIdNode[self._object.data[0].idUnique] = self
+            self.idUnique = 0
+            return
+
+        self._object.idUnique = self.idUnique
+        if hasattr(self.appliEficas, "dicoIdNode") and self.idUnique:
+            self.appliEficas.dicoIdNode[self.idUnique] = self
 
     def init(self):
         return
