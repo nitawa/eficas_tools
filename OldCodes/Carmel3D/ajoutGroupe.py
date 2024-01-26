@@ -181,9 +181,9 @@ def handleAjoutGroupFiltre(editor,listeGroup):
         #print 'DEBUG listeGroup manuel' # Il faut aussi commenter la ligne Msg,listeGroup=self.ChercheGrpMailleInSalome() dans la routine  ChercheGrpMaille de qtEficas.py
         #listeGroup = ['DIEL_air', 'COND_plaque', 'CURRENT_bobine'  ] # cas-test plaque Rodger avec DIEL_
         #listeGroup = ['NOCOND_air', 'COND_plaque', 'CURRENT_bobine'  ] # cas-test plaque Rodger
-        #listeGroup = ['DIEL_air', 'COND_plaque', 'NOCOND_noyau', 'CURRENT_bobine_1', 'CURRENT_bobine_2', 'CURRENT_bobine_3' ]
-        #listeGroup = ['DIEL_air', 'COND_plaque', 'NOCOND_noyau', 'CURRENT_bobine'  ]
-        #listeGroup = ['BBK_bobine', 'DIEL_air', 'COND_plaque', 'NOCOND_noyau', 'CURRENT_bobine'  ] # avec BBK
+        #listeGroup = ['DIEL_air', 'COND_plaque', 'NOCOND_processing', 'CURRENT_bobine_1', 'CURRENT_bobine_2', 'CURRENT_bobine_3' ]
+        #listeGroup = ['DIEL_air', 'COND_plaque', 'NOCOND_processing', 'CURRENT_bobine'  ]
+        #listeGroup = ['BBK_bobine', 'DIEL_air', 'COND_plaque', 'NOCOND_processing', 'CURRENT_bobine'  ] # avec BBK
         #listeGroup = ['EPORT+_dom', 'EPORT-_dom', 'H', 'COND_cyl', 'EPORT_dom'] # cas-test CSS_Tempimpo
         #listeGroup= ['BBK_spire', 'CURRENT_spire_4', 'NOCOND_air', 'CURRENT_spire_3', 'CURRENT_spire_1', 'CURRENT_spire_2'] # cas-test spire_dans l'air en 4 morceaux
         #listeGroup= ['BBK_bobine', 'CURRENT_ind_2', 'DIEL_air', 'CURRENT_ind_8', 'CURRENT_ind_6', 'CURRENT_ind_1', 'CURRENT_ind_3', 'CURRENT_ind_7', 'CURRENT_ind_5', 'CURRENT_ind_4', 'BBK_topo', 'COND_plaque', 'TOPO_trou_1', 'TOPO_trou_3', 'TOPO_trou_2', 'TOPO_trou_8', 'TOPO_trou_4', 'TOPO_trou_7', 'TOPO_trou_5', 'TOPO_trou_6'] # cas-test T.E.A.M. Workshop 7

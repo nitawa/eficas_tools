@@ -236,7 +236,7 @@ def createFromDocumentAccas(fichierCata=None, fichier=None, code=None):
         print("cata file is needed")
         return None
 
-    from Noyau.N_OBJECT import activeSurcharge
+    from Accas.processing.P_OBJECT import activeSurcharge
 
     activeSurcharge()
 

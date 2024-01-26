@@ -18,17 +18,17 @@
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
 """
-   Module de chargement des composants et de mapping des objets du noyau
+   Module de chargement des composants et de mapping des objets du processing
    Accas vers les items d'EFICAS
 
      - composants : dictionnaire de stockage des relations entre types
-       d'objet du noyau et types d'item
+       d'objet du processing et types d'item
      - chargerComposants() : fonction de chargement des composants. Retourne
        le dictionnaire composants.
      - gettreeitem(object) -> type d'item : fonction qui retourne un type
-       d'item correspondant au type de l'objet noyau fourni.
+       d'item correspondant au type de l'objet processing fourni.
      - makeObjecttreeitem(appliEficas,labeltext, object, setFunction=None) -> item : fonction qui retourne un item
-       correspondant a l'objet noyau fourni.
+       correspondant a l'objet processing fourni.
 """
 import os, glob, types
 

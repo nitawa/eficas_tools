@@ -51,7 +51,7 @@ class Tuple:
 JdC = JDC_CATA ( code = 'PSEN',
                  execmodul = None,
                  regles = ( AU_MOINS_UN ( 'CASE_SELECTION', 'CONTINGENCY_PROCESSING' ),
-                            AU_MOINS_UN ( 'CONTINGENCY_SELECTION','N_PROCESSING_OPTIONS','CONTINGENCY_PROCESSING' ),
+                            AU_MOINS_UN ( 'CONTINGENCY_SELECTION','P_PROCESSING_OPTIONS','CONTINGENCY_PROCESSING' ),
                             PRESENT_PRESENT ( 'CONTINGENCY_SELECTION','CONTINGENCY_OPTIONS' ),
                             # AU_MOINS_UN ( 'SIMULATION' ),
                             # AU_PLUS_UN ( 'PSSE_PARAMETERS' ),
@@ -59,7 +59,7 @@ JdC = JDC_CATA ( code = 'PSEN',
                             AU_PLUS_UN ( 'CONTINGENCY_OPTIONS' ),
                             AU_PLUS_UN ( 'CONTINGENCY_SELECTION' ),
                             AU_PLUS_UN ( 'CONTINGENCY_PROCESSING' ),
-                            AU_PLUS_UN ( 'N_PROCESSING_OPTIONS' ),
+                            AU_PLUS_UN ( 'P_PROCESSING_OPTIONS' ),
                             # AU_PLUS_UN ( 'N_1_LINES' ),
                             # AU_PLUS_UN ( 'N_1_LOADS' ),
                             # AU_PLUS_UN ( 'N_1_TRANSFORMERS' ),
@@ -100,7 +100,7 @@ CASE_SELECTION = MACRO ( nom = "CASE_SELECTION",
                       MaxDepth = SIMP(statut = 'o', typ = 'I', defaut = 5),
                       OutputNewCsv = SIMP ( statut = "o",typ=bool,defaut=False,),
                  )
-N_PROCESSING_OPTIONS = PROC ( nom = 'N_PROCESSING_OPTIONS',
+P_PROCESSING_OPTIONS = PROC ( nom = 'P_PROCESSING_OPTIONS',
                             op = None,
                             ang = "Select whether the program should be displaying data about the different categories.\nThe values displayed will be the min, max, and mean of each item, plus a chart.",  
                            Output_bus_values = SIMP(statut = 'o', typ = bool, defaut = True),
@@ -236,5 +236,5 @@ CONTINGENCY_PROCESSING = MACRO ( nom = 'CONTINGENCY_PROCESSING',
                         
                     )
 
-Ordre_Des_Commandes = ('CASE_SELECTION' , 'N_PROCESSING_OPTIONS' , 'CONTINGENCY_SELECTION', 'CONTINGENCY_OPTIONS' ,'CONTINGENCY_PROCESSING',)
-Classement_Commandes_Ds_Arbre = ('CASE_SELECTION' , 'N_PROCESSING_OPTIONS' , 'CONTINGENCY_SELECTION', 'CONTINGENCY_OPTIONS' ,'CONTINGENCY_PROCESSING',)
+Ordre_Des_Commandes = ('CASE_SELECTION' , 'P_PROCESSING_OPTIONS' , 'CONTINGENCY_SELECTION', 'CONTINGENCY_OPTIONS' ,'CONTINGENCY_PROCESSING',)
+Classement_Commandes_Ds_Arbre = ('CASE_SELECTION' , 'P_PROCESSING_OPTIONS' , 'CONTINGENCY_SELECTION', 'CONTINGENCY_OPTIONS' ,'CONTINGENCY_PROCESSING',)

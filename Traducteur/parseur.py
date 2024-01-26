@@ -26,22 +26,11 @@ stringsAndCommentsRE = re.compile(
     "(\"\"\".*?\"\"\"|'''.*?'''|\"[^\"]*\"|'[^']*'|#.*?\n)", re.DOTALL
 )
 
-import six
-
-if six.PY2:
-    allchars = string.maketrans("", "")
-    allcharsExceptNewline = (
-        allchars[: allchars.index("\n")] + allchars[allchars.index("\n") + 1 :]
-    )
-    allcharsExceptNewlineTranstable = string.maketrans(
-        allcharsExceptNewline, "*" * len(allcharsExceptNewline)
-    )
-else:
-    allchars = bytes.maketrans(b"", b"")
-    allcharsExceptNewline = (
+allchars = bytes.maketrans(b"", b"")
+allcharsExceptNewline = (
         allchars[: allchars.index(b"\n")] + allchars[allchars.index(b"\n") + 1 :]
     )
-    allcharsExceptNewlineTranstable = bytes.maketrans(
+allcharsExceptNewlineTranstable = bytes.maketrans(
         allcharsExceptNewline, b"*" * len(allcharsExceptNewline)
     )
 

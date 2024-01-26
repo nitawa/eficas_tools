@@ -1,6 +1,6 @@
 # coding=utf-8
 from Accas import *
-from Extensions.param2 import Variable
+from Accas.extensions.param2 import Variable
 
 import unittest
 import compare

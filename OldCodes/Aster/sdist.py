@@ -23,7 +23,7 @@ import os,shutil,glob,sys
 import types
 
 version="$Name: V7_main $"[7:-2] or 'Test1_4'
-# ==========Path du noyau fourni par Aster====================
+# ==========Path du processing fourni par Aster====================
 path_Noyau="../../AccasAster"
 # ============================================================
 nom_distrib="Eficas"+version
@@ -42,7 +42,7 @@ def main():
    copyfiles('../UiQT4',os.path.join(path_distrib,'UiQT4'),['*.ui','makefile'])
    copyfiles('../Traducteur',os.path.join(path_distrib,'Traducteur'),['*.py'])
    copyfiles('../Ihm',os.path.join(path_distrib,'Ihm'),['*.py'])
-   copyfiles('../Extensions',os.path.join(path_distrib,'Extensions'),['*.py'])
+   copyfiles('../extensions',os.path.join(path_distrib,'extensions'),['*.py'])
    copyfiles('../Misc',os.path.join(path_distrib,'Misc'),['*.py'])
    copyfiles('../Accas',os.path.join(path_distrib,'Accas'),['*.py'])
    # AIDE

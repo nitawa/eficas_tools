@@ -310,7 +310,7 @@ def traduc(infile, outfile, flog=None):
         "CALC_FATIGUE",
         "COURBE_GRD_VIE",
         {
-            "MANSON_C": "MANSON_COFFIN",
+            "MANSON_C": "MANSOP_COFFIN",
         },
     )
 
@@ -913,7 +913,7 @@ def traduc(infile, outfile, flog=None):
         "POST_FATIGUE",
         "DOMMAGE",
         {
-            "MANSON_C": "MANSON_COFFIN",
+            "MANSON_C": "MANSOP_COFFIN",
         },
     )
 
@@ -1035,7 +1035,7 @@ def traduc(infile, outfile, flog=None):
     ####   traitement de DEFI_PART_FETI   ##############################
     genereErreurMCF(jdc, "DEFI_PART_FETI", "EXCIT")
     removeMotCle(jdc, "DEFI_PART_FETI", "EXCIT", pasDeRegle(), 0)
-    removeMotCle(jdc, "DEFI_PART_FETI", "CORRECTION_CONNEX", pasDeRegle(), 0)
+    removeMotCle(jdc, "DEFI_PART_FETI", "CORRECTIOP_CONNEX", pasDeRegle(), 0)
     genereErreurPourCommande(jdc, "DEFI_PART_FETI")
     renameCommande(
         jdc,

@@ -23,7 +23,7 @@ import sys,os
 sys.path.append(os.path.join(os.path.abspath(os.path.dirname(__file__)),'..'))
 sys.path.append(os.path.join(os.path.abspath(os.path.dirname(__file__)),'../InterfaceQT4'))
 sys.path.append(os.path.join(os.path.abspath(os.path.dirname(__file__)),'../UiQT4'))
-from Extensions.i18n import tr
+from Accas.extensions.eficas_translation import tr
 from string import split,strip,lowercase,uppercase
 import re,string
 import Accas

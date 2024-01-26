@@ -68,7 +68,7 @@ atraiter = (
     "DEBUT",
     "CALC_CHAM_ELEM",
     "AFFE_CHAR_THER",
-    "MACR_LIGN_COUPE",
+    "MACR_LIGP_COUPE",
     "POST_RCCM",
     "PROJ_MESU_MODAL",
     "CREA_RESU",
@@ -111,7 +111,7 @@ dict_erreurs = {
     "AFFE_CHAR_MECA_HYDR_CALCULEE": "l'hydratation est maintenant une variable de commande",
     "AFFE_CHAR_MECA_EPSA_CALCULEE": "EPSA est maintenant une variable de commande",
     "AFFE_CHAR_MECA_PRESSION_CALCULEE": "PRESSION_CALCULEE est remplace par EVOL_CHAR",
-    "MACR_LIGN_COUPE": "MACR_LIGN_COUPE demande un traitement manuel",
+    "MACR_LIGP_COUPE": "MACR_LIGP_COUPE demande un traitement manuel",
     "POST_RCCM": "POST_RCCM demande un traitement manuel",
     "DEFI_MATERIAU_CHABOCHE": "remplacer la valeur CINx_CHAB",
     "DEFI_MATERIAU_POLY_CFC": "le materiau POLY_CFC est remplace par le comportement POLYCRISTAL",
@@ -412,7 +412,7 @@ def traduc(infile, outfile, flog=None):
         "DOMM_MAXI": "MATAKE_MODI_AV",
         "FATEMI_SOCIE": "FATESOCI_MODI_AV",
     }
-    changementValeurDsMCF(jdc, "DEFI_MATERIAU", "CISA_PLAN_CRIT", "CRITERE", dfatigue)
+    changementValeurDsMCF(jdc, "DEFI_MATERIAU", "CISA_PLAP_CRIT", "CRITERE", dfatigue)
 
     ####################### traitement IMPR_CO       #######################
     chercheOperInsereFacteurSiRegle(jdc, "IMPR_CO", "CONCEPT", ((("CO",), "existe"),))
@@ -668,8 +668,8 @@ def traduc(infile, outfile, flog=None):
     )
 
     ####################### traitement MACR_LIGNE_COUPE #######################
-    appelleMacroSelonValeurConcept(jdc, "MACR_LIGN_COUPE", ("LIGN_COUPE", "TABLE"))
-    removeMotCleInFact(jdc, "MACR_LIGN_COUPE", "LIGN_COUPE", "TABLE")
+    appelleMacroSelonValeurConcept(jdc, "MACR_LIGP_COUPE", ("LIGP_COUPE", "TABLE"))
+    removeMotCleInFact(jdc, "MACR_LIGP_COUPE", "LIGP_COUPE", "TABLE")
 
     ####################### traitement MODI_MAILLAGE #######################
     removeMotCle(jdc, "MODI_MAILLAGE", "MODELE")

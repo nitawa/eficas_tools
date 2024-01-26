@@ -25,7 +25,7 @@ import glob
 import traceback
 import codecs,types
 
-from Extensions.i18n import tr
+from Accas.extensions.eficas_translation import tr
 
 def substractList(liste1,liste2):
     """

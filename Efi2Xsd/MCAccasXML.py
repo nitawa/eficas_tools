@@ -49,8 +49,7 @@ try:
 except:
     pass
 
-from Accas import A_ASSD
-from Extensions.parametre import PARAMETRE
+from Accas.extensions.parametre import PARAMETRE
 
 
 class X_OBJECT:
@@ -511,6 +510,7 @@ class X_MCSIMP(X_OBJECT):
                 self.perePyxb.objPyxb.orderedContent(),
             )
 
+        from Accas import A_ASSD
         if inspect.isclass(newVal) and issubclass(newVal, A_ASSD):
             newVal = newVal.nom
 
@@ -966,7 +966,7 @@ class X_JDC(X_MCCOMPO):
 
     def analyseFromXML(self, debug=False):
         if debug:
-            print("je suis ds analyseFromXML -- > appel ds analyseXML de I_JDC.py")
+            print("je suis ds analyseFromXML -- > appel ds analyseXML de A_JDC.py")
         if self.procedure == "":
             return
         self.objPyxb = self.cata.modeleMetier.CreateFromDocument(self.procedure)

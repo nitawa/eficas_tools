@@ -63,7 +63,7 @@ from optparse import OptionValueError
 import os, traceback
 import re
 
-from Extensions.i18n import tr
+from Accas.extensions.eficas_translation import tr
 
 # Les valeurs decodees par optparse sont mises dans un objet dictionnaire-like.
 # On l'utilise comme environnement de session.

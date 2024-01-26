@@ -22,7 +22,7 @@ from builtins import object
 
 import re, os
 
-from Extensions.i18n import tr
+from Accas.extensions.eficas_translation import tr
 
 l_noms_commandes = ["OPER", "PROC", "MACRO", "FORM"]
 l_noms_composes = ["FACT", "BLOC", "NUPL", "FORM"]

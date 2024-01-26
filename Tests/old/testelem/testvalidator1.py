@@ -9,7 +9,7 @@ class myparam:
     def __adapt__(self,protocol):
         return protocol.adapt(self.valeur)
 
-from Noyau.N_VALIDATOR import listProto,TypeProtocol,IntoProtocol
+from Accas.processing.P_VALIDATOR import listProto,TypeProtocol,IntoProtocol
 class param:
     def __init__(self,valeur):
         self.valeur=valeur

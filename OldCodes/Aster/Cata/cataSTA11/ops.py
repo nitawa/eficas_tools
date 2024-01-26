@@ -30,9 +30,9 @@ from glob import glob
 # Modules Eficas
 import Accas
 from Accas import ASSD
-from Noyau.ascheckers     import CheckLog
-from Noyau.N_info import message, SUPERV
-from Noyau.N_types import force_list
+from Accas.processing.ascheckers     import CheckLog
+from Accas.processing.P_info import message, SUPERV
+from Accas.processing.P_types import force_list
 
 try:
    import aster
@@ -187,7 +187,7 @@ def POURSUITE(self, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, LANG, INFO, 
      else:
          UTMESS('I', 'SUPERVIS_70', valk=newsign, vali=self.jdc.jeveux_sysaddr)
      from Cata.cata  import entier
-     from Noyau.N_CO import CO
+     from Accas.processing.P_CO import CO
      interrupt = []
      count = 0
      UTMESS('I', 'SUPERVIS_65')

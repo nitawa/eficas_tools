@@ -1186,7 +1186,7 @@ CRITERIA = PROC ( nom = "CRITERIA",
                                      KernelSmoothingDrawingFilename = SIMP ( statut = "o",
                                                                               typ = "TXM",
                                                                               max = 1,
-                                                                              fr = "Nom du fichier graphique de la reconstruction a noyau",
+                                                                              fr = "Nom du fichier graphique de la reconstruction a processing",
                                                                               ang = "Kernel Smoothing Drawing Filename",
                                                                               ),
                                                                              

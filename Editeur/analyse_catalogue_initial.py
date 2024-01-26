@@ -21,7 +21,7 @@ from builtins import str
 from builtins import object
 import re, os
 
-from Extensions.i18n import tr
+from Accas.extensions.eficas_translation import tr
 
 
 class catalogueInitial(object):

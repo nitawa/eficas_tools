@@ -27,9 +27,9 @@ from uuid import uuid1
 
 # import du chargeur de composants
 from Editeur.comploader import makeObjecttreeitem
-from Ihm import CONNECTOR
-from Extensions.i18n import tr
-from Extensions.eficas_exception import EficasException
+from Accas.accessor import CONNECTOR
+from Accas.extensions.eficas_translation import tr
+from Accas.extensions.eficas_exception import EficasException
 
 from reprlib import Repr
 

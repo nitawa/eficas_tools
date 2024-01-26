@@ -2,7 +2,7 @@
 import copy
 from tsparser import *
 from Accas import *
-from Noyau import *
+from Accas.processing import *
 from dicoparser import *
 
 def normalize( theTranslation ):
@@ -20,7 +20,7 @@ def translate( theDicoFile, theCataFile, theTSFile, theNotTranslatedFile = '' ):
 	PARSER = TSParser()
 	
 	def is_ok( theName, theObject ):
-		ok = isinstance( theObject, N_ENTITE.ENTITE ) or theName in SPECIAL
+		ok = isinstance( theObject, P_ENTITE.ENTITE ) or theName in SPECIAL
 		return ok
 
 	def name_to_attr( theName ):

@@ -87,7 +87,7 @@ atraiter = (
     "CALC_PRECONT",
     "LIRE_INTE_SPEC",
     "MACR_CARA_POUTRE",
-    "MACR_LIGN_COUPE",
+    "MACR_LIGP_COUPE",
 )
 
 dict_erreurs = {
@@ -667,17 +667,17 @@ def traduc(infile, outfile, flog=None):
     renameMotCle(jdc, "MACR_CARA_POUTRE", "UNITE_MAILLAGE", "UNITE")
     ################################################################################
 
-    ######### traitement de MACR_LIGN_COUPE  ######################################
-    # il y a un probleme s'il y a plusieurs mots clefs facteurs LIGN_COUPE : la regle ne marche qu'une fois par commande
+    ######### traitement de MACR_LIGP_COUPE  ######################################
+    # il y a un probleme s'il y a plusieurs mots clefs facteurs LIGP_COUPE : la regle ne marche qu'une fois par commande
     ajouteMotClefDansFacteurSiRegle(
         jdc,
-        "MACR_LIGN_COUPE",
-        "LIGN_COUPE",
+        "MACR_LIGP_COUPE",
+        "LIGP_COUPE",
         "REPERE='LOCAL'",
         (
             (
                 (
-                    "LIGN_COUPE",
+                    "LIGP_COUPE",
                     "VECT_Y",
                 ),
                 "existeMCsousMCF",
@@ -688,13 +688,13 @@ def traduc(infile, outfile, flog=None):
     # autre probleme : s'il y a plusieurs mots clefs facteurs le traducteur peut, dans l'insertion, se tromper de mot clef facteur
     ajouteMotClefDansFacteurSiRegle(
         jdc,
-        "MACR_LIGN_COUPE",
-        "LIGN_COUPE",
+        "MACR_LIGP_COUPE",
+        "LIGP_COUPE",
         "TYPE='GROUP_NO'",
         (
             (
                 (
-                    "LIGN_COUPE",
+                    "LIGP_COUPE",
                     "GROUP_NO",
                 ),
                 "existeMCsousMCF",
@@ -704,13 +704,13 @@ def traduc(infile, outfile, flog=None):
     )
     ajouteMotClefDansFacteurSiRegle(
         jdc,
-        "MACR_LIGN_COUPE",
-        "LIGN_COUPE",
+        "MACR_LIGP_COUPE",
+        "LIGP_COUPE",
         "TYPE='GROUP_MA'",
         (
             (
                 (
-                    "LIGN_COUPE",
+                    "LIGP_COUPE",
                     "GROUP_MA",
                 ),
                 "existeMCsousMCF",

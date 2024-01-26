@@ -159,7 +159,7 @@ atraiter = (
     "MACR_FIABILITE",
     "MACR_FIAB_IMPR",
     "MACR_INFO_MAIL",
-    "MACR_LIGN_COUPE",
+    "MACR_LIGP_COUPE",
     "MACRO_ELAS_MULT",
     "MACRO_EXPANS",
     "MACRO_MATR_AJOU",
@@ -1948,7 +1948,7 @@ def traduc(infile, outfile, flog=None):
     # Modification mot-clés liés à la mémoire
     removeMotCle(jdc, "FACTORISER", "LIBERE_MEMOIRE", pasDeRegle(), 0)
     renameMotCle(jdc, "FACTORISER", "OUT_OF_CORE", "GESTION_MEMOIRE")
-    dMEM = {"OUI": "OUT_OF_CORE", "NON": "IN_CORE"}
+    dMEM = {"OUI": "OUT_OF_CORE", "NON": "IP_CORE"}
     changementValeur(jdc, "FACTORISER", "GESTION_MEMOIRE", dCRIT)
 
     ####   traitement de FORMULE   ##############################
@@ -2213,7 +2213,7 @@ def traduc(infile, outfile, flog=None):
         {"REFUSER": "HOMARD", "IGNORER": "IGNORE_PYRA"},
     )
 
-    ####   traitement de MACR_LIGN_COUPE   ##############################
+    ####   traitement de MACR_LIGP_COUPE   ##############################
     # Rien à faire
 
     ####   traitement de MACRO_ELAS_MULT   ##############################

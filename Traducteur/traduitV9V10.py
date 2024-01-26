@@ -81,7 +81,7 @@ atraiter = (
     "MACR_ASPIC_CALC",
     "MACR_ECREVISSE",
     "MACR_INFO_MAIL",
-    "MACR_LIGN_COUPE",
+    "MACR_LIGP_COUPE",
     "MACRO_ELAS_MULT",
     "MACRO_MATR_AJOU",
     "MACRO_MISS_3D",
@@ -1222,7 +1222,7 @@ def traduc(infile, outfile, flog=None):
     changementValeur(jdc, "LIRE_RESU", "NOM_CHAM", dOPTION)
     changementValeur(jdc, "MACR_ADAP_MAIL", "NOM_CHAM", dOPTION)
     changementValeurDsMCF(jdc, "MACR_ASPIC_CALC", "IMPRESSION", "NOM_CHAM", dOPTION)
-    changementValeur(jdc, "MACR_LIGN_COUPE", "NOM_CHAM", dOPTION)
+    changementValeur(jdc, "MACR_LIGP_COUPE", "NOM_CHAM", dOPTION)
     changementValeurDsMCF(jdc, "MODI_REPERE", "MODI_CHAM", "NOM_CHAM", dOPTION)
     changementValeurDsMCF(jdc, "POST_ELEM", "INTEGRALE", "NOM_CHAM", dOPTION)
     changementValeurDsMCF(jdc, "POST_ELEM", "MINMAX", "NOM_CHAM", dOPTION)
@@ -1281,7 +1281,7 @@ def traduc(infile, outfile, flog=None):
     genereErreurValeur(jdc, "LIRE_RESU", "NOM_CHAM", rOPTION)
     genereErreurValeur(jdc, "MACR_ADAP_MAIL", "NOM_CHAM", rOPTION)
     # genereErreurDsMCF(jdc,"MACR_ASPIC_CALC","IMPRESSION","NOM_CHAM",rOPTION)
-    genereErreurValeur(jdc, "MACR_LIGN_COUPE", "NOM_CHAM", rOPTION)
+    genereErreurValeur(jdc, "MACR_LIGP_COUPE", "NOM_CHAM", rOPTION)
     genereErreurValeurDsMCF(jdc, "MODI_REPERE", "MODI_CHAM", "NOM_CHAM", rOPTION)
     # genereErreurValeurDsMCF(jdc,"POST_RCCM","RESU_MECA","NOM_CHAM",rOPTION)
     genereErreurValeurDsMCF(jdc, "POST_ELEM", "INTEGRALE", "NOM_CHAM", rOPTION)

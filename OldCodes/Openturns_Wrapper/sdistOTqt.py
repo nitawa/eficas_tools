@@ -36,7 +36,7 @@ def main():
    copyfiles('../Ui',os.path.join(path_distrib,'Ui'),['*.ui','makefile'])
    copyfiles('../Openturns',os.path.join(path_distrib,'Openturns'),['*.py','*.ini'])
    copyfiles('../Ihm',os.path.join(path_distrib,'Ihm'),['*.py'])
-   copyfiles('../Extensions',os.path.join(path_distrib,'Extensions'),['*.py'])
+   copyfiles('../extensions',os.path.join(path_distrib,'extensions'),['*.py'])
    copyfiles('../Misc',os.path.join(path_distrib,'Misc'),['*.py'])
    copyfiles('../Accas',os.path.join(path_distrib,'Accas'),['*.py'])
    copyfiles('../Accas',os.path.join(path_distrib,'Noyau'),['*.py'])

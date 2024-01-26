@@ -14,5 +14,5 @@ for k in sys.modules.keys():
 
 from cata import *
 from math import ceil
-from Extensions import param2
+from Accas.extensions import param2
 pi=param2.Variable('pi',pi)

@@ -38,8 +38,8 @@ from myMain import Ui_Eficas
 from viewManager import MyTabview
 from getVersion import getEficasVersion
 
-from Extensions.i18n import tr
-from Extensions.eficas_exception import EficasException
+from Accas.extensions.eficas_translation import tr
+from Accas.extensions.eficas_exception import EficasException
 
 from Editeur import session
 
@@ -56,7 +56,7 @@ class EficasEngineTestCase(unittest.TestCase):
     def setUp(self):
         from qtEficas import Appli
         from Editeur import session
-        from Extensions import localisation
+        from Accas.extensions import localisation
         
         options = session.parse(sys.argv)
         if options.code!= None : code=options.code

@@ -27,7 +27,7 @@ import imp
 from copy import deepcopy, copy
 import traceback
 
-# CONTEXT est accessible (__init__.py de Noyau)
+# CONTEXT est accessible (__init__.py de processing)
 
 # import raw.efficas as efficas
 sys.path.insert(0, os.path.abspath(os.path.join(os.getcwd(), "..")))
@@ -2537,7 +2537,7 @@ class X_JDC_CATA:
                     continue
                 if monModule.__name__[0:5] == "numpy":
                     continue
-                if monModule.__name__[0:5] == "Noyau":
+                if monModule.__name__[0:5] == "processing":
                     continue
                 if monModule.__name__[0:5] == "Accas":
                     continue
@@ -2551,7 +2551,7 @@ class X_JDC_CATA:
                     continue
                 if monModule.__name__[0:10] == "Validation":
                     continue
-                if monModule.__name__[0:10] == "Extensions":
+                if monModule.__name__[0:10] == "extensions":
                     continue
                 if monModule.__name__[0:12] == "InterfaceQT":
                     continue

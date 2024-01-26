@@ -34,7 +34,7 @@ def main():
    copyfiles('../UiQT4',os.path.join(path_distrib,'UiQT4'),['*.ui','makefile'])
    copyfiles('../Sous_epaisseur',os.path.join(path_distrib,'Sous_epaisseur'),['*.py','*.ini'])
    copyfiles('../Ihm',os.path.join(path_distrib,'Ihm'),['*.py'])
-   copyfiles('../Extensions',os.path.join(path_distrib,'Extensions'),['*.py'])
+   copyfiles('../extensions',os.path.join(path_distrib,'extensions'),['*.py'])
    copyfiles('../Misc',os.path.join(path_distrib,'Misc'),['*.py'])
    copyfiles('../Accas',os.path.join(path_distrib,'Accas'),['*.py'])
    # AIDE

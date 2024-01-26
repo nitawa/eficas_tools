@@ -87,8 +87,8 @@ def INCLUDE(self,PSSE_path,sav_file,**args):
       self.fichier_text += "%s=MONMOTEUR(ID='%s',);\n" % (nom,'a')
       listeNouveau.append(nom)
 
-   import Extensions.jdc_include
-   self.JdC_aux = Extensions.jdc_include.JDC_CATA_INCLUDE(code='PSEN', execmodul=None)
+   import Accas.extensions.jdc_include
+   self.JdC_aux = extensions.jdc_include.JDC_CATA_INCLUDE(code='PSEN', execmodul=None)
    self.make_contexte_include(None, self.fichier_text)
    self.old_context_fichier_init = self.contexte_fichier_init
    self.parent.record_unit(unite, self)

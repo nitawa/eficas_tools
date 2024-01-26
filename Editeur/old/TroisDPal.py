@@ -28,7 +28,7 @@ try :
 except :
     pass
 import generator
-from Extensions.i18n import tr
+from Accas.extensions.eficas_translation import tr
 
 class TroisDPilote(object):
 
@@ -49,7 +49,7 @@ class TroisDPilote(object):
             print ("Le generateur n'a pas ete trouve")
             print ("Erreur ! Erreur!")
             return ""
-        from Extensions.param2 import originalMath
+        from Accas.extensions.param2 import originalMath
         originalMath.toOriginal()
         self.appliEficas.envoievisu(texte)
         originalMath.toSurcharge()

@@ -24,7 +24,7 @@ import os,shutil,glob,sys
 import types
 
 version="$Name: V7_main $"[7:-2] or 'Test1_4'
-# ==========Path du noyau local           ====================
+# ==========Path du processing local           ====================
 path_Noyau=".."
 # ============================================================
 nom_distrib="Eficas"+version+"AsterSTA8"
@@ -40,7 +40,7 @@ def main():
    copyfiles('../Editeur',os.path.join(path_distrib,'Editeur'),['*.py','faqs.txt'])
    copyfiles('../Traducteur',os.path.join(path_distrib,'Traducteur'),['*.py'])
    copyfiles('../Ihm',os.path.join(path_distrib,'Ihm'),['*.py'])
-   copyfiles('../Extensions',os.path.join(path_distrib,'Extensions'),['*.py'])
+   copyfiles('../extensions',os.path.join(path_distrib,'extensions'),['*.py'])
    copyfiles('../Misc',os.path.join(path_distrib,'Misc'),['*.py'])
    copyfiles('../Accas',os.path.join(path_distrib,'Accas'),['*.py'])
 # Packages globaux (pour toutes les versions sauf surcharge)
