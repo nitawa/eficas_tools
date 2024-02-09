@@ -28,7 +28,7 @@ from PyQt5.QtWidgets import QTreeWidget, QTreeWidgetItem, QMessageBox
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import Qt
 
-from Extensions.i18n import tr
+from Accas.extensions.eficas_translation import tr
 from InterfaceGUI.QT5.gereRegles import GereRegles
 from InterfaceGUI.QT5.monChoixCommande import MonChoixCommande
 
@@ -152,39 +152,40 @@ class JDCTree(QTreeWidget, GereRegles):
 
     def handleOnItem(self, item, int):
     # ----------------------------------
-        # print ("je passe dans handleOnItem pour ",self, item.item.nom, item, item.item, item.item.getLabelText())
+        #print ("je passe dans handleOnItem pour ",self, item.item.nom, item, item.item, item.item.getLabelText())
 
         from InterfaceGUI.QT5 import composimp
+        from InterfaceGUI.QT5 import compojdc
 
         self.inhibeExpand = True
         self.itemCourant = item
-        itemParent = item
+        itemParent = item.treeParent
         itemAvant = item
 
-        # PN : 22 juil 2021 --> bizarre ce itemAvant Verifier le while
+        #print ('itemParent' , itemParent.item.nom, itemParent)
+        #print (isinstance(itemParent, compojdc.Node))
+        # on a clique sur une etape
+        if isinstance(itemParent, compojdc.Node) :
+           if not (item.fenetre):
+              item.affichePanneau()
+           elif item.fenetre != self.editor.fenetreCentraleAffichee:
+              item.affichePanneau()
+           return
         while not (hasattr(itemParent, "getPanel")):
-            if itemParent.plie == True:
-                itemParent.setDeplie()
+            if itemParent.plie == True: itemParent.setDeplie()
             itemAvant = itemParent
             itemParent = itemParent.treeParent
 
         if itemParent.fenetre != self.editor.fenetreCentraleAffichee:
             estUneFeuille = isinstance(item, composimp.Node)
             # il faut afficher le parent
-            # Attention - Specification particuliere pour MT qui permet de nn afficher qu 1 niveau
-            # le catalogue contient cette indication dans fenetreIhm
-            if estUneFeuille and itemParent.fenetreIhm == "deplie1Niveau":
-                if item == itemParent:
-                    itemParent.affichePanneau()
-                else:
-                    itemAvant.afficheCeNiveau()
-            elif estUneFeuille:
+            if estUneFeuille:
+                #print ('handle on item est une feuille', itemParent, itemParent.item.nom, self)
                 itemParent.affichePanneau()
             elif self.editor.maConfiguration.afficheCommandesPliees:
                 itemParent.plieToutEtReafficheSaufItem(item)
             else:
                 itemParent.affichePanneau()
-
         elif (isinstance(item, composimp.Node)) and item.fenetre:
             item.fenetre.rendVisible()
         elif itemParent != item:
@@ -426,26 +427,15 @@ class JDCNode(QTreeWidgetItem, GereRegles):
         self.select()
         # print ('fin afficheCeNiveau pour ', self.item.nom)
 
-    def getPanelModifie(self):
-    # -------------------------
 
-        if self.fenetreIhm == None:
-            return None
-        if self.fenetreIhm == "deplie1Niveau":
-            from InterfaceGUI.QT5.monWidgetCommandeDeplie1Niveau import (
-                MonWidgetCommandeDeplie1Niveau,
-            )
-
-            return MonWidgetCommandeDeplie1Niveau(self, self.editor, self.item.object)
-        return None
 
     def affichePanneau(self):
     # -------------------------
         # print ('_________________ds affichePanneau pour', self.item.nom)
-        # pour l instant pas d inactif
+        # le statut inactif est pour les commandes ASTER apres fin
+        # plus utilise mais 
         if not (self.item.isActif()):
             from InterfaceGUI.QT5.monWidgetInactif import MonWidgetInactif
-
             self.fenetre = MonWidgetInactif(self, self.editor)
         else:
             itemParent = self
@@ -457,9 +447,7 @@ class JDCNode(QTreeWidgetItem, GereRegles):
                 # print ('fin _________________ds affichePanneau pour', self.item.nom)
                 return
 
-            self.fenetre = self.getPanelModifie()
-            if self.fenetre == None:
-                self.fenetre = self.getPanel()
+            self.fenetre = self.getPanel()
             self.editor.restoreSplitterSizes()
 
         for indiceWidget in range(self.editor.widgetCentraleLayout.count()):
@@ -545,7 +533,7 @@ class JDCNode(QTreeWidgetItem, GereRegles):
         return self.appendBrother(COMMENT, pos)
 
     def addParameters(self, after=True):
-    # -------------------------------------
+    # ----------------------------------
         """
         Ajoute un parametre a l'interieur du JDC :
         """
@@ -558,7 +546,7 @@ class JDCNode(QTreeWidgetItem, GereRegles):
         return child
 
     def select(self):
-    # ------------------
+    # ---------------
         """
         Rend le noeud courant (self) selectionne et deselectionne
         tous les autres
@@ -568,12 +556,12 @@ class JDCNode(QTreeWidgetItem, GereRegles):
             item.setSelected(0)
         self.tree.setCurrentItem(self)
 
-    # ------------------------------------------------------------------
+    # ---------------------------------------------
     # Methodes de creation et destruction de noeuds
-    # ------------------------------------------------------------------
+    # ---------------------------------------------
 
     def appendBrother(self, name, pos="after", plier=False):
-    # ----------------------------------------------------
+    # -------------------------------------------------------
         """
         Permet d'ajouter un objet frere a l'objet associe au noeud self
         par defaut on l'ajoute immediatement apres
@@ -582,25 +570,18 @@ class JDCNode(QTreeWidgetItem, GereRegles):
         self.editor.initModif()
 
         from InterfaceGUI.QT5 import compojdc
-
-        if (isinstance(self.treeParent, compojdc.Node)) and not self.verifiePosition(
-            name, pos
-        ):
+        if (isinstance(self.treeParent, compojdc.Node)) and not self.verifiePosition( name, pos):
             return 0
 
         if self.treeParent != self.vraiParent:
             index = self.vraiParent.children.index(self)
-            if pos == "before":
-                index = index
-            elif pos == "after":
-                index = index + 1
+            if pos == "before": index = index
+            elif pos == "after": index = index + 1
             return self.vraiParent.appendChild(name, pos=index, plier=plier)
         else:
             index = self.treeParent.children.index(self)
-            if pos == "before":
-                index = index
-            elif pos == "after":
-                index = index + 1
+            if pos == "before": index = index
+            elif pos == "after": index = index + 1
             else:
                 print(pos, tr("  n'est pas un index valide pour appendBrother"))
                 return 0

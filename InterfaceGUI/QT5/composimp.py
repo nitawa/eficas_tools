@@ -25,7 +25,7 @@ import traceback
 from InterfaceGUI.QT5 import typeNode
 
 # Modules Eficas
-from Editeur import Objecttreeitem
+from InterfaceGUI.common import Objecttreeitem
 from InterfaceGUI.QT5 import browser
 from Accas import SalomeEntry
 from Accas import ASSD
@@ -34,7 +34,7 @@ from Accas import UserASSDMultiple
 
 class NodeCommun:
 
-    def getPanel(self, parentQt, maCommande):
+    def getPanel():
         return self.getPanelGroupe(parentQt, maCommande)
 
     def getPanelGroupe(self, parentQt, maCommande):
@@ -60,6 +60,7 @@ class NodeCommun:
             else : monInto = maDefinition.into
 
         # Gestion des widgets specifiees dans le cata
+        widgetParticularise = None
         if maDefinition.fenetreIhm != 'menuDeroulant' and maDefinition.fenetreIhm != None:
            widgetParticularise=maDefinition.fenetreIhm
         if widgetParticularise != None:
@@ -823,7 +824,7 @@ class SIMPTreeItemCommun(Objecttreeitem.AtomicObjectTreeItem):
     def traiteReel(self, valeur):
         """
         Cette fonction a pour but de rajouter le '.' en fin de chaine pour un reel
-        ou de detecter si on fait reference a un concept produit par DEFI_VALEUR
+        ou de detecter si on fait reference a un concept produit 
         ou un EVAL ...
         """
         valeur = valeur.strip()

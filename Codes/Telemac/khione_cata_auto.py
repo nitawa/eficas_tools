@@ -472,7 +472,7 @@ l''hydrodynamique.""",
             ang = """""",
         ),
 #       -----------------------------------
-        CONCENTRATION_OF_SURFACE_ICE_WHEN_FORMATION = SIMP(statut ='f',
+        CONCENTRATION_OF_SURFACE_ICE_WHEP_FORMATION = SIMP(statut ='f',
 #       -----------------------------------
             typ = 'R',
             defaut = [1.],
@@ -511,7 +511,7 @@ The possible laws are as follows (refer to the Principle note):
 \end{itemize}""",
             ),
 #           -----------------------------------
-            FRICTION_COEFFICIENT = SIMP(statut ='o',
+            FRICTIOP_COEFFICIENT = SIMP(statut ='o',
 #           -----------------------------------
                 typ = 'R',
                 defaut = 0.04,
@@ -538,7 +538,7 @@ according to the selected formula (Chezy, Strickler, etc.):
 \end{itemize}""",
             ),
 #           -----------------------------------
-            MAXIMAL_FRICTION_COEFFICIENT = SIMP(statut ='o',
+            MAXIMAL_FRICTIOP_COEFFICIENT = SIMP(statut ='o',
 #           -----------------------------------
                 typ = 'R',
                 defaut = 0.04,
@@ -548,7 +548,7 @@ de l''epaisseur du couvert de glace.""",
 ice cover thickness.""",
             ),
 #           -----------------------------------
-            LAW_FOR_FRICTION_COEFFICIENT = SIMP(statut ='o',
+            LAW_FOR_FRICTIOP_COEFFICIENT = SIMP(statut ='o',
 #           -----------------------------------
                 typ = 'TXM',
                 into = ["CONSTANT FRICTION COEF","LINEAR FRICTION COEF"],
@@ -745,7 +745,7 @@ in J/kg/K.""",
             ang = """""",
         ),
 #       -----------------------------------
-        BOLTZMANN_CONSTANT__WM_2K_4_ = SIMP(statut ='f',
+        BOLTZMANP_CONSTANT__WM_2K_4_ = SIMP(statut ='f',
 #       -----------------------------------
             typ = 'R',
             defaut = [5.67E-8],
@@ -754,7 +754,7 @@ in J/kg/K.""",
         ),
     ),
 #   -----------------------------------
-    CALIBRATION_COEFFICIENT = FACT(statut='f',
+    CALIBRATIOP_COEFFICIENT = FACT(statut='f',
 #   -----------------------------------
 #       -----------------------------------
         COEFFICIENT_FOR_CALIBRATION_OF_BACK_RADIATION = SIMP(statut ='f',
@@ -1111,7 +1111,7 @@ only for multi-class model.""",
         ),
     ),
 #   -----------------------------------
-    CALIBRATION_COEFFICIENT = FACT(statut='f',
+    CALIBRATIOP_COEFFICIENT = FACT(statut='f',
 #   -----------------------------------
 #       -----------------------------------
         SETTLING_COEFFICIENT_OF_FRAZIL_ON_BARS = SIMP(statut ='f',

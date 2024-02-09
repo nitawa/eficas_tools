@@ -24,7 +24,7 @@ from PyQt5.QtCore import Qt
 
 from desWidgetCommentaire import Ui_WidgetCommentaire
 from InterfaceGUI.QT5.gereIcones import FacultatifOuOptionnel
-from Extensions.i18n import tr
+from Accas.extensions.eficas_translation import tr
 import Accas
 import os
 

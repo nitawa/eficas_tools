@@ -17,16 +17,13 @@
 #
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
-from Editeur     import Objecttreeitem
+from InterfaceGUI.common import Objecttreeitem
 from InterfaceGUI.Web import compooper
 from InterfaceGUI.Web import browser
 from InterfaceGUI.Web import typeNode
 
-
 class Node(browser.JDCNode,typeNode.PopUpMenuNode):
-
     pass
-
 
 class ProcEtapeTreeItem(compooper.EtapeTreeItem):
     itemNode=Node

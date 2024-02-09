@@ -21,7 +21,7 @@
 from PyQt5.QtWidgets import QCheckBox, QWidget
 from PyQt5.QtCore import Qt
 
-from Extensions.i18n import tr
+from Accas.extensions.eficas_translation import tr
 from UiQT5.desWidgetOptionnel import Ui_WidgetOptionnel
 from InterfaceGUI.QT5.monGroupeOptionnel import MonGroupeOptionnel
 

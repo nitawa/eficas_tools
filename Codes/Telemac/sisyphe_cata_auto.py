@@ -144,7 +144,7 @@ made by the subroutine VALIDA.""",
         ang = """Number of arrays for own user programming""",
     ),
 #   -----------------------------------
-    ORIGIN_COORDINATES = SIMP(statut ='f',
+    ORIGIP_COORDINATES = SIMP(statut ='f',
 #   -----------------------------------
         typ = 'I', min= 2, max= 2,
         defaut = [0,0],
@@ -912,7 +912,7 @@ on the same mesh. The last recorded time step will provide
 the initial conditions for the new computation.""",
     ),
 #   -----------------------------------
-    COMPUTATION_CONTINUED = SIMP(statut ='f',
+    COMPUTATIOP_CONTINUED = SIMP(statut ='f',
 #   -----------------------------------
         typ = bool,
         defaut = [False],
@@ -1522,7 +1522,7 @@ PHYSICS = PROC(nom= "PHYSICS",op = None,
            en Kg/m3""",
     ),
 #   -----------------------------------
-    NON_COHESIVE_BED_POROSITY = SIMP(statut ='f',
+    NOP_COHESIVE_BED_POROSITY = SIMP(statut ='f',
 #   -----------------------------------
         typ = 'R',
         defaut = 0.4,
@@ -1613,7 +1613,7 @@ in the whole domain thanks to the formula of Fredsoe for non cohesive
 sediments""",
     ),
 #   -----------------------------------
-    REFERENCE_CONCENTRATION_FORMULA = SIMP(statut ='f',
+    REFERENCE_CONCENTRATIOP_FORMULA = SIMP(statut ='f',
 #   -----------------------------------
         typ = 'I',
         defaut = 1,
@@ -1630,7 +1630,7 @@ sediments""",
          4: Soulsby\_van Rijn formula""",
     ),
 #   -----------------------------------
-    CORRECTION_ON_CONVECTION_VELOCITY = SIMP(statut ='f',
+    CORRECTION_OP_CONVECTION_VELOCITY = SIMP(statut ='f',
 #   -----------------------------------
         typ = bool,
         defaut = [False],
@@ -1640,7 +1640,7 @@ gradient vertical de vitesse et concentration""",
 velocity and concentration profiles""",
     ),
 #   -----------------------------------
-    INITIAL_SUSPENSION_CONCENTRATIONS = SIMP(statut ='f',
+    INITIAL_SUSPENSIOP_CONCENTRATIONS = SIMP(statut ='f',
 #   -----------------------------------
         typ = 'R', min=0, max='**',
         fr = """Pour la suspension, sert a initialiser la valeur
@@ -1901,7 +1901,7 @@ if KSPRATIO =0 : use skin friction prediction from Van Rijn (2007)
 for currents and the Wiberg and Harris method for waves""",
     ),
 #   -----------------------------------
-    SKIN_FRICTION_CORRECTION = SIMP(statut ='f',
+    SKIN_FRICTIOP_CORRECTION = SIMP(statut ='f',
 #   -----------------------------------
         typ = 'I',
         defaut = 1,
@@ -1915,7 +1915,7 @@ for currents and the Wiberg and Harris method for waves""",
        2 : Ripple correction factor""",
     ),
 #   -----------------------------------
-    FRICTION_COEFFICIENT = SIMP(statut ='f',
+    FRICTIOP_COEFFICIENT = SIMP(statut ='f',
 #   -----------------------------------
         typ = 'R',
         defaut = 50.,

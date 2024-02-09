@@ -24,14 +24,11 @@
 """
 
 
-# import modules Python
-import  types
-from Extensions.i18n import tr
-
 # import modules EFICAS
-from Editeur  import Objecttreeitem
+from InterfaceGUI.common import Objecttreeitem
 from InterfaceGUI.Web import browser
 from InterfaceGUI.Web import typeNode
+from Accas.extensions.eficas_translation import tr
 
 
 class Node(browser.JDCNode,typeNode.PopUpMenuNodePartiel):
@@ -135,6 +132,6 @@ class PARAMTreeItem(Objecttreeitem.ObjectTreeItem):
         """
         return tr("Definition d'un parametre")
 
-import Extensions.parametre
+import Accas.extensions.parametre
 treeitem =PARAMTreeItem
-objet = Extensions.parametre.PARAMETRE
+objet = Accas.extensions.parametre.PARAMETRE

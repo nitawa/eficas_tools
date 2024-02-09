@@ -212,7 +212,7 @@ GENERAL_PARAMETERS = PROC(nom= "GENERAL_PARAMETERS",op = None,
     LOCATION = FACT(statut='o',
 #   -----------------------------------
 #       -----------------------------------
-        ORIGIN_COORDINATES = SIMP(statut ='o',
+        ORIGIP_COORDINATES = SIMP(statut ='o',
 #       -----------------------------------
             typ = 'I', min= 2, max= 2,
             defaut = [0,0],
@@ -385,7 +385,7 @@ are read from SELAFIN file""",
     ),
 )
 # -----------------------------------------------------------------------
-COHESIVE_AND_NON_COHESIVE = PROC(nom= "COHESIVE_AND_NON_COHESIVE",op = None,
+COHESIVE_AND_NOP_COHESIVE = PROC(nom= "COHESIVE_AND_NOP_COHESIVE",op = None,
 # -----------------------------------------------------------------------
 #   -----------------------------------
     BED_MODEL = SIMP(statut ='f',
@@ -818,7 +818,7 @@ on the same mesh. The last recorded time step will provide
 the initial conditions for the new computation.""",
     ),
 #   -----------------------------------
-    COMPUTATION_CONTINUED = SIMP(statut ='f',
+    COMPUTATIOP_CONTINUED = SIMP(statut ='f',
 #   -----------------------------------
         typ = bool,
         defaut = [False],
@@ -909,10 +909,10 @@ account the tide generating force.""",
     ),
 )
 # -----------------------------------------------------------------------
-NON_COHESIVE = PROC(nom= "NON_COHESIVE",op = None,
+NOP_COHESIVE = PROC(nom= "NOP_COHESIVE",op = None,
 # -----------------------------------------------------------------------
 #   -----------------------------------
-    LAYERS_NON_COHESIVE_BED_POROSITY = SIMP(statut ='f',
+    LAYERS_NOP_COHESIVE_BED_POROSITY = SIMP(statut ='f',
 #   -----------------------------------
         typ = 'R', min=0, max='**',
         defaut = [0.4,0.4],
@@ -1160,7 +1160,7 @@ if KSPRATIO =0 : use skin friction prediction from Van Rijn (2007)
 for currents and the Wiberg and Harris method for waves""",
         ),
 #       -----------------------------------
-        SKIN_FRICTION_CORRECTION = SIMP(statut ='f',
+        SKIN_FRICTIOP_CORRECTION = SIMP(statut ='f',
 #       -----------------------------------
             typ = 'I',
             defaut = 1,
@@ -1784,7 +1784,7 @@ pour calculer la vitesse de chute pour la vase.""",
 compute settling velocity for mud.""",
         ),
 #       -----------------------------------
-        FLOCCULATION_FORMULA = SIMP(statut ='f',
+        FLOCCULATIOP_FORMULA = SIMP(statut ='f',
 #       -----------------------------------
             typ = 'I',
             defaut = 1,
@@ -1800,7 +1800,7 @@ compute settling velocity for mud.""",
 \end{itemize}""",
         ),
 #       -----------------------------------
-        FLOCCULATION_COEFFICIENT = SIMP(statut ='f',
+        FLOCCULATIOP_COEFFICIENT = SIMP(statut ='f',
 #       -----------------------------------
             typ = 'R',
             defaut = 0.3,
@@ -1957,7 +1957,7 @@ PHYSICS = PROC(nom= "PHYSICS",op = None,
 SUSPENSION = PROC(nom= "SUSPENSION",op = None,
 # -----------------------------------------------------------------------
 #   -----------------------------------
-    CORRECTION_ON_CONVECTION_VELOCITY = SIMP(statut ='f',
+    CORRECTION_OP_CONVECTION_VELOCITY = SIMP(statut ='f',
 #   -----------------------------------
         typ = bool,
         defaut = [False],
@@ -2130,7 +2130,7 @@ GENERAL_PARAMETERS();\
 HYDRODYNAMICS();\
 MISCELLANEOUS();\
 GENERAL();\
-COHESIVE_AND_NON_COHESIVE();\
+COHESIVE_AND_NOP_COHESIVE();\
 BED_STRUCTURE();\
 USELESS();\
 INPUT_OUTPUT__FILES();\
@@ -2139,7 +2139,7 @@ DATA_FILES();\
 INITIAL_CONDITIONS();\
 INPUT_OUTPUT__GRAPHICS_AND_LISTING();\
 TIME();\
-NON_COHESIVE();\
+NOP_COHESIVE();\
 INITIAL_CONDITION();\
 BOUNDARY_CONDITIONS();\
 NUMERICAL_PARAMETERS();\
@@ -2159,7 +2159,7 @@ Ordre_Des_Commandes = (
 'HYDRODYNAMICS',
 'MISCELLANEOUS',
 'GENERAL',
-'COHESIVE_AND_NON_COHESIVE',
+'COHESIVE_AND_NOP_COHESIVE',
 'BED_STRUCTURE',
 'USELESS',
 'INPUT_OUTPUT__FILES',
@@ -2168,7 +2168,7 @@ Ordre_Des_Commandes = (
 'INITIAL_CONDITIONS',
 'INPUT_OUTPUT__GRAPHICS_AND_LISTING',
 'TIME',
-'NON_COHESIVE',
+'NOP_COHESIVE',
 'INITIAL_CONDITION',
 'BOUNDARY_CONDITIONS',
 'NUMERICAL_PARAMETERS',

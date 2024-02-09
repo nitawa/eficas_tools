@@ -1571,7 +1571,7 @@ checkmesh will look for errors in the mesh, superimposed points, etc.""",
     OTHER_DOMAIN_DEFINITIONS = FACT(statut='o',
 #   -----------------------------------
 #       -----------------------------------
-        ORIGIN_COORDINATES = SIMP(statut ='f',
+        ORIGIP_COORDINATES = SIMP(statut ='f',
 #       -----------------------------------
             typ = 'I', min= 2, max= 2,
             defaut = [0,0],
@@ -1751,7 +1751,7 @@ WIND GENERATION COEFFICIENT TM\\
         b_WIND_GENERATIONG = BLOC(condition="WIND_GENERATION == 'Wind generation in accordance with WAM cycle 4'",
 #       -----------------------------------
 #           -----------------------------------
-            WIND_GENERATION_COEFFICIENT = SIMP(statut ='o',
+            WIND_GENERATIOP_COEFFICIENT = SIMP(statut ='o',
 #           -----------------------------------
                 typ = 'R',
                 defaut = 1.2,
@@ -1832,7 +1832,7 @@ WIND GENERATION
 \end{CommentBlock}""",
             ),
 #           -----------------------------------
-            VON_KARMAN_CONSTANT = SIMP(statut ='o',
+            VON_KARMAP_CONSTANT = SIMP(statut ='o',
 #           -----------------------------------
                 typ = 'R',
                 defaut = 0.41,
@@ -1885,7 +1885,7 @@ WIND GENERATION
         b_WIND_GENERATIONI = BLOC(condition="WIND_GENERATION == 'Wind generation in accordance with Yan expression (1987)'",
 #       -----------------------------------
 #           -----------------------------------
-            YAN_GENERATION_COEFFICIENT_D = SIMP(statut ='o',
+            YAN_GENERATIOP_COEFFICIENT_D = SIMP(statut ='o',
 #           -----------------------------------
                 typ = 'R',
                 defaut = 0.04,
@@ -1906,7 +1906,7 @@ YAN GENERATION COEFFICIENT H
 \end{CommentBlock}""",
             ),
 #           -----------------------------------
-            YAN_GENERATION_COEFFICIENT_E = SIMP(statut ='o',
+            YAN_GENERATIOP_COEFFICIENT_E = SIMP(statut ='o',
 #           -----------------------------------
                 typ = 'R',
                 defaut = 0.00552,
@@ -1927,7 +1927,7 @@ YAN GENERATION COEFFICIENT H
 \end{CommentBlock}""",
             ),
 #           -----------------------------------
-            YAN_GENERATION_COEFFICIENT_F = SIMP(statut ='o',
+            YAN_GENERATIOP_COEFFICIENT_F = SIMP(statut ='o',
 #           -----------------------------------
                 typ = 'R',
                 defaut = 0.000052,
@@ -1948,7 +1948,7 @@ YAN GENERATION COEFFICIENT H
 \end{CommentBlock}""",
             ),
 #           -----------------------------------
-            YAN_GENERATION_COEFFICIENT_H = SIMP(statut ='o',
+            YAN_GENERATIOP_COEFFICIENT_H = SIMP(statut ='o',
 #           -----------------------------------
                 typ = 'R',
                 defaut = -0.000302,
@@ -2037,7 +2037,7 @@ WESTHUYSEN WEIGHTING COEFFICIENT
         b_WHITE_CAPPING_DISSIPATIONG = BLOC(condition="WHITE_CAPPING_DISSIPATION == 'Dissipation in accordance with WAM cycle 4'",
 #       -----------------------------------
 #           -----------------------------------
-            WHITE_CAPPING_DISSIPATION_COEFFICIENT = SIMP(statut ='o',
+            WHITE_CAPPING_DISSIPATIOP_COEFFICIENT = SIMP(statut ='o',
 #           -----------------------------------
                 typ = 'R',
                 defaut = 4.5,
@@ -2139,7 +2139,7 @@ WESTHUYSEN WHITE CAPPING DISSIPATION
 \end{CommentBlock}""",
             ),
 #           -----------------------------------
-            WESTHUYSEN_DISSIPATION_COEFFICIENT = SIMP(statut ='o',
+            WESTHUYSEN_DISSIPATIOP_COEFFICIENT = SIMP(statut ='o',
 #           -----------------------------------
                 typ = 'R',
                 defaut = 0.00005,
@@ -2192,7 +2192,7 @@ BOTTOM FRICTION COEFFICIENT
         b_BOTTOM_FRICTION_DISSIPATIONG = BLOC(condition="BOTTOM_FRICTION_DISSIPATION == 'Dissipation in accordance with WAM cycle 4'",
 #       -----------------------------------
 #           -----------------------------------
-            BOTTOM_FRICTION_COEFFICIENT = SIMP(statut ='o',
+            BOTTOM_FRICTIOP_COEFFICIENT = SIMP(statut ='o',
 #           -----------------------------------
                 typ = 'R',
                 defaut = 0.038,
@@ -2406,7 +2406,7 @@ TIME STEP
 \end{CommentBlock}""",
         ),
 #       -----------------------------------
-        IMPLICITATION_COEFFICIENT_FOR_SOURCE_TERMS = SIMP(statut ='f',
+        IMPLICITATIOP_COEFFICIENT_FOR_SOURCE_TERMS = SIMP(statut ='f',
 #       -----------------------------------
             typ = 'R',
             defaut = 0.5,
@@ -2461,7 +2461,7 @@ DISSIPATION COEFFICIENT FOR STRONG CURRENT
         b_DISSIPATION_BY_STRONG_CURRENTG = BLOC(condition="DISSIPATION_BY_STRONG_CURRENT == 'Dissipation in accordance with Van der Westhuysen(2012)'",
 #       -----------------------------------
 #           -----------------------------------
-            DISSIPATION_COEFFICIENT_FOR_STRONG_CURRENT = SIMP(statut ='o',
+            DISSIPATIOP_COEFFICIENT_FOR_STRONG_CURRENT = SIMP(statut ='o',
 #           -----------------------------------
                 typ = 'R',
                 defaut = 0.65,

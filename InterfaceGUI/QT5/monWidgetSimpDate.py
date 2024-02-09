@@ -24,7 +24,7 @@ import types,os
 # Modules Eficas
 from PyQt5.QtCore                      import QDate
 from UiQT5.desWidgetDate               import Ui_WidgetDate
-from InterfaceGUI.politiquesValidation  import PolitiqueUnique
+from InterfaceGUI.common.politiquesValidation  import PolitiqueUnique
 from InterfaceGUI.QT5.feuille               import Feuille
 
 

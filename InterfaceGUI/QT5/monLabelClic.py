@@ -22,7 +22,7 @@ import os
 
 from PyQt5.QtWidgets import QLabel, QFrame
 from PyQt5.QtCore import QEvent
-from Extensions.i18n import tr
+from Accas.extensions.eficas_translation import tr
 
 
 class MonLabelClic(QLabel):

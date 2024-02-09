@@ -24,7 +24,7 @@ from UiQT5.desRechercheCatalogue import Ui_desRechercheCatalogue
 from PyQt5.QtWidgets import QDialog, QCompleter
 from PyQt5.QtCore import Qt
 
-from Extensions.i18n import tr
+from Accas.extensions.eficas_translation import tr
 
 # Import des panels
 

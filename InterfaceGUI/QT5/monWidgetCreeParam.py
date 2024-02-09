@@ -26,7 +26,7 @@ pattern_name = re.compile(r"^[^\d\W]\w*\Z")
 
 from PyQt5.QtWidgets import QDialog, QMessageBox
 from PyQt5.QtCore import Qt
-from Extensions.i18n import tr
+from Accas.extensions.eficas_translation import tr
 from UiQT5.desWidgetCreeParam import Ui_desWidgetCreeParam
 
 

@@ -26,7 +26,7 @@ from PyQt5.QtWidgets import QSizePolicy, QSpacerItem
 from PyQt5.QtGui import QPalette, QFont
 from PyQt5.QtCore import Qt
 
-from Extensions.i18n import tr
+from Accas.extensions.eficas_translation import tr
 
 from UiQT5.desWidgetIntoSug import Ui_WidgetIntoSug
 from InterfaceGUI.QT5.monWidgetPlusieursInto import MonWidgetPlusieursInto

@@ -444,7 +444,7 @@ Used for dimensioning arrays. Can be increased if needed.""",
     RESTART = FACT(statut='o',
 #   -----------------------------------
 #       -----------------------------------
-        COMPUTATION_CONTINUED = SIMP(statut ='o',
+        COMPUTATIOP_CONTINUED = SIMP(statut ='o',
 #       -----------------------------------
             typ = bool,
             defaut = False,
@@ -484,7 +484,7 @@ It is also possible to define new boundary conditions
 in the steering file).""",
         ),
 #       -----------------------------------
-        b_COMPUTATION_CONTINUEDG = BLOC(condition="COMPUTATION_CONTINUED == True",
+        b_COMPUTATIOP_CONTINUEDG = BLOC(condition="COMPUTATIOP_CONTINUED == True",
 #       -----------------------------------
 #           -----------------------------------
             PREVIOUS_COMPUTATION_FILE_FORMAT = SIMP(statut ='o',
@@ -1275,7 +1275,7 @@ The possible laws are as follows (refer to the Principle note):
             b_LAW_OF_BOTTOM_FRICTIONG = BLOC(condition="LAW_OF_BOTTOM_FRICTION != 'NO FRICTION'",
 #           -----------------------------------
 #               -----------------------------------
-                FRICTION_COEFFICIENT = SIMP(statut ='o',
+                FRICTIOP_COEFFICIENT = SIMP(statut ='o',
 #               -----------------------------------
                     typ = 'R',
                     defaut = 50.,
@@ -1849,7 +1849,7 @@ in time and space. In Pa.""",
                 ),
             ),
 #           -----------------------------------
-            WAVE_ENHANCED_FRICTION_FACTOR = SIMP(statut ='f',
+            WAVE_ENHANCED_FRICTIOP_FACTOR = SIMP(statut ='f',
 #           -----------------------------------
                 typ = bool,
                 defaut = False,
@@ -2316,7 +2316,7 @@ There are 10 of them:
             b_SECONDARY_CURRENTSG = BLOC(condition="SECONDARY_CURRENTS == True",
 #           -----------------------------------
 #               -----------------------------------
-                PRODUCTION_COEFFICIENT_FOR_SECONDARY_CURRENTS = SIMP(statut ='o',
+                PRODUCTIOP_COEFFICIENT_FOR_SECONDARY_CURRENTS = SIMP(statut ='o',
 #               -----------------------------------
                     typ = 'R',
                     defaut = 7.071,
@@ -2324,7 +2324,7 @@ There are 10 of them:
                     ang = """A constant in the production terms of $\Omega$.""",
                 ),
 #               -----------------------------------
-                DISSIPATION_COEFFICIENT_FOR_SECONDARY_CURRENTS = SIMP(statut ='o',
+                DISSIPATIOP_COEFFICIENT_FOR_SECONDARY_CURRENTS = SIMP(statut ='o',
 #               -----------------------------------
                     typ = 'R',
                     defaut = 5.E-1,
@@ -2490,7 +2490,7 @@ Beware, with option 2, a special numbering of points is required.
 \end{itemize}""",
         ),
 #       -----------------------------------
-        NEWMARK_TIME_INTEGRATION_COEFFICIENT = SIMP(statut ='o',
+        NEWMARK_TIME_INTEGRATIOP_COEFFICIENT = SIMP(statut ='o',
 #       -----------------------------------
             typ = 'R',
             defaut = 0.5,
@@ -3733,7 +3733,7 @@ physical value, since it is used as such in the turbulence model.""",
     b_TURBULENCE_MODELH = BLOC(condition="TURBULENCE_MODEL == 'Elder'",
 #   -----------------------------------
 #       -----------------------------------
-        NON_DIMENSIONAL_DISPERSION_COEFFICIENTS = SIMP(statut ='o',
+        NON_DIMENSIONAL_DISPERSIOP_COEFFICIENTS = SIMP(statut ='o',
 #       -----------------------------------
             typ = 'R', min= 2, max= 2,
             defaut = [6.,0.6],
@@ -4392,7 +4392,7 @@ replaces \telkey{TYPE OF ADVECTION}.""",
             ),
         ),
 #       -----------------------------------
-        IMPLICITATION_COEFFICIENT_OF_TRACERS = SIMP(statut ='o',
+        IMPLICITATIOP_COEFFICIENT_OF_TRACERS = SIMP(statut ='o',
 #       -----------------------------------
             typ = 'R',
             defaut = 0.6,

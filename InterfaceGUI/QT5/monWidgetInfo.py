@@ -22,7 +22,7 @@ import types, os
 
 # Modules Eficas
 from PyQt5.QtWidgets import QWidget
-from Extensions.i18n import tr
+from Accas.extensions.eficas_translation import tr
 
 from UiQT5.desWidgetInformation import Ui_WidgetInformative
 

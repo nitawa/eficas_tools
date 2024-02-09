@@ -25,8 +25,8 @@ import types
 import traceback
 
 # Modules Eficas
-from Editeur import Objecttreeitem
-from Extensions.i18n import tr
+from InterfaceGUI.common import Objecttreeitem
+from Accas.extensions.eficas_translation import tr
 from InterfaceGUI.QT5 import compooper
 from InterfaceGUI.QT5 import browser
 from InterfaceGUI.QT5 import typeNode

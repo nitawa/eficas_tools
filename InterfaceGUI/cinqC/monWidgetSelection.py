@@ -25,7 +25,7 @@ from PyQt5.QtWidgets import QWidget
 
 from InterfaceGUI.QT5.groupe import Groupe
 from UiQT5.selection5C import Ui_Selection
-from Extensions.i18n import tr
+from Accas.extensions.eficas_translation import tr
 
 # Import des panels
 

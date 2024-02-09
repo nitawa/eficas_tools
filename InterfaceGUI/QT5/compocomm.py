@@ -17,11 +17,11 @@
 #
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
-from Editeur import Objecttreeitem
+from InterfaceGUI.common import Objecttreeitem
 from InterfaceGUI.QT5 import browser
 from InterfaceGUI.QT5 import typeNode
-from Extensions.i18n import tr
-from Extensions.eficas_exception import EficasException
+from Accas.extensions.eficas_translation import tr
+from Accas.extensions.eficas_exception import EficasException
 
 
 class Node(browser.JDCNode, typeNode.PopUpMenuNodePartiel):
@@ -109,7 +109,7 @@ class COMMTreeItem(Objecttreeitem.ObjectTreeItem):
         raise EficasException("Impossible de commentariser un commentaire")
 
 
-import Extensions
+import Accas.extensions
 
 treeitem = COMMTreeItem
-objet = Extensions.commentaire.COMMENTAIRE
+objet = Accas.extensions.commentaire.COMMENTAIRE

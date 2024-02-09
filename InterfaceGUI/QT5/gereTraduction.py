@@ -19,7 +19,7 @@
 
 import os
 from PyQt5.QtWidgets import QFileDialog, QApplication
-from Extensions.i18n import tr
+from Accas.extensions.eficas_translation import tr
 
 
 def traduction( editor, version):

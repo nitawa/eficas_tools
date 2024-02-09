@@ -29,7 +29,7 @@ from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import QFileInfo, Qt, QSize, QVariant
 
 
-from Extensions.i18n import tr
+from Accas.extensions.eficas_translation import tr
 
 listeSuffixe = ("bmp", "png", "jpg", "txt", "med")
 
@@ -271,10 +271,10 @@ class ContientIcones(object):
                 fileName, extension = splitext(fichier)
                 if (
                     extension
-                    in self.parentQt.editor.appliEficas.maConfiguration.utilParExtensions
+                    in self.parentQt.editor.appliEficas.maConfiguration.utilParextensions
                 ):
                     cmd = (
-                        self.parentQt.editor.appliEficas.maConfiguration.utilParExtensions[
+                        self.parentQt.editor.appliEficas.maConfiguration.utilParextensions[
                             extension
                         ]
                         + " "

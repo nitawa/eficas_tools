@@ -20,12 +20,11 @@
 
 from InterfaceGUI.Web import browser
 from InterfaceGUI.Web import typeNode
-from Extensions.i18n import tr
-from Editeur     import Objecttreeitem
+from InterfaceGUI.common import Objecttreeitem
+from Accas.extensions.eficas_translation import tr
 
 
 class Node(browser.JDCNode,typeNode.PopUpMenuNodePartiel):
-
 
     def delete(self):
     #----------------

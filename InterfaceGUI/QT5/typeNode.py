@@ -22,7 +22,7 @@
 
 from PyQt5.QtWidgets import QAction, QMenu, QMessageBox
 
-from Extensions.i18n import tr
+from Accas.extensions.eficas_translation import tr
 import types
 
 
@@ -80,7 +80,7 @@ class PopUpMenuNodeMinimal(object):
             else:
                 return
 
-        from Extensions import jdc_include
+        from Accas.extensions import jdc_include
 
         if isinstance(self.item.jdc, jdc_include.JDC_INCLUDE):
             return

@@ -19,7 +19,7 @@
 #
 
 
-from Editeur  import Objecttreeitem
+from InterfaceGUI.common import Objecttreeitem
 
 from InterfaceGUI.Web import compofact
 from InterfaceGUI.Web import browser

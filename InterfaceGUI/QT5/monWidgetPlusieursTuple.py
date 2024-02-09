@@ -23,11 +23,11 @@ from PyQt5.QtWidgets import QFrame, QApplication, QFrame, QWidget
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import QSize, Qt, QTimer
 
-from Extensions.i18n import tr
+from Accas.extensions.eficas_translation import tr
 
 from InterfaceGUI.QT5.feuille import Feuille
-from InterfaceGUI.politiquesValidation import PolitiquePlusieurs
-from InterfaceGUI.QT5.qtSaisie import SaisieValeur
+from InterfaceGUI.common.politiquesValidation import PolitiquePlusieurs
+from InterfaceGUI.common.traiteSaisie import SaisieValeur
 from InterfaceGUI.QT5.gereListe import GereListe
 from InterfaceGUI.QT5.gereListe import LECustom
 from UiQT5.Tuple2 import Ui_Tuple2

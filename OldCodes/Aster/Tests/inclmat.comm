@@ -1,9 +1,0 @@
-DEBUT()
-MA=LIRE_MAILLAGE()
-INCLUDE_MATERIAU(NOM_AFNOR='A42',
-                TYPE_MODELE='REF',
-                VARIANTE='C',
-                TYPE_VALE='NOMI',
-                NOM_MATER='MAT',
-               )
-FIN()

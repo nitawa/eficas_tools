@@ -22,7 +22,7 @@ import re
 import types,sys,os
 import traceback
 
-from  Extensions.i18n  import tr
+from  Accas.extensions.eficas_translation  import tr
 
 #------------------------------------------
 class JDCTree():
@@ -350,8 +350,6 @@ class JDCNode():
     #        if node.item.object==objSimp : return node
     #    return None
     #def afficheCeNiveau(self):
-    #-------------------------
-    #def getPanelModifie(self):
     #-------------------------
     #def affichePanneau(self) :
     #-------------------------

@@ -24,10 +24,10 @@ from PyQt5.QtCore import Qt
 
 
 # Modules Eficas
-from InterfaceGUI.QT5.qtSaisie import SaisieValeur
+from InterfaceGUI.common.traiteSaisie import SaisieValeur
 from InterfaceGUI.QT5.monPlusieursBasePanel import MonPlusieursBasePanel
 
-from Extensions.i18n import tr
+from Accas.extensions.eficas_translation import tr
 
 # Import des panels
 

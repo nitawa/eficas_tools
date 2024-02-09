@@ -23,13 +23,13 @@ from PyQt5.QtWidgets import QFrame
 from PyQt5.QtCore import QTimer, QSize, Qt
 from PyQt5.QtGui import QIcon, QBrush, QColor
 
-from Extensions.i18n import tr
+from Accas.extensions.eficas_translation import tr
 
 from InterfaceGUI.QT5.feuille import Feuille
 from UiQT5.desWidgetPlusieursPlie import Ui_WidgetPlusieursPlie
 
-from InterfaceGUI.politiquesValidation import PolitiquePlusieurs
-from InterfaceGUI.QT5.qtSaisie import SaisieValeur
+from InterfaceGUI.common.politiquesValidation import PolitiquePlusieurs
+from InterfaceGUI.common.traiteSaisie import SaisieValeur
 
 pattern_blanc = re.compile(r"^\s*$")
 

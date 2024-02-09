@@ -18,7 +18,7 @@
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
 from __future__ import absolute_import
-from Editeur  import Objecttreeitem
+from InterfaceGui.common  import Objecttreeitem
 from InterfaceGUI.cinqC import browser
 from InterfaceGUI.cinqC import compooper
 

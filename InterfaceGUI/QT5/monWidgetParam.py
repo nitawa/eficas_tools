@@ -25,8 +25,8 @@ from InterfaceGUI.QT5.gereIcones import FacultatifOuOptionnel
 from PyQt5.QtWidgets import QWidget, QMessageBox
 from PyQt5.QtGui import QIcon
 
-from Extensions.i18n import tr
-from Extensions.eficas_exception import EficasException
+from Accas.extensions.eficas_translation import tr
+from Accas.extensions.eficas_exception import EficasException
 
 pattern_name = re.compile(r"^[^\d\W]\w*\Z")
 

@@ -22,7 +22,7 @@
 
 from UiQT5.desWidgetBloc import Ui_WidgetBloc
 from InterfaceGUI.QT5.groupe import Groupe
-from Extensions.i18n import tr
+from Accas.extensions.eficas_translation import tr
 
 # Import des panels
 class MonWidgetBloc(Ui_WidgetBloc, Groupe):

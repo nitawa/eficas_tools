@@ -21,12 +21,12 @@
 
 # Modules Eficas
 
-from Extensions.i18n import tr
+from Accas.extensions.eficas_translation import tr
 
 from InterfaceGUI.QT5.feuille import Feuille
 from UiQT5.desWidgetUniqueSDCO import Ui_WidgetUniqueSDCO
-from InterfaceGUI.politiquesValidation import PolitiqueUnique
-from InterfaceGUI.QT5.qtSaisie import SaisieSDCO
+from InterfaceGUI.common.politiquesValidation import PolitiqueUnique
+from InterfaceGUI.common.traiteSaisie import SaisieSDCO
 
 
 class MonWidgetUniqueSDCO(Ui_WidgetUniqueSDCO, Feuille, SaisieSDCO):

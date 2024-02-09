@@ -20,12 +20,12 @@
 
 # Modules Eficas
 from PyQt5.QtWidgets import QRadioButton
-from Extensions.i18n import tr
+from Accas.extensions.eficas_translation import tr
 
 from InterfaceGUI.QT5.feuille import Feuille
 from UiQT5.desWidgetSimpBool import Ui_WidgetSimpBool
-from InterfaceGUI.politiquesValidation import PolitiqueUnique
-from InterfaceGUI.QT5.qtSaisie import SaisieValeur
+from InterfaceGUI.common.politiquesValidation import PolitiqueUnique
+from InterfaceGUI.common.traiteSaisie import SaisieValeur
 
 
 class MonWidgetSimpBool(Ui_WidgetSimpBool, Feuille):

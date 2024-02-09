@@ -19,7 +19,7 @@
 
 from UiQT5.desWidgetFactPlie import Ui_WidgetFactPlie
 from InterfaceGUI.QT5.groupe import Groupe
-from Extensions.i18n import tr
+from Accas.extensions.eficas_translation import tr
 
 class MonWidgetFactPlie(Ui_WidgetFactPlie, Groupe):
     """ """

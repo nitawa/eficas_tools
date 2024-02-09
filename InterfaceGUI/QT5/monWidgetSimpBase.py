@@ -21,12 +21,12 @@
 # Modules Eficas
 from PyQt5.QtWidgets import QLineEdit
 from PyQt5.QtCore import Qt
-from Extensions.i18n import tr
+from Accas.extensions.eficas_translation import tr
 
 from InterfaceGUI.QT5.feuille import Feuille
 from UiQT5.desWidgetSimpBase import Ui_WidgetSimpBase
-from InterfaceGUI.politiquesValidation import PolitiqueUnique
-from InterfaceGUI.QT5.qtSaisie import SaisieValeur
+from InterfaceGUI.common.politiquesValidation import PolitiqueUnique
+from InterfaceGUI.common.traiteSaisie import SaisieValeur
 
 
 class MonWidgetSimpBase(Ui_WidgetSimpBase, Feuille):
@@ -37,15 +37,15 @@ class MonWidgetSimpBase(Ui_WidgetSimpBase, Feuille):
         if hasattr(self.parentQt, "commandesLayout"):
             self.parentQt.commandesLayout.insertWidget(-1, self, 1)
         self.setFocusPolicy(Qt.StrongFocus)
-        # si on a un heritage malencontreux
+        # selon les heritages (comme 5C), on pourrait ne pas avoir un LineEditVal 
         if hasattr(self, "lineEditVal"):
             if monSimpDef.homo == "constant":
                 self.lineEditVal.setReadOnly(True)
                 self.lineEditVal.setStyleSheet(
                     "background:rgb(210,235,235);\n" "border:0px;"
                 )
-        else:
-            self.lineEditVal.returnPressed.connect(self.LEvaleurPressed)
+            else:
+                 self.lineEditVal.returnPressed.connect(self.LEvaleurPressed)
         self.AAfficher = self.lineEditVal
         self.maCommande.listeAffichageWidget.append(self.lineEditVal)
         self.lineEditVal.focusInEvent = self.monFocusInEvent

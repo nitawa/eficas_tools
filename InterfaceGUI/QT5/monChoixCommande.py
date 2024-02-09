@@ -24,7 +24,7 @@ from PyQt5.QtWidgets import QWidget, QButtonGroup, QRadioButton, QLabel, QPushBu
 from PyQt5.QtGui import QIcon, QPixmap
 from PyQt5.QtCore import QSize, QRect
 
-from Extensions.i18n import tr
+from Accas.extensions.eficas_translation import tr
 import os
 
 

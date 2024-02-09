@@ -18,10 +18,10 @@
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
 
-from Editeur import Objecttreeitem
+from InterfaceGUI.common import Objecttreeitem
 from InterfaceGUI.QT5 import browser
 from InterfaceGUI.QT5 import typeNode
-from Extensions.i18n import tr
+from Accas.extensions.eficas_translation import tr
 
 
 class Node(browser.JDCNode, typeNode.PopUpMenuRacine):

@@ -20,8 +20,8 @@
 
 import traceback
 
-from Editeur import Objecttreeitem
-from Extensions.eficas_exception import EficasException
+from InterfaceGUI.common import Objecttreeitem
+from Accas.extensions.eficas_exception import EficasException
 from InterfaceGUI.QT5 import compocomm
 
 

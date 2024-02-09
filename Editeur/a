@@ -1,0 +1,61 @@
+    def __init__(self, appliEficas, fichier=None, jdc=None, units=None, include=0):
+    def readFile(self, fn):
+    def _newJDC(self, texte = "", units=None):
+    def _newJDCInclude(self, units=None):
+    def getSource(self, file):
+    def __generateTempFilename(self, prefix, suffix):
+    def generDico(self):
+    def generDicoPourWeb(self, obj=None):
+    def generDicoPython(self):
+    def viewJdcSource(self):
+    def viewJdcPy(self):
+    def viewJdcRapport(self):
+    def viewJdcRegles(self):
+    def getJdcRapport(self):
+    def getFileName(self):
+    def initModif(self):
+    def writeFile(self, fn, txt=None, formatLigne="beautifie"):
+    def getTextJDC(self, format=None, pourRun=0, formatLigne="beautifie"):
+    def verifieChecksum(self, text):
+    def getChecksum(self, texte):
+    def getDico(self):
+    def chercheGroupes(self):
+    def chercheDico(self):
+    def saveFileLegerAs(self, fileName=None):
+    def saveFileComplet(self, fichier=None, formatLigne="beautifie"):
+    def saveUQFile(self, fichier=None):
+    def sauvePourPersalys(self, fichier=None):
+    def exeUQ(self, fichier=None, path=None):
+    def ajoutCommentaire(self):
+    def informe(self, titre, txt, critique=True):
+    def afficheInfos(self, txt, couleur=None):
+    def _viewText(self, txt, caption="FILE_VIEWER", largeur=1200, hauteur=600):
+    def saveFile(self, fichier, formatLigne="beautifie"):
+    def sauveLigneFile(self):
+    def updateJdc(self, itemApres, texte):
+    def updateJdcEtape(self, itemApres, texte):
+    def deleteEtape(self, etape):
+    def deleteMC(self, etape, MCFils, listeAvant=()):
+    def ajoutMC(self, etape, MCFils, valeurs, listeAvant=()):
+    def ajoutMCinMCFactUnique(self, etape, MCFils, valeurs, listeAvant=()):
+    def ajoutMCFact(self, etape, MCFils, listeAvant=()):
+    def setValeurMCSimpInEtape(self, etape, listeAvant, valeur):
+    def getValeur(self, nomEtape, MCFils, listeAvant=()):
+    def getMCDsEtape(self, etape, MCFils, listeAvant=()):
+    def setValeur(self, nomEtape, MCFils, valeur, listeAvant=()):
+    def changeIntoMC(self, etape, MCFils, valeurs, listeAvant=()):
+    def reCalculeValiditeMCApresChgtInto(self, nomEtape, MCFils, listeAvant=()):
+    def dumpXsd(self, avecEltAbstrait=False):
+    def dumpStructure(self):
+    def dumpGitStringFormat(self):
+    def changeDefautDefMC(self, nomEtape, listeMC, valeurs):
+    def changeIntoDefMC(self, etape, listeMC, valeurs, rechercheParNom=False):
+    def deleteDefinitionMC(self, etape, listeAvant, nomDuMC):
+    def ajoutDefinitionMC(self, nomEtape, listeAvant, nomDuMC, typ, **args):
+    def ajoutDefinitionMCFact(self, nomEtape, listeAvant, nomDuMC, listeMC, **args):
+    def changeIntoMCandSet(self, etape, listeMC, into, valeurs):
+    def ajoutVersionCataDsJDC(self, txt):
+    def verifieVersionCataDuJDC(self, text):
+    def traduitCatalogue(self, texte):
+    def insertInDB(self):
+    def dumpStringDataBase(self, nomDataBaseACreer=None):

@@ -1,5 +1,5 @@
 #-*- coding: iso-8859-1 -*-
-# Copyright (C) 2007-2021   EDF R&D
+# Copyright (C) 2007-2024   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -17,22 +17,14 @@
 #
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
-from __future__ import absolute_import
-try :
-    from builtins import str
-except : pass
 
-import os
-
-from Extensions.i18n import tr
-from Extensions.eficas_exception import EficasException
-from Editeur     import Objecttreeitem
+from Accas.extensions.eficas_translation import tr
+from Accas.extensions.eficas_exception import EficasException
+from InterfaceGUI.common import Objecttreeitem
 from InterfaceGUI.Web import browser
 from InterfaceGUI.Web import typeNode
 
 class Node(browser.JDCNode, typeNode.PopUpMenuNode):
-
-
     def select(self):
         pass
 
@@ -44,25 +36,16 @@ class Node(browser.JDCNode, typeNode.PopUpMenuNode):
         return (bOk,message)
     #    pass
 
-    #def getPanel(self):
-    #    from .monWidgetCommande import MonWidgetCommande
-    #    return MonWidgetCommande(self,self.editor,self.item.object)
-
     #def createPopUpMenu(self):
     #    typeNode.PopUpMenuNode.createPopUpMenu(self)
-#
-#    def view3D(self) :
-#        from Editeur import TroisDPal
-#        troisD=TroisDPal.TroisDPilote(self.item,self.editor.appliEficas)
-#        troisD.envoievisu()
 
 
 class EtapeTreeItem(Objecttreeitem.ObjectTreeItem):
-    """ La classe EtapeTreeItem est un adaptateur des objets ETAPE du noyau
+    """ La classe EtapeTreeItem est un adaptateur des objets ETAPE du processing
         Accas. Elle leur permet d'etre affichés comme des noeuds
         d'un arbre graphique.
         Cette classe a entre autres deux attributs importants :
-          - _object qui est un pointeur vers l'objet du noyau
+          - _object qui est un pointeur vers l'objet du processing
           - object qui pointe vers l'objet auquel sont délégués les
             appels de méthode et les acces aux attributs
         Dans le cas d'une ETAPE, _object et object pointent vers le

@@ -20,7 +20,7 @@
 
 from PyQt5.QtCore import Qt
 from .monViewRegles import ViewRegles
-from Extensions.i18n import tr
+from Accas.extensions.eficas_translation import tr
 
 
 class GereRegles(object):

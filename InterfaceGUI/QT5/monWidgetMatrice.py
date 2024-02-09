@@ -21,9 +21,9 @@
 import types, os, sys
 
 # Modules Eficas
-from Extensions.i18n import tr
+from Accas.extensions.eficas_translation import tr
 from InterfaceGUI.QT5.feuille import Feuille
-from Extensions.eficas_exception import EficasException
+from Accas.extensions.eficas_exception import EficasException
 
 
 from UiQT5.desWidgetMatrice import Ui_desWidgetMatrice

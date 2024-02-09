@@ -671,7 +671,7 @@ CONVERTER_INFO = PROC(nom= "CONVERTER_INFO",op = None,
             ang = """Name of the complementary file for the UNV format""",
         ),
 #       -----------------------------------
-        BOUNDARY_CONDITION_IN_SERAFIN_FORMAT = SIMP(statut ='o',
+        BOUNDARY_CONDITION_IN_SERAFIP_FORMAT = SIMP(statut ='o',
 #       -----------------------------------
             typ = bool,
             defaut = False,

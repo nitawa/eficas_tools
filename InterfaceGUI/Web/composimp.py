@@ -18,26 +18,19 @@
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
 # Modules Python
-try :
-    from builtins import str
-except : pass
-
-import types,os
-
-from copy import copy,deepcopy
 import traceback
 
 # Modules Eficas
-from Editeur      import Objecttreeitem
-from Noyau.N_CR   import justifyText
+from InterfaceGUI.common import Objecttreeitem
+from Accas.processing.P_CR import justifyText
 from Accas        import SalomeEntry
 from Accas        import ASSD
 from Accas        import UserASSD
 from Accas        import UserASSDMultiple
 from InterfaceGUI.Web import typeNode
 from InterfaceGUI.Web import browser
-from InterfaceGUI.politiquesValidation import PolitiqueUnique
-from InterfaceGUI.politiquesValidation import PolitiquePlusieurs
+from InterfaceGUI.common.politiquesValidation import PolitiqueUnique
+from InterfaceGUI.common.politiquesValidation import PolitiquePlusieurs
 
 class Node(browser.JDCNode,typeNode.PopUpMenuNodeMinimal):
 

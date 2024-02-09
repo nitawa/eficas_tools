@@ -22,7 +22,7 @@
 import types, os
 
 # Modules Eficas
-from Extensions.i18n import tr
+from Accas.extensions.eficas_translation import tr
 
 from InterfaceGUI.QT5.monWidgetRadioButton import MonWidgetRadioButtonCommun
 from UiQT5.desWidget4a6RadioButton import Ui_Widget4a6RadioButton

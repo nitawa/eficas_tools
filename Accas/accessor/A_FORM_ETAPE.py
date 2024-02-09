@@ -20,8 +20,9 @@
 """
 classe pour declarer une formule
 tombée en désuétude
-Attention, n est pas projete en XSD
-verifier l analyse catalogue
+Attention :
+ 1) n est pas projete en XSD
+ 2) verifier l analyse catalogue
 """
 import string, traceback, re
 
@@ -31,11 +32,11 @@ identifier = re.compile(r"^[^\d\W]\w*\Z", re.UNICODE)
 from Accas.extensions.eficas_translation import tr
 from Accas.accessor.A_MACRO_ETAPE import MACRO_ETAPE
 from Accas.extensions import interpreteur_formule
-from Editeur import analyse_catalogue
+#from Accas.catalog import analyse_catalogue
 
-analyse_catalogue.l_noms_commandes.append(
-    "FORM"
-)  # declare le nom FORM a l'analyseur de catalogue
+#analyse_catalogue.l_noms_commandes.append(
+#    "FORM"
+#)  # declare le nom FORM a l'analyseur de catalogue
 
 
 class FORM_ETAPE(MACRO_ETAPE):

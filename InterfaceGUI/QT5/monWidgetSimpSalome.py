@@ -21,12 +21,12 @@
 from PyQt5.QtWidgets import QLineEdit
 from PyQt5.QtCore import Qt
 
-from Extensions.i18n import tr
+from Accas.extensions.eficas_translation import tr
 
 from InterfaceGUI.QT5.feuille import Feuille
 from UiQT5.desWidgetSimpSalome import Ui_WidgetSimpSalome
-from InterfaceGUI.politiquesValidation import PolitiqueUnique
-from InterfaceGUI.QT5.qtSaisie import SaisieValeur
+from InterfaceGUI.common.politiquesValidation import PolitiqueUnique
+from InterfaceGUI.common.traiteSaisie import SaisieValeur
 
 
 class MonWidgetSimpSalome(Ui_WidgetSimpSalome, Feuille):

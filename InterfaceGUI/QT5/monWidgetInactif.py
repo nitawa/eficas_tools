@@ -20,7 +20,7 @@
 
 from PyQt5.QtWidgets import QWidget
 
-from Extensions.i18n import tr
+from Accas.extensions.eficas_translation import tr
 from UiQT5.desWidgetInactif import Ui_WidgetInactif
 import Accas
 import os

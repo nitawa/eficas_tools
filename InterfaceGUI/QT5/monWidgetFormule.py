@@ -25,7 +25,7 @@ from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import Qt
 
 
-from Extensions.i18n import tr
+from Accas.extensions.eficas_translation import tr
 import Accas
 import os
 

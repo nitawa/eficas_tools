@@ -12,7 +12,7 @@ function so, this module must not use relative import.
 # EFICAS
 from Accas import OPER, BLOC, FACT, SIMP, ASSD, JDC_CATA, VerifTypeTuple, Matrice  # pylint: disable=import-error
 from Accas import Tuple as _Tuple  # pylint: disable=import-error
-from Extensions.i18n import tr  # pylint: disable=import-error
+from Accas.extensions.eficas_translation import tr  # pylint: disable=import-error
 
 # Warning: The names of these variables are defined by EFICAS
 JdC = JDC_CATA(code="IB")
@@ -20,7 +20,7 @@ VERSION_CATALOGUE = "V_0"
 
 # Define the minimum and the maximum number of elements (reflectors and fuel
 # assemblies) on the core's side
-NMIN_CORE_FUEL_ELTS = 1
+NMIP_CORE_FUEL_ELTS = 1
 NMAX_CORE_FUEL_ELTS = 18
 
 # Available absorbing material type in the rod clusters
@@ -354,16 +354,16 @@ def gen_assembly_maps():
     # Build the default axes names
     xsym_list = list("ABCDEFGHJKLNPRSTUVWXYZ")
     xsym_list.reverse()
-    ysym_list = ["%02d" % i for i in range(NMIN_CORE_FUEL_ELTS, NMAX_CORE_FUEL_ELTS + 1)]
+    ysym_list = ["%02d" % i for i in range(NMIP_CORE_FUEL_ELTS, NMAX_CORE_FUEL_ELTS + 1)]
     ysym_list.reverse()
     def_xaxis = {}
     def_yaxis = {}
-    for i in range(NMIN_CORE_FUEL_ELTS, NMAX_CORE_FUEL_ELTS + 1):
+    for i in range(NMIP_CORE_FUEL_ELTS, NMAX_CORE_FUEL_ELTS + 1):
         def_xaxis[i] = ["RW"] + xsym_list[-i:] + ["RE"]
         def_yaxis[i] = ["RS"] + ysym_list[-i:] + ["RN"]
 
     dico = {}
-    for i in range(NMIN_CORE_FUEL_ELTS, NMAX_CORE_FUEL_ELTS):
+    for i in range(NMIP_CORE_FUEL_ELTS, NMAX_CORE_FUEL_ELTS):
         dico["assembly_map_%d" % i] = BLOC(
             condition="nb_assembly == %d" % i,
             fr="Description radiale du cœur",
@@ -473,7 +473,7 @@ Techno_data = OPER(
             ang="Number of fuel elements on one side of the core",
             statut="o",
             typ="I",
-            into=list(range(NMIN_CORE_FUEL_ELTS, NMAX_CORE_FUEL_ELTS))),
+            into=list(range(NMIP_CORE_FUEL_ELTS, NMAX_CORE_FUEL_ELTS))),
         **(gen_assembly_maps())),
     axial_description=FACT(
         fr="Description axiale du cœur",

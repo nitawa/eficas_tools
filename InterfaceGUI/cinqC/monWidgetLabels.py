@@ -21,7 +21,7 @@
 import types,os
 import traceback
 
-from Extensions.i18n import tr
+from Accas.extensions.eficas_translation import tr
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QDialog
 from desWidgetLabels import Ui_WidgetLabels

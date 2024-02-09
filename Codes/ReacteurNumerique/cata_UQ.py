@@ -7,8 +7,8 @@ if os.path.dirname(repEficas) not in sys.path :
    sys.path.insert(0,repEficas)
 import types
 
-from Accas import OPER, BLOC, FACT, SIMP, ASSD, JDC_CATA, VerifTypeTuple, Matrice, Tuple, AU_MOINS_UN, A_VALIDATOR, PROC 
-from Noyau.N_VALIDATOR import Valid
+from Accas import OPER, BLOC, FACT, SIMP, ASSD, JDC_CATA, VerifTypeTuple, Matrice, Tuple, AU_MOINS_UN,  PROC 
+from Accas.processing.P_VALIDATOR import Valid
 
 #TODO --> si UserDefined et Uranie alors UserDefined
 

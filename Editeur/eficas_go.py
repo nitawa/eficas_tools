@@ -21,7 +21,6 @@
 # Modules Python
 
 import sys, os
-
 repIni = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 
 if sys.version_info[0] < 3:
@@ -49,16 +48,16 @@ def lanceEficas(code=None, multi=False, langue="en", labelCode=None, GUIPath='QT
         pathAbso=os.path.abspath(os.path.join(os.path.dirname(__file__),'..','InterfaceGUI',GUIPath))
         if pathAbso not in sys.path : sys.path.insert(0,pathAbso)
 
-    from qtEficas import Appli
+    from qt_eficas import QtEficasAppli
     app = QApplication(sys.argv)
-    Eficas = Appli(code=code, salome=salome, multi=multi, langue=langue, labelCode=labelCode, GUIPath=GUIPath)
+    Eficas = QtEficasAppli(code=code, salome=salome, multi=multi, langue=langue, labelCode=labelCode, GUIPath=GUIPath)
     Eficas.show()
 
     res = app.exec_()
     sys.exit(res)
 
 
-def getEficasSsIhm( code=None, multi=False, langue="en", ssCode=None, labelCode=None,
+def getEficas( code=None, multi=False, langue="en", ssCode=None, labelCode=None,
     forceXML=False, genereXSD=False, fichierCata=None,GUIPath=None, salome = False):
 # -----------------------------------------------------------------------------------
     """
@@ -75,8 +74,8 @@ def getEficasSsIhm( code=None, multi=False, langue="en", ssCode=None, labelCode=
         pathAbso=os.path.abspath(os.path.join(os.path.dirname(__file__),'..','InterfaceGUI',GUIPath))
         if pathAbso not in sys.path : sys.path.insert(0,pathAbso)
 
-    from InterfaceGUI.appliSsIhm import AppliSsIhm
-    Eficas = AppliSsIhm( code=code, salome=salome, multi=multi, langue=langue,
+    from Editeur.eficas_appli import EficasAppli
+    Eficas = EficasAppli( code=code, salome=salome, multi=multi, langue=langue,
         ssCode=ssCode, labelCode=labelCode, genereXSD=genereXSD, fichierCata=fichierCata)
     return Eficas
 
@@ -92,9 +91,8 @@ def genereXSD(code=None):
         print("Use -c cata_name.py")
         return
 
-    monEficasSsIhm = getEficasSsIhm(code=options.code, genereXSD=True)
-    monEditor = monEficasSsIhm.getEditor()
-    # texteXSD=monEficasSsIhm.dumpXsd(avecEltAbstrait=options.avecEltAbstrait)
+    monEficas = getEficas(code=options.code, genereXSD=True)
+    monEditor = monEficas.getEditor()
     texteXSD = monEditor.dumpXsd(avecEltAbstrait=options.avecEltAbstrait)
 
     fichierCataTrunc = os.path.splitext(os.path.basename(options.fichierCata))[0]
@@ -107,7 +105,7 @@ def genereXSD(code=None):
 
 
 def genereXML(code=None):
-    # -----------------------
+# -----------------------
     from Editeur import session
 
     options = session.parse(sys.argv)
@@ -124,7 +122,7 @@ def genereXML(code=None):
         print("comm file is needed")
         return
 
-    monEficasSsIhm = getEficasSsIhm(code=options.code, forceXML=True)
+    monEficas = getEficas(code=options.code, forceXML=True)
 
     from .editorSsIhm import JDCEditorSsIhm
 
@@ -142,7 +140,7 @@ def genereXML(code=None):
 
 
 def genereStructure(code=None):
-    # ------------------------------
+# ------------------------------
     from Editeur import session
 
     options = session.parse(sys.argv)
@@ -152,8 +150,8 @@ def genereStructure(code=None):
         print("Use -c cata_name.py")
         return
 
-    monEficasSsIhm = getEficasSsIhm(code=options.code, genereXSD=True)
-    monEditor = monEficasSsIhm.getEditor()
+    monEficas = getEficas(code=options.code, genereXSD=True)
+    monEditor = monEficas.getEditor()
     texteStructure = monEditor.dumpStructure()
 
     fichierCataTrunc = os.path.splitext(os.path.basename(options.fichierCata))[0]
@@ -164,7 +162,7 @@ def genereStructure(code=None):
 
 
 def validateDataSet(code=None):
-    # ------------------------------
+# ------------------------------
     from Editeur import session
 
     options = session.parse(sys.argv)
@@ -179,7 +177,7 @@ def validateDataSet(code=None):
         return
     from .editorSsIhm import JDCEditorSsIhm
 
-    monEficasSsIhm = getEficasSsIhm(code=options.code)
+    monEficas = getEficas(code=options.code)
     monEditeur = JDCEditorSsIhm(monEficasSsIhm, fichier)
     if not (monEditeur.jdc.isValid()):
         print(monEditeur.getJdcRapport())
@@ -188,11 +186,16 @@ def validateDataSet(code=None):
     return monEditeur.jdc.isValid()
 
 
+# Les deux fonctions ci-après ne sont pas utilisees mais 
+# restent des idees interessantes
+
 def validateFonction(laFonction, debug=False):
-    # -------------------------------
-    # ici un singleton pour avoir l editor, le catalogue et...
-    monEficasSsIhm = getEficasSsIhm(code="Essai")
-    monEditor = monEficasSsIhm.getEditor()
+# ---------------------------------------------
+# permet de verifier les arguments d une fonction python
+# exposee dans un catalogue
+# ceci etait juste une essai mais garde au cas ou  
+    monEficas = getEficas(code="Essai")
+    monEditor = monEficas.getEditor()
     print("_______ validateFonction", laFonction, laFonction.__name__)
     from functools import wraps
     from collections import OrderedDict
@@ -218,17 +221,15 @@ def validateFonction(laFonction, debug=False):
             print("mauvais arguments")
             print(objConstruit.CR())
             return None
-
     return fonctionValidee
 
-    # maClasseAccas=getattr(self.cata,objEtape.monNomClasseAccas)
-    return fonctionValidee
-
-    return laFonction
 
 
-def createFromDocumentAccas(fichierCata=None, fichier=None, code=None):
-    # ------------------------------------------------------------
+def createObjetPythonFromDocumentAccas(fichierCata=None, fichier=None, code=None):
+# --------------------------------------------------------------------------------
+# activeSurcharge permet de surcharger [ pour
+# acceder aux objets Accas comme en python
+# Attention peu testé et uniquement en lecture
     if fichier == None:
         print("file is needed")
         return None
@@ -237,13 +238,11 @@ def createFromDocumentAccas(fichierCata=None, fichier=None, code=None):
         return None
 
     from Accas.processing.P_OBJECT import activeSurcharge
-
     activeSurcharge()
-
     from .editorSsIhm import JDCEditorSsIhm
 
-    monEficasSsIhm = getEficasSsIhm(code="Essai", fichierCata=fichierCata)
-    monEditeur = JDCEditorSsIhm(monEficasSsIhm, fichier)
+    monEficas = getEficas(code="Essai", fichierCata=fichierCata)
+    monEditeur = JDCEditorSsIhm(monEficas, fichier)
     return monEditeur.jdc
 
 

@@ -22,12 +22,12 @@
 import types, os
 
 # Modules Eficas
-from Extensions.i18n import tr
+from Accas.extensions.eficas_translation import tr
 
 from InterfaceGUI.QT5.feuille import Feuille
 from UiQT5.desWidgetCB import Ui_WidgetCB
-from InterfaceGUI.politiquesValidation import PolitiqueUnique
-from InterfaceGUI.QT5.qtSaisie import SaisieValeur
+from InterfaceGUI.common.politiquesValidation import PolitiqueUnique
+from InterfaceGUI.common.traiteSaisie import SaisieValeur
 
 from PyQt5.QtWidgets import QComboBox, QCompleter
 from PyQt5.QtCore import Qt, QEvent

@@ -19,7 +19,7 @@
 #
 
 # Modules Eficas
-from Extensions.i18n import tr
+from Accas.extensions.eficas_translation import tr
 from InterfaceGUI.QT5.monWidgetSimpTxt import MonWidgetSimpTxt
 from InterfaceGUI.QT5.monWidgetPlusieursBase import MonWidgetPlusieursBase
 from copy import copy, deepcopy

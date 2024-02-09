@@ -442,7 +442,7 @@ PHYSICAL_PARAMETERS = PROC(nom= "PHYSICAL_PARAMETERS",op = None,
 WAQ_PARAMETERS = PROC(nom= "WAQ_PARAMETERS",op = None,
 # -----------------------------------------------------------------------
 #   -----------------------------------
-    METHOD_OF_COMPUTATION_OF_RAY_EXTINCTION_COEFFICIENT = SIMP(statut ='o',
+    METHOD_OF_COMPUTATION_OF_RAY_EXTINCTIOP_COEFFICIENT = SIMP(statut ='o',
 #   -----------------------------------
         typ = 'TXM',
         into = ["ATKINS FORMULA","MOSS FORMULA","GIVEN CONSTANT"],
@@ -474,7 +474,7 @@ For EUTRO+BIOMASS and THERMIC in 3D.""",
         ang = """In m. Used for EUTRO+BIOMAS, and THERMIC in 3D.""",
     ),
 #   -----------------------------------
-    LIGHT_EXTINCTION_COEFFICIENT = SIMP(statut ='f',
+    LIGHT_EXTINCTIOP_COEFFICIENT = SIMP(statut ='f',
 #   -----------------------------------
         typ = 'R',
         defaut = 0.2,
@@ -589,7 +589,7 @@ options are:
 For EUTRO+O2.""",
             ),
 #           -----------------------------------
-            K2_REAERATION_COEFFICIENT = SIMP(statut ='f',
+            K2_REAERATIOP_COEFFICIENT = SIMP(statut ='f',
 #           -----------------------------------
                 typ = 'R',
                 defaut = [0.9],
@@ -882,7 +882,7 @@ options are:
 Read but not used at the moment.""",
             ),
 #           -----------------------------------
-            WEIR_REAERATION_COEFFICIENT_RS = SIMP(statut ='f',
+            WEIR_REAERATIOP_COEFFICIENT_RS = SIMP(statut ='f',
 #           -----------------------------------
                 typ = 'R',
                 defaut = [1.0],
@@ -909,7 +909,7 @@ Read but not used at the moment.""",
     MICROPOL = FACT(statut='o',
 #   -----------------------------------
 #       -----------------------------------
-        SEDIMENTATION_CRITICAL_STRESS = SIMP(statut ='f',
+        SEDIMENTATIOP_CRITICAL_STRESS = SIMP(statut ='f',
 #       -----------------------------------
             typ = 'R',
             defaut = [5.],
@@ -974,7 +974,7 @@ Pour MICROPOL seulement.""",
 For MICROPOL only.""",
         ),
 #       -----------------------------------
-        EXPONENTIAL_DESINTEGRATION_CONSTANT = SIMP(statut ='f',
+        EXPONENTIAL_DESINTEGRATIOP_CONSTANT = SIMP(statut ='f',
 #       -----------------------------------
             typ = 'R',
             defaut = [1.13E-7],
@@ -1066,7 +1066,7 @@ For THERMIC only.""",
             ang = """In J/kg/$^{\circ}$C. For THERMIC only.""",
         ),
 #       -----------------------------------
-        COEFFICIENTS_OF_AERATION_FORMULA = SIMP(statut ='f',
+        COEFFICIENTS_OF_AERATIOP_FORMULA = SIMP(statut ='f',
 #       -----------------------------------
             typ = 'R', min= 2, max= 2,
             defaut = [0.002,0.0012],

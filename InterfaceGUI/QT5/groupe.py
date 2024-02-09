@@ -22,7 +22,7 @@
 from PyQt5.QtWidgets import QWidget, QSpacerItem, QSizePolicy
 from PyQt5.QtCore import Qt
 
-from Extensions.i18n import tr
+from Accas.extensions.eficas_translation import tr
 
 from InterfaceGUI.QT5.gereIcones import FacultatifOuOptionnel
 import traceback

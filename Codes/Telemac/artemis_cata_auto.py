@@ -696,7 +696,7 @@ account the tide generating force.""",
     LOCATION = FACT(statut='o',
 #   -----------------------------------
 #       -----------------------------------
-        ORIGIN_COORDINATES = SIMP(statut ='f',
+        ORIGIP_COORDINATES = SIMP(statut ='f',
 #       -----------------------------------
             typ = 'I', min= 2, max= 2,
             defaut = [0,0],
@@ -1619,7 +1619,7 @@ Fixes the formulation used for bottom friction law:
 \end{itemize}""",
             ),
 #           -----------------------------------
-            FRICTION_FACTOR_IMPOSED = SIMP(statut ='f',
+            FRICTIOP_FACTOR_IMPOSED = SIMP(statut ='f',
 #           -----------------------------------
                 typ = bool,
                 defaut = [False],
@@ -1639,7 +1639,7 @@ that the bottom is sandy and uses the characteristics of sediment
 and of motion.""",
             ),
 #           -----------------------------------
-            FRICTION_FACTOR = SIMP(statut ='f',
+            FRICTIOP_FACTOR = SIMP(statut ='f',
 #           -----------------------------------
                 typ = 'R',
                 defaut = [0.],
@@ -1649,7 +1649,7 @@ Fixe le facteur de frottement choisi uniforme sur le domaine.""",
 Fixes the value of the friction factor uniform over the domain.""",
             ),
 #           -----------------------------------
-            FRICTION_COEFFICIENT = SIMP(statut ='f',
+            FRICTIOP_COEFFICIENT = SIMP(statut ='f',
 #           -----------------------------------
                 typ = 'R',
                 defaut = [0.],

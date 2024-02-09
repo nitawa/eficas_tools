@@ -26,11 +26,11 @@ from PyQt5.QtWidgets import QToolButton, QWidget, QMessageBox
 from PyQt5.QtGui import QFont, QFontMetrics, QFontInfo, QPalette
 from PyQt5.QtCore import Qt
 
-from Extensions.i18n import tr
+from Accas.extensions.eficas_translation import tr
 
 from InterfaceGUI.QT5.gereIcones import ContientIcones
 from InterfaceGUI.QT5.gereIcones import FacultatifOuOptionnel
-from InterfaceGUI.QT5.qtSaisie import SaisieValeur
+from InterfaceGUI.common.traiteSaisie import SaisieValeur
 
 nomMax = 230
 

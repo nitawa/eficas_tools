@@ -21,7 +21,7 @@ import re
 import os
 
 from PyQt5.QtWidgets import QToolButton, QToolTip
-from Extensions.i18n import tr
+from Accas.extensions.eficas_translation import tr
 
 class MonBoutonValide(QToolButton):
     def __init__(self, parent):

@@ -111,7 +111,7 @@ class MACRO_ETAPE(A_ETAPE.ETAPE):
             self.text_converted = 0
             self.text_error = ""
             format = self.jdc.appliEficas.format_fichier
-            import Accas.IO.convert as convert
+            import Accas.IO.reader as convert
             if format in convert.plugins:
                 # Le convertisseur existe on l'utilise
                 p = convert.plugins[format]()
@@ -878,7 +878,7 @@ class MACRO_ETAPE(A_ETAPE.ETAPE):
         if hasattr(self, "fichier_ini"):
             return
         self.fichier_ini = fichier
-        from acquiertGroupes import getGroupes
+        from Accas.extensions.acquiert_groupes import getGroupes
 
         erreur, listeGroupes = getGroupes(fichier)
         if erreur != "":

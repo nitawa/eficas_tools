@@ -18,15 +18,13 @@
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
 
-from Editeur import Objecttreeitem
+from InterfaceGUI.common import Objecttreeitem
 from InterfaceGUI.Web import browser
 from InterfaceGUI.Web import typeNode
-from Extensions.i18n import tr
+from Accas.extensions.eficas_translation import tr
 
 
 class Node(browser.JDCNode,typeNode.PopUpMenuRacine):
-
-
     def addParameters(self,apres):
         param=self.appendChild("PARAMETRE",pos=0)
         return param

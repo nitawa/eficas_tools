@@ -21,7 +21,7 @@
 # Modules Eficas
 
 from UiQT5.desSelectVal import Ui_DSelVal
-from Extensions.i18n import tr
+from Accas.extensions.eficas_translation import tr
 
 from PyQt5.QtWidgets import QDialog, QFileDialog, QMessageBox
 from PyQt5.QtCore import QTimer, Qt

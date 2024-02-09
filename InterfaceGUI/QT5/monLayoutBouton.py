@@ -21,7 +21,7 @@
 
 from PyQt5.QtWidgets import QButtonGroup, QToolButton
 from PyQt5.QtGui import QIcon, QPixmap
-from Extensions.i18n import tr
+from Accas.extensions.eficas_translation import tr
 
 
 # ----------------------

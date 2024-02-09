@@ -40,7 +40,7 @@ class JDC_POURSUITE(JDC):
         cata_ord_dico=None,
         parent=None,
         nom="SansNom",
-        appli=None,
+        appliEficas=None,
         context_ini=None,
         jdc_pere=None,
         etape_include=None,
@@ -57,7 +57,7 @@ class JDC_POURSUITE(JDC):
             cata_ord_dico=cata_ord_dico,
             parent=parent,
             nom=nom,
-            appli=appli,
+            appli=appliEficas,
             context_ini=context_ini,
             **args
         )
@@ -234,7 +234,7 @@ class JDC_POURSUITE(JDC):
         self.jdc_pere = None
         self.etape_include = None
         #   self.cata_ordonne_dico={}
-        self.appli = None
+        self.appliEficas = None
 
     #   self.context_ini={}
     #   self.procedure=None

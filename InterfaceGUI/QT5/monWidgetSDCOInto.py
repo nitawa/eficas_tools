@@ -21,12 +21,12 @@
 # Modules Eficas
 from PyQt5.QtWidgets import QLineEdit
 from PyQt5.QtCore import Qt
-from Extensions.i18n import tr
+from Accas.extensions.eficas_translation import tr
 
 from InterfaceGUI.QT5.feuille import Feuille
 from UiQT5.desWidgetSDCOInto import Ui_WidgetSDCOInto
-from InterfaceGUI.QT5.qtSaisie import SaisieSDCO
-from InterfaceGUI.politiquesValidation import PolitiqueUnique
+from InterfaceGUI.common.traiteSaisie import SaisieSDCO
+from InterfaceGUI.common.politiquesValidation import PolitiqueUnique
 
 
 class MonWidgetSDCOInto(Ui_WidgetSDCOInto, Feuille, SaisieSDCO):

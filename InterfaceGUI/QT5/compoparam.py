@@ -24,10 +24,10 @@
 """
 # import modules Python
 import types
-from Extensions.i18n import tr
+from Accas.extensions.eficas_translation import tr
 
 # import modules EFICAS
-from Editeur import Objecttreeitem
+from InterfaceGUI.common import Objecttreeitem
 from InterfaceGUI.QT5 import browser
 from InterfaceGUI.QT5 import typeNode
 
@@ -147,7 +147,7 @@ class PARAMTreeItem(Objecttreeitem.ObjectTreeItem):
         return tr("Definition d'un parametre")
 
 
-import Extensions.parametre
+import Accas.extensions.parametre
 
 treeitem = PARAMTreeItem
-objet = Extensions.parametre.PARAMETRE
+objet = Accas.extensions.parametre.PARAMETRE

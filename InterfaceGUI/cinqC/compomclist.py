@@ -24,10 +24,10 @@ import traceback
 from InterfaceGUI.cinqC import compofact
 from InterfaceGUI.cinqC import browser
 from InterfaceGUI.QT5 import typeNode
-from Extensions.i18n import tr
+from Accas.extensions.eficas_translation import tr
 
-from Editeur import Objecttreeitem
-from Noyau.N_OBJECT import ErrorObj
+from InterfaceGUI.common import Objecttreeitem
+from Accas.processing.P_OBJECT import ErrorObj
 
 
 class Node(browser.JDCNode,typeNode.PopUpMenuNodeMinimal):
@@ -75,11 +75,11 @@ class Node(browser.JDCNode,typeNode.PopUpMenuNodeMinimal):
 
 class MCListTreeItem(Objecttreeitem.SequenceTreeItem,compofact.FACTTreeItem):
     """ La classe MCListTreeItem joue le role d'un adaptateur pour les objets
-        du noyau Accas instances de la classe MCLIST.
+        du processing Accas instances de la classe MCLIST.
         Elle adapte ces objets pour leur permettre d'etre integres en tant que
         noeuds dans un arbre graphique (voir treewidget.py et ObjectTreeItem.py).
         Cette classe delegue les appels de methode et les acces
-        aux attributs a l'objet du noyau soit manuellement soit
+        aux attributs a l'objet du processing soit manuellement soit
         automatiquement (voir classe Delegate et attribut object).
     """
     itemNode=Node

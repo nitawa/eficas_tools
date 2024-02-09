@@ -22,7 +22,7 @@
 
 from UiQT5.desChoixCata import Ui_DChoixCata
 from PyQt5.QtWidgets import QDialog
-from Extensions.i18n import tr
+from Accas.extensions.eficas_translation import tr
 
 # Import des panels
 class MonChoixCata(Ui_DChoixCata, QDialog):

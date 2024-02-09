@@ -20,10 +20,10 @@
 
 from InterfaceGUI.cinqC import browser
 from InterfaceGUI.QT5 import typeNode
-from Extensions.i18n import tr
+from Accas.extensions.eficas_translation import tr
 
 
-from Editeur import Objecttreeitem
+from InterfaceGUI.common import Objecttreeitem
 import traceback
 
 

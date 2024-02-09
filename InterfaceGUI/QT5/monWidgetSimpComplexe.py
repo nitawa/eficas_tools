@@ -25,12 +25,12 @@ from PyQt5.QtWidgets import QLineEdit, QRadioButton
 from PyQt5.QtCore import Qt
 
 
-from Extensions.i18n import tr
+from Accas.extensions.eficas_translation import tr
 
 from InterfaceGUI.QT5.feuille import Feuille
 from UiQT5.desWidgetSimpComplexe import Ui_WidgetSimpComplexe
-from InterfaceGUI.politiquesValidation import PolitiqueUnique
-from InterfaceGUI.QT5.qtSaisie import SaisieValeur
+from InterfaceGUI.common.politiquesValidation import PolitiqueUnique
+from InterfaceGUI.common.traiteSaisie import SaisieValeur
 
 
 class MonWidgetSimpComplexe(Ui_WidgetSimpComplexe, Feuille):

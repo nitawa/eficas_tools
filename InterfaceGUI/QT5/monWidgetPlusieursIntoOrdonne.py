@@ -23,13 +23,13 @@ import types, os
 # Modules Eficas
 from InterfaceGUI.QT5.feuille import Feuille
 from UiQT5.desWidgetPlusieursIntoOrdonne import Ui_WidgetPlusieursIntoOrdonne
-from InterfaceGUI.politiquesValidation import PolitiquePlusieurs
-from InterfaceGUI.QT5.qtSaisie import SaisieValeur
+from InterfaceGUI.common.politiquesValidation import PolitiquePlusieurs
+from InterfaceGUI.common.traiteSaisie import SaisieValeur
 from InterfaceGUI.QT5.gereListe import GereListe
 from InterfaceGUI.QT5.gereListe import GerePlie
 from InterfaceGUI.QT5.gereListe import LECustom
 from InterfaceGUI.QT5.gereListe import MonLabelListeClic
-from Extensions.i18n import tr
+from Accas.extensions.eficas_translation import tr
 
 from PyQt5.QtWidgets import QFrame, QApplication, QScrollBar
 from PyQt5.QtCore import QTimer, QSize, Qt

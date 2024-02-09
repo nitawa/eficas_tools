@@ -23,7 +23,7 @@
 
 #from InterfaceQT.groupe import Groupe
 from UiQT5.desWidgetProfile  import Ui_Profile5C
-from Extensions.i18n import tr
+from Accas.extensions.eficas_translation import tr
 # Import des panels
 
 from PyQt5.QtWidgets import QCheckBox, QWidget, QGraphicsView, QGraphicsEllipseItem

@@ -37,7 +37,7 @@ from PyQt5.QtCore import QTimer
 from PyQt5.QtCore import Qt
 
 
-from Extensions.i18n import tr
+from Accas.extensions.eficas_translation import tr
 import Accas
 import os
 
@@ -239,7 +239,7 @@ class MonWidgetCommande(Ui_WidgetCommande, Groupe):
 
         # Notation scientifique
         if test:
-            from InterfaceGUI.politiquesValidation import Validation
+            from InterfaceGUI.common.politiquesValidation import Validation
             validation = Validation(self.node, self.editor)
             validation.ajoutDsDictReelEtape()
 

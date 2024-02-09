@@ -26,7 +26,7 @@ from PyQt5.QtWidgets import QLineEdit, QLabel, QFileDialog, QMessageBox
 from PyQt5.QtCore import QEvent, Qt, QTimer
 from PyQt5.QtGui import QIcon, QPalette
 
-from Extensions.i18n import tr
+from Accas.extensions.eficas_translation import tr
 from InterfaceGUI.QT5.monViewTexte import ViewText
 
 

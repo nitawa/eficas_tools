@@ -833,7 +833,7 @@ are first written into the listing.""",
     RESTART = FACT(statut='o',
 #   -----------------------------------
 #       -----------------------------------
-        COMPUTATION_CONTINUED = SIMP(statut ='o',
+        COMPUTATIOP_CONTINUED = SIMP(statut ='o',
 #       -----------------------------------
             typ = bool,
             defaut = False,
@@ -881,7 +881,7 @@ the file from which the following computation starts
 (\telkey{RESTART FILE}).""",
         ),
 #       -----------------------------------
-        b_COMPUTATION_CONTINUEDG = BLOC(condition="COMPUTATION_CONTINUED == True",
+        b_COMPUTATIOP_CONTINUEDG = BLOC(condition="COMPUTATIOP_CONTINUED == True",
 #       -----------------------------------
 #           -----------------------------------
             PREVIOUS_COMPUTATION_FILE = SIMP(statut ='o',
@@ -1037,7 +1037,7 @@ conditions initiales.""",
                 ang = """File to be used in case of 2D continuation.""",
             ),
 #           -----------------------------------
-            FILE_FOR_2D_CONTINUATION_FORMAT = SIMP(statut ='f',
+            FILE_FOR_2D_CONTINUATIOP_FORMAT = SIMP(statut ='f',
 #           -----------------------------------
                 typ = 'TXM',
                 into = ['SERAFIN','SERAFIND','MED'],
@@ -1746,7 +1746,7 @@ and 0 (no friction) in V8P0.""",
             b_LAW_OF_BOTTOM_FRICTIONG = BLOC(condition="LAW_OF_BOTTOM_FRICTION != 'NO FRICTION'",
 #           -----------------------------------
 #               -----------------------------------
-                FRICTION_COEFFICIENT_FOR_THE_BOTTOM = SIMP(statut ='o',
+                FRICTIOP_COEFFICIENT_FOR_THE_BOTTOM = SIMP(statut ='o',
 #               -----------------------------------
                     typ = 'R',
                     defaut = 0.01,
@@ -1784,7 +1784,7 @@ Principle note):
             b_LAW_OF_FRICTION_ON_LATERAL_BOUNDARIESG = BLOC(condition="LAW_OF_FRICTION_ON_LATERAL_BOUNDARIES != 'NO FRICTION'",
 #           -----------------------------------
 #               -----------------------------------
-                FRICTION_COEFFICIENT_FOR_LATERAL_SOLID_BOUNDARIES = SIMP(statut ='o',
+                FRICTIOP_COEFFICIENT_FOR_LATERAL_SOLID_BOUNDARIES = SIMP(statut ='o',
 #               -----------------------------------
                     typ = 'R',
                     defaut = 0.01,
@@ -4006,7 +4006,7 @@ recirculation zones.""",
             ang = """Ratio between eddy viscosity and eddy diffusivity.""",
         ),
 #       -----------------------------------
-        KARMAN_CONSTANT = SIMP(statut ='f',
+        KARMAP_CONSTANT = SIMP(statut ='f',
 #       -----------------------------------
             typ = 'R',
             defaut = 0.4,
@@ -4474,7 +4474,7 @@ law by default. The possible choices are:
             b_DENSITY_LAWG = BLOC(condition="DENSITY_LAW == 4",
 #           -----------------------------------
 #               -----------------------------------
-                BETA_EXPANSION_COEFFICIENT_FOR_TRACERS = SIMP(statut ='f',
+                BETA_EXPANSIOP_COEFFICIENT_FOR_TRACERS = SIMP(statut ='f',
 #               -----------------------------------
                     typ = 'R', min=0, max='**',
                     fr = """Unite : K$^{-1}$.
@@ -5010,7 +5010,7 @@ rugosite de peau = ratio $\times$ diametre moyen.""",
 skin roughness = ratio $\times$ mean diameter.""",
             ),
 #           -----------------------------------
-            SKIN_FRICTION_CORRECTION = SIMP(statut ='f',
+            SKIN_FRICTIOP_CORRECTION = SIMP(statut ='f',
 #           -----------------------------------
                 typ = 'I',
                 defaut = 0,
@@ -5039,7 +5039,7 @@ skin roughness = ratio $\times$ mean diameter.""",
     INITIALIZATION = FACT(statut='o',
 #   -----------------------------------
 #       -----------------------------------
-        INITIAL_PERCENTAGE_OF_NON_COHESIVE_SEDIMENT = SIMP(statut ='f',
+        INITIAL_PERCENTAGE_OF_NOP_COHESIVE_SEDIMENT = SIMP(statut ='f',
 #       -----------------------------------
             typ = 'R',
             defaut = 0.,
@@ -5227,7 +5227,7 @@ au dessous de laquelle se produit le depot des sediments cohesifs.""",
 deposition of cohesive sediments occurs.""",
         ),
 #       -----------------------------------
-        NON_COHESIVE_BED_POROSITY = SIMP(statut ='f',
+        NOP_COHESIVE_BED_POROSITY = SIMP(statut ='f',
 #       -----------------------------------
             typ = 'R',
             defaut = 0.4,
@@ -5244,7 +5244,7 @@ the bed evolution of non-cohesive sand transport.""",
     EROSION = FACT(statut='o',
 #   -----------------------------------
 #       -----------------------------------
-        EROSION_COEFFICIENT = SIMP(statut ='f',
+        EROSIOP_COEFFICIENT = SIMP(statut ='f',
 #       -----------------------------------
             typ = 'R',
             defaut = 2.E-3,
@@ -5355,7 +5355,7 @@ initiated. These values are needed when
     SUSPENSION = FACT(statut='o',
 #   -----------------------------------
 #       -----------------------------------
-        REFERENCE_CONCENTRATION_FORMULA = SIMP(statut ='f',
+        REFERENCE_CONCENTRATIOP_FORMULA = SIMP(statut ='f',
 #       -----------------------------------
             typ = 'I',
             defaut = 1,
@@ -5383,7 +5383,7 @@ pour calculer la vitesse de chute pour la vase.""",
 compute settling velocity for mud.""",
         ),
 #       -----------------------------------
-        FLOCCULATION_FORMULA = SIMP(statut ='f',
+        FLOCCULATIOP_FORMULA = SIMP(statut ='f',
 #       -----------------------------------
             typ = 'I',
             defaut = 1,
@@ -5399,7 +5399,7 @@ compute settling velocity for mud.""",
 \end{itemize}""",
         ),
 #       -----------------------------------
-        FLOCCULATION_COEFFICIENT = SIMP(statut ='f',
+        FLOCCULATIOP_COEFFICIENT = SIMP(statut ='f',
 #       -----------------------------------
             typ = 'R',
             defaut = 0.3,

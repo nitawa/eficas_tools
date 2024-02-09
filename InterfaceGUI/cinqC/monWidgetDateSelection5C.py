@@ -22,7 +22,7 @@ from __future__ import absolute_import
 import types,os
 
 # Modules Eficas
-from Extensions.i18n import tr
+from Accas.extensions.eficas_translation import tr
 
 from UiQT5.desWidgetDateSelection5C import Ui_WidgetDateSelection5C
 from InterfaceGUI.QT5.monWidgetSimpDate  import MonWidgetSimpDate

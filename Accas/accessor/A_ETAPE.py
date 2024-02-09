@@ -442,7 +442,7 @@ class ETAPE(A_MCCOMPO.MCCOMPO):
         Cette methode retourne un objet commande commentarisee
         representant la commande self
         """
-        import Accas.IO.generator as generator
+        import Accas.IO.writer as generator
 
         g = generator.plugins[format]()
         texte_commande = g.gener(self, format="beautifie")

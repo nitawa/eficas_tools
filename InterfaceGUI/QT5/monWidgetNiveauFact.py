@@ -25,7 +25,7 @@ from UiQT5.desWidgetNiveauFact import Ui_WidgetNiveauFact
 from InterfaceGUI.QT5.monWidgetOptionnel import MonWidgetOptionnel
 from InterfaceGUI.QT5.groupe import Groupe
 
-from Extensions.i18n import tr
+from Accas.extensions.eficas_translation import tr
 
 class MonWidgetNiveauFact(Ui_WidgetNiveauFact, Groupe):
     """ """

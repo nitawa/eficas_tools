@@ -22,7 +22,7 @@ import  os, sys
 # Modules Eficas
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import QSize
-from Extensions.i18n import tr
+from Accas.extensions.eficas_translation import tr
 
 from UiQT5.desWidgetSimpFichier import Ui_WidgetSimpFichier
 from InterfaceGUI.QT5.monWidgetSimpBase import MonWidgetSimpBase
