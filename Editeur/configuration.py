@@ -51,9 +51,9 @@ class BaseConfiguration(object):
 
         if self.salome: name = "prefs_eficas_salome.ini"
         else: name = "prefs_eficas.ini"
-        if sys.platform == 'linux' : repUser = os.path.join( os.path.expanduser("~"), '.config/Eficas',self.code)
-        else : repUser = os.path.join('C:/','.config/Eficas',self.code)
-        self.fichierPrefsUtilisateur = os.path.join(repUser, name)
+        if sys.platform == 'linux' : self.repUser = os.path.join( os.path.expanduser("~"), '.config/Eficas',self.code)
+        else : self.repUser = os.path.join('C:/','.config/Eficas',self.code)
+        self.fichierPrefsUtilisateur = os.path.join(self.repUser, name)
 
         self.labelsStandards = ('PdfReader', 'saveDir', 'modeNouvCommande', 'afficheUQ', 'closeAutreCommande', 'closeFrameRechercheCommande', 
            'closeFrameRechercheCommandeSurPageDesCommandes', 'closeEntete', 'closeArbre', 'demandeLangue', 'suiteTelemac', 
@@ -87,6 +87,7 @@ class BaseConfiguration(object):
             else :
                self.saveDir = os.path.join('C:/','Eficas',self.code)
 
+    # ----------------------------
     def setValeursParDefaut(self):
     # ----------------------------
 
@@ -142,9 +143,9 @@ class BaseConfiguration(object):
         # pour garder ce qui existait pour Aster
         self.repMat = None
 
-    # --------------------------------------
+    # ---------------------------------
     def lectureFichierIniStandard(self):
-    # --------------------------------------
+    # ----------------------------------
 
         if self.salome : name = "prefs_salome_" + self.appliEficas.code
         else : name = "prefs_" + self.appliEficas.code

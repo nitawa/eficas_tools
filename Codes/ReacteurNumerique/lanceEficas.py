@@ -38,4 +38,4 @@ if prefFile.is_file():
         print ('Unable to import {}').format(prefFile)
         exit(1)
 from Editeur import eficas_go
-eficas_go.lanceEficas(code=code,GUIPath='QT5')
+eficas_go.lanceQtEficas(code=code,GUIPath='QT5')

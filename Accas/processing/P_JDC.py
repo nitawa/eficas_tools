@@ -59,13 +59,13 @@ NONE = None
 
     from Accas.processing.P_utils import SEP
 
-    def __init__( self, definition=None, procedure=None, cata=None, cata_ord_dico=None,
+    def __init__( self, definition=None, procedure=None, cata=None, dicoCataOrdonne=None,
         parent=None, nom="SansNom", appliEficas=None, context_ini=None, **args):
         self.procedure = procedure
         self.definition = definition
         self.cata = cata
         self._build_reserved_kw_list()
-        self.cata_ordonne_dico = cata_ord_dico
+        self.dicoCataOrdonne = dicoCataOrdonne
         self.nom = nom
         self.appliEficas = appliEficas
         self.parent = parent
@@ -190,9 +190,6 @@ Causes possibles :
                     if isinstance(sd, ASSD):
                         self.sdsDict[sdnom] = sd
 
-            # if self.appliEficas != None:
-            #    self.appliEficas.afficheInfos(
-            #        'Interpretation du fichier de commandes en cours ...')
 
             # On sauve le contexte pour garder la memoire des constantes
             # En mode edition (EFICAS) ou lors des verifications le contexte

@@ -51,7 +51,7 @@ class AccasConnecteur :
         if self.monEficas == None : 
            self.toWebApp('afficheInfos', 'erreur à la construction de l appli Eficas', 'rouge')
            return
-        # faire l equivalent du viewmanager
+        # faire l equivalent du editorManager
         if fichierCata == None and fichierComm : 
            self.toWebApp('afficheInfos', 'pour ouvrir un JDC, il faut connaitre le catalogue', 'rouge')
            return 

@@ -85,7 +85,7 @@ class JDC_CATA(P_ENTITE.ENTITE):
         self.listeUserASSDDumpes = set()
         self.listeTypeTXMAvecBlancs = set()
 
-    def __call__( self, procedure=None, cata=None, cata_ord_dico=None, nom="SansNom",
+    def __call__( self, procedure=None, cata=None, dicoCataOrdonne=None, nom="SansNom",
         parent=None, **args):
         """
         Construit l'objet JDC a partir de sa definition (self),
@@ -94,7 +94,7 @@ class JDC_CATA(P_ENTITE.ENTITE):
             definition=self,
             procedure=procedure,
             cata=cata,
-            cata_ord_dico=cata_ord_dico,
+            dicoCataOrdonne=dicoCataOrdonne,
             nom=nom,
             parent=parent,
             **args

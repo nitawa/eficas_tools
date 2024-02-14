@@ -79,7 +79,7 @@ def traiteReel(objet, listeSimpReel):
                 listeSimpReel.append(objet.nom)
 
 
-def analyseNiveau(cata_ordonne_dico, niveau, listeSimpReel):
+def analyseNiveau(dicoCataOrdonne, niveau, listeSimpReel):
     """
     Analyse un niveau dans un catalogue de commandes
     """
@@ -87,10 +87,10 @@ def analyseNiveau(cata_ordonne_dico, niveau, listeSimpReel):
         # Il n'y a pas de sous niveaux
         for oper in niveau.entites:
             traiteEntite(oper, listeSimpReel)
-            cata_ordonne_dico[oper.nom] = oper
+            dicoCataOrdonne[oper.nom] = oper
     else:
         for niv in niveau.lNiveaux:
-            analyseNiveau(cata_ordonne_dico, niv)
+            analyseNiveau(dicoCataOrdonne, niv)
 
 
 def analyseCatalogue(cata):
@@ -101,17 +101,17 @@ def analyseCatalogue(cata):
     Elle retourne un dictionnaire qui contient toutes les commandes
     du catalogue indexees par leur nom
     """
-    cata_ordonne_dico = {}
+    dicoCataOrdonne = {}
     listeSimpReel = []
     if cata.JdC.lNiveaux == ():
         # Il n'y a pas de niveaux
         for oper in cata.JdC.commandes:
             traiteEntite(oper, listeSimpReel)
-            cata_ordonne_dico[oper.nom] = oper
+            dicoCataOrdonne[oper.nom] = oper
     else:
         for niv in cata.JdC.lNiveaux:
-            analyseNiveau(cata_ordonne_dico, niv, listeSimpReel)
-    return cata_ordonne_dico, listeSimpReel
+            analyseNiveau(dicoCataOrdonne, niv, listeSimpReel)
+    return dicoCataOrdonne, listeSimpReel
 
 
 if __name__ == "__main__":

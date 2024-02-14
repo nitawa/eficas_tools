@@ -132,7 +132,7 @@ class MACRO_ETAPE(A_ETAPE.ETAPE):
                 nom=fichier,
                 appliEficas=self.jdc.appliEficas,
                 cata=self.jdc.cata,
-                cata_ord_dico=self.jdc.cata_ordonne_dico,
+                dicoCataOrdonne=self.jdc.dicoCataOrdonne,
                 context_ini=context_ini,
                 jdc_pere=self.jdc,
                 etape_include=self,

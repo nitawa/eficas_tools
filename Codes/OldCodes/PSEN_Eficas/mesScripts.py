@@ -19,7 +19,7 @@ def import_zone(listeparam,appli) :
     # simulation de la recuperation zone
     #import eficasSalome
     #eficasSalome.runEficas(code='MT',fichier='/home/I29518/test_zone.comm')
-    appli.viewmanager.handleOpen(fichier='/home/A96028/Install_EficasV1/EficasV1/MT/MT_include.comm')
+    appli.editorManager.handleOpen(fichier='/home/A96028/Install_EficasV1/EficasV1/MT/MT_include.comm')
 
 def import_zone2(listeparam,appli) :
     editor=listeparam[0]

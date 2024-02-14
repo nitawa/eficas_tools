@@ -295,7 +295,7 @@ class ObjectTreeItem(TreeItem, Delegate):
         le nouveau mot-cle
         """
         liste_noms_mc_ordonnee = self.getListeMcOrdonneeBrute(
-            self.getGenealogie(), self.getJdc().cata_ordonne_dico
+            self.getGenealogie(), self.getJdc().dicoCataOrdonne
         )
         liste_noms_mc_presents = self.object.listeMcPresents()
         l = []
@@ -514,7 +514,7 @@ class SequenceTreeItem(ObjectTreeItem):
             self._object.remove(item.getObject())
             # la liste peut etre retournee vide !
             message = "Mot-clef " + item.getObject().nom + " supprime"
-            self.appliEficas.afficheInfos(message)
+            self.appliEficas.afficheMessages(message)
             return 1
         except:
             return 0

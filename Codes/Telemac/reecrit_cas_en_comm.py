@@ -53,5 +53,5 @@ for f in ('t2d_weirs.cas',):
     print ("traitement de : ", 'CasEn/'+f)
 
     # on veut ouvrir un fichier directement au lancement d'Eficas
-    eficas_go.lanceEficas_ssIhm_reecrit(code='TELEMAC',fichier = 'CasEn/'+f,ou = 'CasEn_Reecrits',cr=True)
+    eficas_go.lanceQtEficas_ssIhm_reecrit(code='TELEMAC',fichier = 'CasEn/'+f,ou = 'CasEn_Reecrits',cr=True)
     print ("\n")

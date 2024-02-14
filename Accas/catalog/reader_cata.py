@@ -58,17 +58,17 @@ class ReaderCataCommun(object):
         pathGui='InterfaceGUI.'+ self.appliEficas.GUIPath + '.monChoixCata'
         MonChoixCata =__import__(pathGui, globals(), locals(), ['MonChoixCata,'])
         widgetChoix = MonChoixCata.MonChoixCata(
-            self.appliEficas, [cata.labelCode for cata in cataListeChoix], title
+            self.appliEficas, [cata.versionCode for cata in cataListeChoix], title
         )
         ret = widgetChoix.exec_()
         #if ret == QDialog.Accepted:
         if ret == 1:
             cata = cataListeChoix[widgetChoix.CBChoixCata.currentIndex()]
             self.fichierCata = cata.fichierCata
-            self.labelCode = cata.labelCode
+            self.versionCode = cata.versionCode
             self.appliEficas.formatFichierOut = cata.formatFichierOut
             self.appliEficas.formatFichierIn = cata.formatFichierIn
-            titre='{} pour {} avec le catalogue {}'.format(self.appliEficas.versionEficas,self.code,self.labelCode)
+            titre='{} pour {} avec le catalogue {}'.format(self.appliEficas.versionEficas,self.code,self.versionCode)
             self.appliEficas.setWindowTitle(titre)
             widgetChoix.close()
         else:
@@ -76,7 +76,7 @@ class ReaderCataCommun(object):
             raise EficasException()
 
     def choisitCata(self):
-    # ____________________
+    #--------------------#
 
         listeCataPossibles = []
 
@@ -89,11 +89,12 @@ class ReaderCataCommun(object):
             else:
                 print(("Catalog description cannot be interpreted: ", catalogue))
 
-        if self.labelCode is None:
+        if self.versionCode is None:
             listeCataPossibles = listeTousLesCatas
         else:
+            # a priori impossible sans l idee du sousCode
             for catalogue in listeTousLesCatas:
-                if catalogue.code == self.code and catalogue.ssCode == self.ssCode:
+                if catalogue.code == self.code and catalogue.versionCode == self.versionCode:
                     listeCataPossibles.append(catalogue)
 
         if len(listeCataPossibles) == 0:
@@ -104,12 +105,12 @@ class ReaderCataCommun(object):
             if self.appliEficas.salome == 0: sys.exit(1)
             return
 
-        if self.labelCode is not None:
+        if self.versionCode is not None:
             # La version a ete fixee
             for cata in listeCataPossibles:
-                if self.labelCode == cata.labelCode:
+                if self.versionCode == cata.versionCode:
                     self.fichierCata = cata.fichierCata
-                    self.labelCode = cata.labelCode
+                    self.versionCode = cata.versionCode
                     self.appliEficas.formatFichierOut = cata.formatFichierOut
                     self.appliEficas.formatFichierIn = cata.formatFichierIn
         else:
@@ -125,21 +126,14 @@ class ReaderCataCommun(object):
         if self.appliEficas.fichierCata != None:
             trouve = False
             for catalogue in listeTousLesCatas:
-                if os.path.abspath(catalogue.fichierCata) == (
-                    os.path.abspath(self.appliEficas.fichierCata)
-                ):
+                if os.path.abspath(catalogue.fichierCata) == ( os.path.abspath(self.appliEficas.fichierCata)):
                     listeCataPossibles = (catalogue,)
                     trouve = True
                     break
             if not trouve:
+                # utilise par Telemac
                 catalogue = CatalogDescription.createFromTuple(
-                    (
-                        self.code,
-                        self.code,
-                        self.appliEficas.fichierCata,
-                        "python",
-                        "python",
-                    )
+                    ( self.code, self.code, self.appliEficas.fichierCata, "python", "python",)
                 )
                 listeCataPossibles = (catalogue,)
 
@@ -153,20 +147,18 @@ class ReaderCataCommun(object):
             return
 
         # le label est fixe dans la ligne de commande
-        if self.labelCode is not None:
+        if self.versionCode is not None:
             # La version a ete fixee
             for cata in listeCataPossibles:
-                if self.labelCode == cata.labelCode:
+                if self.versionCode == cata.versionCode:
                     self.fichierCata = cata.fichierCata
                     self.appliEficas.formatFichierIn = cata.formatFichierIn
                     self.appliEficas.formatFichierOut = cata.formatFichierOut
         else:
             cataListeChoix = []
             for cata in listeCataPossibles:
-                if cata.default:
-                    cataListeChoix.insert(0, cata)
-                else:
-                    cataListeChoix.append(cata)
+                if cata.default: cataListeChoix.insert(0, cata)
+                else: cataListeChoix.append(cata)
 
             if len(cataListeChoix) == 0:
                 self.appliEficas.afficheMessage( 
@@ -177,27 +169,21 @@ class ReaderCataCommun(object):
 
             elif len(cataListeChoix) == 1:
                 self.fichierCata = cataListeChoix[0].fichierCata
-                self.labelCode = cataListeChoix[0].labelCode
+                self.versionCode = cataListeChoix[0].versionCode
                 self.appliEficas.formatFichierOut = cataListeChoix[0].formatFichierOut
                 self.appliEficas.formatFichierIn = cataListeChoix[0].formatFichierIn
 
             else:
                 # plusieurs catalogues sont disponibles : il faut demander a l'utilisateur
                 # lequel il veut utiliser ...
-                if self.appliEficas.ssIhm:
-                    print("Unable to know which catafile is choosen")
-                    exit()
-                self.askChoixCatalogue(cataListeChoix)
+                print ('PN : --> passer la commande askChoixCatalogue dans Editor avec sortie pour non QT / non Web')
+                #self.appliEficas.afficheMessage( tr("Import du catalogue"), tr('Aucun catalogue choisi'), critique = True)
                 self.demandeCatalogue = True
+                self.askChoixCatalogue(cataListeChoix)
 
         if self.fichierCata == None:
             if self.appliEficas.salome == 0:
-                print(
-                    (
-                        "Pas de catalogue pour code %s, version %s"
-                        % (self.code, self.labelCode)
-                    )
-                )
+                print( "Pas de catalogue pour code %s, version %s" % (self.code, self.versionCode))
                 sys.exit(1)
             else:
                 self.appliEficas.close()
@@ -217,11 +203,10 @@ class ReaderCata(ReaderCataCommun):
         self.demandeCatalogue = False
         self.code = self.appliEficas.code
         self.titre = self.appliEficas.code
-        self.ssCode = self.appliEficas.ssCode
         # on positionne par defaut mais est-ce vraiment necessaire
         self.appliEficas.formatFichierIn = "python"
         self.appliEficas.formatFichierOut = "python"
-        self.labelCode = self.appliEficas.labelCode
+        self.versionCode = self.appliEficas.versionCode
         self.fichierCata = self.appliEficas.fichierCata
         self.openCata()
         self.traiteIcones()
@@ -231,7 +216,7 @@ class ReaderCata(ReaderCataCommun):
             self.creeDicoCasToCata()
 
     def openCata(self):
-    # _________________________________
+    # _________________
         """
         Ouvre le catalogue standard du code courant, cad le catalogue present
         dans le repertoire Cata
@@ -244,8 +229,7 @@ class ReaderCata(ReaderCataCommun):
         if self.code == "NonConnu": self.code = self.cata.JdC.code
         modeleMetier = None
         dicoEltDif = {}
-        if not (self.appliEficas.genereXSD):
-            if self.appliEficas.maConfiguration.withXSD or self.appliEficas.withXSD:
+        if not(self.appliEficas.genereXSD) and self.appliEficas.withXSD:
                 try:
                     import pyxb
                 except:
@@ -293,11 +277,7 @@ class ReaderCata(ReaderCataCommun):
                     # print ('dans readerCata _________', dicoEltDif)
 
                 except Exception as e :
-                    if self.appliEficas.ssIhm == False:
-                        self.appliEficas.afficheMessage(
-                            "XSD driver", "unable to load xsd driver", critique=False
-                         )
-                    print (e)
+                    self.appliEficas.afficheMessage( "XSD driver", "unable to load xsd driver" + str(e), critique=False)
                     modeleMetier = None
 
         self.cata.DicoNomTypeDifferentNomElt = dicoEltDif
@@ -310,7 +290,7 @@ class ReaderCata(ReaderCataCommun):
             self.cata.JdC.importedBy = self.cata.importedBy
         else:
             self.cata.JdC.importedBy = []
-        self.cata.JdC.labelCode = self.labelCode
+        self.cata.JdC.versionCode = self.versionCode
         if not (hasattr(self.cata, "dict_condition")):
             self.cata.dict_condition = {}
 
@@ -327,10 +307,7 @@ class ReaderCata(ReaderCataCommun):
                 sys.exit(1)
         #
         # retrouveOrdreCataStandard fait une analyse textuelle du catalogue
-        # retrouveOrdreCataImpose qui utilise une numerotation
-        # des mots cles a la creation
-        #if self.appliEficas.maConfiguration.modeNouvCommande == "initial": self.retrouveOrdreCata()
-        #else : self.retrouveOrdreCataImpose()
+        # retrouveOrdreCataImpose utilise une numerotation des mots cles a la creation
         self.retrouveOrdreCata()
         self.retrouveOrdreCataImpose()
         if hasattr(self.cata, "ordreDesCommandes"): 
@@ -365,23 +342,16 @@ class ReaderCata(ReaderCataCommun):
         #
         uiinfo.traite_UIinfo(self.cata)
 
-        #
-        # traitement des clefs documentaires
-        #
-
         self.titre = (
-            self.versionEficas
-            + " "
-            + tr(" avec le catalogue ")
+            self.versionEficas + tr(" avec le catalogue ")
             + os.path.basename(self.fichierCata)
         )
-        if self.appliEficas.ssIhm == False:
-            self.appliEficas.setWindowTitle(self.titre)
         self.editor.titre = self.titre
+        if hasattr(self.appliEficas, 'setWindowTitle') :
+            self.appliEficas.setWindowTitle(self.titre)
 
-        # incertitude --> change le convert
-        if hasattr(self.cata, "avecIncertitude"):
-            self.appliEficas.ajoutUQ()
+        # incertitude ou modification du Catalogue
+        if hasattr(self.cata, "avecIncertitude"): self.appliEficas.ajoutUQ()
         if hasattr(self.cata, "modifieCatalogueDeterministe"):
             self.cata.modifieCatalogueDeterministe(self.cata)
 
@@ -402,11 +372,14 @@ class ReaderCata(ReaderCataCommun):
             if k[0 : len(nomCata) + 1] == nomCata + ".":
                 del sys.modules[k]
 
-        # permet d ajouter des scripts appelables par des fonctions supplementaires
+        # permettait d ajouter des scripts appelables par des fonctions supplementaires
         # dans l ihm
-        mesScriptsNomFichier = "mesScripts_" + self.code.upper()
-        try: self.appliEficas.mesScripts[self.code] = __import__(mesScriptsNomFichier)
-        except: pass
+        # par exemple  permet d ajouter des morceaux dans le jeu de données
+        # mecanisme mis en place pout MT et laisse pour pouvoir eventuellement
+        # etre repris 
+        # mesScriptsNomFichier = "mesScripts_" + self.code.upper()
+        # try: self.appliEficas.mesScripts[self.code] = __import__(mesScriptsNomFichier)
+        # except: pass
 
         try:
             #import importlib.util
@@ -428,9 +401,7 @@ class ReaderCata(ReaderCataCommun):
         Pour chaque entite du catalogue on cree une liste de nom ordreMC qui
         contient le nom des mots cles dans le bon ordre
         """
-        self.cata_ordonne_dico, self.appliEficas.liste_simp_reel = analyse_ordre_catalogue.analyseCatalogue(self.cata)
-        # self.appliEficas.liste_simp_reel = ()
-        # self.cata_ordonne_dico = {}
+        self.dicoCataOrdonne, self.appliEficas.liste_simp_reel = analyse_ordre_catalogue.analyseCatalogue(self.cata)
 
     def retrouveOrdreCataImpose(self):
         """

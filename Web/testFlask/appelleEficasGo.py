@@ -32,4 +32,4 @@ sys.path.append(os.path.join(os.path.abspath(os.path.dirname(__file__)),'..'))
 
 import prefs
 from InterfaceSsIhm import eficas_go
-eficas_go.lanceEficas_Web(code=prefs.code)
+eficas_go.lanceQtEficas_Web(code=prefs.code)

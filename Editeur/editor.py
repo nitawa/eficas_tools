@@ -40,14 +40,14 @@ class Editor:
 
     def __init__(self, appliEficas, fichier=None, jdc=None, units=None, include=0):
     # ----------------------------------------------------------------------------#
-        if debug: print("dans le init de JDCEditorSsIhm")
+        if debug: print("dans le init de Editor")
         self.appliEficas = appliEficas
+
         self.fichier = fichier
         self.fichierComplet = fichier
-        if fichier != None:
-            self.extensionFichier = os.path.splitext(fichier)[1]
-        else:
-            self.extensionFichier = None
+        if fichier != None: self.extensionFichier = os.path.splitext(fichier)[1]
+        else: self.extensionFichier = None
+
         self.jdc = jdc
         self.first = True
         self.jdc_item = None
@@ -56,10 +56,6 @@ class Editor:
         self.dict_reels = {}
         self.liste_simp_reel = []
 
-        if self.appliEficas != None:
-            self.salome = self.appliEficas.salome
-        else:
-            self.salome = 0
 
         # ces attributs sont mis a jour par definitCode appelee par newEditor
         self.code = self.appliEficas.maConfiguration.code
@@ -85,35 +81,30 @@ class Editor:
         self.formatFichierOut = self.appliEficas.formatFichierOut
         self.formatFichierIn = self.appliEficas.formatFichierIn
 
-        # if self.appliEficas.maConfiguration.dumpXSD==True : self.appliEficas.dumpXsd()
-        self.dict_reels = {}
-        self.liste_simp_reel = []
-        self.dicoNouveauxMC = {}
-        self.dicoNouveauxFact = {}
-
-        try:
-            if self.maConfiguration.writerModule :
+        if self.maConfiguration.writerModule :
+            try:
                 _module = __import__(self.maConfiguration.writermodule)
                 info = _module.entryPoint()
                 writer.plugins.addEntryPoint(info)
-        except:
+            except:
                 pass
 
-        try:
-            if self.maConfiguration.readerModule :
+        if self.maConfiguration.readerModule :
+            try:
                 # print self.maConfiguration.readerModule
                 _module = __import__(self.maConfiguration.readerModule)
                 info = _module.entryPoint()
                 reader.plugins.addEntryPoint(info)
-        except:
-            pass
+            except:
+                pass
 
         self.mesWriters = writer
-        try: self.XMLWriter = writer.plugins["xml"]()
-        except: self.XMLWriter = None
-        try: self.pythonWriter = writer.plugins["python"]()
-        except: self.pythonWriter = None
-
+        if "xml" in writer.plugins.keys():
+            self.XMLWriter = writer.plugins["xml"]()
+        else : self.XMLWriter = None
+        if "python" in writer.plugins.keys():
+            self.XMLWriter = writer.plugins["python"]()
+        else : self.XMLWriter = None
         if self.formatFichierOut in writer.plugins.keys():
             self.myWriter = writer.plugins[self.formatFichierOut]()
 
@@ -140,7 +131,7 @@ class Editor:
                 except:
                 #else :
                     print("mauvaise lecture du fichier")
-                if self.salome:
+                if self.appliEficas.salome:
                     try:
                         self.appliEficas.addJdcInSalome(self.fichier)
                     except:
@@ -167,7 +158,7 @@ class Editor:
             txt_exception = None
             if not jdc:
                 if self.extensionFichier == ".xml":
-                    if self.appliEficas.maConfiguration.withXSD:
+                    if self.appliEficas.withXSD:
                         self.jdc.analyseXML()
                     else:
                         print("run MDM with -x option  (MDM for XML)")
@@ -194,7 +185,7 @@ class Editor:
 
         # Il faut convertir le contenu du fichier en fonction du format
         formatIn = self.appliEficas.formatFichierIn
-        if self.extensionFichier == ".xml" and self.appliEficas.maConfiguration.withXSD:
+        if self.extensionFichier == ".xml" and self.appliEficas.withXSD:
             formatIn = "xml"
         if formatIn in reader.plugins:
             # Le convertisseur existe on l'utilise
@@ -235,13 +226,13 @@ class Editor:
         CONTEXT.unsetCurrentStep()
 
         # le jdc  n est pas charge
-        if not (hasattr(self.readercata, "cata_ordonne_dico")):
+        if not (hasattr(self.readercata, "dicoCataOrdonne")):
             return
         jdc = self.readercata.cata.JdC(
             procedure=text,
             appliEficas=self.appliEficas,
             cata=self.readercata.cata,
-            cata_ord_dico=self.readercata.cata_ordonne_dico,
+            dicoCataOrdonne=self.readercata.dicoCataOrdonne,
             nom=jdcName,
             repMat=self.maConfiguration.repMat,
         )
@@ -265,7 +256,7 @@ class Editor:
             procedure=texte,
             appliEficas=self.appliEficas,
             cata=self.readercata.cata,
-            cata_ord_dico=self.readercata.cata_ordonne_dico,
+            dicoCataOrdonne=self.readercata.dicoCataOrdonne,
             repMat=self.maConfiguration.repMat,
         )
 
@@ -296,7 +287,7 @@ class Editor:
             procedure="",
             appliEficas=self.appliEficas,
             cata=self.readercata.cata,
-            cata_ord_dico=self.readercata.cata_ordonne_dico,
+            dicoCataOrdonne=self.readercata.dicoCataOrdonne,
             repMat=self.maConfiguration.repMat,
         )
         jaux.editor = self
@@ -306,7 +297,7 @@ class Editor:
             procedure="",
             appliEficas=self.appliEficas,
             cata=self.readercata.cata,
-            cata_ord_dico=self.readercata.cata_ordonne_dico,
+            dicoCataOrdonne=self.readercata.dicoCataOrdonne,
             jdc_pere=jaux,
             repMat=self.maConfiguration.repMat,
         )
@@ -1141,14 +1132,7 @@ class Editor:
         if nomDuMC in self.dicoNouveauxMC:
             del self.dicoNouveauxMC[nomDuMC]
         self.dicoNouveauxMC[nomDuMC] = (
-            "ajoutDefinitionMC",
-            nomEtape,
-            listeAvant,
-            nomDuMC,
-            typ,
-            args,
-        )
-        # print self.dicoNouveauxMC
+            "ajoutDefinitionMC", nomEtape, listeAvant, nomDuMC, typ, args,)
 
     # ---------------------------------------------------------------------#
     def ajoutDefinitionMCFact(self, nomEtape, listeAvant, nomDuMC, listeMC, **args):

@@ -244,9 +244,9 @@ class MCCOMPO(P_OBJECT.OBJECT):
         Ordonne la liste suivant l'ordre du catalogue.
         Seulement pour IHM graphique
         """
-        if self.jdc and self.jdc.cata_ordonne_dico != None:
+        if self.jdc and self.jdc.dicoCataOrdonne != None:
             liste_noms_mc_ordonnee = self.getListeMcOrdonneeBrute(
-                self.getGenealogie(), self.jdc.cata_ordonne_dico
+                self.getGenealogie(), self.jdc.dicoCataOrdonne
             )
             return self.ordonneListeMc(mcListe, liste_noms_mc_ordonnee)
         else:

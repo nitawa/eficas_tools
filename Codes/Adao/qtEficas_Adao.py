@@ -32,4 +32,4 @@ __import__(name)
 #sys.setdefaultencoding('latin1')
 
 from InterfaceQT4 import eficas_go
-eficas_go.lanceEficas(code=prefs.code)
+eficas_go.lanceQtEficas(code=prefs.code)

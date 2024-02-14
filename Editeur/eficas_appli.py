@@ -20,7 +20,6 @@
 import os, sys
 
 from Accas.extensions.eficas_exception import EficasException
-from Editeur.viewManagerSsIhm import MyViewManagerSsIhm
 from Editeur import session
 from Editeur.getVersion import getEficasVersion
 
@@ -30,51 +29,49 @@ class EficasAppli:
     Class implementing the main user interface.
     """
 
-    def __init__( self, code=None, salome=1, parent=None, multi=False, langue="fr",
-        ssIhm=True, labelCode=None, genereXSD=False, versionCode=None, ssCode=None, fichierCata=None,
-        GUIPath=None,
-    ):
+    def __init__(self, code=None, versionCode=None, salome=1, multi=False, langue="fr", ssCode=None, fichierCata=None, GUIPath=None):
+    #--------------------------------------------------------------------------------------------------------------------------------
         """
-        Constructor
+        Constructor d appli eficas. classe mere de appli-qtEficas et de appli-web eficas et utilisee sans IHM pour les
+        transformations des catas en XSD, des comm en XML et de validation des donnees
+        les parametres sont :
+            nom du code (exple Adao)
+            versionCode (version du code permet de retrouver le catalogue dans le fichier prefs : exple V10-4)
+            salome  : lance ou non a partir de salome 
+            multi (permet de ne pas specifier le code mais de le demander )
+            langue des messages
+            ssCode (utilise pour MAP permet de distinguer un patron specifique, un catalogue specifique...)
+            fichier catalogue utilise
         """
-        version = getEficasVersion()
-        self.versionEficas = "Eficas QT5 Salome " + version
-        self.labelCode = labelCode
-        self.GUIPath = None
-
-        self.salome = salome
-        self.ssIhm = True
         self.code = code
-        self.genereXSD = genereXSD
-        self.versionCode = versionCode
         self.ssCode = ssCode
+        self.multi = multi
+        self.salome = salome
 
+        version = getEficasVersion()
+        self.versionEficas = "Eficas Salome " + version
+        self.GUIPath = GUIPath
         self.dict_reels = {}
         self.fichierIn = None
         self.fichierOut = None
 
-        self.recent = []
         self.ficRecents = {}
         self.mesScripts = {}
         self.listePathAEnlever = []
-        self.repIcon = os.path.join( os.path.dirname(os.path.abspath(__file__)), "..", "Editeur", "icons")
 
         if fichierCata == None: self.fichierCata = session.d_env.fichierCata
         else: self.fichierCata = fichierCata
 
-        if session.d_env.labelCode: self.labelCode = session.d_env.labelCode
-        self.withXSD = session.d_env.withXSD
+        self.versionCode = versionCode
+        if session.d_env.versionCode: self.versionCode = session.d_env.versionCode
 
         if self.salome:
             try:
                 from Accas import eficasSalome
                 Accas.SalomeEntry = eficasSalome.SalomeEntry
-            except:
-                print("eficas hors salome")
-
-        self.multi = multi
-        # on peut avoir multi et sans Ihm si on est en Web
-        # if self.multi: print("pas de multi sans ihm")
+            except e:
+                print ("impossible d importer les salome entry")
+                print (str(e))
 
         if langue == "fr": self.langue = langue
         else: self.langue = "ang"
@@ -88,19 +85,22 @@ class EficasAppli:
             self.maConfiguration = BaseConfiguration(self)
 
         self.suiteTelemac = False
-        self.viewmanager = MyViewManagerSsIhm(self)
         self.withUQ = False
+        self.genereXSD = False
+        from Editeur.editor_manager import EditorManager
+        self.editorManager = EditorManager(self)
 
     def ajoutUQ(self):
+    #-----------------
         self.withUQ = True
         self.formatFichierIn = "pythonUQ"  # par defaut
 
     def definitCode(self, code, ssCode):
+    #-----------------------------------
         # ssCode sert pour Map
         self.code = code
         self.ssCode = ssCode
-        if self.code == None:
-            return  # pour le cancel de la fenetre choix code
+        if self.code == None: return  
 
         if ssCode != None:
             self.formatFichierOut = ssCode  # par defaut
@@ -109,6 +109,7 @@ class EficasAppli:
             self.formatFichierIn = "python"  # par defaut
             self.formatFichierOut = "python"  # par defaut
 
+        self.listePathAEnlever = []
         from Editeur.configuration import BaseConfiguration
         self.maConfiguration = BaseConfiguration(self)
 
@@ -117,10 +118,12 @@ class EficasAppli:
             localisation.localise( None, self.langue,
                 translatorFile=self.maConfiguration.translatorFile,
             )
-        if self.withXSD:
-            self.maConfiguration.withXSD = True
+
+        # Comment faire si Multi ?
+        self.withXSD   = session.d_env.withXSD
 
     def getSource(self, file):
+    #-------------------------
         # appele par Editeur/session.py
         import Accas.IO.reader
 
@@ -130,47 +133,55 @@ class EficasAppli:
         return texte
 
     def initEditor(self, fichier=None, jdc=None, units=None, include=0):
+    #------------------------------------------------------------------
         if (hasattr(self, "editor")) and self.editor != None:
-            print("un seul editeur par application")
+            print("un seul editeur par application eficas_appli ")
             sys.exit()
-        self.editor = self.viewmanager.getNewEditor()
+        self.editor = self.editorManager.getNewEditor()
 
     def fileNew(self):
+    #-----------------
         self.editor = self.initEditor()
 
     def getEditor(self):
+    #-------------------
         if (hasattr(self, "editor")) and self.editor != None:
             return self.editor
         self.initEditor()
         return self.editor
 
     def fileOpen(self, fichier):
+    #---------------------------
         fichierIn = os.path.abspath(fichier)
         try:
-            monEditor = self.viewmanager.handleOpen(fichierIn)
+            monEditor = self.editorManager.handleOpen(fichierIn)
         except EficasException as exc:
             print("poum")
             monEditor = None
         return monEditor
 
     def fileSave(self):
+    #-------------------
         if self.editor == None:
             return False
         ok, newName = editor.saveFileAs()
         print("ok, newName ", ok, newName)
 
     def fileSaveAs(self, fileName):
+    #-----------------_------------
         if self.editor == None:
             return False
         ok = editor.saveFileAs()
         print("ok ", ok)
 
     def dumpXsd(self, avecEltAbstrait=False):
+    #-----------------------------------------
         currentCata = CONTEXT.getCurrentCata()
         texteXSD = currentCata.dumpXsd(avecEltAbstrait)
         return texteXSD
 
     def afficheMessage(self, titre, texte,critical=True):
+    #-----------------------------------------------------
         print ('__________________________')
         print (tr(titre))
         print ('')
@@ -178,15 +189,6 @@ class EficasAppli:
         print ('__________________________')
 
 
-# ,self.fileSaveAs
-# ,self.fileClose
-# ,self.fileExit
-# ,self.jdcRapport
-# ,self.jdcRegles
-# ,self.jdcFichierSource
-# ,self.visuJdcPy
-
-
 if __name__ == "__main__":
     # Modules Eficas
-    monEficas = AppliSsIhm(code="Adao", salome=0, labelCode="V83")
+    pass

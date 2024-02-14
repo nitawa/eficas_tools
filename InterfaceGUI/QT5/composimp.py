@@ -152,7 +152,7 @@ class NodeCommun:
                 else:
                     from InterfaceGUI.QT5.monWidgetCB import MonWidgetCBSD
                     widget = MonWidgetCBSD( self, maDefinition, monNom, monObjet, parentQt, maCommande)
-            elif self.item.waitSalome() and self.editor.salome:
+            elif self.item.waitSalome() and self.editor.appliEficas.salome:
                 from InterfaceGUI.QT5.monWidgetSimpSalome import MonWidgetSimpSalome
                 widget = MonWidgetSimpSalome( self, maDefinition, monNom, monObjet, parentQt, maCommande)
             elif self.item.waitTxm():
@@ -185,7 +185,7 @@ class NodeCommun:
                 listeAAfficher = self.item.getSdAvantDuBonType()
                 # a changer selon UserASSD ou UserASSDMultiple
                 mctype = maDefinition.type[0]
-                enable_salome_selection = self.editor.salome and (
+                enable_salome_selection = self.editor.appliEficas.salome and (
                     ("grma" in repr(mctype))
                     or ("grno" in repr(mctype))
                     or ("SalomeEntry" in repr(mctype))

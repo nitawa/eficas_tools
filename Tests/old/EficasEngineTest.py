@@ -35,7 +35,7 @@ import difflib
 
 from PyQt4.QtGui  import *
 from myMain import Ui_Eficas
-from viewManager import MyTabview
+from editorManager import MyTabview
 from getVersion import getEficasVersion
 
 from Accas.extensions.eficas_translation import tr
@@ -79,7 +79,7 @@ class EficasEngineTestCase(unittest.TestCase):
 
     def close(self):
         if ( self.editor != None ):
-            vm=self.Eficas.viewmanager
+            vm=self.Eficas.editorManager
             index=vm.myQtab.currentIndex()
             idx=index
             while idx < len(vm.dict_editors) -1 :
@@ -99,9 +99,9 @@ class EficasEngineTestCase(unittest.TestCase):
 
         result=True
         try:
-            self.Eficas.viewmanager.handleOpen(fileName)
-            index=self.Eficas.viewmanager.myQtab.currentIndex()
-            self.editor=self.Eficas.viewmanager.dict_editors[index]
+            self.Eficas.editorManager.handleOpen(fileName)
+            index=self.Eficas.editorManager.myQtab.currentIndex()
+            self.editor=self.Eficas.editorManager.dict_editors[index]
         except:
             result=False
             pass

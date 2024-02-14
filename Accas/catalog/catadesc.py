@@ -18,16 +18,16 @@
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
 
-# Classe permettant d ajouter un catalogue par un utilisateur
-# Attention plus utilisé car peu utile
+# Classe permettant a un utilisateur d ajouter un catalogue
 # permet d avoir les valeurs par defaut dans le tuple
 # Exemple dans un pref.py
-# self.catalogues = (CatalogDescription("monCata", os.path.join(repIni, "monCata.py")),)
+# gere les ssCodes autrefois utilises par Map
+# self.catalogues = (CatalogDescription("monCataVO", os.path.join(repIni, "monCata.py")),)
 
 class CatalogDescription(object):
     def __init__(
         self,
-        labelCode,
+        versionCode,
         fichierCata,
         formatFichierOut="python",
         formatFichierIn="python",
@@ -40,8 +40,8 @@ class CatalogDescription(object):
         """
         This class can be used to describe an Eficas catalog.
 
-        :type  labelCode: string
-        :param labelCode: unique labelCode for the catalog
+        :type  versionCode: string
+        :param versionCode: unique versionCode for the catalog
 
         :type  fichierCata: string
         :param fichierCata: path of the file containing the catalog itself
@@ -72,7 +72,7 @@ class CatalogDescription(object):
 
         """
 
-        self.labelCode = labelCode
+        self.versionCode = versionCode
         self.fichierCata = fichierCata
         self.formatFichierOut = formatFichierOut
         self.formatFichierIn = formatFichierIn
@@ -80,7 +80,7 @@ class CatalogDescription(object):
         self.code = code
         self.ssCode = ssCode
         if userName is None:
-            self.userName = labelCode
+            self.userName = versionCode
         else:
             self.userName = userName
         self.selectable = selectable
@@ -93,7 +93,7 @@ class CatalogDescription(object):
             desc = CatalogDescription(
                 code=cataTuple[0],
                 ssCode=cataTuple[1],
-                labelCode=cataTuple[0] + cataTuple[1],
+                versionCode=cataTuple[0] + cataTuple[1],
                 fichierCata=cataTuple[2],
                 formatFichierOut=cataTuple[3],
                 formatFichierIn=cataTuple[4],
@@ -102,7 +102,7 @@ class CatalogDescription(object):
         if cataTuple[0] == "MAP":
             desc = CatalogDescription(
                 code=cataTuple[0],
-                labelCode=cataTuple[1],
+                versionCode=cataTuple[1],
                 fichierCata=cataTuple[2],
                 ssCode=cataTuple[3],
                 formatFichierOut="MAP",
@@ -111,7 +111,7 @@ class CatalogDescription(object):
         elif len(cataTuple) == 4:
             desc = CatalogDescription(
                 code=cataTuple[0],
-                labelCode=cataTuple[1],
+                versionCode=cataTuple[1],
                 fichierCata=cataTuple[2],
                 formatFichierOut=cataTuple[3],
                 formatFichierIn="python",
@@ -119,7 +119,7 @@ class CatalogDescription(object):
         elif len(cataTuple) == 5:
             desc = CatalogDescription(
                 code=cataTuple[0],
-                labelCode=cataTuple[1],
+                versionCode=cataTuple[1],
                 fichierCata=cataTuple[2],
                 formatFichierOut=cataTuple[3],
                 formatFichierIn=cataTuple[4],
@@ -127,7 +127,7 @@ class CatalogDescription(object):
         elif len(cataTuple) == 6:
             desc = CatalogDescription(
                 code=cataTuple[0],
-                labelCode=cataTuple[1],
+                versionCode=cataTuple[1],
                 fichierCata=cataTuple[2],
                 formatFichierOut=cataTuple[3],
                 formatFichierIn=cataTuple[4],

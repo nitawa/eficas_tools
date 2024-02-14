@@ -47,7 +47,7 @@ from Editeur.editor import Editor
 
 
 class QtEditor(Editor, Ui_baseWidget, QWidget):
-# ----------------------------------------------------- #
+# -------------------------------------------- #
     """
     Editeur de jdc
     """
@@ -104,7 +104,7 @@ class QtEditor(Editor, Ui_baseWidget, QWidget):
         # ou se trouve le fichier de traduction si demandeCatalogue
         if self.appliEficas.readercata.demandeCatalogue == True:
             nomFichierTranslation = (
-                "translatorFile" + "_" + str(self.appliEficas.readercata.labelCode)
+                "translatorFile" + "_" + str(self.appliEficas.readercata.versionCode)
             )
             if hasattr(self.appliEficas.maConfiguration, nomFichierTranslation):
                 translatorFile = getattr(
@@ -115,10 +115,8 @@ class QtEditor(Editor, Ui_baseWidget, QWidget):
                     None, self.appliEficas.langue, translatorFile=translatorFile
                 )
 
-        if self.jdc_item and self.appliEficas.ssIhm == False:
-            self.tree = browser.JDCTree(self.jdc_item, self)
         self.appliEficas.construitMenu()
-
+        if self.jdc_item : self.tree = browser.JDCTree(self.jdc_item, self)
         self.adjustSize()
 
     # --------------------#
@@ -232,7 +230,7 @@ class QtEditor(Editor, Ui_baseWidget, QWidget):
     def closeIt(self):
     # ----------------#
         """
-        Public method called by the viewmanager to finally get rid of us.
+        Public method called by the editorManager to finally get rid of us.
         """
         if self.jdc:
             self.jdc.supprime()
@@ -755,7 +753,7 @@ class QtEditor(Editor, Ui_baseWidget, QWidget):
                 appliEficas=self.appliEficas,
             )
 
-        if self.salome:
+        if self.appliEficas.salome:
             self.appliEficas.addJdcInSalome(self.fichierComplet)
 
         self.modified = 0
@@ -843,7 +841,7 @@ class QtEditor(Editor, Ui_baseWidget, QWidget):
             else:
                 sys.exit(1)
 
-        if self.salome:
+        if self.appliEficas.salome:
             self.appliEficas.addJdcInSalome(self.fichier)
         self.modified = 0
         nouveauTitre = (
@@ -923,7 +921,7 @@ class QtEditor(Editor, Ui_baseWidget, QWidget):
                 ret, fichier = Editor.saveUQFile(self, fn)
                 if ret:
                     self.fichier = fichier
-                if self.salome and ret:
+                if self.appliEficas.salome and ret:
                     self.appliEficas.addJdcInSalome(self.fichier)
                 return (1, self.fichier)
             if self.appliEficas.salome:

@@ -20,40 +20,27 @@
 """
 Ce module centralise les informations issues de la ligne de commande.
 
-La ligne de commande est parsee avec l'aide du module python optparse.
-Les options possibles sont : -l, -j, -p, -d, -i, -f comme definies ci-dessous.
-
-Un exemple typique d'utilisation est :
->>> ./appli.py -v V7.3 -d 1 -j aa -i 11 iii -p ppp -i 22 ii -j bb -f ff
-
-qui demande a l'application d'ouvrir trois jeux de commandes.
-
-Le premier (aa) a un include (11,iii) et est la suite du fichier poursuite ppp
-qui a lui meme un include (22,ii).
-
-Le deuxieme bb est un jeu de commandes simple.
-
-Le troisieme est decrit dans le fichier ff de type .ini
-qui est parse par le module Configparser.
-Chaque section du fichier decrit un jeu de commandes.
-Un include est specifie par: numero logique=nom du fichier
-Une poursuite est specifiee par: poursuite=reference a un jeu de commande
-Cette reference correspond a un nom de section decrivant le jeu de commandes.
-Le jeu de commandes maitre est donne par l'entree globale jdc dans la section jdc.
-
-Exemple:
-[jdc]
-jdc=a
-[a]
-comm=aa
-poursuite=pours
-11=iii
-[pours]
-comm=ppp
-22=ii
-
-La session utilisera le catalogue V7.3 en mode debug.
 """
+
+#Version Obsolete pour Aster mais qui explique l utilisation de poursuite et include
+#La ligne de commande est parsee avec l'aide du module python optparse.
+#Les options possibles sont : -l, -j, -p, -d, -i, -f comme definies ci-dessous.
+#
+#Un exemple typique d'utilisation est :
+#>>> ./appli.py -v V7.3 -d 1 -j aa -i 11 iii -p ppp -i 22 ii -j bb -f ff
+#qui demande a l'application d'ouvrir trois jeux de commandes.
+#Le premier (aa) a un include (11,iii) et est la suite du fichier poursuite ppp
+#qui a lui meme un include (22,ii).
+#
+#Le deuxieme bb est un jeu de commandes simple.
+#Le troisieme est decrit dans le fichier ff de type .ini
+#qui est parse par le module Configparser.
+#Chaque section du fichier decrit un jeu de commandes.
+#Un include est specifie par: numero logique=nom du fichier
+#Une poursuite est specifiee par: poursuite=reference a un jeu de commande
+#Cette reference correspond a un nom de section decrivant le jeu de commandes.
+#Le jeu de commandes maitre est donne par l'entree globale jdc dans la section jdc.
+
 
 from builtins import str
 
@@ -341,7 +328,7 @@ def createparser():
         "--label",
         action="store",
         type="string",
-        dest="labelCode",
+        dest="versionCode",
         help=tr("version de catalogue a utiliser"),
     )
 
@@ -404,8 +391,8 @@ def parse(args):
         options.comm = []
     if not hasattr(options, "fichierCata"):
         options.fichierCata = None
-    if not hasattr(options, "labelCode"):
-        options.labelCode = None
+    if not hasattr(options, "versionCode"):
+        options.versionCode = None
     if not hasattr(options, "fichierXMLOut"):
         options.fichierXMLOut = None
     if options.withXSD:

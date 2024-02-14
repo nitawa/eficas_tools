@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+sC -*- coding: utf-8 -*-
 # Copyright (C) 2007-2024   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
@@ -38,17 +38,19 @@ from Accas.catalog.readercata import ReaderCataCommun
 
 
 class ReaderCata(ReaderCataCommun):
+# essai de lecture de catalogue en XML
+# obsolete
     def __init__(self, appliEficas, editor):
         self.appliEficas = appliEficas
         self.editor = editor
         self.versionEficas = self.appliEficas.versionEficas
         self.code = self.appliEficas.code
-        self.ssCode = self.appliEficas.ssCode
-        # PN ?? bizarre le 22/04/20
+
+        # PN ?? bizarre le 22/04/24
         self.appliEficas.formatfichierOut = "python"
         self.appliEficas.formatfichierIn = "xml"
         self.modeNouvCommande = self.appliEficas.maConfiguration.modeNouvCommande
-        self.labelCode = self.appliEficas.labelCode
+        self.versionCode = self.appliEficas.versionCode
         self.version_cata = None
         self.ficCata = None
         self.OpenCata()
@@ -72,7 +74,7 @@ class ReaderCata(ReaderCataCommun):
         self.cata = SchemaMed
         uiinfo.traite_UIinfo(self.cata)
         #self.commandesOrdreCatalogue = []
-        self.cata_ordonne_dico, self.appliEficas.liste_simp_reel = autre_analyse_cata.analyseCatalogue(self.cata)
+        self.dicoCataOrdonne, self.appliEficas.liste_simp_reel = autre_analyse_cata.analyseCatalogue(self.cata)
         self.liste_groupes = None
 
     def dumpToXml(self):

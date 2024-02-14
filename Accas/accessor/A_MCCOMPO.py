@@ -158,7 +158,7 @@ class MCCOMPO(A_OBJECT.OBJECT):
         # Attention : les mots clefs listes (+sieurs fact )
         # n ont pas toutes ces methodes. a priori pas appele mais
         if self.nature != "MCLIST":
-            self.listeMc = self.getListeMcOrdonnee(genea, self.jdc.cata_ordonne_dico)
+            self.listeMc = self.getListeMcOrdonnee(genea, self.jdc.dicoCataOrdonne)
             listeNomsPresents = self.dictMcPresents()
             for regle in self.getRegles():
                 (monToolTip, regleOk) = regle.verif(listeNomsPresents)
@@ -214,7 +214,7 @@ class MCCOMPO(A_OBJECT.OBJECT):
         Retourne l'index dans la liste des fils de self du nouveau fils de nom nom_fils
         Permet de savoir a quelle position il faut ajouter un nouveau mot-cle
         """
-        cata_ordonne = self.jdc.cata_ordonne_dico
+        cata_ordonne = self.jdc.dicoCataOrdonne
         liste_noms_mc_ordonnee = self.getListeMcOrdonneeBrute(
             self.getGenealogie(), cata_ordonne
         )

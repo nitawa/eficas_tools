@@ -49,7 +49,6 @@ class QtEditor(Ui_editor5C, Editor, QWidget):
 
         QWidget.__init__(self,None)
         self.setupUi(self)
-        appliEficas.maConfiguration.withXSD=1
         Editor.__init__(self,appliEficas, fichier, jdc=jdc)
         comploader.chargerComposants(self.appliEficas.GUIPath)
         self.initQTSignals()
@@ -77,7 +76,7 @@ class QtEditor(Ui_editor5C, Editor, QWidget):
         self.message=''
 
         #self.commandesOrdreCatalogue =self.readercata.commandesOrdreCatalogue
-        nomFichierTranslation='translatorFile'+'_'+str(self.appliEficas.readercata.labelCode)
+        nomFichierTranslation='translatorFile'+'_'+str(self.appliEficas.readercata.versionCode)
         if hasattr(self.appliEficas.maConfiguration,nomFichierTranslation) :
             translatorFile=getattr(self.appliEficas.maConfiguration,nomFichierTranslation)
             from Accas.extensions import localisation
@@ -99,7 +98,7 @@ class QtEditor(Ui_editor5C, Editor, QWidget):
         self.jdcSelection.analyse()
         if debug : print (self.jdcSelection.etapes)
         self.jdcSelectionItem = Objecttreeitem.makeObjecttreeitem( self, "nom", self.jdcSelection )
-        if self.jdcSelectionItem and self.appliEficas.ssIhm==False :
+        if self.jdcSelectionItem :
            self.treeJdcSelection = browser.JDCTree( self.jdcSelectionItem, self )
            if debug : print (self.treeJdcSelection)
            self.widgetSelection = self.treeJdcSelection.racine.children[0].fenetre
@@ -169,7 +168,7 @@ class QtEditor(Ui_editor5C, Editor, QWidget):
         self.jdcLabels=self._newJDC(texte=texte)
         self.jdcLabels.analyse()
         jdcLabelsItem = Objecttreeitem.makeObjecttreeitem( self, "nom", self.jdcLabels )
-        if jdcLabelsItem and self.appliEficas.ssIhm==False :
+        if jdcLabelsItem :
            treeJdcLabels = browser.JDCTree( jdcLabelsItem, self )
            widgetLabels = treeJdcLabels.racine.children[0].fenetre
            widgetLabels.show()
@@ -190,17 +189,12 @@ class QtEditor(Ui_editor5C, Editor, QWidget):
 
     def afficheMessage(self,titre,message,critique=True):
     #----------------------------------------------------
-        if self.appliEficas.ssIhm:
-           print ('******************', titre, '*************')
-           print (message)
-           print ('*******************************')
-        else:
-           if critique :
-              from PyQt5.QtWidgets import QMessageBox
-              QMessageBox.critical(self, titre, message)
-           else :
-              from PyQt5.QtWidgets import QMessageBox
-              QMessageBox.information(self, titre, message)
+        if critique :
+           from PyQt5.QtWidgets import QMessageBox
+           QMessageBox.critical(self, titre, message)
+        else :
+           from PyQt5.QtWidgets import QMessageBox
+           QMessageBox.information(self, titre, message)
 
 
     def appelleExecutionRequete(self,requete,chercheUneSeuleValeur=True):

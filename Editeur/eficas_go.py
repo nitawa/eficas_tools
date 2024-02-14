@@ -28,8 +28,8 @@ if sys.version_info[0] < 3:
     sys.exit()
 
 
-def lanceEficas(code=None, multi=False, langue="en", labelCode=None, GUIPath='QT5', salome=0):
-# -------------------------------------------------------------------------------------------
+def lanceQtEficas(code=None, versionCode = None, multi=False, langue="en",  GUIPath='QT5', salome=0):
+# ---------------------------------------------------------------------------------------------------
     """
       Lance l'appli EFICAS avec Ihm QT
     """
@@ -39,27 +39,31 @@ def lanceEficas(code=None, multi=False, langue="en", labelCode=None, GUIPath='QT
         print("Please, set qt environment")
         return
 
+    if not GUIPath in ('QT5','cinqC') :
+       print ('Attention, lancement de Eficas pour QT avec GUIPath = {}'.format(GUIPath))
+
     from Editeur import session
     options = session.parse(sys.argv)
     if options.code != None:
         code = options.code
+    if options.versionCode != None:
+        versionCode = options.versionCode
 
-    if GUIPath == 'QT5' or GUIPath == 'cinqC' :
-        pathAbso=os.path.abspath(os.path.join(os.path.dirname(__file__),'..','InterfaceGUI',GUIPath))
-        if pathAbso not in sys.path : sys.path.insert(0,pathAbso)
 
+    pathAbso=os.path.abspath(os.path.join(os.path.dirname(__file__),'..','InterfaceGUI',GUIPath))
+    if pathAbso not in sys.path : sys.path.insert(0,pathAbso)
     from qt_eficas import QtEficasAppli
     app = QApplication(sys.argv)
-    Eficas = QtEficasAppli(code=code, salome=salome, multi=multi, langue=langue, labelCode=labelCode, GUIPath=GUIPath)
+    Eficas = QtEficasAppli(code=code, versionCode = versionCode, salome=salome, multi=multi, langue=langue, GUIPath=GUIPath)
+
     Eficas.show()
 
     res = app.exec_()
     sys.exit(res)
 
 
-def getEficas( code=None, multi=False, langue="en", ssCode=None, labelCode=None,
-    forceXML=False, genereXSD=False, fichierCata=None,GUIPath=None, salome = False):
-# -----------------------------------------------------------------------------------
+def getEficas( code=None, multi=False, langue="en", forceXML=False,  fichierCata=None,GUIPath=None):
+# ------------------------------------------------------------------------------------------------------------------
     """
     instancie l'appli EFICAS sans Ihm
     """
@@ -70,20 +74,25 @@ def getEficas( code=None, multi=False, langue="en", ssCode=None, labelCode=None,
         code = options.code
     if forceXML: options.withXSD = True
 
-    if GUIPath in ('QT5',  'cinqC', 'Web') :
+    if GUIPath in ('QT5',  'cinqC') :
         pathAbso=os.path.abspath(os.path.join(os.path.dirname(__file__),'..','InterfaceGUI',GUIPath))
         if pathAbso not in sys.path : sys.path.insert(0,pathAbso)
+        from qt_eficas import QtEficasAppli as EficasAppli
+    if GUIPath in ( 'Web') :
+        pathAbso=os.path.abspath(os.path.join(os.path.dirname(__file__),'..','InterfaceGUI',GUIPath))
+        if pathAbso not in sys.path : sys.path.insert(0,pathAbso)
+        from web_eficas import WebEficasAppli as EficasAppli
+    else :
+        print ('lancement de Eficas avec GUIPath = {}'.format(GUIPath))
+        from Editeur.eficas_appli import EficasAppli
 
-    from Editeur.eficas_appli import EficasAppli
-    Eficas = EficasAppli( code=code, salome=salome, multi=multi, langue=langue,
-        ssCode=ssCode, labelCode=labelCode, genereXSD=genereXSD, fichierCata=fichierCata)
+    Eficas = EficasAppli(code=code, multi=multi, langue=langue, ssCode=ssCode, versionCode=versionCode,  fichierCata=fichierCata, GUIPath=GUIPath)
     return Eficas
 
 
 def genereXSD(code=None):
 # -----------------------
     from Editeur import session
-
     options = session.parse(sys.argv)
     if code != None:
         options.code = code
@@ -91,7 +100,8 @@ def genereXSD(code=None):
         print("Use -c cata_name.py")
         return
 
-    monEficas = getEficas(code=options.code, genereXSD=True)
+    monEficas = getEficas(code=options.code)
+    monEficas.genereXSD = True
     monEditor = monEficas.getEditor()
     texteXSD = monEditor.dumpXsd(avecEltAbstrait=options.avecEltAbstrait)
 

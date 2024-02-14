@@ -99,7 +99,7 @@ class Groupe(QWidget, FacultatifOuOptionnel):
         try:
             # if 1 :
             self.listeMc = self.obj.getListeMcOrdonnee(
-                genea, self.jdc.cata_ordonne_dico
+                genea, self.jdc.dicoCataOrdonne
             )
             listeNomsPresents = self.obj.dictMcPresents()
             for regle in self.obj.getRegles():

@@ -31,10 +31,11 @@ class QtEficasAppli(Ui_Eficas5C, QtEficasAppli):
     Class implementing the 5C user interface.
     """
 
-    def __init__(self,code='5C', salome=0, multi = 0, labelCode=None,  langue='en', GUIPath="InterfaceGUI.cinqC"):
-        super().__init__(code=code, salome=salome, multi=multi, langue=langue, labelCode=labelCode, GUIPath=GUIPath)
-        self.GUIPath=GUIPath
-        self.viewmanager.newEditor()
+    def __init__(self,code='5C', salome=0, multi = 0, versionCode=None,  langue='en', GUIPath="InterfaceGUI.cinqC"):
+        super().__init__(code=code, salome=salome, multi=multi, langue=langue, versionCode=versionCode, GUIPath=GUIPath)
+        self.withXSD = True
+        self.GUIPath = GUIPath
+        self.editorManager.newEditor()
         
 
     def connecterSignaux(self) :
@@ -47,7 +48,7 @@ class QtEficasAppli(Ui_Eficas5C, QtEficasAppli):
 
     def fileOpen(self) :
         print ('aChanger')
-        print ( self.viewmanager)
+        print ( self.editorManager)
 
 
     def closeEvent(self,event):

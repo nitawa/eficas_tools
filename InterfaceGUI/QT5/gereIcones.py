@@ -39,21 +39,22 @@ class FacultatifOuOptionnel(object):
     """ Gere les boutons """
     def setReglesEtAide(self):
         listeRegles = ()
-        try:
-            listeRegles = self.node.item.getRegles()
+        # PN fevrier 24 pourquoi ce try ?
+        # FACT multiple ?
+        try: listeRegles = self.node.item.getRegles()
         except:
+            print ('FacultatifOuOptionnel, dans le except pour', self.node.item.nom)
             pass
         if hasattr(self, "RBRegle"):
-            if listeRegles == ():
-                self.RBRegle.close()
+            if listeRegles == (): self.RBRegle.close()
             else:
-                icon3 = QIcon(self.repIcon + "/lettreRblanc30.png")
-                self.RBRegle.setIcon(icon3)
+                icon = QIcon(self.repIcon + "/lettreRblanc30.png")
+                self.RBRegle.setIcon(icon)
                 self.RBRegle.clicked.connect(self.viewRegles)
 
         cle_doc = None
-        if not hasattr(self, "RBInfo"):
-            return
+
+        if not hasattr(self, "RBInfo"): return
         icon = QIcon(self.repIcon + "/point-interrogation30.png")
         self.RBInfo.setIcon(icon)
 
@@ -122,15 +123,8 @@ class FacultatifOuOptionnel(object):
 
         mc = self.node.item.get_definition()
         mctype = mc.type[0]
-        enable_salome_selection = self.editor.salome and (
-            ("grma" in repr(mctype))
-            or ("grno" in repr(mctype))
-            or ("SalomeEntry" in repr(mctype))
-            or (
-                hasattr(mctype, "enable_salome_selection")
-                and mctype.enable_salome_selection
-            )
-        )
+        enable_salome_selection = "grma" in repr(mctype) or "grno" in repr(mctype) or "SalomeEntry" in repr(mctype)
+        # or (hasattr(mctype, "enable_salome_selection" and mctype.enable_salome_selection))
 
         if enable_salome_selection:
             icon = QIcon(self.repIcon + "/flecheSalome.png")

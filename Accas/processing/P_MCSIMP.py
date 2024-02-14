@@ -57,6 +57,7 @@ class MCSIMP(P_OBJECT.OBJECT):
         self.nom = nom
         self.val = val
         self.parent = parent
+        self.associeVariableUQ = False
         self.objPyxbDeConstruction = objPyxbDeConstruction
         if parent:
             self.jdc = self.parent.jdc

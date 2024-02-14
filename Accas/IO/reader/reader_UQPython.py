@@ -17,20 +17,18 @@
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
 
+import re
 from Accas.extensions.eficas_translation import tr
-
-# import traceback
-# traceback.print_stack()
-
 from Accas.IO.reader.reader_python import Pythonparser
-
 
 def entryPoint():
     """
     Return a dictionary containing the description needed to load the plugin
     """
-    return {"name": "pythonUQ", "factory": pythonUQParser}
-
+    return {
+           'name' : 'pythonUQ',
+           'factory' : pythonUQParser
+           }
 
 class pythonUQParser(Pythonparser):
     """
@@ -39,54 +37,42 @@ class pythonUQParser(Pythonparser):
     """
 
     def convert(self, outformat, appliEficas=None):
-        text = Pythonparser.convert(self, outformat, appliEficas)
+        text=Pythonparser.convert(self, outformat, appliEficas)
         return text
 
-    def traitementApresLoad(self, jdc):
-        debug = 0
-        if debug:
-            print("traitementApresLoad")
-        etapeIncertitude = jdc.getEtapesByName("ExpressionIncertitude")
-        if etapeIncertitude == []:
-            return
-
-        incertitudeInput = etapeIncertitude[0].getChildOrChildInBloc("Input")
-        self.lesVariablesInput = incertitudeInput[0].getChildOrChildInBloc(
-            "VariableProbabiliste"
-        )
-        for mc in self.lesVariablesInput:
-            # if debug : print (mc,'mc')
-            mcVDPath = mc.getChild("MCPath").valeur
-            if debug:
-                print(mcVDPath)
-            # a modifier lorsque le MCPath comprendra le nom des OPERs
-            if not (mcVDPath):
-                mc.parent.suppentite(mc)
-                break  # on admet ici que le . comm n est pas valide
-            mcModelVariable = mc.getChild("ModelVariable")
+    def traitementApresLoad(self,jdc):
+        debug=0
+        if debug : print ('traitementApresLoad')
+        etapeIncertitude=jdc.getEtapesByName('ExpressionIncertitude')
+        if etapeIncertitude==[] : return
+        
+        incertitudeInput = etapeIncertitude[0].getChildOrChildInBloc('Input')[0]
+        self.lesVariablesInput = incertitudeInput.getChildOrChildInBloc('VariableProbabiliste')
+        for mc in self.lesVariablesInput :
+            if debug : print (mc,'mc')
+            mcVDPath=mc.getChild('MCPath').valeur
+            if debug : print(mcVDPath)
+            if not (mcVDPath) : 
+               try: mc.parent.suppentite(mc)
+               except : pass
+               break # on admet ici que le . comm n est pas valide 
+            mcModelVariable=mc.getChild('ModelVariable')
             mcModelVariable.definition.addInto(mcModelVariable.valeur)
-            # try :
-            #   mcObjectName=mc.getChild('ObjectName')
-            #   mcObjectName.changeStatut('f')
-            # except :
-            #  pass
-            mcCherche = jdc.getObjetByMCPath(mcVDPath)
-            if not (mcCherche):
-                mc.parent.suppentite(mc)
-                break  # on admet ici que le . comm n est pas valide
-            if debug:
-                print(mcCherche)
-            if mc.nature == "MCFACT":
-                mc[0].variableDeterministe = mcCherche
-                mcCherche.variableProbabiliste = mc[0]
-            else:
-                mc.variableDeterministe = mcCherche
-                mcCherche.variableProbabiliste = mc[0]
-            mcCherche.definition.siValide = mcCherche.changeValeursRefUQ
-            mcCherche.associeVariableUQ = True
-            itemConsigne = mc.getChild("Consigne")
-            itemConsigne.setValeur(
-                "la valeur entrée pour {} est {}".format(
-                    mcCherche.nom, mcCherche.valeur
-                )
-            )
+
+            mcDeterministe=jdc.getObjetByMCPath(mcVDPath)
+            if debug : print ('mcDeterministe', mcDeterministe, 'trouve a partir de ',  mcVDPath)
+            if not (mcDeterministe) : 
+               try: mc.parent.suppentite(mc)
+               except : pass
+               break # on admet ici que le . comm n est pas valide 
+            if debug : print('mcDeterministe',mcDeterministe, mcDeterministe.nom)
+
+            mc.variableDeterministe=mcDeterministe
+            if debug : print ('variableDeterministe pour ', mc, 'mis a ', mcDeterministe)
+            mcDeterministe.variableProbabiliste=mc
+            if debug : print ('variableProbabiliste pour ', mcDeterministe, 'mis a ', mc)
+
+            mcDeterministe.definition.siValide = mcDeterministe.changeValeursRefUQ
+            mcDeterministe.associeVariableUQ = True
+            # il ne faut pas mettre la consigne a jour. Elle le sera a la validation sans erreur sur les valeurs
+

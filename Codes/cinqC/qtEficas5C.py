@@ -29,4 +29,4 @@ import os, sys
 sys.path.append(os.path.join(os.path.abspath(os.path.dirname(__file__)),'..','..'))
 
 from Editeur import eficas_go
-eficas_go.lanceEficas(code=prefs.code, GUIPath='cinqC')
+eficas_go.lanceQtEficas(code=prefs.code, GUIPath='cinqC')

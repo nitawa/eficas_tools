@@ -192,7 +192,7 @@ class COMMANDE_COMM(P_OBJECT.OBJECT, A_OBJECT.OBJECT):
                 procedure=self.valeur,
                 definition=self.jdc.definition,
                 cata=self.jdc.cata,
-                cata_ord_dico=self.jdc.cata_ordonne_dico,
+                dicoCataOrdonne=self.jdc.dicoCataOrdonne,
                 context_ini=context_ini,
             )
             J.analyse()

@@ -24,12 +24,9 @@
 # Modules Python
 # Modules Eficas
 import prefs
-name='prefs_'+prefs.code
-#__import__(name)
-
 import os, sys
 sys.path.append(os.path.join(os.path.abspath(os.path.dirname(__file__)),'..','..'))
 
 from Editeur import eficas_go
-print (prefs.code)
-eficas_go.lanceEficas(code=prefs.code, GUIPath='QT5')
+print ('lancement d eficas pour : ', prefs.code)
+eficas_go.lanceQtEficas(code=prefs.code, GUIPath='QT5')

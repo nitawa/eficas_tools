@@ -32,4 +32,4 @@ sys.path.append(os.path.join(os.path.abspath(os.path.dirname(__file__)),'..','..
 
 from Editeur import eficas_go
 print (prefs.code)
-eficas_go.lanceEficas(code=prefs.code, GUIPath='QT5')
+eficas_go.lanceQtEficas(code=prefs.code, GUIPath='QT5')
