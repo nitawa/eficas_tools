@@ -49,10 +49,7 @@ def isNumber(obj):
 
 
 def isStr(obj):
-    import six
-
-    return isinstance(obj, (str, six.text_type))
-
+    return isinstance(obj, str)
 
 def isList(obj):
     return type(obj) is list

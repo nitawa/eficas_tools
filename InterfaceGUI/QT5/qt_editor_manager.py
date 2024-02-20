@@ -50,11 +50,20 @@ class QtEditorManager(EditorManager):
     def indexChanged(self):
     #----------------------
         index = self.myQtab.currentIndex()
-        EditorManager.indexChanged(self,index)
+        if index in self.dictEditors:
+            editor = self.dictEditors[index]
+            if editor.jdc != None:
+                CONTEXT.unsetCurrentJdC()
+                CONTEXT.setCurrentJdC(editor.jdc)
+            self.appliEficas.maConfiguration = editor.maConfiguration
+            self.appliEficas.code = editor.maConfiguration.code
+            self.appliEficas.setWindowTitle(editor.titre)
+            self.appliEficas.construitMenu()
+         
 
-    #----------------------------------------------
-    def handleOpen(self, fichier=None, units=None):
-    #----------------------------------------------
+    #-------------------------------------------------------
+    def openFile(self, fichier=None, units=None, patron =0):
+    #-------------------------------------------------------
         result = None
         if self.appliEficas.code == None:
             self.appliEficas.definitCode(None, None)
@@ -73,8 +82,7 @@ class QtEditorManager(EditorManager):
                 self.appliEficas.maConfiguration.saveDir,
                 extensions,)
             fichier = fichier[0]
-
-        if len(fichier) == 0: return None
+            if len(fichier) == 0: return None
 
         fichier = os.path.abspath(fichier)
         ulfile = os.path.abspath(fichier)
@@ -89,16 +97,16 @@ class QtEditorManager(EditorManager):
     #--------------------------------
     def closeTab(self, indexAFermer):
     #--------------------------------
-        self.handleClose(indexAFermer=indexAFermer)
+        self.fileClose(index=indexAFermer)
 
-    #--------------------------------------------------------
-    def handleClose(self, index = None, texte=tr("&Quitter")):
-    #--------------------------------------------------------
-        self.appliEficas.sauveRecents()
+    #-------------------------------
+    def fileClose(self, index=None):
+    #--------------------------------
+        self.appliEficas.saveListRecentlyOpen()
         if not index : index = self.myQtab.currentIndex()
         if index < 0: return
 
-        res = self.checkDirty(self.dictEditors[index], texte)
+        res = self.checkDirty(self.dictEditors[index], tr("&Quitter"))
         if res == 2: return 2  # l utilisateur a annule
         idx = index
         while idx < len(self.dictEditors) - 1:
@@ -129,42 +137,42 @@ class QtEditorManager(EditorManager):
         editor.saveRun()
 
     #---------------------------------------------
-    def handleCloseAll(self, texte=tr("Quitter")):
+    def closeAllFiles(self, texte=tr("Quitter")):
     #---------------------------------------------
         res = 0
-        self.appliEficas.sauveRecents()
+        self.appliEficas.saveListRecentlyOpen()
         while len(self.dictEditors) > 0:
             self.myQtab.setCurrentIndex(0)
-            res = self.handleClose(0, texte)
+            res = self.fileClose(0)
             if res == 2: return res  # l utilsateur a annule
         return res
 
     #--------------------------
-    def handleRechercher(self):
+    def rechercherConceptOuMotClef(self):
     #--------------------------
-        # print "passage dans handleRechercher"
+        # print "passage dans rechercherConceptOuMotClef"
         index = self.myQtab.currentIndex()
         if index < 0: return
         editor = self.dictEditors[index]
-        editor.handleRechercher()
+        editor.rechercherConceptOuMotClef()
 
     #-------------------------------------
-    def handleRechercherDsCatalogue(self):
+    def rechercherMotClefDsCatalogue(self):
     #-------------------------------------
-        # print "passage dans handleRechercher"
+        # print "passage dans rechercherConceptOuMotClef"
         index = self.myQtab.currentIndex()
         if index < 0:
             return
         editor = self.dictEditors[index]
-        editor.handleRechercherDsCatalogue()
+        editor.rechercherMotClefDsCatalogue()
 
     #-----------------------
-    def handleDeplier(self):
+    def deplier(self):
     #-----------------------
         index = self.myQtab.currentIndex()
         if index < 0: return
         editor = self.dictEditors[index]
-        editor.handleDeplier()
+        editor.deplier()
 
     #------------------------
     def handleEditCopy(self):
@@ -225,12 +233,12 @@ class QtEditorManager(EditorManager):
         self.newEditor(include=1)
 
     #------------------------------------
-    def handleViewJdcFichierSource(self):
+    def viewJdcFichierSource(self):
     #------------------------------------
         index = self.myQtab.currentIndex()
         if index < 0:
             return
-        self.dictEditors[index].viewJdcSource()
+        self.dictEditors[index].viewJdcFichierSource()
 
     #--------------------
     def ouvreArbre(self):
@@ -254,9 +262,9 @@ class QtEditorManager(EditorManager):
         editor = self.dictEditors[index]
         editor.ajoutCommentaire()
 
-    #-----------------------------
-    def handleViewJdcRegles(self):
-    #-----------------------------
+    #----------------------
+    def viewJdcRegles(self):
+    #-----------------------
         index = self.myQtab.currentIndex()
         if index < 0: return
         self.dictEditors[index].viewJdcRegles()
@@ -274,15 +282,15 @@ class QtEditorManager(EditorManager):
             return
         self.dictEditors[index].gestionParam()
 
-    #------------------------------
-    def handleViewJdcRapport(self):
-    #------------------------------
+    #------------------------
+    def viewJdcRapport(self):
+    #-------------------------
         index = self.myQtab.currentIndex()
         if index < 0: return
         self.dictEditors[index].viewJdcRapport()
 
     #-------------------------
-    def handleViewJdcPy(self):
+    def viewJdcPy(self):
     #-------------------------
         index = self.myQtab.currentIndex()
         if index < 0:
@@ -309,7 +317,7 @@ class QtEditorManager(EditorManager):
         return ok
 
     #------------------------
-    def handleSortieUQ(self):
+    def saveUQFile(self):
     #------------------------
         index = self.myQtab.currentIndex()
         if index < 0:
@@ -319,7 +327,7 @@ class QtEditorManager(EditorManager):
         return ok
 
     #---------------------------------
-    def handleSauvePourPersalys(self):
+    def savePersalys(self):
     #---------------------------------
         index = self.myQtab.currentIndex()
         if index < 0:
@@ -329,7 +337,7 @@ class QtEditorManager(EditorManager):
         return ok
 
     #---------------------
-    def handleExeUQ(self):
+    def exeUQScript(self):
     #---------------------
         index = self.myQtab.currentIndex()
         if index < 0: return
@@ -338,7 +346,7 @@ class QtEditorManager(EditorManager):
         return ok
 
     #-------------------------
-    def handleSaveLigne(self):
+    def fileSaveInLigneFormat(self):
     #-------------------------
         index = self.myQtab.currentIndex()
         if index < 0: return
@@ -476,13 +484,13 @@ class QtEditorManager(EditorManager):
                 return ok
         return res
 
-    #---------------------------------------
-    def handleAjoutGroup(self, listeGroup):
-    #---------------------------------------
+    #---------------------------------
+    def ajoutGroupe(self, listeGroup):
+    #---------------------------------
         index = self.myQtab.currentIndex()
         if index < 0: return
         editor = self.dictEditors[index]
-        editor.handleAjoutGroup(listeGroup)
+        editor.ajoutGroupe(listeGroup)
 
     #------------------------------------------------------------------------
     def handleFonctionUtilisateur(self, laFonctionUtilisateur, lesArguments):

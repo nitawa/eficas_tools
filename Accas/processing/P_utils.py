@@ -50,12 +50,7 @@ def calleeWhere(niveau=4):
     if frame == None:
         return 0, "inconnu", 0, {}
     try:
-        # Python 2.7 compile function does not accept unicode filename, so we encode it
-        # with the current locale encoding in order to have a correct traceback.
-        # Here, we convert it back to unicode.
-        import six
-
-        filename = six.text_type(frame.f_code.co_filename, getEncoding())
+        filename = str(frame.f_code.co_filename, getEncoding())
         return frame.fLineNo, filename, frame.f_code.co_firstlineno, frame.f_locals
     except:
         return 0, "inconnu", 0, {}

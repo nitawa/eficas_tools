@@ -38,10 +38,12 @@ from Accas.extensions import param2
 class QtEficasAppli(EficasAppli, Ui_Eficas, QMainWindow):
     """
     Class implementing the main QT user interface.
+    contains mainly overloading with qt widgets
+    manages the main window and connect qt
     """
 
     #----------------------------------------------------------------------------------------------------------------------------------------------
-    def __init__(self, code=None, versionCode=None, salome=1, multi=False, langue="fr", ssCode=None, fichierCata=None, GUIPath="InterfaceGUI.QT5"):
+    def __init__(self, code=None, versionCode=None, salome=1, multi=False, langue="fr", ssCode=None, fichierCata=None, GUIPath="InterfaceGUI.QT5", appWeb = None):
     #----------------------------------------------------------------------------------------------------------------------------------------------
         """
         Constructor
@@ -49,15 +51,12 @@ class QtEficasAppli(EficasAppli, Ui_Eficas, QMainWindow):
         QMainWindow.__init__(self)
         Ui_Eficas.__init__(self)
         self.setupUi(self)
-
-        EficasAppli.__init__( self, code, versionCode, salome, multi, langue,  ssCode, fichierCata, GUIPath)
-        print (self.myQtab)
+        EficasAppli.__init__( self, code, versionCode, salome, multi, langue,  ssCode, fichierCata, GUIPath, appWeb)
         
         self.editorManager = QtEditorManager(self)
 
         self.GUIPath = GUIPath
         self.suiteTelemac = self.maConfiguration.suiteTelemac
-
         self.multi = multi
         if self.multi : 
             self.definitCode(code, None)
@@ -70,9 +69,7 @@ class QtEficasAppli(EficasAppli, Ui_Eficas, QMainWindow):
 
         from Accas.extensions import localisation
         localisation.localise(None, self.langue, translatorFile=self.maConfiguration.translatorFile,)
-
         self.repIcon = os.path.join( os.path.dirname(os.path.abspath(__file__)),"..", "..", "Editeur", "icons")
-        app = QApplication
 
         if not self.salome:
             self.resize(self.maConfiguration.taille, self.height())
@@ -125,15 +122,18 @@ class QtEficasAppli(EficasAppli, Ui_Eficas, QMainWindow):
 
         if self.code != None: self.construitMenu()
         self.setWindowTitle(self.versionEficas)
-
-        try:
-            # if 1 :
-            # print ('attention try devient if 1')
-            self.ouvreFichiers()
+        try :
+        #if 1 :
+         #print ('attention try devient if 1')
+            self.openFiles()
         except EficasException as exc:
-            # except:
-            print("je suis dans le except du ouvreFichier")
-            if self.salome == 0 : exit(1)
+            print ("je suis dans le except", exc)
+            if self.salome == 0 : exit()
+
+    #-------------------------
+    def openFileFromMenu(self):
+    #-------------------------
+        self.editorManager.openFile()
 
     #--------------------
     def closeEntete(self):
@@ -160,7 +160,7 @@ class QtEficasAppli(EficasAppli, Ui_Eficas, QMainWindow):
     def construitMenu(self):
     #-----------------------
         self.initPatrons()
-        self.initRecents()
+        self.readListRecentlyOpen()
         self.initAides()
         for intituleMenu in (
             "menuTraduction",
@@ -222,15 +222,15 @@ class QtEficasAppli(EficasAppli, Ui_Eficas, QMainWindow):
             tr("Sauvegarde des fichiers pour l'étude incertaine")
         )
         self.menuUQ.addAction(self.actionSaveUQ)
-        self.actionSaveUQ.triggered.connect(self.handleSortieUQ)
+        self.actionSaveUQ.triggered.connect(self.saveUQFile)
         self.actionExeUQ = QAction(self)
         self.actionExeUQ.setText(tr("Sauvegarde et Lancement de l'étude"))
         self.menuUQ.addAction(self.actionExeUQ)
-        self.actionExeUQ.triggered.connect(self.handleExeUQ)
+        self.actionExeUQ.triggered.connect(self.exeUQScript)
         self.actionSauvePersalys = QAction(self)
         self.actionSauvePersalys.setText(tr("Sauvegarde du script Persalys"))
         self.menuUQ.addAction(self.actionSauvePersalys)
-        self.actionSauvePersalys.triggered.connect(self.handleSauvePourPersalys)
+        self.actionSauvePersalys.triggered.connect(self.savePersalys)
         # self.actionEnregistrer.setDisabled(True)
         # self.actionEnregistrer_sous.setDisabled(True)
 
@@ -307,12 +307,9 @@ class QtEficasAppli(EficasAppli, Ui_Eficas, QMainWindow):
     #-------------------------------------
     def connectRechercherDsCatalogue(self):
     #------------------------------------
-        if hasattr(self, "rechercherDejaLa"):
-            return
+        if hasattr(self, "rechercherDejaLa"): return
         self.rechercherDejaLa = True
-        self.actionRechercherDsCatalogue.triggered.connect(
-            self.handleRechercherDsCatalogue
-        )
+        self.actionRechercherDsCatalogue.triggered.connect( self.rechercherDejaLaechercherMotClefDsCatalogue)
 
     #-----------------------------
     def ajoutSortieComplete(self):
@@ -324,35 +321,43 @@ class QtEficasAppli(EficasAppli, Ui_Eficas, QMainWindow):
         self.menuFichier.insertAction(
             self.actionEnregistrer_sous, self.actionSortieComplete
         )
-        self.actionSortieComplete.triggered.connect(self.handleSortieComplete)
+        self.actionSortieComplete.triggered.connect(self.saveFullFile)
 
-
+    #--------------
     def ADAO(self):
+    #--------------
         self.enleverActionsStructures()
         self.enlevernewInclude()
 
-
+    #-----------------
     def TELEMAC(self):
+    #-----------------
         self.enleverActionsStructures()
         self.enlevernewInclude()
         self.connectRechercherDsCatalogue()
         self.ajoutSortieComplete()
 
+    #-------------------------
     def lookSuiteTelemac(self):
+    #-------------------------
         self.enleverActionsStructures()
         self.enlevernewInclude()
         self.enleverParametres()
         self.enleverSupprimer()
         self.enleverRechercherDsCatalogue()
 
+    #------------------------
     def ChercheGrpMesh(self):
+    #------------------------
         Msg, listeGroup = self.ChercheGrpMeshInSalome()
         if Msg == None:
-            self.editorManager.handleAjoutGroup(listeGroup)
+            self.editorManager.ajoutGroupe(listeGroup)
         else:
             print("il faut gerer les erreurs")
 
+    #------------------------
     def ChercheGrpMaille(self):
+    #------------------------
         # Normalement la variable self.salome permet de savoir si on est ou non dans Salome
         try:
             Msg, listeGroup = self.ChercheGrpMailleInSalome()  # recherche dans Salome
@@ -360,12 +365,13 @@ class QtEficasAppli(EficasAppli, Ui_Eficas, QMainWindow):
         except:
             raise ValueError("Salome non ouvert")
         if Msg == None:
-            self.editorManager.handleAjoutGroup(listeGroup)
+            self.editorManager.ajoutGroupe(listeGroup)
         else:
             print("il faut gerer les erreurs")
 
-
+    #---------------------
     def ajoutIcones(self):
+    #----------------------
         # Pour pallier les soucis de repertoire d icone
         # print self.repIcon
         icon = QIcon(self.repIcon + "/new_file.png")
@@ -380,15 +386,17 @@ class QtEficasAppli(EficasAppli, Ui_Eficas, QMainWindow):
         self.actionExecution.setIcon(icon7)
 
 
+    #--------------------------
     def connecterSignaux(self):
-        self.recentMenu.aboutToShow.connect(self.handleShowRecentMenu)
+    #--------------------------
+        self.recentMenu.aboutToShow.connect(self.showRecentMenu)
         self.action_Nouveau.triggered.connect(self.fileNew)
         self.actionNouvel_Include.triggered.connect(self.newInclude)
-        self.actionOuvrir.triggered.connect(self.fileOpen)
+        self.actionOuvrir.triggered.connect(self.openFileFromMenu)
         self.actionEnregistrer.triggered.connect(self.fileSave)
         self.actionEnregistrer_sous.triggered.connect(self.fileSaveAs)
         self.actionFermer.triggered.connect(self.fileClose)
-        self.actionFermer_tout.triggered.connect(self.fileCloseAll)
+        self.actionFermer_tout.triggered.connect(self.closeAllFiles)
         self.actionQuitter.triggered.connect(self.fileExit)
 
         self.actionEficas.triggered.connect(self.aidePPal)
@@ -396,17 +404,17 @@ class QtEficasAppli(EficasAppli, Ui_Eficas, QMainWindow):
         self.actionParametres.triggered.connect(self.gestionParam)
         self.actionCommentaire.triggered.connect(self.ajoutCommentaire)
 
-        self.actionCouper.triggered.connect(self.editCut)
-        self.actionCopier.triggered.connect(self.editCopy)
-        self.actionColler.triggered.connect(self.editPaste)
+        self.actionCouper.triggered.connect(self.handleEditCut)
+        self.actionCopier.triggered.connect(self.handleEditCopy)
+        self.actionColler.triggered.connect(self.handleEditPaste)
         self.actionSupprimer.triggered.connect(self.supprimer)
         self.actionRechercher.triggered.connect(self.rechercher)
-        self.actionDeplier_replier.triggered.connect(self.handleDeplier)
+        self.actionDeplier_replier.triggered.connect(self.deplier)
 
-        self.actionRapport_de_Validation.triggered.connect(self.jdcRapport)
-        self.actionRegles_du_JdC.triggered.connect(self.jdcRegles)
-        self.actionFichier_Source.triggered.connect(self.jdcFichierSource)
-        self.actionFichier_Resultat.triggered.connect(self.visuJdcPy)
+        self.actionRapport_de_Validation.triggered.connect(self.viewJdcRapport)
+        self.actionRegles_du_JdC.triggered.connect(self.viewJdcRegles)
+        self.actionFichier_Source.triggered.connect(self.viewJdcFichierSource)
+        self.actionFichier_Resultat.triggered.connect(self.viewJdcFichierResultat)
         self.actionAfficher_l_Arbre.triggered.connect(self.ouvreArbre)
         self.actionCacher_l_Arbre.triggered.connect(self.fermeArbre)
 
@@ -427,7 +435,7 @@ class QtEficasAppli(EficasAppli, Ui_Eficas, QMainWindow):
         self.actionTraduitV9V10.triggered.connect(self.traductionV9V10)
         self.actionTraduitV10V11.triggered.connect(self.traductionV10V11)
         self.actionTraduitV11V12.triggered.connect(self.traductionV11V12)
-        self.actionSaveLigne.triggered.connect(self.saveLigne)
+        self.actionSaveLigne.triggered.connect(self.fileSaveInLigneFormat)
 
         # Pour Carmel
         self.actionChercheGrpMaille = QAction(self)
@@ -439,40 +447,19 @@ class QtEficasAppli(EficasAppli, Ui_Eficas, QMainWindow):
         self.actionCode.setText(tr("Specificites Maille"))
         self.actionCode.triggered.connect(self.aideCode)
 
-    def handleDeplier(self):
-        self.editorManager.handleDeplier()
+    #----------------
+    def deplier(self):
+    #-----------------
+        self.editorManager.deplier()
 
-    def handleSortieUQ(self):
-        self.editorManager.handleSortieUQ()
-
-    def handleExeUQ(self):
-        self.editorManager.handleExeUQ()
-
-    def handleSauvePourPersalys(self):
-        self.editorManager.handleSauvePourPersalys()
-
+    #-------------------------
     def ajoutCommentaire(self):
+    #-------------------------
         self.editorManager.ajoutCommentaire()
 
-    def ouvreFichiers(self):
-        # Ouverture des fichiers de commandes donnes sur la ligne de commande
-        cwd = os.getcwd()
-        self.dir = cwd
-        for study in session.d_env.studies:
-            os.chdir(cwd)
-            d = session.getUnit(study, self)
-            self.editorManager.handleOpen(fichier=study["comm"], units=d)
-
-    def getSource(self, file):
-        # appele par Editeur/session.py
-        import Accas.IO.reader
-
-        p = convert.plugins["python"]()
-        p.readfile(file)
-        texte = p.convert("execnoparseur")
-        return texte
-
+    #---------------------
     def initPatrons(self):
+    #---------------------
         # Mise a jour du menu des fichiers recemment ouverts
         from Editeur import listePatrons
 
@@ -496,13 +483,13 @@ class QtEficasAppli(EficasAppli, Ui_Eficas, QMainWindow):
             for fichier in self.listePatrons.liste[nomSsMenu]:
                 id = ssmenu.addAction(fichier)
                 self.ficPatrons[id] = fichier
-                self.id.triggered.connect(self.handleOpenPatrons)
+                self.id.triggered.connect(self.openPatrons)
                 #   self.Patrons.setItemParameter(id,idx)
                 idx = idx + 1
 
-    #----------------------
-    def initRecents(self):
-    #----------------------
+    #------------------------------
+    def readListRecentlyOpen(self):
+    #------------------------------
         self.recemmentUtilises = []
         rep = self.maConfiguration.repUser
         monFichier = rep + "/listefichiers_" + self.code
@@ -518,18 +505,18 @@ class QtEficasAppli(EficasAppli, Ui_Eficas, QMainWindow):
         except:
             pass
 
-    #------------------------------
+    #----------------------------
     def addToRecentList(self, fn):
-    #------------------------------
+    #-----------------------------
         while fn in self.recemmentUtilises:
             self.recemmentUtilises.remove(fn)
         self.recemmentUtilises.insert(0, fn)
         if len(self.recemmentUtilises) > 9:
             self.recemmentUtilises = self.recemmentUtilises[:9]
 
-    #----------------------
-    def sauveRecents(self):
-    #----------------------
+    #-----------------------------
+    def saveListRecentlyOpen(self):
+    #-----------------------------
         if len(self.recemmentUtilises) == 0: return
         rep = self.maConfiguration.repUser
         if not (os.path.isdir(rep)) :
@@ -627,39 +614,36 @@ class QtEficasAppli(EficasAppli, Ui_Eficas, QMainWindow):
     #------------------------
     def optionEditeur(self):
     #------------------------
+    # a revoir entierement
+    # en particulier pour le nom de la configuration
+    # obsolete
         try:
             name = "monOptions_" + self.code
         except:
-            QMessageBox.critical(
-                self, tr("Parametrage"), tr("Veuillez d abord choisir un code")
-            )
+            QMessageBox.critical( self, tr("Parametrage"), tr("Veuillez d abord choisir un code"))
             return
         try:
-            # if 1:
+        # if 1:
             optionCode = __import__(name)
         except:
-            # else :
-            QMessageBox.critical(
-                self,
-                tr("Parametrage"),
-                tr("Pas de possibilite de personnalisation de la configuration "),
-            )
+        # else :
+            QMessageBox.critical( self, tr("Parametrage"), tr("Pas de possibilite de personnalisation de la configuration "),)
             return
         monOption = optionCode.Options(
             parent=self, modal=0, configuration=self.maConfiguration
         )
         monOption.show()
 
+    #------------------
     def optionPdf(self):
+    #---------------------
         from InterfaceGUI.QT5.monOptionsPdf import OptionPdf
-
         monOption = OptionPdf(parent=self, modal=0, configuration=self.maConfiguration)
         monOption.show()
 
-    def handleSortieComplete(self):
-        return self.editorManager.saveCompleteCurrentEditor()
-
-    def handleShowRecentMenu(self):
+    #------------------------
+    def showRecentMenu(self):
+    #------------------------
         """
         Private method to set up recent files menu.
         """
@@ -668,36 +652,40 @@ class QtEficasAppli(EficasAppli, Ui_Eficas, QMainWindow):
         for rp in self.recemmentUtilises:
             id = self.recentMenu.addAction(rp)
             self.ficRecents[id] = rp
-            id.triggered.connect(self.handleOpenRecent)
+            id.triggered.connect(self.openRecentFile)
         self.recentMenu.addSeparator()
-        self.recentMenu.addAction(tr("&Effacer"), self.handleClearRecent)
+        self.recentMenu.addAction(tr("&Effacer"), self.clearListRecent)
 
-    def handleOpenPatrons(self):
+    #---------------------
+    def openPatrons(self):
+    #---------------------
+        repPatrons = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..","..","Codes","Patrons","self.code")
         idx = self.sender()
-        fichier = (
-            self.repIni
-            + "/../Editeur/Patrons/"
-            + self.code
-            + "/"
-            + self.ficPatrons[idx]
-        )
-        self.editorManager.handleOpen(fichier=fichier, patron=1)
+        fichier = self.repPatrons+"/"+ self.ficPatrons[idx]
+        self.editorManager.openFile(fichier=fichier, patron=1)
 
-    def handleOpenRecent(self):
+    #------------------------
+    def openRecentFile(self):
+    #------------------------
         idx = self.sender()
         fichier = self.ficRecents[idx]
-        self.editorManager.handleOpen(fichier=fichier, patron=0)
+        self.editorManager.openFile(fichier=fichier, patron=0)
 
-    def handleClearRecent(self):
+    #-------------------------
+    def clearListRecent(self):
+    #------------------------
         self.recemmentUtilises = []
-        self.sauveRecents()
+        self.saveListRecentlyOpen()
 
-    def handleRechercherDsCatalogue(self):
-        if not self.editorManager:
-            return
-        self.editorManager.handleRechercherDsCatalogue()
+    #--------------------------------------
+    def rechercherMotClefDsCatalogue(self):
+    #--------------------------------------
+        if not self.editorManager: return
+        self.editorManager.rechercherMotClefDsCatalogue()
 
+    #----------------
     def fileNew(self):
+    #----------------
         try:
             self.editorManager.newEditor()
         except EficasException as exc:
@@ -706,101 +694,103 @@ class QtEficasAppli(EficasAppli, Ui_Eficas, QMainWindow):
                 QMessageBox.warning(self, tr("Erreur"), msg)
 
 
-    def fileOpen(self):
-        try:
-            self.editorManager.handleOpen()
-        except EficasException as exc:
-            msg = str(exc)
-            if msg != "":
-                QMessageBox.warning(self, tr("Erreur"), msg)
-
-    def saveLigne(self):
-        return self.editorManager.handleSaveLigne()
-
-    def fileSave(self):
-        return self.editorManager.handleSave()
-
-    def fileSaveAs(self):
-        return self.editorManager.handleSaveAs()
-
-    def fileClose(self):
-        self.editorManager.handleClose(texte="&Fermer")
-
-    def fileCloseAll(self):
-        self.editorManager.handleCloseAll(texte="&Fermer")
-
+    #-----------------
     def fileExit(self):
+    #-----------------
         # On peut sortir sur Abort
-        res = self.editorManager.handleCloseAll()
-        if res != 2:
-            self.close()
+        # equivalent du closeEvent sur la fenetre
+        res = self.editorManager.closeAllFiles()
+        if res != 2: self.close()
         return res
 
-    def editCopy(self):
+    #------------------------
+    def handleEditCopy(self):
+    #------------------------
         self.editorManager.handleEditCopy()
 
-    def editCut(self):
+    #------------------------
+    def handleEditCut(self):
+    #------------------------
         self.editorManager.handleEditCut()
 
-    def editPaste(self):
+    #------------------------
+    def handleEditPaste(self):
+    #------------------------
         self.editorManager.handleEditPaste()
 
+    #-------------------
     def rechercher(self):
-        self.editorManager.handleRechercher()
+    #---------------------
+        self.editorManager.rechercherConceptOuMotClef()
 
-    def run(self):
-        self.editorManager.run()
-
-    def saveRun(self):
-        self.editorManager.saveRun()
-
+    #----------------
     def supprimer(self):
+    #----------------
         self.editorManager.handleSupprimer()
 
-    def jdcFichierSource(self):
-        self.editorManager.handleViewJdcFichierSource()
+    #-----------------------------
+    def viewJdcFichierSource(self):
+    #-----------------------------
+        self.editorManager.viewJdcFichierSource()
 
-    def jdcRapport(self):
-        self.editorManager.handleViewJdcRapport()
+    #------------------------
+    def viewJdcRapport(self):
+    #------------------------
+        self.editorManager.viewJdcRapport()
 
-    def jdcRegles(self):
+    #------------------------
+    def viewJdcRegles(self):
+    #------------------------
         self.editorManager.handleViewJdcRegles()
 
+    #------------------------------
+    def viewJdcFichierResultat(self):
+    #-------------------------------
+        self.editorManager.viewJdcFichierResultat()
+
+    #------------------------
     def gestionParam(self):
+    #------------------------
         self.editorManager.handleGestionParam()
 
-    def visuJdcPy(self):
-        self.editorManager.handleViewJdcPy()
-
+    #--------------------
     def ouvreArbre(self):
+    #--------------------
         self.editorManager.ouvreArbre()
 
+    #--------------------
     def fermeArbre(self):
+    #--------------------
         self.editorManager.fermeArbre()
 
+    #--------------------
     def newInclude(self):
+    #--------------------
         self.editorManager.newIncludeEditor()
 
+    #---------------------------
     def closeEvent(self, event):
+    #---------------------------
         res = self.fileExit()
-        if res == 2:
-            event.ignore()
+        if res == 2: event.ignore()
 
+    #-------------------------------
     def remplitIconesCommandes(self):
-        if self.maConfiguration.boutonDsMenuBar == False:
-            return
-        if not hasattr(self, "readercata"):
-            return
-        from InterfaceGUI.QT5.monLayoutBouton import MonLayoutBouton
+    #-------------------------------
+    # permet de remplacer les commandes par des icones
+    # plus usite depuis machine tournante
+    # a retester
+        if self.maConfiguration.boutonDsMenuBar == False: return
+        if not hasattr(self, "readercata"): return
 
-        if hasattr(self, "monLayoutBoutonRempli"):
-            return
+        from InterfaceGUI.QT5.monLayoutBouton import MonLayoutBouton
+        if hasattr(self, "monLayoutBoutonRempli"): return
         self.monLayoutBoutonRempli = MonLayoutBouton(self)
 
-    def handleAjoutEtape(self, nomEtape):
-        self.editorManager.handleAjoutEtape(nomEtape)
 
+    #-----------------------------------
     def metMenuAJourUtilisateurs(self):
+    #----------------------------------
         self.lesFonctionsUtilisateurs = {}
         if self.code not in self.mesScripts:
             return
@@ -822,7 +812,9 @@ class QtEficasAppli(EficasAppli, Ui_Eficas, QMainWindow):
                 )
             self.menuOptions.triggered.connect(self.handleFonctionUtilisateur)
 
+    #-------------------------------------------
     def handleFonctionUtilisateur(self, action):
+    #-------------------------------------------
         (laFonctionUtilisateur, lesArguments) = self.lesFonctionsUtilisateurs[action]
         self.editorManager.handleFonctionUtilisateur(laFonctionUtilisateur, lesArguments)
 
@@ -845,7 +837,6 @@ if __name__ == "__main__":
     Eficas = Appli()
     Eficas.show()
 
-    # mw.ouvreFichiers()
     # mw.show()
 
     res = app.exec_()

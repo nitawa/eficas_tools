@@ -1387,7 +1387,7 @@ class PairVal(ListVal):
         return valeur
 
     def verifItem(self, valeur):
-        if type(valeur) not in six.integer_types:
+        if type(valeur) not in (int,):
             return 0
         return valeur % 2 == 0
 
@@ -1530,15 +1530,6 @@ class FunctionVal(Valid):
 
     def convert(self, valeur):
         return valeur
-
-
-# MC ca ne devrait plus servir !
-# PN : commenter le 22.11.19
-# CoercableFuncs = {int:     int,
-#                  int:    int,
-#                  float:   float,
-#                  complex: complex,
-#                  str: six.text_type}
 
 
 class TypeVal(ListVal):

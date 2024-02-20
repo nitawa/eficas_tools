@@ -371,38 +371,24 @@ class Editor:
             dico = self.myWriter.generDico(self.jdc)
             return dico
 
-    # -----------------------#
-    def viewJdcSource(self):
-    # -----------------------#
-        if self.fichier == None:
-            return
+    # --------------------------#
+    def getJdcFichierSource(self):
+    # --------------------------#
+        if self.fichier == None: return "fichier source non defini"
         if os.path.isfile(self.fichier):
             f = open(self.fichier, "r")
             texteSource = f.read()
             f.close()
-            self._viewText(texteSource, "JDC_SOURCE")
+            return texteSource
         else:
+            return "le fichier source n existe pas"
             self._viewText("file doesn't exist", "JDC_SOURCE")
 
-    # -----------------------#
-    def viewJdcPy(self):
-    # -----------------------#
-        strSource = str(self.getTextJDC(self.formatFichierOut))
-        self._viewText(strSource, "JDC_RESULTAT")
-
-    # -----------------------#
-    def viewJdcRapport(self):
-    # -----------------------#
-        # on ajoute les regles
-        strRapport = str(self.jdc.report())
-        self._viewText(strRapport, "JDC_RAPPORT")
-
-    # -----------------------#
-    def viewJdcRegles(self):
-    # -----------------------#
-        # on ajoute les regles
-        texte_global, test_global = self.jdc.verifRegles()
-        self._viewText(texte_global, "JDC_REGLES")
+    # -----------------------------#
+    def getJdcFichierResultat(self):
+    # -----------------------------#
+        strResult = str(self.getTextJDC(self.formatFichierOut))
+        return strResult
 
     # -----------------------#
     def getJdcRapport(self):
@@ -410,6 +396,13 @@ class Editor:
         # on ajoute les regles
         strRapport = str(self.jdc.report())
         return strRapport
+
+    # -----------------------#
+    def getJdcRegles(self):
+    # -----------------------#
+        # on ajoute les regles
+        texteGlobal, testOK = self.jdc.verifRegles()
+        return texteGglobal
 
     # ---------------------#
     def getFileName(self):

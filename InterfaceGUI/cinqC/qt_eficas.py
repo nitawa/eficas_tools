@@ -31,7 +31,7 @@ class QtEficasAppli(Ui_Eficas5C, QtEficasAppli):
     Class implementing the 5C user interface.
     """
 
-    def __init__(self,code='5C', salome=0, multi = 0, versionCode=None,  langue='en', GUIPath="InterfaceGUI.cinqC"):
+    def __init__(self,code='5C', salome=0, multi = 0, versionCode=None,  langue='en', GUIPath="InterfaceGUI.cinqC",appWeb=None):
         super().__init__(code=code, salome=salome, multi=multi, langue=langue, versionCode=versionCode, GUIPath=GUIPath)
         self.withXSD = True
         self.GUIPath = GUIPath
@@ -43,10 +43,10 @@ class QtEficasAppli(Ui_Eficas5C, QtEficasAppli):
         self.actionCode = QAction(self)
         self.actionCode.setText(tr("Aide 5C"))
         self.actionCode.triggered.connect(self.aideCode)
-        self.actionOuvrir.triggered.connect(self.fileOpen) 
+        self.actionOuvrir.triggered.connect(self.openFile) 
 
 
-    def fileOpen(self) :
+    def openFile(self) :
         print ('aChanger')
         print ( self.editorManager)
 

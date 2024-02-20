@@ -29,8 +29,9 @@ class EficasAppli:
     Class implementing the main user interface.
     """
 
-    def __init__(self, code=None, versionCode=None, salome=1, multi=False, langue="fr", ssCode=None, fichierCata=None, GUIPath=None):
-    #--------------------------------------------------------------------------------------------------------------------------------
+    #---------------------------------------------------------------------------------------------------------------------------------------------
+    def __init__(self, code=None, versionCode=None, salome=1, multi=False, langue="fr", ssCode=None, fichierCata=None, GUIPath=None, appWeb=None):
+    #---------------------------------------------------------------------------------------------------------------------------------------------
         """
         Constructor d appli eficas. classe mere de appli-qtEficas et de appli-web eficas et utilisee sans IHM pour les
         transformations des catas en XSD, des comm en XML et de validation des donnees
@@ -47,6 +48,7 @@ class EficasAppli:
         self.ssCode = ssCode
         self.multi = multi
         self.salome = salome
+        self.appWeb = appWeb
 
         version = getEficasVersion()
         self.versionEficas = "Eficas Salome " + version
@@ -89,12 +91,15 @@ class EficasAppli:
         self.genereXSD = False
         from Editeur.editor_manager import EditorManager
         self.editorManager = EditorManager(self)
+        # Attention n appelle pas openFiles car les classes derivees
+        # changent l editorManager
 
-    def ajoutUQ(self):
-    #-----------------
-        self.withUQ = True
-        self.formatFichierIn = "pythonUQ"  # par defaut
+    #--------------------
+    def getVersion(self):
+    #--------------------
+        return getEficasVersion()
 
+    #-----------------------------------
     def definitCode(self, code, ssCode):
     #-----------------------------------
         # ssCode sert pour Map
@@ -116,12 +121,12 @@ class EficasAppli:
         if hasattr(self, "maConfiguration") and self.maConfiguration.translatorFile:
             from Accas.extensions import localisation
             localisation.localise( None, self.langue,
-                translatorFile=self.maConfiguration.translatorFile,
-            )
+                translatorFile=self.maConfiguration.translatorFile,)
 
         # Comment faire si Multi ?
         self.withXSD   = session.d_env.withXSD
 
+    #-------------------------
     def getSource(self, file):
     #-------------------------
         # appele par Editeur/session.py
@@ -132,61 +137,188 @@ class EficasAppli:
         texte = p.convert("execnoparseur")
         return texte
 
-    def initEditor(self, fichier=None, jdc=None, units=None, include=0):
     #------------------------------------------------------------------
+    def newEditor(self, fichier=None, jdc=None, units=None, include=0):
+    #------------------------------------------------------------------
+        #PN reflechir a ce que cela veut dire d avoir plusieurs editeurs
         if (hasattr(self, "editor")) and self.editor != None:
             print("un seul editeur par application eficas_appli ")
             sys.exit()
         self.editor = self.editorManager.getNewEditor()
+        return self.editorId
 
-    def fileNew(self):
-    #-----------------
-        self.editor = self.initEditor()
-
+    #-------------------
     def getEditor(self):
     #-------------------
-        if (hasattr(self, "editor")) and self.editor != None:
-            return self.editor
-        self.initEditor()
+        if (hasattr(self, "editor")) and self.editor != None: return self.editor
+        self.newEditor()
         return self.editor
 
-    def fileOpen(self, fichier):
+    #--------------------------
+    def getEditorById(self,id):
+    #--------------------------
+        return self.editorManager.getEditorById(self,id)
+
+    #----------------------------------
+    def setCurrentEditorById(self,id):
+    #----------------------------------
+        return self.editorManager.setCurrentEditorById(self,id)
+
     #---------------------------
-        fichierIn = os.path.abspath(fichier)
+    def openFile(self, fichier):
+    #---------------------------
         try:
-            monEditor = self.editorManager.handleOpen(fichierIn)
+            monEditor = self.editorManager.openFile(fichier)
         except EficasException as exc:
-            print("poum")
+            afficheMessage(self, 'erreur ouverture fichier', str(exc),critical=True)
             monEditor = None
         return monEditor
 
+    #------------------
     def fileSave(self):
     #-------------------
-        if self.editor == None:
-            return False
-        ok, newName = editor.saveFileAs()
-        print("ok, newName ", ok, newName)
+        return self.editorManager.saveFile()
 
+    #------------------------------
     def fileSaveAs(self, fileName):
-    #-----------------_------------
+    #------------------------------
+        return self.editorManager.saveFile()
         if self.editor == None:
             return False
         ok = editor.saveFileAs()
         print("ok ", ok)
 
+    #-----------------------------------------
     def dumpXsd(self, avecEltAbstrait=False):
     #-----------------------------------------
         currentCata = CONTEXT.getCurrentCata()
         texteXSD = currentCata.dumpXsd(avecEltAbstrait)
         return texteXSD
 
+    #---------------------------------------------------
     def afficheMessage(self, titre, texte,critical=True):
-    #-----------------------------------------------------
+    #----------------------------------------------------
         print ('__________________________')
         print (tr(titre))
         print ('')
         print (tr(texte))
         print ('__________________________')
+
+
+    #-------------------
+    def saveUQFile(self):
+    #-------------------
+        self.editorManager.saveUQFile()
+
+    #----------------------
+    def exeUQScript(self):
+    #----------------------
+        self.editorManager.exeUQScript()
+
+    #----------------------
+    def savePersalys(self):
+    #----------------------
+        self.editorManager.savePersalys()
+
+    #----------------------
+    def ajoutCommentaire(self):
+    #----------------------
+        self.editorManager.ajoutCommentaire()
+
+    #----------------------
+    def openFiles(self):
+    #----------------------
+        # Ouverture des fichiers de commandes donnes sur la ligne de commande
+        cwd = os.getcwd()
+        self.dir = cwd
+        for study in session.d_env.studies:
+            os.chdir(cwd)
+            d = session.getUnit(study, self)
+            self.editorManager.openFile(fichier=study["comm"], units=d)
+
+
+    #----------------------
+    def saveFullFile(self):
+    #----------------------
+    # Pour Telemac
+        return self.editorManager.saveCompleteCurrentEditor()
+
+    #-----------------
+    def fileNew(self):
+    #-------------------
+        try:
+            self.editorManager.newEditor()
+        except EficasException as exc:
+            msg = str(exc)
+            if msg != "":
+                QMessageBox.warning(self, tr("Erreur"), msg)
+
+
+    #------------------------------
+    def fileSaveInLigneFormat(self):
+    #------------------------------
+        return self.editorManager.fileSaveInLigneFormat()
+
+    #------------------
+    def fileSave(self):
+    #------------------
+        return self.editorManager.handleSave()
+
+    #--------------------
+    def fileSaveAs(self):
+    #--------------------
+        return self.editorManager.handleSaveAs()
+
+    #-------------------
+    def fileClose(self):
+    #-------------------
+        return self.editorManager.fileClose()
+
+    #-------------------
+    def closeAllFiles(self):
+    #-------------------
+        self.editorManager.closeAllFiles()
+
+    #------------
+    def run(self):
+    #-------------
+        self.editorManager.run()
+
+    #----------------
+    def saveRun(self):
+    #----------------
+        self.editorManager.saveRun()
+
+    #--------------------------
+    def getJdcFichierSource(self):
+    #--------------------------
+        return self.editorManager.getJdcFichierSource()
+
+    #-----------------------
+    def getJdcRapport(self):
+    #-----------------------
+        return self.editorManager.getJdcRapport()
+
+    #-----------------------
+    def getJjdcRegles(self):
+    #-----------------------
+        return self.editorManager.JdcRegles()
+
+    #------------------------------
+    def getJdcFichierResultat(self):
+    #------------------------------
+        self.editorManager.getJdcFichierResultat()
+
+    #------------------------------------
+    def handleAjoutEtape(self, nomEtape):
+    #------------------------------------
+        self.editorManager.handleAjoutEtape(nomEtape)
+
+    #----------------
+    def ajoutUQ(self):
+    #----------------
+        self.withUQ = True
+        self.formatFichierIn = "pythonUQ"  # par defaut
 
 
 if __name__ == "__main__":

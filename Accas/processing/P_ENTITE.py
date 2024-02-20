@@ -24,9 +24,7 @@
 from Accas.processing import P_CR
 from Accas.processing import P_OPS
 
-import six
-
-stringTypes = (str, six.text_type)
+stringTypes = ((str,))
 
 
 class ENTITE(object):

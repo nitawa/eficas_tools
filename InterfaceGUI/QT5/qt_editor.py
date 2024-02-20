@@ -80,8 +80,7 @@ class QtEditor(Editor, Ui_baseWidget, QWidget):
 
         if self.maConfiguration.closeArbre: self.fermeArbre()
         if self.maConfiguration.closeOptionnel: self.fermeOptionnel()
-        if self.maConfiguration.boutonDsMenuBar:
-            self.appliEficas.remplitIconesCommandes()
+        if self.maConfiguration.boutonDsMenuBar: self.appliEficas.remplitIconesCommandes()
 
         self.formatFichierOut = self.appliEficas.formatFichierOut
         self.formatFichierIn = self.appliEficas.formatFichierIn
@@ -289,14 +288,14 @@ class QtEditor(Editor, Ui_baseWidget, QWidget):
             self.node_selected[0].deleteMultiple(self.node_selected)
 
     # ------------------------#
-    def handleRechercher(self):
+    def rechercherConceptOuMotClef(self):
     # ------------------------#
         from InterfaceGUI.QT5.monRecherche import DRecherche
         monRechercheDialg = DRecherche(parent=self, fl=0)
         monRechercheDialg.show()
 
     # -----------------------------------#
-    def handleRechercherDsCatalogue(self):
+    def rechercherMotClefDsCatalogue(self):
     # -----------------------------------#
         from InterfaceGUI.QT5.monRechercheCatalogue import DRechercheCatalogue
 
@@ -304,7 +303,7 @@ class QtEditor(Editor, Ui_baseWidget, QWidget):
         monRechercheDialg.show()
 
     # ---------------------#
-    def handleDeplier(self):
+    def deplier(self):
     # ---------------------#
         if self.tree == None:
             return
@@ -708,15 +707,15 @@ class QtEditor(Editor, Ui_baseWidget, QWidget):
 
 
     # -----------------------------------------#
-    def handleAjoutGroup(self, listeGroup):
+    def ajoutGroupe(self, listeGroup):
     # -----------------------------------------#
         try:
             # if 1:
-            from InterfaceGUI.QT5.ajoutGroupe import handleAjoutGroupFiltre
+            from InterfaceGUI.QT5.ajoutGroupe import ajoutGroupeFiltre
 
             # print listeGroup
-            handleAjoutGroupFiltre(self, listeGroup)
-            # print "apres handleAjoutGroupFiltre"
+            ajoutGroupeFiltre(self, listeGroup)
+            # print "apres ajoutGroupeFiltre"
         except:
             # else :
             pass
@@ -1202,12 +1201,35 @@ class QtEditor(Editor, Ui_baseWidget, QWidget):
             pass
         return indexNoeud
 
+    # ----------------------------#
+    def viewJdcFichierSource(self):
+    # ----------------------------#
+        strSource = self.getJdcFichierSource() 
+        self._viewText(strSource, "JDC Source")
 
+    # ----------------------------#
+    def viewJdcFichierResultat(self):
+    # ----------------------------#
+        strResultat = self.getJdcFichierResultat() 
+        self._viewText(strResultat, "JDC Resultat")
+
+    # -----------------------#
+    def viewJdcRegles(self):
+    # -----------------------#
+        strRegle = self.getJdcRegles() 
+        self._viewText(strRegle, "Regles du JDC")
+
+    # ----------------------------#
+    def viewJdcRapport(self):
+    # ----------------------------#
+        strRapport = self.getJdcRapport() 
+        self._viewText(strRappoer, "Rapport Validation du JDC")
+  
     # ------------------#
     def _newJDCCND(self):
     # ------------------#
         """ obsolete """
-    # allait chercher les groupes moed. gardé pour l exemple
+    # allait chercher les groupes med. gardé pour l exemple
         extensions = tr("Fichiers Med (*.med);;" "Tous les Fichiers (*)")
         QMessageBox.information(
             self, tr("Fichier Med"), tr("Veuillez selectionner un fichier Med")

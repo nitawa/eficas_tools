@@ -23,7 +23,6 @@ de chaines de caractères
 
 
 import locale
-import six
 
 _encoding = None
 
@@ -41,7 +40,7 @@ def getEncoding():
 
 def toUnicode(string):
     """Try to convert string into a unicode string."""
-    if type(string) is six.text_type:
+    if type(string) in (str,) :
         return string
     elif type(string) is dict:
         new = {}
@@ -57,8 +56,7 @@ def toUnicode(string):
     assert type(string) is str, "unsupported object: %s" % string
     for encoding in ("utf-8", "iso-8859-15", "cp1252"):
         try:
-            s = six.text_type(string, encoding)
+            s = string.encode(encoding)
             return s
         except UnicodeDecodeError:
-            pass
-    return six.text_type(string, "utf-8", "replace")
+            return string

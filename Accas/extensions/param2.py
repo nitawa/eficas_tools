@@ -138,9 +138,8 @@ class Formula(object):
 
 
 def _div(a, b):
-    import six
     import types
-    if isinstance(a, six.integer_types) and isinstance(b, six.integer_types):
+    if isinstance(a, str) and isinstance(b, int):
         if a % b:
             return a / b
         else:

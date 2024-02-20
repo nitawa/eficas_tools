@@ -62,7 +62,7 @@ def lanceQtEficas(code=None, versionCode = None, multi=False, langue="en",  GUIP
     sys.exit(res)
 
 
-def getEficas( code=None, multi=False, langue="en", forceXML=False,  fichierCata=None,GUIPath=None):
+def getEficas( code=None, multi=False, langue="en", forceXML=False, fichierCata=None,GUIPath=None, appWeb = None):
 # ------------------------------------------------------------------------------------------------------------------
     """
     instancie l'appli EFICAS sans Ihm
@@ -86,7 +86,7 @@ def getEficas( code=None, multi=False, langue="en", forceXML=False,  fichierCata
         print ('lancement de Eficas avec GUIPath = {}'.format(GUIPath))
         from Editeur.eficas_appli import EficasAppli
 
-    Eficas = EficasAppli(code=code, multi=multi, langue=langue, ssCode=ssCode, versionCode=versionCode,  fichierCata=fichierCata, GUIPath=GUIPath)
+    Eficas = EficasAppli(code=code, multi=multi, langue=langue, ssCode=ssCode, versionCode=versionCode,  fichierCata=fichierCata, GUIPath=GUIPath, appWeb=None)
     return Eficas
 
 

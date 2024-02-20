@@ -73,9 +73,7 @@ def _getNomConceptResultat(ope, level=2):
     if sys.version_info >= (3, 0):
         filename = co.co_filename
     else:
-        import six
-
-        filename = six.text_type(co.co_filename, getEncoding())
+        filename = co.co_filename.encode(getEncoding())
     name = co.co_name
     # pattern pour identifier le debut de la commande
     pattern_oper = re.compile(regex1 % ope)

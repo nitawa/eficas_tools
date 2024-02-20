@@ -38,6 +38,11 @@ from Accas.extensions.eficas_exception import EficasException
 # -----------------------------
 class ReaderCataCommun(object):
 # -----------------------------
+# le catacommun a ete mis en place
+# lors des tentatives pour decrire le catalogue en XML
+# Garde pour pouvoir demander un cata en web
+# mais il va falloir revoir quelle fonction est ou (exple askChoixCata est mal place)
+# en tenant compte de cette nouvelle division
 
     def askChoixCatalogue(self, cataListeChoix):
     #____________________________________________

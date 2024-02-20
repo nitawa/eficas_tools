@@ -24,21 +24,19 @@
 # Modules EFICAS
 
 from .strfunc import getEncoding, toUnicode
-import six
-
 
 class AsException(Exception):
     def __unicode__(self):
         args = []
         for x in self.args:
             ustr = toUnicode(x)
-            if type(ustr) is not six.text_type:
-                ustr = six.text_type(repr(x))
+            if type(ustr) is not (str,):
+                ustr = str(repr(x))
             args.append(ustr)
         return " ".join(args)
 
     def __str__(self):
-        return six.text_type(self).encode(getEncoding())
+        return self.encode(getEncoding())
 
 
 class InterruptParsingError(Exception):

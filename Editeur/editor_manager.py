@@ -19,6 +19,7 @@
 #
 
 import os
+from uuid import uuid1
 
 # --------------------------
 class EditorManager(object):
@@ -28,7 +29,6 @@ class EditorManager(object):
     permettent de gerer plusieurs ouvertures de fichiers simultannees en IHM
     utilisee sans etre derivee pour le dumpXSD ou les transformations 
     """
-    counter = 0
     # remplace par l index du viewManager 
 
     # --------------------------------
@@ -63,9 +63,25 @@ class EditorManager(object):
             self.appliEficas.afficheMessage('Eficas sans Ihm', 'impossible d allouer un editor')
             return None
         self.editors.append(editor)
-        self.dictEditors[EditorManager.counter] = editor
-        EditorManager.counter += 1
+        idEditor = uuid1().hex
+        self.dictEditors[idEditor] = editor
+        editor.idEditor = idEditor
         return editor
+
+    # ------------------------
+    def getEditorById(self,id):
+    # ------------------------
+        if id in self.dictEditors:
+            editor = self.dictEditors[indexEditor]
+            return editor
+        return None
+
+    # --------------------------------
+    def setCurrentEditorById(self,id):
+    # --------------------------------
+        print ('a Programmer')
+        return True
+      
 
     # -------------------------
     def samePath(self, f1, f2):
