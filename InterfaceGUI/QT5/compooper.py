@@ -23,7 +23,7 @@ import tempfile
 from Accas.extensions.eficas_translation import tr
 from Accas.extensions.eficas_exception import EficasException
 
-from InterfaceGUI.common import Objecttreeitem
+from InterfaceGUI.common import objecttreeitem
 from InterfaceGUI.QT5 import browser
 from InterfaceGUI.QT5 import typeNode
 
@@ -43,7 +43,7 @@ class Node(browser.JDCNode, typeNode.PopUpMenuNode):
         self.editor.initModif()
         test, mess = self.item.nommeSd(nom)
         if test == 0:
-            self.editor.afficheInfos(mess, "red")
+            self.editor.afficheMessage(mess, "red")
             old = self.item.getText()
             self.monWidgetNom.setText(old)
         else:
@@ -69,7 +69,7 @@ class Node(browser.JDCNode, typeNode.PopUpMenuNode):
 #        troisD.envoievisu()
 
 
-class EtapeTreeItem(Objecttreeitem.ObjectTreeItem):
+class EtapeTreeItem(objecttreeitem.ObjectTreeItem):
     """La classe EtapeTreeItem est un adaptateur des objets ETAPE du processing
     Accas. Elle leur permet d'etre affichés comme des noeuds
     d'un arbre graphique.

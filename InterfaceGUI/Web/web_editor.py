@@ -26,74 +26,84 @@ import traceback
 
 # Modules Eficas
 from Accas.extensions.eficas_translation import tr
+from Accas.extensions.eficas_exception import EficasException
 
-from Editeur         import session
 from InterfaceGUI.common import comploader
-from InterfaceGUI.common import Objecttreeitem
+from InterfaceGUI.common import objecttreeitem
 from InterfaceGUI.Web import browser
 
 debug = False
 
-from InterfaceGUI.editorSsIhm    import JDCEditorSsIhm
+from Editeur.editor import Editor
 
 
-class JDCWebEditor(JDCEditorSsIhm):
-# ------------------------------- #
+# -------------------- #
+class WebEditor(Editor):
+# -------------------- #
     """
        Editeur de jdc
     """
 
-    def __init__ (self,appliEficas,fichier = None, jdc= None, connecteur = None ):
-    #------------------------------------------------------------------------
+    #--------------------------------------------------------------------------
+    def __init__ (self,appliEficas,fichier = None, jdc= None, session = None ):
+    #--------------------------------------------------------------------------
         
-        self.connecteur=connecteur
-        JDCEditorSsIhm.__init__(self,appliEficas,fichier)
+        self.connecteur=appliEficas
+        Editor.__init__(self,appliEficas,fichier)
         self.dicoIdNode={}
         comploader.chargerComposants('Web')
         self.tree=None
         if self.jdc:
-            self.jdc_item=Objecttreeitem.makeObjecttreeitem( self, "nom", self.jdc )
+            self.jdc_item=objecttreeitem.makeObjecttreeitem( self, "nom", self.jdc )
             if self.jdc_item :
                self.tree = browser.JDCTree( self.jdc_item,  self )
 
 
+    #-----------------------------
     def getNodeById(self,nodeId ):
     #-----------------------------
         if nodeId in self.dicoIdNode : return self.dicoIdNode[nodeId]
         else : return None
 
+    #---------------------------------------
     def reconstruitChaineDIndex(self,nodeId):
     #---------------------------------------
+        """ utilise pour logguer les fonctions """
         if nodeId in self.dicoIdNode : 
            node=self.dicoIdNode[nodeId]
-           return JDCEditorSsIhm.reconstruitChaineDIndex(self,node)
+           if node.object  == self.jdc : 
+               return 'monEficasConnecteur.monEditeur.tree.racine.item.idUnique'
+           chaine="['key']"
+           templateChaine='["children"][{}]'
+           aTraiter=node.object
+           while hasattr(aTraiter,'parent') and aTraiter.parent:
+               chaine=templateChaine.format(aTraiter.getIndexDsParent())+chaine
+               aTraiter=aTraiter.parent
+           chaine='d'+chaine
+           return (chaine)
         else : return None
 
 
-    def getDicoObjetsCompletsPourTree(self,obj) :
-    #-----------------------------------
-        #print ('editor getDicoObjetsCompletsPourTree pour ' ,self, obj)
-        if self.tree == None : return {}
-        return obj.getDicoObjetsCompletsPourTree()
-
-    def getDicoObjetsPourWeb(self,obj) :
-    #-----------------------------------
-        if self.tree == None : return {}
-        return obj.getDicoObjetsPourWeb()
-
+    #-----------------------------
     def getDicoForFancy(self,obj) :
-    #-----------------------------------
+    #-----------------------------
         if self.tree == None : return {}
         return obj.getDicoForFancy()
 
-    def afficheInfos(self,txt,couleur=None):
+    #-------------------------------------
+    def afficheMessage(self,txt,couleur=None):
     #---------------------------------------
-        self.connecteur.toWebApp('afficheInfos', txt, couleur) 
-        JDCEditorSsIhm.afficheInfos(self,txt,couleur)
+        self.connecteur.toWebApp('afficheMessage', txt, couleur) 
+        Editor.afficheMessage(self,'message to webapp',txt,couleur)
 
+    #-------------------------------------
     def afficheAlerte(self,titre,message):
     #-------------------------------------
         self.connecteur.toWebApp('afficheAlerte', titre ,  message) 
-        JDCEditorSsIhm.afficheAlerte(self,titre,message)
+        Editor.afficheMessage(self,titre,message)
 
+    #---------------------------
+    def getListeCommandes(self):
+    #---------------------------
+        return (self.jdc.getListeCmd())
 

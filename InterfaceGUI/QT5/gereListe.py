@@ -261,7 +261,7 @@ class GereListe(object):
             if len(self.listeValeursCourantes) < self.monSimpDef.max:
                 self.chercheLigneVide()
             else:
-                self.editor.afficheInfos(
+                self.editor.afficheMessage(
                     "nb max de valeurs : " + str(self.monSimpDef.max) + " atteint",
                     Qt.red,
                 )

@@ -226,6 +226,9 @@ class ETAPE(A_MCCOMPO.MCCOMPO):
                 # Normalement on ne devrait pas passer ici
                 return 0, "Normalement on ne devrait pas passer ici"
 
+    def getIndexDsParent(self):
+        return self.parent.getIndex(self)
+
     def getSdprods(self, nom_sd):
         """
         Fonction : retourne le concept produit par l etape de nom nom_sd

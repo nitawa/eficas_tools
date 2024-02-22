@@ -35,7 +35,7 @@ class QtEficasAppli(Ui_Eficas5C, QtEficasAppli):
         super().__init__(code=code, salome=salome, multi=multi, langue=langue, versionCode=versionCode, GUIPath=GUIPath)
         self.withXSD = True
         self.GUIPath = GUIPath
-        self.editorManager.newEditor()
+        self.editorManager.getEditor()
         
 
     def connecterSignaux(self) :

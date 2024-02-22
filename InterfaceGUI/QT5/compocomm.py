@@ -17,7 +17,7 @@
 #
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
-from InterfaceGUI.common import Objecttreeitem
+from InterfaceGUI.common import objecttreeitem
 from InterfaceGUI.QT5 import browser
 from InterfaceGUI.QT5 import typeNode
 from Accas.extensions.eficas_translation import tr
@@ -52,7 +52,7 @@ class Node(browser.JDCNode, typeNode.PopUpMenuNodePartiel):
         self.setText(1, tr(debComm))
 
 
-class COMMTreeItem(Objecttreeitem.ObjectTreeItem):
+class COMMTreeItem(objecttreeitem.ObjectTreeItem):
     itemNode = Node
 
     def init(self):
@@ -103,7 +103,7 @@ class COMMTreeItem(Objecttreeitem.ObjectTreeItem):
     def getObjetCommentarise(self):
         """
         La methode getObjetCommentarise() de la classe compocomm.COMMTreeItem
-        surcharge la methode getObjetCommentarise de la classe Objecttreeitem.ObjectTreeItem
+        surcharge la methode getObjetCommentarise de la classe objecttreeitem.ObjectTreeItem
         elle a pour but d'empecher l'utilisateur final de commentariser un commentaire.
         """
         raise EficasException("Impossible de commentariser un commentaire")

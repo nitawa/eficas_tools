@@ -21,7 +21,7 @@
 import traceback
 
 # Modules Eficas
-from InterfaceGUI.common import Objecttreeitem
+from InterfaceGUI.common import objecttreeitem
 from Accas.processing.P_CR import justifyText
 from Accas        import SalomeEntry
 from Accas        import ASSD
@@ -48,7 +48,7 @@ class Node(browser.JDCNode,typeNode.PopUpMenuNodeMinimal):
         
 
 
-class SIMPTreeItem(Objecttreeitem.AtomicObjectTreeItem):
+class SIMPTreeItem(objecttreeitem.AtomicObjectTreeItem):
     itemNode=Node
 
     def init(self) :

@@ -60,6 +60,9 @@ class JDC(A_OBJECT.OBJECT):
         self.recorded_units = {}
         self.old_recorded_units = {}
 
+    def isOblig(self):
+        return 1
+
     def getIndex(self, objet):
         """
         Retourne la position d'objet dans la liste self
@@ -556,6 +559,7 @@ class JDC(A_OBJECT.OBJECT):
 
         # Apres suppression de l'etape il faut controler que les etapes
         # suivantes ne produisent pas des concepts DETRUITS dans op_init de etape
+        etapeSup = etape
         if index_etape > 0:
             index_etape = index_etape - 1
             etape = self.etapes[index_etape]
@@ -564,7 +568,7 @@ class JDC(A_OBJECT.OBJECT):
         self.controlContextApres(etape)
 
         self.resetContext()
-        CONNECTOR.Emit(self, "supp", etape)
+        CONNECTOR.Emit(self, "supp", etapeSup)
         self.finModif()
         return 1
 
@@ -1136,7 +1140,24 @@ class JDC(A_OBJECT.OBJECT):
             itemMCPath = mc.getChild("MCPath")
             itemMCPath.setValeur(mc.variableDeterministe.getMCPath())
 
-    # ATTENTION SURCHARGE : les methodes ci-dessus surchargent des methodes  de processing et Accas.validation : a reintegrer
+    def getDicoForFancy(self):
+        monDico = {}
+        monDico["title"] = self.code
+        monDico["key"] = self.idUnique
+        monDico["classeAccas"] = "JDC"
+        monDico["validite"] = self.getValid()
+        if not (monDico["validite"]):
+            monDico["validite"] = 0
+        # self.editor.fichier ?
+        listNodes = []
+        for e in self.etapes:
+            listNodes.append(e.getDicoForFancy())
+        monDico["children"] = listNodes
+        return monDico
+
+  
+
+    # ATTENTION SURCHARGE : les methodes ci-dessus surchargent des methodes de Noyau et Validation : a reintegrer
 
     def getFile(self, unite=None, fic_origine=""):
         """

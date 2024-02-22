@@ -26,6 +26,7 @@ import traceback
 
 import Accas.IO.reader as reader
 import Accas.IO.writer as writer
+from Accas.extensions.eficas_exception import EficasException
 
 Dictextensions = {"MAP": ".map", "TELEMAC": ".cas"}
 debug = False
@@ -38,7 +39,7 @@ class Editor:
     Editeur de jdc
     """
 
-    def __init__(self, appliEficas, fichier=None, jdc=None, units=None, include=0):
+    def __init__(self, appliEficas, fichier=None, jdc=None, include=0):
     # ----------------------------------------------------------------------------#
         if debug: print("dans le init de Editor")
         self.appliEficas = appliEficas
@@ -128,27 +129,25 @@ class Editor:
                 try:
                 #if 1 :
                     self.jdc = self.readFile(self.fichier)
-                except:
+                except Exception as e :
                 #else :
                     print("mauvaise lecture du fichier")
+                    raise EficasException("str(e)")
                 if self.appliEficas.salome:
                     try:
                         self.appliEficas.addJdcInSalome(self.fichier)
-                    except:
+                    except Exception as e:
                         print("mauvais enregistrement dans Salome")
+                        raise EficasException("str(e)")
             else:
                 self.jdc = jdc
-
-            if self.jdc is not None and units is not None:
-                self.jdc.recorded_units = units
-                self.jdc.old_recorded_units = units
 
         else:
             if not self.jdc:  #  nouveau jdc
                 if not include:
-                    self.jdc = self._newJDC(units=units)
+                    self.jdc = self._newJDC()
                 else:
-                    self.jdc = self._newJDCInclude(units=units)
+                    self.jdc = self._newJDCInclude()
                 self.nouveau = 1
 
         if self.jdc:
@@ -211,11 +210,11 @@ class Editor:
                 monJDCReader.text = texteNew
                 text = monJDCReader.convert("exec", self.appliEficas)
                 if not monJDCReader.cr.estvide():
-                    self.afficheInfos("Erreur a la conversion", "red")
+                    self.afficheMessage("Erreur a la conversion", "red")
             else:
                 text = monJDCReader.text
         else:
-            self.afficheInfos("Type de fichier non reconnu", "red")
+            self.afficheMessage("Type de fichier non reconnu", "red")
             self.informe(
                 "Type de fichier non reconnu",
                 "EFICAS ne sait pas ouvrir le type de fichier "
@@ -240,9 +239,9 @@ class Editor:
         self.monJDCReader = monJDCReader
         return jdc
 
-    # ---------------------------------------#
-    def _newJDC(self, texte = "", units=None):
-    # ---------------------------------------#
+    # ----------------------------#
+    def _newJDC(self, texte = ""):
+    # ----------------------------#
         """
         Initialise un nouveau JDC avec le texte passe en parametre
         """
@@ -261,15 +260,12 @@ class Editor:
         )
 
         jdc.lang = self.appliEficas.langue
-        if units is not None:
-            jdc.recorded_units = units
-            jdc.old_recorded_units = units
         jdc.editor = self
         return jdc
 
-    # --------------------------------#
-    def _newJDCInclude(self, units=None):
-    # --------------------------------#
+    # ----------------------#
+    def _newJDCInclude(self):
+    # ----------------------#
         """
         Initialise un nouveau JDC include vierge
         Inutilise depuis Aster mais interessant
@@ -303,9 +299,6 @@ class Editor:
         )
         J.editor = self
         J.analyse()
-        if units is not None:
-            J.recorded_units = units
-            J.old_recorded_units = units
         return J
 
     # -----------------------#
@@ -319,11 +312,11 @@ class Editor:
             p.readfile(file)
             text = p.convert("execnoparseur")
             if not p.cr.estvide():
-                self.afficheInfos("Erreur a la conversion", "red")
+                self.afficheMessage("Erreur a la conversion", "red")
             return text
         else:
             # Il n'existe pas c'est une erreur
-            self.afficheInfos("Type de fichier non reconnu", "red")
+            self.afficheMessage("Type de fichier non reconnu", "red")
             self.informe(
                 "Type de fichier non reconnu",
                 "EFICAS ne sait pas ouvrir le type de fichier "
@@ -402,7 +395,7 @@ class Editor:
     # -----------------------#
         # on ajoute les regles
         texteGlobal, testOK = self.jdc.verifRegles()
-        return texteGglobal
+        return texteGlobal
 
     # ---------------------#
     def getFileName(self):
@@ -450,7 +443,7 @@ class Editor:
                 "Le fichier" + str(fn) + "n a pas pu etre sauvegarde :",
                 str(why),
             )
-            self.afficheInfos(
+            self.afficheMessage(
                 "Le fichier" + str(fn) + "n a pas pu etre sauvegarde ", "red"
             )
             return 0
@@ -547,7 +540,7 @@ class Editor:
             dico = self.myWriter.Dico
             return dico
         else:
-            self.afficheInfos(
+            self.afficheMessage(
                 tr("Format %s non reconnu", "Dictionnaire Imbrique"), "red"
             )
             return ""
@@ -694,7 +687,7 @@ class Editor:
             print("!!!!!!!!!!!!!!!!!!!!!!!!!!!")
 
     # --------------------------------------#
-    def afficheInfos(self, txt, couleur=None):
+    def afficheMessage(self, txt, couleur=None):
     # --------------------------------------#
         # methode differenre avec et sans ihm
         print(txt)

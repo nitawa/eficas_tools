@@ -32,7 +32,7 @@ import traceback
 from Accas.extensions.eficas_translation import tr
 from Editeur import session
 from InterfaceGUI.common import comploader
-from InterfaceGUI.common import Objecttreeitem
+from InterfaceGUI.common import objecttreeitem
 from InterfaceGUI.QT5 import browser
 
 from UiQT5.desBaseWidget import Ui_baseWidget
@@ -52,7 +52,7 @@ class QtEditor(Editor, Ui_baseWidget, QWidget):
     Editeur de jdc
     """
 
-    def __init__( self, appliEficas, fichier=None, jdc=None, QWParent=None, units=None, include=0):
+    def __init__( self, appliEficas, fichier=None, jdc=None, QWParent=None, include=0):
     # -----------------------------------------------------------------------------------------------
 
         QWidget.__init__(self, None)
@@ -69,10 +69,10 @@ class QtEditor(Editor, Ui_baseWidget, QWidget):
             self.sb = None
         self.QWParent = QWParent
 
-        Editor.__init__(self, appliEficas, fichier, jdc, units, include)
+        Editor.__init__(self, appliEficas, fichier, jdc, include)
         if self.jdc:
             comploader.chargerComposants(self.appliEficas.GUIPath)
-            self.jdc_item = Objecttreeitem.makeObjecttreeitem(self, "nom", self.jdc)
+            self.jdc_item = objecttreeitem.makeObjecttreeitem(self, "nom", self.jdc)
 
         # Particularites IHM : met la fenetre a jour
         self.initSplitterSizes()
@@ -147,7 +147,7 @@ class QtEditor(Editor, Ui_baseWidget, QWidget):
     def informe(self, titre, txt, critique=True):
     # ------------------------------------------#
         if critique:
-            self.afficheInfos(tr(txt), Qt.red)
+            self.afficheMessage(tr(txt), Qt.red)
             QMessageBox.critical(self, tr(titre), tr(txt))
         else:
             QMessageBox.warning(self, tr(titre), tr(txt))
@@ -236,7 +236,7 @@ class QtEditor(Editor, Ui_baseWidget, QWidget):
         self.close()
 
     # ----------------------------------------------#
-    def afficheInfos(self, message, couleur=Qt.black):
+    def afficheMessage(self, message, couleur=Qt.black):
     # ----------------------------------------------#
         if couleur == "red": couleur = Qt.red
         if self.sb:
@@ -402,7 +402,7 @@ class QtEditor(Editor, Ui_baseWidget, QWidget):
                         tr("Eficas n a pas reussi a copier l objet"),
                     )
                     self.message = ""
-                    self.afficheInfos("Copie refusee", Qt.red)
+                    self.afficheMessage("Copie refusee", Qt.red)
                 if noeudACopier.treeParent.editor != noeudOuColler.treeParent.editor:
                     try:
                         nom = noeudACopier.item.sd.nom
@@ -418,7 +418,7 @@ class QtEditor(Editor, Ui_baseWidget, QWidget):
                     self, tr("Copie refusee"), tr("Copie refusee pour ce type d objet")
                 )
                 self.message = ""
-                self.afficheInfos("Copie refusee", Qt.red)
+                self.afficheMessage("Copie refusee", Qt.red)
                 return
 
         # il faut declarer le JDCDisplay_courant modifie
@@ -1223,7 +1223,7 @@ class QtEditor(Editor, Ui_baseWidget, QWidget):
     def viewJdcRapport(self):
     # ----------------------------#
         strRapport = self.getJdcRapport() 
-        self._viewText(strRappoer, "Rapport Validation du JDC")
+        self._viewText(strRapport, "Rapport Validation du JDC")
   
     # ------------------#
     def _newJDCCND(self):

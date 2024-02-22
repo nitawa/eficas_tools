@@ -687,7 +687,7 @@ class QtEficasAppli(EficasAppli, Ui_Eficas, QMainWindow):
     def fileNew(self):
     #----------------
         try:
-            self.editorManager.newEditor()
+            self.editorManager.getEditor()
         except EficasException as exc:
             msg = str(exc)
             if msg != "":
@@ -741,7 +741,7 @@ class QtEficasAppli(EficasAppli, Ui_Eficas, QMainWindow):
     #------------------------
     def viewJdcRegles(self):
     #------------------------
-        self.editorManager.handleViewJdcRegles()
+        self.editorManager.viewJdcRegles()
 
     #------------------------------
     def viewJdcFichierResultat(self):

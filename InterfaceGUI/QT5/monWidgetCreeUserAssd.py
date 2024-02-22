@@ -63,7 +63,7 @@ class MonWidgetCreeUserAssd(MonWidgetSimpTxt):
                 self.editor.afficheCommentaire(commentaire)
                 self.oldValeurTexte = self.lineEditVal.text()
             else:
-                self.editor.afficheInfos(commentaire, Qt.red)
+                self.editor.afficheMessage(commentaire, Qt.red)
                 self.lineEditVal.setText("")
                 self.oldValeurTexte = ""
         self.parentQt.propageChange(self.objSimp.definition.type[0], self)

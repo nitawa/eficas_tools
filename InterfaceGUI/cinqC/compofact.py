@@ -23,7 +23,7 @@ from InterfaceGUI.QT5 import typeNode
 from Accas.extensions.eficas_translation import tr
 
 
-from InterfaceGUI.common import Objecttreeitem
+from InterfaceGUI.common import objecttreeitem
 import traceback
 
 
@@ -56,7 +56,7 @@ class Node(browser.JDCNode,typeNode.PopUpMenuNodePartiel):
         typeNode.PopUpMenuNodeMinimal.createPopUpMenu(self)
 
 
-class FACTTreeItem(Objecttreeitem.ObjectTreeItem):
+class FACTTreeItem(objecttreeitem.ObjectTreeItem):
     itemNode=Node
 
     def isExpandable(self):

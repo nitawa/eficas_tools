@@ -64,6 +64,29 @@ class MCSIMP(A_OBJECT.OBJECT):
             self.definition.siValide(self)
         return validite
 
+
+    def getDicoForFancy(self):
+        # print ('MCSIMP getDicoForFancy ', self)
+        monDico = {}
+        monDico["title"] = self.nom
+        monDico["key"] = self.idUnique
+        if self.valeur != None:
+            monDico["wValue"] = str(self.valeur)
+        else:
+            monDico["wValue"] = ""
+        monDico["classeAccas"] = self.nature
+        monDico["validite"] = self.getValid()
+        if monDico["validite"] == None:
+            monDico["validite"] = self.isValid()
+        monDico["max"] = self.definition.max
+        monDico["min"] = self.definition.min
+        monDico["into"] = self.definition.into
+        monDico["statut"] = self.definition.statut
+        # a priori jamais vrai sauf si on a change un nom de userassd
+        if monDico["validite"] == 0 and monDico["statut"] == "f":
+            monDico["validite"] == 2
+
+        return monDico
     def getNomConcept(self):
         p = self
         while p.parent:

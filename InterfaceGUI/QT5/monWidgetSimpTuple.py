@@ -47,7 +47,7 @@ class MonWidgetSimpTuple(Feuille):
 
     def valeursPressed(self):
         aLeFocus = self.focusWidget()
-        self.editor.afficheInfos("")
+        self.editor.afficheMessage("")
         texteValeur = ""
         for i in range(self.nbValeurs):
             nomLineEdit = "lineEditVal" + str(i + 1)
@@ -79,7 +79,7 @@ class MonWidgetSimpTuple(Feuille):
                 texteValeur += ","
         validite, commentaire = self.politique.recordValeur(texteValeur)
         if not validite:
-            self.editor.afficheInfos(
+            self.editor.afficheMessage(
                 commentaire
                 + " "
                 + str(self.objSimp.definition.validators.typeDesTuples),

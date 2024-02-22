@@ -20,7 +20,7 @@
 
 from InterfaceGUI.Web import browser
 from InterfaceGUI.Web import typeNode
-from InterfaceGUI.common import Objecttreeitem
+from InterfaceGUI.common import objecttreeitem
 from Accas.extensions.eficas_translation import tr
 
 
@@ -53,7 +53,7 @@ class Node(browser.JDCNode,typeNode.PopUpMenuNodePartiel):
 
 
 
-class FACTTreeItem(Objecttreeitem.ObjectTreeItem):
+class FACTTreeItem(objecttreeitem.ObjectTreeItem):
     itemNode=Node
 
     def isExpandable(self):

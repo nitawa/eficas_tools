@@ -65,7 +65,7 @@ class MonWidgetMatrice(Ui_desWidgetMatrice, Feuille):
             return
         boolOk, commentaire = self.monType.verifItem(texte, self.node.item.object)
         if not boolOk:
-            self.editor.afficheInfos(tr(commentaire), Qt.red)
+            self.editor.afficheMessage(tr(commentaire), Qt.red)
             monItem.setText("")
             return
         if self.monType.coloree:
@@ -199,12 +199,12 @@ class MonWidgetMatriceOT(MonWidgetMatrice):
         except:
             ok = False
         if ok == False:
-            self.editor.afficheInfos(tr("Entrer un float SVP"), Qt.red)
+            self.editor.afficheMessage(tr("Entrer un float SVP"), Qt.red)
             monItem.setText("")
             return
         if self.monType.valSup != None:
             if val > self.monType.valSup:
-                self.editor.afficheInfos(
+                self.editor.afficheMessage(
                     tr("Entrer un float inferieur a ") + repr(self.monType.valSup),
                     Qt.red,
                 )
@@ -212,13 +212,13 @@ class MonWidgetMatriceOT(MonWidgetMatrice):
                 return
         if self.monType.valMin != None:
             if val < self.monType.valMin:
-                self.editor.afficheInfos(
+                self.editor.afficheMessage(
                     tr("Entrer un float superieur a ") + repr(self.monType.valMin),
                     Qt.red,
                 )
                 monItem.setText("")
                 return
-        self.editor.afficheInfos("")
+        self.editor.afficheMessage("")
         if self.monType.structure != None:
             MonWidgetMatrice.__dict__[self.monType.structure](*(self,))
         self.acceptVal()

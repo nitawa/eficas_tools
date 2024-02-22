@@ -18,7 +18,7 @@
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
 
-from InterfaceGUI.common import Objecttreeitem
+from InterfaceGUI.common import objecttreeitem
 from InterfaceGUI.Web import browser
 from InterfaceGUI.Web import typeNode
 from Accas.extensions.eficas_translation import tr
@@ -30,7 +30,7 @@ class Node(browser.JDCNode,typeNode.PopUpMenuRacine):
         return param
 
 
-class JDCTreeItem(Objecttreeitem.ObjectTreeItem):
+class JDCTreeItem(objecttreeitem.ObjectTreeItem):
     itemNode=Node
 
     def isExpandable(self):

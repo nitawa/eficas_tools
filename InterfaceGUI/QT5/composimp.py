@@ -25,7 +25,7 @@ import traceback
 from InterfaceGUI.QT5 import typeNode
 
 # Modules Eficas
-from InterfaceGUI.common import Objecttreeitem
+from InterfaceGUI.common import objecttreeitem
 from InterfaceGUI.QT5 import browser
 from Accas import SalomeEntry
 from Accas import ASSD
@@ -257,7 +257,7 @@ class Node(NodeCommun, browser.JDCNode, typeNode.PopUpMenuNodeMinimal):
         typeNode.PopUpMenuNodeMinimal.createPopUpMenu(self)
 
 
-class SIMPTreeItemCommun(Objecttreeitem.AtomicObjectTreeItem):
+class SIMPTreeItemCommun(objecttreeitem.AtomicObjectTreeItem):
 
     def init(self):
         self.expandable = 0

@@ -68,7 +68,7 @@ class MonWidgetPlusieursCreeUserAssd(MonWidgetPlusieursBase):
                     oldValeurUserAssd, valeur
                 )
                 if commentaire != "" and not validite:
-                    self.editor.afficheInfos(commentaire, Qt.red)
+                    self.editor.afficheMessage(commentaire, Qt.red)
                     self.lineEditEnCours.setText(oldValeurUserAssd.nom)
                 nomDernierLineEdit = "lineEditVal" + str(self.numLineEditEnCours + 1)
                 dernier = getattr(self, nomDernierLineEdit)
@@ -77,7 +77,7 @@ class MonWidgetPlusieursCreeUserAssd(MonWidgetPlusieursBase):
 
             validite, objASSD, commentaire = self.objSimp.creeUserASSD(valeur)
             if commentaire != "" and not validite:
-                self.editor.afficheInfos(commentaire, Qt.red)
+                self.editor.afficheMessage(commentaire, Qt.red)
                 self.lineEditEnCours.setText("")
                 if objASSD:
                     objASSD.supprime(self.objSimp)
@@ -116,7 +116,7 @@ class MonWidgetPlusieursCreeUserAssd(MonWidgetPlusieursBase):
             dernier = getattr(self, nomDernierLineEdit)
             dernier.setFocus()
         else:
-            self.editor.afficheInfos("ajout impossible", Qt.red)
+            self.editor.afficheMessage("ajout impossible", Qt.red)
             if objASSD:
                 objASSD.supprime(self.objSimp)
             self.lineEditEnCours.setText("")

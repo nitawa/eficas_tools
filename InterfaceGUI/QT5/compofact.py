@@ -22,7 +22,7 @@ from InterfaceGUI.QT5 import browser
 from InterfaceGUI.QT5 import typeNode
 from Accas.extensions.eficas_translation import tr
 
-from InterfaceGUI.common import Objecttreeitem
+from InterfaceGUI.common import objecttreeitem
 import traceback
 
 
@@ -38,7 +38,7 @@ class Node(browser.JDCNode, typeNode.PopUpMenuNodePartiel):
         else:
             self.niveau = 1
         if hasattr(self, "plie") and self.plie == True:
-            from InterfaceGUI.QT5.nterfaceGUI.QT5.monWidgetFactPlie import MonWidgetFactPlie
+            from InterfaceGUI.QT5.monWidgetFactPlie import MonWidgetFactPlie
 
             widget = MonWidgetFactPlie(
                 self,
@@ -52,7 +52,7 @@ class Node(browser.JDCNode, typeNode.PopUpMenuNodePartiel):
         elif self.editor.maConfiguration.afficheFirstPlies and self.firstAffiche:
             self.firstAffiche = False
             self.setPlie()
-            from InterfaceGUI.QT5.nterfaceGUI.QT5.monWidgetFactPlie import MonWidgetFactPlie
+            from InterfaceGUI.QT5.monWidgetFactPlie import MonWidgetFactPlie
 
             widget = MonWidgetFactPlie(
                 self,
@@ -64,7 +64,7 @@ class Node(browser.JDCNode, typeNode.PopUpMenuNodePartiel):
                 maCommande,
             )
         else:
-            from InterfaceGUI.QT5.nterfaceGUI.QT5.monWidgetFact import MonWidgetFact
+            from InterfaceGUI.QT5.monWidgetFact import MonWidgetFact
 
             widget = MonWidgetFact(
                 self,
@@ -82,7 +82,7 @@ class Node(browser.JDCNode, typeNode.PopUpMenuNodePartiel):
         typeNode.PopUpMenuNodeMinimal.createPopUpMenu(self)
 
 
-class FACTTreeItem(Objecttreeitem.ObjectTreeItem):
+class FACTTreeItem(objecttreeitem.ObjectTreeItem):
     itemNode = Node
 
     def isExpandable(self):

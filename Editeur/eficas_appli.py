@@ -19,9 +19,11 @@
 #
 import os, sys
 
+
 from Accas.extensions.eficas_exception import EficasException
 from Editeur import session
 from Editeur.getVersion import getEficasVersion
+from Accas.extensions.eficas_translation import tr
 
 
 class EficasAppli:
@@ -71,7 +73,7 @@ class EficasAppli:
             try:
                 from Accas import eficasSalome
                 Accas.SalomeEntry = eficasSalome.SalomeEntry
-            except e:
+            except  Exception as e:
                 print ("impossible d importer les salome entry")
                 print (str(e))
 
@@ -137,22 +139,16 @@ class EficasAppli:
         texte = p.convert("execnoparseur")
         return texte
 
-    #------------------------------------------------------------------
-    def newEditor(self, fichier=None, jdc=None, units=None, include=0):
-    #------------------------------------------------------------------
+    #------------------------------------------------------
+    def getEditor(self, fichier=None, jdc=None, include=0):
+    #------------------------------------------------------
         #PN reflechir a ce que cela veut dire d avoir plusieurs editeurs
         if (hasattr(self, "editor")) and self.editor != None:
             print("un seul editeur par application eficas_appli ")
             sys.exit()
-        self.editor = self.editorManager.getNewEditor()
-        return self.editorId
-
-    #-------------------
-    def getEditor(self):
-    #-------------------
-        if (hasattr(self, "editor")) and self.editor != None: return self.editor
-        self.newEditor()
+        self.editor = self.editorManager.getEditor(fichier, jdc, include)
         return self.editor
+
 
     #--------------------------
     def getEditorById(self,id):
@@ -170,7 +166,7 @@ class EficasAppli:
         try:
             monEditor = self.editorManager.openFile(fichier)
         except EficasException as exc:
-            afficheMessage(self, 'erreur ouverture fichier', str(exc),critical=True)
+            self.afficheMessage( 'erreur ouverture fichier', str(exc),critical=True)
             monEditor = None
         return monEditor
 
@@ -234,10 +230,10 @@ class EficasAppli:
         for study in session.d_env.studies:
             os.chdir(cwd)
             d = session.getUnit(study, self)
-            self.editorManager.openFile(fichier=study["comm"], units=d)
+            self.editorManager.openFile(fichier=study["comm"])
 
 
-    #----------------------
+    #---------------------
     def saveFullFile(self):
     #----------------------
     # Pour Telemac
@@ -247,7 +243,7 @@ class EficasAppli:
     def fileNew(self):
     #-------------------
         try:
-            self.editorManager.newEditor()
+            self.editorManager.getEditor()
         except EficasException as exc:
             msg = str(exc)
             if msg != "":

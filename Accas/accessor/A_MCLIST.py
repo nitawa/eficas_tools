@@ -69,7 +69,6 @@ class MCList:
         for i in self.data:
             listeDict.append(i.getDicoObjetsCompletsPourTree())
         return listeDict
-
     def getDicoForFancy(self):
         listeDict = []
         nbFactDejaLa = len(self.data)
@@ -83,6 +82,7 @@ class MCList:
                 dico["repetable"] = 0
             listeDict.append(dico)
         return listeDict
+
     def isOblig(self):
         """
         Une MCList n'est jamais obligatoire (meme si le MCFACT qu'elle represente l'est

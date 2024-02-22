@@ -61,9 +61,9 @@ class QtEditorManager(EditorManager):
             self.appliEficas.construitMenu()
          
 
-    #-------------------------------------------------------
-    def openFile(self, fichier=None, units=None, patron =0):
-    #-------------------------------------------------------
+    #--------------------------------------------
+    def openFile(self, fichier=None,  patron =0):
+    #--------------------------------------------
         result = None
         if self.appliEficas.code == None:
             self.appliEficas.definitCode(None, None)
@@ -88,7 +88,7 @@ class QtEditorManager(EditorManager):
         ulfile = os.path.abspath(fichier)
         self.appliEficas.maConfiguration.saveDir = os.path.split(ulfile)[0]
         self.appliEficas.addToRecentList(fichier)
-        maPage = self.getEditor(fichier, units=units)
+        maPage = self.getEditor(fichier)
         if maPage: result = maPage
         if maPage: self.myQtab.setTabText(
            self.myQtab.indexOf(maPage), os.path.basename(fichier))
@@ -218,19 +218,11 @@ class QtEditorManager(EditorManager):
         editor = self.dictEditors[index]
         editor.handleAjoutEtape(nomEtape)
 
-    #------------------------------
-    def newEditor(self, include=0):
-    #------------------------------
-        if self.appliEficas.multi == True:
-            self.appliEficas.definitCode(None, None)
-            if self.appliEficas.code == None:
-                return
-        maPage = self.getEditor(include=include)
 
     #--------------------------
     def newIncludeEditor(self):
     #--------------------------
-        self.newEditor(include=1)
+        self.getEditor(include=1)
 
     #------------------------------------
     def viewJdcFichierSource(self):
@@ -289,13 +281,13 @@ class QtEditorManager(EditorManager):
         if index < 0: return
         self.dictEditors[index].viewJdcRapport()
 
-    #-------------------------
-    def viewJdcPy(self):
-    #-------------------------
+    #--------------------------------
+    def viewJdcFichierResultat(self):
+    #--------------------------------
         index = self.myQtab.currentIndex()
         if index < 0:
             return
-        self.dictEditors[index].viewJdcPy()
+        self.dictEditors[index].viewJdcFichierResultat()
 
     #--------------------
     def handleSave(self):
@@ -384,9 +376,14 @@ class QtEditorManager(EditorManager):
         editor = self.getEditor(fichier=fn, jdc=jdc, include=1)
         self.appliEficas.addToRecentList(editor.getFileName())
 
+
     #------------------------------------------------------------------
-    def getEditor(self, fichier=None, jdc=None, units=None, include=0):
+    def getEditor(self, fichier=None, jdc=None, include=0):
     #------------------------------------------------------------------
+        if self.appliEficas.multi == True:
+            self.appliEficas.definitCode(None, None)
+            if self.appliEficas.code == None:
+                return
         newWin = 0
         double = None
         for indexEditor in self.dictEditors:
@@ -403,7 +400,7 @@ class QtEditorManager(EditorManager):
                 double = editor
         else:
             from qt_editor import QtEditor
-            editor = QtEditor(self.appliEficas, fichier, jdc, self.myQtab, units, include)
+            editor = QtEditor(self.appliEficas, fichier, jdc, self.myQtab, include)
             if double != None: self.doubles[editor] = double
             if editor.jdc:  # le fichier est bien un jdc
                 self.editors.append(editor)

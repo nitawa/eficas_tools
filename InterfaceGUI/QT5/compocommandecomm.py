@@ -20,12 +20,12 @@
 
 import traceback
 
-from InterfaceGUI.common import Objecttreeitem
+from InterfaceGUI.common import objecttreeitem
 from Accas.extensions.eficas_exception import EficasException
 from InterfaceGUI.QT5 import compocomm
 
 
-class COMMANDE_COMMTreeItem(Objecttreeitem.ObjectTreeItem):
+class COMMANDE_COMMTreeItem(objecttreeitem.ObjectTreeItem):
     itemNode = compocomm.Node
 
     def init(self):

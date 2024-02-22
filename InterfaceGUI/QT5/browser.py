@@ -722,9 +722,9 @@ class JDCNode(QTreeWidgetItem, GereRegles):
 
         ret, commentaire = self.vraiParent.item.suppItem(self.item)
         if ret == 0:
-            self.editor.afficheInfos(commentaire, Qt.red)
+            self.editor.afficheMessage(commentaire, Qt.red)
         else:
-            self.editor.afficheInfos(commentaire)
+            self.editor.afficheMessage(commentaire)
         self.treeParent.buildChildren()
         if self.treeParent.childrenComplete:
             toselect = self.treeParent.childrenComplete[index]

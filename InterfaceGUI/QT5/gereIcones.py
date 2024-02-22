@@ -448,7 +448,7 @@ class ContientIcones(object):
             )
 
         if commentaire != "":
-            self.editor.afficheInfos(tr(str(commentaire)))
+            self.editor.afficheMessage(tr(str(commentaire)))
         if selection == []:
             return
 
@@ -476,7 +476,7 @@ class ContientIcones(object):
         if valeur:
             ok, msgError = self.appliEficas.displayShape(valeur)
             if not ok:
-                self.editor.afficheInfos(msgError, Qt.red)
+                self.editor.afficheMessage(msgError, Qt.red)
 
     def BParametresPressed(self):
         liste = self.node.item.getListeParamPossible()

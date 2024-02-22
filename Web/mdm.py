@@ -1,7 +1,6 @@
 # coding: utf-8
 #!/usr/bin/env python3
 import sys
-from accasConnecteur import AccasConnecteur
 
 code='Essai'
 #code=None
@@ -52,16 +51,21 @@ app.config["REDIS_URL"] = "redis://localhost"
 app.register_blueprint(sse, url_prefix='/stream')
 
 ### Eficas Connector
-def createConnecteur(app):
-    monConnecteur=AccasConnecteur(code, langue='ang',appWeb=app)
-    return monConnecteur
+def createWebAppli(app):
+    import os
+    sys.path.append(os.path.join(os.path.abspath(os.path.dirname(__file__)),'..'))
+    from Editeur.eficas_go import getEficas
+    eficasAppli=getEficas(code, langue='ang',GUIPath= 'Web',appWeb=app)
+    return eficasAppli
 
-monConnecteur=createConnecteur(app)
+
+eficasAppli=createWebAppli(app)
 debug=1
 if debug : 
+    eficasEditeur=eficasAppli.getEditor()
     print ('les commandes dans le catalogue')
     print ('_______________________________')
-    print (monConnecteur.getListeCommandes())
+    print (eficasEditeur.getListeCommandes())
 
 def fromConnecteur(maFonction,*args,**kwargs):
   fnct=globals()[maFonction]
@@ -96,9 +100,9 @@ def deleteChildren(idList):
 
 #TODO: Câbler la sélection du catalogue avant d'activer les appels suivants
 #      car si la page Web n'est pas rendue et que le connecteur génère une erreur... boom !
-def afficheInfos(txt, couleur):                     #TODO: RENAME TO ... displayWarning
-    print ('Flask/afficheInfos: ', txt, couleur)
-    # sse.publish( {'txt':txt, 'color':couleur, 'messageClass':"alert-warning" ,'message': "Hello from afficheInfos!"},
+def afficheMessage(txt, couleur):                     #TODO: RENAME TO ... displayWarning
+    print ('Flask/afficheMessage: ', txt, couleur)
+    # sse.publish( {'txt':txt, 'color':couleur, 'messageClass':"alert-warning" ,'message': "Hello from afficheMessage!"},
     #              type='displayMessage')
 
 def afficheAlerte(titre, message):                  #TODO: RENAME TO ... displayDanger
@@ -126,13 +130,13 @@ def updateSimp():
         id=req['id'];value=req['value']
         # id, value = req.values()       # Dangereux correspondance implicite
         value             = str(value)   #On peut écrire Pi
-        rId,message,changeDone       = monConnecteur.changeValeur(id,value);
+        rId,message,changeDone       = eficasEditeur.changeValeur(id,value);
         assert(rId==id)
         #changeDone        = True
         print ("changeDone : ",changeDone)
         # Ne pas recuperer et ne pas renvoyer le noeud dans le cas du SIMP
         #  (le changeDone et l''ancienne valeur ds la WebApp suffit 
-        node              = monConnecteur.getDicoForFancy(monConnecteur.monEditeur.getNodeById(id))
+        node              = eficasEditeur.getDicoForFancy(eficasEditeur.getNodeById(id))
         print("Flask/updateSimp node : ",node)
         # return jsonify([myTreeDico])
         
@@ -155,7 +159,7 @@ def updateSDName():
         print(req['id'])
         id=req['id'];sdnom=req['sdnom']
         sdnom              = str(sdnom)   #On peut écrire Pi
-        changeDone,message = monConnecteur.updateSDName(id,sdnom);
+        changeDone,message = eficasEditeur.updateSDName(id,sdnom);
         #changeDone        = True
         print ("changeDone : ",changeDone)
         
@@ -178,7 +182,7 @@ def removeNode():
         # Print the dictionary
         print("/removeNode ",req);print("/removeNode ",req['id']);
         id  = req['id'];
-        ret,message = monConnecteur.suppNode(id);
+        ret,message = eficasEditeur.suppNode(id);
         print ("/removeNode : ret : ",ret," message : ",message)
         
         return make_response(json.dumps( {'ret':ret, 'message':message} ))
@@ -197,8 +201,8 @@ def appendChild():
         print(__file__+"/appendChild : ",req);
         id=req['id'];name=req['name'];pos=req['pos'];
         # id, value = req.values() # Dangereux correspondance implicite
-        #rId,message,changeDone  = monConnecteur.appendChild(id,name,pos);
-        newId                    = monConnecteur.appendChild(id,name,pos);
+        #rId,message,changeDone  = eficasEditeur.appendChild(id,name,pos);
+        newId                    = eficasEditeur.appendChild(id,name,pos);
         print (__file__+"/appendChild : newId : ",newId);
         
         return make_response(json.dumps( {'id':newId} ))
@@ -213,11 +217,20 @@ def appendChild():
 @app.route('/')
 def index():
 
+#PN decider de ce qu on appelle
+# Lecture du cata
+# Lecture du fichier
+    #eficasEditeur = eficasAppli.litFichierComm('../Codes/WebTest/web_tres_simple_avec_2Fact.comm')
+    #eficasAppli.litFichierComm('../WebTest/edg_REP1300_FULL_PN.comm')
 
-    monConnecteur.litFichierComm('../WebTest/web_tres_simple_avec_2Fact.comm')
-    #monConnecteur.litFichierComm('../WebTest/edg_REP1300_FULL_PN.comm')
-    myFancyTreeDico=monConnecteur.getDicoForFancy(monConnecteur.monEditeur.tree.racine)
-    
+    eficasEditeur = eficasAppli.openFile('../Codes/WebTest/web_tres_simple_avec_2Fact.comm')
+    if not(eficasEditeur)  :
+       return render_template('commandes_2.html',
+          titre='Pb a la lecture',
+          listeCommandes = [],
+          tree= None
+    )
+    myFancyTreeDico=eficasEditeur.getDicoForFancy(eficasEditeur.tree.racine)
     myFancyTreeJS=json.dumps([myFancyTreeDico],indent=4)  #TODO : remove indent if not DEBUG
     
     print("---- myFancyTreeDico ----")
@@ -227,7 +240,7 @@ def index():
 
     return render_template('commandes_2.html',
       titre=code,
-      listeCommandes = monConnecteur.getListeCommandes(),
+      listeCommandes = eficasEditeur.getListeCommandes(),
       tree=myFancyTreeJS,
       # tree=tree4Fancy,
     )

@@ -273,7 +273,7 @@ class OBJECT:
                 for leNode in lesNodes:
                     listeNodes.append(leNode)
         monDico["children"] = listeNodes
-        print (self.nature)
+        #print (self.nature)
         if self.nature != "MCSIMP" and self.nature != "MCLIST" and self.nature != "JDC":
             monDico["infoOptionnels"] = self.calculOptionnelInclutBlocs()
         return monDico

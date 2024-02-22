@@ -28,7 +28,7 @@ from PyQt5.QtWidgets           import QWidget
 from Editeur.editor            import Editor
 from UiQT5.editor5C            import Ui_editor5C
 from InterfaceGui.common       import comploader
-from InterfaceGui.common       import Objecttreeitem
+from InterfaceGui.common       import objecttreeitem
 from InterfaceGUI.cinqC        import browser
 from InterfaceGUI.cinqC.connectDB import connectDB
 import Accas.IO.writer as generator
@@ -41,7 +41,7 @@ class QtEditor(Ui_editor5C, Editor, QWidget):
        Editeur de jdc 5C
     """
 
-    def __init__ (self,appliEficas,fichier = None, jdc=None, QWParent=None, units = None, include=0):
+    def __init__ (self,appliEficas,fichier = None, jdc=None, QWParent=None, include=0):
     #------------------------------------------------------------------------------------------------
 
         debug = 0
@@ -97,7 +97,7 @@ class QtEditor(Ui_editor5C, Editor, QWidget):
         self.jdcSelection=self._newJDC(texte=texte)
         self.jdcSelection.analyse()
         if debug : print (self.jdcSelection.etapes)
-        self.jdcSelectionItem = Objecttreeitem.makeObjecttreeitem( self, "nom", self.jdcSelection )
+        self.jdcSelectionItem = objecttreeitem.makeObjecttreeitem( self, "nom", self.jdcSelection )
         if self.jdcSelectionItem :
            self.treeJdcSelection = browser.JDCTree( self.jdcSelectionItem, self )
            if debug : print (self.treeJdcSelection)
@@ -167,7 +167,7 @@ class QtEditor(Ui_editor5C, Editor, QWidget):
         if debug : print ('texte newJDC' , texte)
         self.jdcLabels=self._newJDC(texte=texte)
         self.jdcLabels.analyse()
-        jdcLabelsItem = Objecttreeitem.makeObjecttreeitem( self, "nom", self.jdcLabels )
+        jdcLabelsItem = objecttreeitem.makeObjecttreeitem( self, "nom", self.jdcLabels )
         if jdcLabelsItem :
            treeJdcLabels = browser.JDCTree( jdcLabelsItem, self )
            widgetLabels = treeJdcLabels.racine.children[0].fenetre

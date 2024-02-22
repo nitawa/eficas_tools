@@ -27,7 +27,7 @@ from InterfaceGUI.QT5 import browser
 from InterfaceGUI.QT5 import typeNode
 from Accas.extensions.eficas_translation import tr
 
-from InterfaceGUI.common import Objecttreeitem
+from InterfaceGUI.common import objecttreeitem
 from Accas.processing.P_OBJECT import ErrorObj
 
 
@@ -109,7 +109,7 @@ class Node(browser.JDCNode, typeNode.PopUpMenuNodeMinimal):
         return child
 
 
-class MCListTreeItem(Objecttreeitem.SequenceTreeItem, compofact.FACTTreeItem):
+class MCListTreeItem(objecttreeitem.SequenceTreeItem, compofact.FACTTreeItem):
     """La classe MCListTreeItem joue le role d'un adaptateur pour les objets
     du processing Accas instances de la classe MCLIST.
     Elle adapte ces objets pour leur permettre d'etre integres en tant que
@@ -147,7 +147,7 @@ class MCListTreeItem(Objecttreeitem.SequenceTreeItem, compofact.FACTTreeItem):
 
     def isExpandable(self):
         if len(self._object) > 1:
-            return Objecttreeitem.SequenceTreeItem.isExpandable(self)
+            return objecttreeitem.SequenceTreeItem.isExpandable(self)
         else:
             return compofact.FACTTreeItem.isExpandable(self)
 

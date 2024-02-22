@@ -20,7 +20,7 @@
 import os
 import tempfile
 
-from InterfaceGUI.common import Objecttreeitem
+from InterfaceGUI.common import objecttreeitem
 from InterfaceGUI.cinqC import browser
 
 class Node(browser.JDCNode ):
@@ -41,7 +41,7 @@ class Node(browser.JDCNode ):
         return MonWidgetCommande(self,self.editor,self.item.object)
 
 
-class EtapeTreeItem(Objecttreeitem.ObjectTreeItem):
+class EtapeTreeItem(objecttreeitem.ObjectTreeItem):
     """ La classe EtapeTreeItem est un adaptateur des objets ETAPE du processing
         Accas. Elle leur permet d'etre affichés comme des noeuds
         d'un arbre graphique.

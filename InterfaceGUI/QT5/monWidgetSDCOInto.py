@@ -81,5 +81,5 @@ class MonWidgetSDCOInto(Ui_WidgetSDCOInto, Feuille, SaisieSDCO):
         else:
             commentaire = self.node.item.getCr()
             self.reset_old_valeur(anc_val, mess=mess)
-            self.editor.afficheInfos(commentaire, Qt.red)
+            self.editor.afficheMessage(commentaire, Qt.red)
         self.Commentaire.setText(tr(commentaire))

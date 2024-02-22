@@ -254,12 +254,12 @@ class MonWidgetPlusieursIntoOrdonne(
         self.listeValeursCourantes = self.node.item.getListeValeurs()
         min, max = self.node.item.getMinMax()
         if len(self.listeValeursCourantes) + 1 > max:
-            self.editor.afficheInfos(
+            self.editor.afficheMessage(
                 tr("Nombre maximal de valeurs : ") + str(max), Qt.red
             )
             return
         else:
-            self.editor.afficheInfos("")
+            self.editor.afficheMessage("")
 
         affiche = False
         for i in range(1, self.indexDernierLabel + 1):
@@ -301,11 +301,11 @@ class MonWidgetPlusieursIntoOrdonne(
         self.listeValeursCourantes = self.node.item.getListeValeurs()
         min, max = self.node.item.getMinMax()
         if len(self.listeValeursCourantes) < min:
-            self.editor.afficheInfos(
+            self.editor.afficheMessage(
                 tr("Nombre minimal de valeurs : ") + str(min), Qt.red
             )
         else:
-            self.editor.afficheInfos("")
+            self.editor.afficheMessage("")
 
         if len(listeRetour) == 0:
             self.node.item.setValeur(None)
@@ -313,7 +313,7 @@ class MonWidgetPlusieursIntoOrdonne(
             self.node.item.setValeur(listeRetour)
         else:
             commentaire = comm + " " + comm2
-            self.editor.afficheInfos(commentaire, Qt.red)
+            self.editor.afficheMessage(commentaire, Qt.red)
         self.setValide()
         self.reaffiche()
 

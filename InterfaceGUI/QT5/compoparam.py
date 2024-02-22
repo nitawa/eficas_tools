@@ -27,7 +27,7 @@ import types
 from Accas.extensions.eficas_translation import tr
 
 # import modules EFICAS
-from InterfaceGUI.common import Objecttreeitem
+from InterfaceGUI.common import objecttreeitem
 from InterfaceGUI.QT5 import browser
 from InterfaceGUI.QT5 import typeNode
 
@@ -47,7 +47,7 @@ class Node(browser.JDCNode, typeNode.PopUpMenuNodePartiel):
         return None
 
 
-class PARAMTreeItem(Objecttreeitem.ObjectTreeItem):
+class PARAMTreeItem(objecttreeitem.ObjectTreeItem):
     """
     Classe servant a definir l'item porte par le noeud de l'arbre d'EFICAS
     qui represente le PARAMETRE
