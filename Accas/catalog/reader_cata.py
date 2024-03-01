@@ -80,12 +80,12 @@ class ReaderCataCommun(object):
             widgetChoix.close()
             raise EficasException()
 
+    #--------------------#
     def choisitCata(self):
     #--------------------#
 
-        listeCataPossibles = []
-
         listeTousLesCatas = []
+        listeCataPossibles = []
         for catalogue in self.appliEficas.maConfiguration.catalogues:
             if isinstance(catalogue, CatalogDescription):
                 listeTousLesCatas.append(catalogue)
@@ -106,7 +106,7 @@ class ReaderCataCommun(object):
             self.appliEficas.afficheMessage(
                     tr("Import du catalogue"),
                     tr("Pas de catalogue defini pour le code {}".format(self.code)))
-            self.appliEficas.close()
+            #self.appliEficas.close()
             if self.appliEficas.salome == 0: sys.exit(1)
             return
 
@@ -181,7 +181,6 @@ class ReaderCataCommun(object):
             else:
                 # plusieurs catalogues sont disponibles : il faut demander a l'utilisateur
                 # lequel il veut utiliser ...
-                print ('PN : --> passer la commande askChoixCatalogue dans Editor avec sortie pour non QT / non Web')
                 #self.appliEficas.afficheMessage( tr("Import du catalogue"), tr('Aucun catalogue choisi'), critique = True)
                 self.demandeCatalogue = True
                 self.askChoixCatalogue(cataListeChoix)

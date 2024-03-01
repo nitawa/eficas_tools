@@ -256,4 +256,5 @@ def createObjetPythonFromDocumentAccas(fichierCata=None, fichier=None, code=None
 
 
 if __name__ == "__main__":
-    pass
+    if repIni not in sys.path : sys.path.insert(0,repIni)
+    lanceQtEficas(multi=True)

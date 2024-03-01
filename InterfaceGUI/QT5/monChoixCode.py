@@ -27,6 +27,7 @@ from PyQt5.QtWidgets import QDialog, QRadioButton, QGroupBox, QButtonGroup
 from PyQt5.QtGui import QPalette
 from PyQt5.QtCore import QProcess, QFileInfo, Qt, QSize
 
+listeCode = ("Telemac", "ReacteurNumerique", "Adao", "A", "B")
 
 # Import des panels
 
@@ -57,10 +58,9 @@ class MonChoixCode(Ui_ChoixCode, QDialog):
     def verifieInstall(self):
         self.groupCodes = QButtonGroup(self.groupBox)
         vars = list(os.environ.items())
-        listeCode = ("Telemac", "ReacteurNumerique", "Adao")
         for code in listeCode:
             dirCode = os.path.abspath(
-                os.path.join(os.path.abspath(__file__), "../..", code)
+                os.path.join(os.path.abspath(__file__), "../../../Codes", code)
             )
             try:
                 l = os.listdir(dirCode)
@@ -94,24 +94,25 @@ class MonChoixCode(Ui_ChoixCode, QDialog):
                 self.groupCodes.addButton(bouton)
             except:
                 pass
-        self.appliEficas.listeCode = self.appliEficas.listeCode + listeCodesIntegrateur
 
     def choisitCode(self):
         bouton = self.groupCodes.checkedButton()
         if bouton == None:
             return
         code = str(bouton.text())
-        codeUpper = code.upper()
-        self.appliEficas.code = codeUpper
+        self.appliEficas.code = code
         try:
             dirCode = os.path.abspath(
-                os.path.join(os.path.abspath(__file__), "../..", code)
+                os.path.join(os.path.abspath(__file__), "../../../Codes", code)
             )
             l = os.listdir(dirCode)
             sys.path.insert(0, dirCode)
         except:
             clef = "PREFS_CATA_" + code
-            repIntegrateur = os.path.abspath(os.environ[clef])
-            l = os.listdir(repIntegrateur)
-            sys.path.insert(0, repIntegrateur)
+            try:
+                repIntegrateur = os.path.abspath(os.environ[clef])
+                l = os.listdir(repIntegrateur)
+                sys.path.insert(0, repIntegrateur)
+            except :
+                print ('probleme voir la maintenance pour definir le code')
         self.close()

@@ -58,15 +58,12 @@ class QtEficasAppli(EficasAppli, Ui_Eficas, QMainWindow):
         self.GUIPath = GUIPath
         self.suiteTelemac = self.maConfiguration.suiteTelemac
         self.multi = multi
-        if self.multi : 
-            self.definitCode(code, None)
-            if self.code == None: return
-
         if self.maConfiguration.demandeLangue:
             from InterfaceGUI.QT5.monChoixLangue import MonChoixLangue
             widgetLangue = MonChoixLangue(self)
             ret = widgetLangue.exec_()
 
+        self.recemmentUtilises = []
         from Accas.extensions import localisation
         localisation.localise(None, self.langue, translatorFile=self.maConfiguration.translatorFile,)
         self.repIcon = os.path.join( os.path.dirname(os.path.abspath(__file__)),"..", "..", "Editeur", "icons")
@@ -152,7 +149,7 @@ class QtEficasAppli(EficasAppli, Ui_Eficas, QMainWindow):
             widgetChoix = MonChoixCode(self)
             ret = widgetChoix.exec_()
         if self.code == None:
-            return  # pour le cancel de la fenetre choix code
+            return  # pour permettre une sortie propre
         EficasAppli.definitCode(self, self.code, ssCode)
 
 
@@ -309,7 +306,7 @@ class QtEficasAppli(EficasAppli, Ui_Eficas, QMainWindow):
     #------------------------------------
         if hasattr(self, "rechercherDejaLa"): return
         self.rechercherDejaLa = True
-        self.actionRechercherDsCatalogue.triggered.connect( self.rechercherDejaLaechercherMotClefDsCatalogue)
+        self.actionRechercherDsCatalogue.triggered.connect( self.rechercherMotClefDsCatalogue)
 
     #-----------------------------
     def ajoutSortieComplete(self):

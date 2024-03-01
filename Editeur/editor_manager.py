@@ -41,15 +41,15 @@ class EditorManager(object):
         self.doubles = {}
 
 
-    # -----------------------------------------------------
-    def getEditor(self, fichier=None, jdc=None, include=0):
-    # -----------------------------------------------------
+    # -----------------------------------------------------------------
+    def getEditor(self, cata = None, fichier=None, jdc=None, include=0):
+    # -----------------------------------------------------------------
         """
           Retourne un nouvel editeur ou None si doublon 
         """
 
         if fichier == None :
-            self.appliEficas.afficheMessage('Eficas sans Ihm', 
+            self.appliEficas.afficheMessage('Eficas', 
                  'nom de fichier obligatoire pour obtenir un editor')
             return None
         for indexEditor in self.dictEditors:
@@ -63,16 +63,9 @@ class EditorManager(object):
             self.appliEficas.afficheMessage('Eficas sans Ihm', 'impossible d allouer un editor')
             return None
         self.editors.append(editor)
-        idEditor = uuid1().hex
-        self.dictEditors[idEditor] = editor
-        editor.idEditor = idEditor
+        self.dictEditors[editor.idEditor] = editor
         return editor
 
-    # --------------------------------
-    def setCurrentEditorById(self,id):
-    # --------------------------------
-        print ('a Programmer')
-        return True
       
 
     # -------------------------

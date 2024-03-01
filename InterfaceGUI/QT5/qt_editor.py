@@ -72,8 +72,8 @@ class QtEditor(Editor, Ui_baseWidget, QWidget):
         Editor.__init__(self, appliEficas, fichier, jdc, include)
 
         # on enleve la gestion du dicEditor necessaire dans les autres cas
-        # mais ici l index est le numero de page et non l idUnique
-        del self.appliEficas.editorManager.dictEditors[self.idUnique]
+        # mais ici l index est le numero de page et non l idEditor
+        del self.appliEficas.editorManager.dictEditors[self.idEditor]
 
         if self.jdc:
             comploader.chargerComposants(self.appliEficas.GUIPath)

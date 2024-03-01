@@ -88,7 +88,6 @@ class EficasAppli:
             from Editeur.configuration import BaseConfiguration
             self.maConfiguration = BaseConfiguration(self)
 
-        self.suiteTelemac = False
         self.withUQ = False
         self.genereXSD = False
         from Editeur.editor_manager import EditorManager
@@ -144,8 +143,8 @@ class EficasAppli:
     #------------------------------------------------------
         #PN reflechir a ce que cela veut dire d avoir plusieurs editeurs
         if (hasattr(self, "editor")) and self.editor != None:
-            print("un seul editeur par application eficas_appli ")
-            sys.exit()
+            print("un seul editeur par application eficas_appli sans Ihm ? ")
+        #     sys.exit()
         self.editor = self.editorManager.getEditor(fichier, jdc, include)
         return self.editor
 
@@ -161,7 +160,7 @@ class EficasAppli:
         return self.editorManager.setCurrentEditorById(self,id)
 
     #---------------------------
-    def openFile(self, fichier):
+    def openDataSet(self, fichier):
     #---------------------------
         try:
             monEditor = self.editorManager.openFile(fichier)

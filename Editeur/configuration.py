@@ -46,13 +46,16 @@ class BaseConfiguration(object):
 
         self.appliEficas = appliEficas
         self.code = appliEficas.code
-        if self.code == None: return
         self.salome = appliEficas.salome
 
         if self.salome: name = "prefs_eficas_salome.ini"
         else: name = "prefs_eficas.ini"
-        if sys.platform == 'linux' : self.repUser = os.path.join( os.path.expanduser("~"), '.config/Eficas',self.code)
-        else : self.repUser = os.path.join('C:/','.config/Eficas',self.code)
+        if self.code != None : 
+            if sys.platform == 'linux' : self.repUser = os.path.join( os.path.expanduser("~"), '.config/Eficas',self.code)
+            else : self.repUser = os.path.join('C:/','.config/Eficas',self.code)
+        else :
+            if sys.platform == 'linux' : self.repUser = os.path.join( os.path.expanduser("~"), '.config/Eficas')
+            else : self.repUser = os.path.join('C:/','.config/Eficas')
         self.fichierPrefsUtilisateur = os.path.join(self.repUser, name)
 
         self.labelsStandards = ('PdfReader', 'saveDir', 'modeNouvCommande', 'afficheUQ', 'closeAutreCommande', 'closeFrameRechercheCommande', 
@@ -71,7 +74,7 @@ class BaseConfiguration(object):
 
         self.setValeursParDefaut()
 
-        if self.code != "":
+        if self.code != "" and self.code != None:
             self.lectureFichierIniStandard()
             self.lectureFichierIniIntegrateur()
             self.lectureFichierIniUtilisateur()
@@ -93,9 +96,13 @@ class BaseConfiguration(object):
 
         # Valeurs par defaut
         self.pathDoc = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..","Doc"))
-        self.PedfReader = "acroread"
-        nomDir = "Eficas_" + self.code
-        self.saveDir = os.path.abspath(os.path.join(os.path.expanduser("~"), nomDir))
+        self.PdfReader = "acroread"
+         
+        if self.code :
+           nomDir = "Eficas_" + self.code
+           self.saveDir = os.path.abspath(os.path.join(os.path.expanduser("~"), nomDir))
+        else :
+           self.saveDir = os.path.abspath(os.path.expanduser("~"))
         self.modeNouvCommande = "initial"
         self.affiche = "alpha"
         self.closeAutreCommande = False

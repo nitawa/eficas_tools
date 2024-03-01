@@ -51,14 +51,14 @@ class WebEficasAppli(EficasAppli):
 
 
     #-----------------------------------------
-    def toWebApp(self, fction,*args, **kwargs):
+    def toWebApp(self,fction, sid, eid *args, **kwargs):
     #-----------------------------------------
         #if fction =='propageValide' :
         debug=0
-        if debug  : print ('PNPNPN : WebEficasAppli.toWebApp',  fction, *args, **kwargs)
+        if debug  : print ('PNPNPN : WebEficasAppli.toWebApp',  fction, sid, eid, *args, **kwargs)
         if self.appWeb == None  : return
         #if fction =='propageValide' : print ('self.appWeb.toWebApp propageValide', self.monEditeur.getNodeById(args[0]).nom)
-        self.appWeb.fromConnecteur(fction, *args, **kwargs)
+        self.appWeb.fromConnecteur(fction, sid, eid, *args, **kwargs)
 
     #-----------------------
     def createEditor(self):

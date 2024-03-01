@@ -57,9 +57,8 @@ class Editor:
         self.dicoNouveauxFact = {}
         self.dict_reels = {}
         self.liste_simp_reel = []
-        self.idUnique = uuid1().hex
-        self.appliEficas.editorManager.dictEditors[self.idUnique]=self
-
+        self.idEditor = uuid1().hex
+        self.appliEficas.editorManager.dictEditors[self.idEditor]=self
 
 
         # ces attributs sont mis a jour par definitCode appelee par newEditor
