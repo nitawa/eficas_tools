@@ -26,7 +26,7 @@ from copy import copy, deepcopy
 from uuid import uuid1
 
 # import du chargeur de composants
-from InterfaceGUI.common.comploader import makeObjecttreeitem
+from InterfaceGUI.Common.comploader import makeObjecttreeitem
 from Accas.accessor import CONNECTOR
 from Accas.extensions.eficas_translation import tr
 from Accas.extensions.eficas_exception import EficasException
@@ -176,14 +176,16 @@ class ObjectTreeItem(TreeItem, Delegate):
             # pour les suppressions on met le meme id a l objet et a la liste
             self._object.data[0].idUnique = self.idUnique
             self._object.idUnique = self._object.data[0].idUnique
-            if hasattr(self.appliEficas, "dicoIdNode"):
-                self.appliEficas.dicoIdNode[self._object.data[0].idUnique] = self
+            #if hasattr(self.appliEficas, "dicoIdNode"):
+            #    self.appliEficas.dicoIdNode[self._object.data[0].idUnique] = self
+            #22 fevrier. pourquoi ?
             self.idUnique = 0
             return
 
         self._object.idUnique = self.idUnique
-        if hasattr(self.appliEficas, "dicoIdNode") and self.idUnique:
-            self.appliEficas.dicoIdNode[self.idUnique] = self
+        #print (self, self._object.nom, self.idUnique)
+        #if hasattr(self.appliEficas, "dicoIdNode") and self.idUnique:
+        #    self.appliEficas.dicoIdNode[self.idUnique] = self
 
     def init(self):
         return

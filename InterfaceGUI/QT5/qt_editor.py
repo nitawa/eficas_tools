@@ -31,8 +31,8 @@ import traceback
 # Modules Eficas
 from Accas.extensions.eficas_translation import tr
 from Editeur import session
-from InterfaceGUI.common import comploader
-from InterfaceGUI.common import objecttreeitem
+from InterfaceGUI.Common import comploader
+from InterfaceGUI.Common import objecttreeitem
 from InterfaceGUI.QT5 import browser
 
 from UiQT5.desBaseWidget import Ui_baseWidget
@@ -70,6 +70,11 @@ class QtEditor(Editor, Ui_baseWidget, QWidget):
         self.QWParent = QWParent
 
         Editor.__init__(self, appliEficas, fichier, jdc, include)
+
+        # on enleve la gestion du dicEditor necessaire dans les autres cas
+        # mais ici l index est le numero de page et non l idUnique
+        del self.appliEficas.editorManager.dictEditors[self.idUnique]
+
         if self.jdc:
             comploader.chargerComposants(self.appliEficas.GUIPath)
             self.jdc_item = objecttreeitem.makeObjecttreeitem(self, "nom", self.jdc)

@@ -28,8 +28,8 @@ from Accas.extensions.eficas_translation import tr
 from InterfaceGUI.QT5.feuille import Feuille
 from UiQT5.desWidgetPlusieursPlie import Ui_WidgetPlusieursPlie
 
-from InterfaceGUI.common.politiquesValidation import PolitiquePlusieurs
-from InterfaceGUI.common.traiteSaisie import SaisieValeur
+from InterfaceGUI.Common.politiquesValidation import PolitiquePlusieurs
+from InterfaceGUI.Common.traiteSaisie import SaisieValeur
 
 pattern_blanc = re.compile(r"^\s*$")
 

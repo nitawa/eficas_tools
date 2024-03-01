@@ -159,6 +159,11 @@ class JDCTree(QTreeWidget, GereRegles):
 
         self.inhibeExpand = True
         self.itemCourant = item
+        # on a clique sur le jdc
+        if isinstance(item, compojdc.Node) : 
+           item.affichePanneau()
+           return
+
         itemParent = item.treeParent
         itemAvant = item
 
@@ -166,10 +171,8 @@ class JDCTree(QTreeWidget, GereRegles):
         #print (isinstance(itemParent, compojdc.Node))
         # on a clique sur une etape
         if isinstance(itemParent, compojdc.Node) :
-           if not (item.fenetre):
-              item.affichePanneau()
-           elif item.fenetre != self.editor.fenetreCentraleAffichee:
-              item.affichePanneau()
+           if not (item.fenetre): item.affichePanneau()
+           elif item.fenetre != self.editor.fenetreCentraleAffichee: item.affichePanneau()
            return
         while not (hasattr(itemParent, "getPanel")):
             if itemParent.plie == True: itemParent.setDeplie()

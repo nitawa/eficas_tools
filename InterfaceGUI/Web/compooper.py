@@ -20,7 +20,7 @@
 
 from Accas.extensions.eficas_translation import tr
 from Accas.extensions.eficas_exception import EficasException
-from InterfaceGUI.common import objecttreeitem
+from InterfaceGUI.Common import objecttreeitem
 from InterfaceGUI.Web import browser
 from InterfaceGUI.Web import typeNode
 

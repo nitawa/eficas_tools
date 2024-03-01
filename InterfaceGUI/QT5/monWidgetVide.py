@@ -23,7 +23,7 @@ from Accas.extensions.eficas_translation import tr
 
 from InterfaceGUI.QT5.feuille import Feuille
 from UiQT5.desWidgetVide import Ui_WidgetVide
-from InterfaceGUI.common.politiquesValidation import PolitiqueUnique
+from InterfaceGUI.Common.politiquesValidation import PolitiqueUnique
 
 
 class MonWidgetVide(Ui_WidgetVide, Feuille):

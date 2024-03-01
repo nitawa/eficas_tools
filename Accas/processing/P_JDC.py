@@ -60,7 +60,7 @@ NONE = None
     from Accas.processing.P_utils import SEP
 
     def __init__( self, definition=None, procedure=None, cata=None, dicoCataOrdonne=None,
-        parent=None, nom="SansNom", appliEficas=None, context_ini=None, **args):
+        parent=None, nom="SansNom", appliEficas=None, editeur = None, context_ini=None, **args):
         self.procedure = procedure
         self.definition = definition
         self.cata = cata

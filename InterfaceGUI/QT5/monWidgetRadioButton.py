@@ -30,8 +30,8 @@ from Accas.extensions.eficas_translation import tr
 
 from InterfaceGUI.QT5.feuille import Feuille
 from UiQT5.desWidgetRadioButton import Ui_WidgetRadioButton
-from InterfaceGUI.common.politiquesValidation import PolitiqueUnique
-from InterfaceGUI.common.traiteSaisie import SaisieValeur
+from InterfaceGUI.Common.politiquesValidation import PolitiqueUnique
+from InterfaceGUI.Common.traiteSaisie import SaisieValeur
 
 
 class MonWidgetRadioButtonCommun(Feuille):

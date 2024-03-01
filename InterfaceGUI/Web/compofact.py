@@ -20,7 +20,7 @@
 
 from InterfaceGUI.Web import browser
 from InterfaceGUI.Web import typeNode
-from InterfaceGUI.common import objecttreeitem
+from InterfaceGUI.Common import objecttreeitem
 from Accas.extensions.eficas_translation import tr
 
 

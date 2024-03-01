@@ -45,7 +45,7 @@ import traceback
 import convert, generator
 from Editeur        import session
 from Editeur        import comploader
-from Editeur        import Objecttreeitem
+from Editeur        import objecttreeitem
 from desBaseWidget  import Ui_baseWidget
 from InterfaceQT4.monViewTexte   import ViewText
 from monWidgetCreeParam import MonWidgetCreeParam 
@@ -225,7 +225,7 @@ class JDCEditor(Ui_baseWidget,QWidget):
                 if (self.appliEficas.ssIhm == False) : QMessageBox.critical( self, tr("Erreur fatale au chargement d'un fichier"), txt_exception)
             else:
                 comploader.charger_composants("QT")
-                jdc_item=Objecttreeitem.make_objecttreeitem( self, "nom", self.jdc )
+                jdc_item=objecttreeitem.makeObjecttreeitem( self, "nom", self.jdc )
                 if (not self.jdc.isvalid()) and (not self.nouveau) and (self.appliEficas.ssIhm == False):
                     self.viewJdcRapport()
  

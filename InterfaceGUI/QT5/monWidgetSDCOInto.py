@@ -25,8 +25,8 @@ from Accas.extensions.eficas_translation import tr
 
 from InterfaceGUI.QT5.feuille import Feuille
 from UiQT5.desWidgetSDCOInto import Ui_WidgetSDCOInto
-from InterfaceGUI.common.traiteSaisie import SaisieSDCO
-from InterfaceGUI.common.politiquesValidation import PolitiqueUnique
+from InterfaceGUI.Common.traiteSaisie import SaisieSDCO
+from InterfaceGUI.Common.politiquesValidation import PolitiqueUnique
 
 
 class MonWidgetSDCOInto(Ui_WidgetSDCOInto, Feuille, SaisieSDCO):

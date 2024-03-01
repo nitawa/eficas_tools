@@ -239,7 +239,7 @@ class MonWidgetCommande(Ui_WidgetCommande, Groupe):
 
         # Notation scientifique
         if test:
-            from InterfaceGUI.common.politiquesValidation import Validation
+            from InterfaceGUI.Common.politiquesValidation import Validation
             validation = Validation(self.node, self.editor)
             validation.ajoutDsDictReelEtape()
 

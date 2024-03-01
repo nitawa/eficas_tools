@@ -19,26 +19,10 @@
 #
 
 from InterfaceGUI.Common import objecttreeitem
-from InterfaceGUI.QT5 import browser
-from InterfaceGUI.QT5 import typeNode
 from Accas.extensions.eficas_translation import tr
 
 
-class Node(browser.JDCNode, typeNode.PopUpMenuRacine):
-    def getPanel(self):
-        from InterfaceGUI.QT5.monChoixCommande import MonChoixCommande
-        return MonChoixCommande(self, self.item, self.editor)
-
-    def createPopUpMenu(self):
-        typeNode.PopUpMenuRacine.createPopUpMenu(self)
-
-    def addParameters(self, apres):
-        param = self.appendChild("PARAMETRE", pos=0)
-        return param
-
-
-class JDCTreeItem(objecttreeitem.ObjectTreeItem):
-    itemNode = Node
+class JDCTreeItemCommun(objecttreeitem.ObjectTreeItem):
 
     def isExpandable(self):
         return 1
@@ -127,6 +111,3 @@ class JDCTreeItem(objecttreeitem.ObjectTreeItem):
         return listeCmd
 
 
-from Accas import JDC
-treeitem = JDCTreeItem
-objet = JDC

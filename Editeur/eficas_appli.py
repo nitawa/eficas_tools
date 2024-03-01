@@ -153,7 +153,7 @@ class EficasAppli:
     #--------------------------
     def getEditorById(self,id):
     #--------------------------
-        return self.editorManager.getEditorById(self,id)
+        return self.editorManager.getEditorById(id)
 
     #----------------------------------
     def setCurrentEditorById(self,id):

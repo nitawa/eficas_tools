@@ -33,7 +33,8 @@ class WebEditorManager(EditorManager):
     def __init__(self, appliEficas):
     #--------------------------------
         super().__init__(appliEficas)
-        self.dictSessions={}
+        self.dictEditors={}
+        self.dictSessions = {}
 
 
     #---------------------------------------
@@ -59,14 +60,33 @@ class WebEditorManager(EditorManager):
             editor = self.dictEditors[indexEditor]
             if self.samePath(fichier, editor.getFileName()):
                 double = editor
-             
+                break
         else:
+            double = None
             from web_editor import WebEditor
             editor = WebEditor(self.appliEficas, fichier)
             if editor.jdc:  # le fichier est bien un jdc
                 self.editors.append(editor)
+                self.dictEditors[editor.idUnique]=editor
             else:
                 editor=None
+        # if double :
+        #    il faut mettre les sessions à jours
         return editor
 
+
+    # --------------------------
+    def getEditorById(self, id):
+    # ---------------------------
+        if id in self.dictEditors:
+           return self.dictEditors[id]
+        return None
+        
+    # --------------------------
+    def getIdByEditor(self, editor):
+    # ---------------------------
+        for (id, valEditor) in self.dictEditors.items():
+            if editor == valEditor : return id
+        return None
+ 
 

@@ -18,7 +18,7 @@
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
 
-from InterfaceGUI.common import objecttreeitem
+from InterfaceGUI.Common import objecttreeitem
 from InterfaceGUI.cinqC import browser
 from InterfaceGUI.QT5.compojdc import JDCTreeItem
 

@@ -32,6 +32,7 @@ class JDCTree():
     #----------------------------------------
         #print ('__init__ JDCTree')
         self.editor        = editor
+        #print ('browser', self.editor)
         self.plie          = False
         self.item          = jdc_item
         self.tree          = self
@@ -42,6 +43,7 @@ class JDCTree():
         self.inhibeExpand  =  True
         self.childrenComplete=[]
         self.oldValidite='init'
+        self.editor.idUnique = self.tree.racine.item.idUnique
         #print ('fin __init__ JDCTree')
 
     # def handleContextMenu(self,item,coord):
@@ -69,6 +71,7 @@ class JDCNode():
         self.treeParent  = treeParent
         self.tree        = self.treeParent.tree
         self.editor      = self.treeParent.editor
+        #print ('browser Node', self.editor)
         self.appliEficas = treeParent.appliEficas
         self.firstAffiche = True
         self.childrenComplete=[]
@@ -85,6 +88,7 @@ class JDCNode():
 
         self.children = []
         self.buildChildren()
+        self.editor.dicoIdNode[item.idUnique] = item
 
         self.item.connect("valid",self.onValid,())
         self.item.connect("supp" ,self.onSupp,())
@@ -231,16 +235,13 @@ class JDCNode():
          return liste
             
 
-    def getDicoObjetsPourWeb(self):
-        return self.item.getDicoObjetsPourWeb()
 
-    def getDicoObjetsCompletsPourTree(self):
-        #print ('browser getDicoObjetsCompletsPourTree', self, ' ', self.item)
-        return self.item.getDicoObjetsCompletsPourTree()
-
+    #-----------------------------------
     def getDicoForFancy(self):
+    #-----------------------------------
         return self.item.getDicoForFancy()
 
+    #-----------------------------------
     def appendChild(self,name,pos=None):
     #-----------------------------------
         """
@@ -271,7 +272,7 @@ class JDCNode():
                 #else : return None
             except :
                 txt=' Impossible d ajouter {} en position {}'.format(name, pos)
-                self.editor.afficheInfos(txt,'rouge')
+                self.editor.afficheMessage(txt,'rouge')
                 return None
             if debug : print ('name : ', name, ' a pour index : ', index)
             obj = mcPere.addEntite(name,index)
@@ -288,7 +289,7 @@ class JDCNode():
                 #else : return None
             except :
                 txt=' Impossible d ajouter {} en position {}'.format(name, pos)
-                self.editor.afficheInfos(txt,'rouge')
+                self.editor.afficheMessage(txt,'rouge')
                 return None
             if debug : print ('name : ', name, ' a pour index : ', index)
             obj = self.item.addEntite(name,index) # emet le signal 'add'

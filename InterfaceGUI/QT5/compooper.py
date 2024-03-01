@@ -23,7 +23,7 @@ import tempfile
 from Accas.extensions.eficas_translation import tr
 from Accas.extensions.eficas_exception import EficasException
 
-from InterfaceGUI.common import objecttreeitem
+from InterfaceGUI.Common import objecttreeitem
 from InterfaceGUI.QT5 import browser
 from InterfaceGUI.QT5 import typeNode
 

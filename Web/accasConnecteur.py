@@ -49,11 +49,11 @@ class AccasConnecteur :
         self.monEficas=getEficasSsIhm(code=code, salome=0, multi=multi, langue=langue,fichierCata=fichierCata, GUIPath='Web')
 
         if self.monEficas == None : 
-           self.toWebApp('afficheInfos', 'erreur à la construction de l appli Eficas', 'rouge')
+           self.toWebApp('afficheMessage', 'erreur à la construction de l appli Eficas', 'rouge')
            return
         # faire l equivalent du editorManager
         if fichierCata == None and fichierComm : 
-           self.toWebApp('afficheInfos', 'pour ouvrir un JDC, il faut connaitre le catalogue', 'rouge')
+           self.toWebApp('afficheMessage', 'pour ouvrir un JDC, il faut connaitre le catalogue', 'rouge')
            return 
         self.litFichierComm(fichierComm)
 

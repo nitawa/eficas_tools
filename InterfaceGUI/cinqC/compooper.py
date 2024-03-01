@@ -20,7 +20,7 @@
 import os
 import tempfile
 
-from InterfaceGUI.common import objecttreeitem
+from InterfaceGUI.Common import objecttreeitem
 from InterfaceGUI.cinqC import browser
 
 class Node(browser.JDCNode ):

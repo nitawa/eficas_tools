@@ -27,9 +27,11 @@ import traceback
 # Modules Eficas
 from Accas.extensions.eficas_translation import tr
 from Accas.extensions.eficas_exception import EficasException
+from Editeur.loggingEnvironnement import loggingEnvironnement, fonctionLoguee
 
-from InterfaceGUI.common import comploader
-from InterfaceGUI.common import objecttreeitem
+
+from InterfaceGUI.Common import comploader
+from InterfaceGUI.Common import objecttreeitem
 from InterfaceGUI.Web import browser
 
 debug = False
@@ -49,23 +51,26 @@ class WebEditor(Editor):
     #--------------------------------------------------------------------------
         
         self.connecteur=appliEficas
-        Editor.__init__(self,appliEficas,fichier)
         self.dicoIdNode={}
+        Editor.__init__(self,appliEficas,fichier)
         comploader.chargerComposants('Web')
         self.tree=None
         if self.jdc:
-            self.jdc_item=objecttreeitem.makeObjecttreeitem( self, "nom", self.jdc )
+            self.jdc_item=objecttreeitem.makeObjecttreeitem( appliEficas, "nom", self.jdc )
             if self.jdc_item :
                self.tree = browser.JDCTree( self.jdc_item,  self )
 
 
+
     #-----------------------------
+    @fonctionLoguee
     def getNodeById(self,nodeId ):
     #-----------------------------
         if nodeId in self.dicoIdNode : return self.dicoIdNode[nodeId]
         else : return None
 
     #---------------------------------------
+    @fonctionLoguee
     def reconstruitChaineDIndex(self,nodeId):
     #---------------------------------------
         """ utilise pour logguer les fonctions """
@@ -85,25 +90,54 @@ class WebEditor(Editor):
 
 
     #-----------------------------
+    @fonctionLoguee
     def getDicoForFancy(self,obj) :
     #-----------------------------
         if self.tree == None : return {}
         return obj.getDicoForFancy()
 
     #-------------------------------------
+    @fonctionLoguee
     def afficheMessage(self,txt,couleur=None):
     #---------------------------------------
         self.connecteur.toWebApp('afficheMessage', txt, couleur) 
         Editor.afficheMessage(self,'message to webapp',txt,couleur)
 
     #-------------------------------------
+    @fonctionLoguee
     def afficheAlerte(self,titre,message):
     #-------------------------------------
         self.connecteur.toWebApp('afficheAlerte', titre ,  message) 
         Editor.afficheMessage(self,titre,message)
 
     #---------------------------
+    @fonctionLoguee
     def getListeCommandes(self):
     #---------------------------
         return (self.jdc.getListeCmd())
+
+    #---------------------------------
+    @fonctionLoguee
+    def updateSDName(self,id,sdnom) :
+    #---------------------------------
+         monNode=self.getNodeById(id)
+         if not monNode : return  (False, 'Node {} non trouve'.format(id))
+         return monNode.fauxNoeudGraphique.updateSDName(sdnom)
+
+    #---------------------------------
+    @fonctionLoguee
+    def changeValeur(self,id,valeur) :
+    #---------------------------------
+         """
+         id : identifiant unique
+         valeur : valeur saisie dans le formulaire
+         doit-on mettre l ancienne valeur en retour qui serait utile si validité = Non
+         """
+         monNode=self.getNodeById(id)
+         if not monNode : return  (id, False, 'Node {} non trouve'.format(id))
+         #print (' change Valeur', monNode)
+         #(idUnique, commentaire, validite)=monNode.fauxNoeudGraphique.traiteValeurSaisie(valeur)
+         #print ('retour ChangeValeur',idUnique, commentaire, validite )
+         # 
+         return monNode.fauxNoeudGraphique.traiteValeurSaisie(valeur)
 

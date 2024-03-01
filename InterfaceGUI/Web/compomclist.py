@@ -23,7 +23,7 @@ from InterfaceGUI.Web import browser
 from InterfaceGUI.Web import typeNode
 from Accas.extensions.eficas_translation import tr
 
-from InterfaceGUI.common import objecttreeitem
+from InterfaceGUI.Common import objecttreeitem
 from Accas.processing.P_OBJECT import ErrorObj
 
 

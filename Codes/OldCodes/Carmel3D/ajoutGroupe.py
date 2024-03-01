@@ -4,7 +4,7 @@ import re # module interne utilisé pour vérifier la validité du nom du maillage
 
 concept_re=re.compile(r'[a-zA-Z_]\w*$') # nom de maillage valide s'il correspond à un identifiant (variable) Python possible. Basé sur Ihm/I_Etape.py:nomme_sd, qui fait foi
 
-def handleAjoutGroupSansFiltre(editor,listeGroup):
+def ajoutGroupeSansFiltre(editor,listeGroup):
         """code_Carmel temporel : obtention des groupes de maille du maillage selectionne dans Salome
         Les groupes de mailles ne sont pas filtrés.
         La creation du MESH_GROUPE n'est donc pas typé.
@@ -34,7 +34,7 @@ def handleAjoutGroupSansFiltre(editor,listeGroup):
             except:
                 raise ValueError,  "Ce nom de groupe ("+groupe+") pose un probleme inconnu"
 
-def handleAjoutGroupAvecFiltre(editor,listeGroup):
+def ajoutGroupeAvecFiltre(editor,listeGroup):
         """CARMEL3D : obtention des groupes de maille du maillage selectionne dans Salome
         Les groupes de mailles sont filtres en utilisant une liste des  prefixes autorises pour code Code_Carmel3D,
         i.e. un nom de groupe de mailles est DIEL_toto_foo par exemple, qui deviendra toto_foo.
@@ -168,7 +168,7 @@ def handleAjoutGroupAvecFiltre(editor,listeGroup):
                 except:
                     print u"ERREUR: ce nom de groupe ("+nomReel+") ne peut pas etre utilise car il ne peut pas servir de concept a cause de caractères interdits, e.g. signes moins (-), plus (+), etc."
 
-def handleAjoutGroupFiltre(editor,listeGroup):
+def ajoutGroupeFiltre(editor,listeGroup):
         """CARMEL3D : obtention des groupes de maille du maillage selectionne dans Salome
         Les groupes de mailles sont filtres en utilisant une liste des  prefixes autorises pour code Code_Carmel3D,
         i.e. un nom de groupe de mailles est DIEL_toto_foo par exemple, qui deviendra toto_foo.
@@ -198,6 +198,6 @@ def handleAjoutGroupFiltre(editor,listeGroup):
         if type_code not in ('frequentiel', 'temporel'): # test de cohérence du type de code
             raise ValueError("Ce catalogue n'est ni frequentiel ni temporel")
         if type_code == 'frequentiel':
-            handleAjoutGroupAvecFiltre(editor, listeGroup)
+            ajoutGroupeAvecFiltre(editor, listeGroup)
         if type_code == 'temporel':
-            handleAjoutGroupSansFiltre(editor, listeGroup)
+            ajoutGroupeSansFiltre(editor, listeGroup)

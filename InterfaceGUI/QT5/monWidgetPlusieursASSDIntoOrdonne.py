@@ -21,7 +21,7 @@
 # Modules Eficas
 from Accas.extensions.eficas_translation import tr
 from InterfaceGUI.QT5.monWidgetPlusieursIntoOrdonne import MonWidgetPlusieursIntoOrdonne
-from InterfaceGUI.common.politiquesValidation import PolitiquePlusieurs
+from InterfaceGUI.Common.politiquesValidation import PolitiquePlusieurs
 
 from PyQt5.QtWidgets import QScrollBar
 

@@ -20,7 +20,7 @@
 
 import traceback
 
-from InterfaceGUI.common import objecttreeitem
+from InterfaceGUI.Common import objecttreeitem
 from Accas.extensions.eficas_exception import EficasException
 from InterfaceGUI.QT5 import compocomm
 

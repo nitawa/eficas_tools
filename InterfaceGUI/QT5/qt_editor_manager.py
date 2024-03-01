@@ -401,12 +401,12 @@ class QtEditorManager(EditorManager):
         else:
             from qt_editor import QtEditor
             editor = QtEditor(self.appliEficas, fichier, jdc, self.myQtab, include)
-            if double != None: self.doubles[editor] = double
-            if editor.jdc:  # le fichier est bien un jdc
-                self.editors.append(editor)
-                newWin = 1
-            else:
-                editor.closeIt()
+        if double != None: self.doubles[editor] = double
+        if editor.jdc:  # le fichier est bien un jdc
+             self.editors.append(editor)
+             newWin = 1
+        else:
+             editor.closeIt()
         if newWin: self.addView(editor, fichier)
         elif editor.jdc: self.myQtab.setCurrentIndex(indexEditor)
 

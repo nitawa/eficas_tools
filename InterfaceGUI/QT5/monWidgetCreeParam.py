@@ -95,7 +95,7 @@ class MonWidgetCreeParam(Ui_desWidgetCreeParam, QDialog):
         valString = str(self.lineEditVal.text())
         self.val = ""
         contexte = {}
-        exec("from InterfaceGUI.QT5.ath import *", contexte)
+        exec("from math import *", contexte)
         jdc = self.editor.jdc
         if jdc == None:
             self.editor.afficheMessage(

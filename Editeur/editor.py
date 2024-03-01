@@ -26,6 +26,7 @@ import traceback
 
 import Accas.IO.reader as reader
 import Accas.IO.writer as writer
+from uuid import uuid1
 from Accas.extensions.eficas_exception import EficasException
 
 Dictextensions = {"MAP": ".map", "TELEMAC": ".cas"}
@@ -56,6 +57,9 @@ class Editor:
         self.dicoNouveauxFact = {}
         self.dict_reels = {}
         self.liste_simp_reel = []
+        self.idUnique = uuid1().hex
+        self.appliEficas.editorManager.dictEditors[self.idUnique]=self
+
 
 
         # ces attributs sont mis a jour par definitCode appelee par newEditor
@@ -234,6 +238,7 @@ class Editor:
             dicoCataOrdonne=self.readercata.dicoCataOrdonne,
             nom=jdcName,
             repMat=self.maConfiguration.repMat,
+            editeur=self
         )
         self.modified = False
         self.monJDCReader = monJDCReader
@@ -257,6 +262,7 @@ class Editor:
             cata=self.readercata.cata,
             dicoCataOrdonne=self.readercata.dicoCataOrdonne,
             repMat=self.maConfiguration.repMat,
+            editeur=self
         )
 
         jdc.lang = self.appliEficas.langue
@@ -285,6 +291,7 @@ class Editor:
             cata=self.readercata.cata,
             dicoCataOrdonne=self.readercata.dicoCataOrdonne,
             repMat=self.maConfiguration.repMat,
+            editeur=self
         )
         jaux.editor = self
         jaux.analyse()
@@ -296,6 +303,7 @@ class Editor:
             dicoCataOrdonne=self.readercata.dicoCataOrdonne,
             jdc_pere=jaux,
             repMat=self.maConfiguration.repMat,
+            editeur=self
         )
         J.editor = self
         J.analyse()

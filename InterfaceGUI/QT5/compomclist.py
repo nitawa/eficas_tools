@@ -27,7 +27,7 @@ from InterfaceGUI.QT5 import browser
 from InterfaceGUI.QT5 import typeNode
 from Accas.extensions.eficas_translation import tr
 
-from InterfaceGUI.common import objecttreeitem
+from InterfaceGUI.Common import objecttreeitem
 from Accas.processing.P_OBJECT import ErrorObj
 
 
