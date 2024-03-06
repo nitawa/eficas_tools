@@ -89,7 +89,6 @@ app.fromConnecteur=fromConnecteur
 #    - Changement d'un nom de mot-cle reference
 
 def propageValide(sId, id, valid): #TODO: RENAME TO ... propagateValidation
-    if sId != session['eficasSession']  : return
     print ('Flask/propageValide: ', id, valid)
     sse.publish( {'id':id, 'valid':valid, 'message': "Hello from propageValide!"}, type='propageValide')
 
@@ -98,7 +97,6 @@ def updateNodeInfo(sId, id, info):
     print ('--------- sId',sId)
     print ('--------- moimeme',session['eficasSession'])
     print ('--------- monEditeur',session['eficasEditor'])
-    #if sId != session['eficasSession']  : return
     print ('Flask/updateNodeInfo: ', id, info)
     sse.publish( {'id':id, 'info':info, 'message': "Hello from updateNodeInfo!"}, type='updateNodeInfo')
 
