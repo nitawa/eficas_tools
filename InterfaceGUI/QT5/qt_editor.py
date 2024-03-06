@@ -52,7 +52,7 @@ class QtEditor(Editor, Ui_baseWidget, QWidget):
     Editeur de jdc
     """
 
-    def __init__( self, appliEficas, fichier=None, jdc=None, QWParent=None, include=0):
+    def __init__( self, appliEficas, cataFile = None, fichier=None, jdc=None, QWParent=None, include=0):
     # -----------------------------------------------------------------------------------------------
 
         QWidget.__init__(self, None)
@@ -69,11 +69,11 @@ class QtEditor(Editor, Ui_baseWidget, QWidget):
             self.sb = None
         self.QWParent = QWParent
 
-        Editor.__init__(self, appliEficas, fichier, jdc, include)
+        Editor.__init__(self, appliEficas=appliEficas, cataFile = cataFile , dataSetFile = fichier , jdc = jdc, include = include)
 
         # on enleve la gestion du dicEditor necessaire dans les autres cas
-        # mais ici l index est le numero de page et non l idEditor
-        del self.appliEficas.editorManager.dictEditors[self.idEditor]
+        # mais ici l index est le numero de page et non l editorId
+        del self.appliEficas.editorManager.dictEditors[self.editorId]
 
         if self.jdc:
             comploader.chargerComposants(self.appliEficas.GUIPath)
@@ -137,7 +137,7 @@ class QtEditor(Editor, Ui_baseWidget, QWidget):
         #        qApp.restoreOverrideCursor()
         if self.fileInfo != None:
             self.lastModified = self.fileInfo.lastModified()
-        nouveauTitre = self.titre + "              " + os.path.basename(self.fichier)
+        nouveauTitre = self.titre + "              " + os.path.basename(self.dataSetFile)
         self.appliEficas.setWindowTitle(nouveauTitre)
 
         return jdc
@@ -656,9 +656,9 @@ class QtEditor(Editor, Ui_baseWidget, QWidget):
         path = self.maConfiguration.saveDir
 
         monNomFichier = ""
-        if self.fichier is not None and self.fichier != "":
-            maBase = str(QFileInfo(self.fichier).baseName()) + ".input"
-            monPath = str(QFileInfo(self.fichier).absolutePath())
+        if self.dataSetFile is not None and self.dataSetFile != "":
+            maBase = str(QFileInfo(self.dataSetFile).baseName()) + ".input"
+            monPath = str(QFileInfo(self.dataSetFile).absolutePath())
             monNomFichier = os.path.join(monPath, maBase)
         elif hasattr(self, "monNomFichierInput"):
             monNomFichier = self.monNomFichierInput
@@ -788,8 +788,8 @@ class QtEditor(Editor, Ui_baseWidget, QWidget):
             extension = ".comm"
 
         newName = None
-        fn = self.fichier
-        if self.fichier is None or saveas:
+        fn = self.dataSetFile
+        if self.dataSetFile is None or saveas:
             if path is None:
                 path = self.maConfiguration.saveDir
             bOK, fn = self.determineNomFichier(path, extension)
@@ -807,10 +807,10 @@ class QtEditor(Editor, Ui_baseWidget, QWidget):
 
         if not (self.writeFile(fn, formatLigne=formatLigne)):
             return (0, None)
-        self.fichier = fn
+        self.dataSetFile = fn
         self.modified = False
         if self.fileInfo is None or saveas:
-            self.fileInfo = QFileInfo(self.fichier)
+            self.fileInfo = QFileInfo(self.dataSetFile)
             self.fileInfo.setCaching(0)
         self.lastModified = self.fileInfo.lastModified()
         if newName is not None:
@@ -819,7 +819,7 @@ class QtEditor(Editor, Ui_baseWidget, QWidget):
             self.tree.racine.updateNodeLabel()
 
         if self.jdc.cata.modeleMetier:
-            self.jdc.toXml(self.fichier)
+            self.jdc.toXml(self.dataSetFile)
         if self.jdc.cata.modeleMetier and self.jdc.isValid():
             if self.myWriter != self.XMLWriter:
                 self.XMLWriter.gener(self.jdc)
@@ -837,7 +837,7 @@ class QtEditor(Editor, Ui_baseWidget, QWidget):
             res = msgBox.exec_()
             if res == 0:
                 self.myWriter.writeDefault(fn)
-                return (1, self.fichier)
+                return (1, self.dataSetFile)
             if res == 2:
                 return (0, None)
             if self.appliEficas.salome:
@@ -846,14 +846,14 @@ class QtEditor(Editor, Ui_baseWidget, QWidget):
                 sys.exit(1)
 
         if self.appliEficas.salome:
-            self.appliEficas.addJdcInSalome(self.fichier)
+            self.appliEficas.addJdcInSalome(self.dataSetFile)
         self.modified = 0
         nouveauTitre = (
-            self.titre + "              " + str(os.path.basename(self.fichier))
+            self.titre + "              " + str(os.path.basename(self.dataSetFile))
         )
         self.appliEficas.setWindowTitle(nouveauTitre)
 
-        return (1, self.fichier)
+        return (1, self.dataSetFile)
 
     # ---------------------------------------#
     def sauvePourPersalys(self, fichier=None):
@@ -865,7 +865,7 @@ class QtEditor(Editor, Ui_baseWidget, QWidget):
                 critique=False,
             )
             return
-        if self.fichier is None:
+        if self.dataSetFile is None:
             if path is None:
                 path = self.maConfiguration.saveDir
             bOK, fn = self.determineNomFichier(path, "comm")
@@ -878,9 +878,9 @@ class QtEditor(Editor, Ui_baseWidget, QWidget):
             ulfile = os.path.abspath(fn)
             self.appliEficas.maConfiguration.saveDir = os.path.split(ulfile)[0]
             fn = QDir.toNativeSeparators(fn)
-            self.fichier = fn
+            self.dataSetFile = fn
         else:
-            fn = self.fichier
+            fn = self.dataSetFile
         ret, comm = Editor.sauvePourPersalys(self, fn)
         if not ret:
             if not comm:
@@ -891,7 +891,7 @@ class QtEditor(Editor, Ui_baseWidget, QWidget):
     # --------------------------------------------#
     def saveUQFile(self, fichier=None, path=None):
     # -------------------------------------------#
-        if self.fichier is None:
+        if self.dataSetFile is None:
             if path is None:
                 path = self.maConfiguration.saveDir
             bOK, fn = self.determineNomFichier(path, "comm")
@@ -903,9 +903,9 @@ class QtEditor(Editor, Ui_baseWidget, QWidget):
             ulfile = os.path.abspath(fn)
             self.appliEficas.maConfiguration.saveDir = os.path.split(ulfile)[0]
             fn = QDir.toNativeSeparators(fn)
-            self.fichier = fn
+            self.dataSetFile = fn
         else:
-            fn = self.fichier
+            fn = self.dataSetFile
 
         if self.jdc.isValid() == 0:
             msgBox = QMessageBox(None)
@@ -924,10 +924,10 @@ class QtEditor(Editor, Ui_baseWidget, QWidget):
             if res == 0:
                 ret, fichier = Editor.saveUQFile(self, fn)
                 if ret:
-                    self.fichier = fichier
+                    self.dataSetFile = fichier
                 if self.appliEficas.salome and ret:
-                    self.appliEficas.addJdcInSalome(self.fichier)
-                return (1, self.fichier)
+                    self.appliEficas.addJdcInSalome(self.dataSetFile)
+                return (1, self.dataSetFile)
             if self.appliEficas.salome:
                 self.appliEficas.close()
             else:
@@ -939,13 +939,13 @@ class QtEditor(Editor, Ui_baseWidget, QWidget):
                 titre = "Probleme de sauvegarde des fichiers"
                 texte = "Impossible de sauvegarder {}".format(fn)
                 QMessageBox.information(self, titre, texte)
-            return (0, self.fichier)
-        return (1, self.fichier)
+            return (0, self.dataSetFile)
+        return (1, self.dataSetFile)
 
     # --------------------------------------#
     def exeUQ(self, fichier=None, path=None):
     # --------------------------------------#
-        # if self.modified or not self.fichier :
+        # if self.modified or not self.dataSetFile :
         sauvegarde, fichier = self.saveUQFile()
         if not sauvegarde:
             return 0
@@ -988,7 +988,7 @@ class QtEditor(Editor, Ui_baseWidget, QWidget):
             the name of the saved file
         """
         if fileName != None:
-            self.fichier = fileName
+            self.dataSetFile = fileName
             return self.saveFile()
         return self.saveFile(path, 1, "beautifie")
 

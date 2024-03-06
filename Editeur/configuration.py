@@ -156,8 +156,8 @@ class BaseConfiguration(object):
 
         if self.salome : name = "prefs_salome_" + self.appliEficas.code
         else : name = "prefs_" + self.appliEficas.code
-        if self.appliEficas.fichierCata != None :
-            dirCata=os.path.dirname(self.appliEficas.fichierCata)
+        if self.appliEficas.cataFile != None :
+            dirCata=os.path.dirname(self.appliEficas.cataFile)
             sys.path.append(os.path.abspath(dirCata))
             self.appliEficas.listePathAEnlever.append(dirCata)
         try:

@@ -27,7 +27,7 @@ from Accas.extensions.eficas_translation import tr
 
 from InterfaceGUI.QT5.feuille import Feuille
 from InterfaceGUI.Common.politiquesValidation import PolitiqueUnique
-from InterfaceGUI.Common.traiteSaisie import SaisieValeur
+from InterfaceGUI.QT5.traiteSaisie import SaisieValeur
 from UiQT5.desWidgetCBIntoSug import Ui_WidgetCBIntoSug
 
 from PyQt5.QtWidgets import QComboBox, QCompleter

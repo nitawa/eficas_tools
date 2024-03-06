@@ -38,45 +38,39 @@ class WebEficasAppli(EficasAppli):
     """
 
     #---------------------------------------------------------------------------------------------------------------------------------------------------------
-    def __init__(self, code=None, versionCode=None, salome=0, multi=False, langue="fr", ssCode=None, fichierCata=None, GUIPath="InterfaceGUI.QT5", appWeb=None):
+    def __init__(self, code=None, versionCode=None, salome=0, multi=False, langue="fr", ssCode=None, cataFile=None, GUIPath="InterfaceGUI.QT5", appWeb=None):
     #---------------------------------------------------------------------------------------------------------------------------------------------------------
         """
         Constructor
         """
-        EficasAppli.__init__( self, code, versionCode, salome, multi, langue,  ssCode, fichierCata, GUIPath, appWeb)
+        EficasAppli.__init__( self, code, versionCode, salome, multi, langue,  ssCode, cataFile, GUIPath, appWeb)
         self.editorManager = WebEditorManager(self)
         if self.appWeb == None : 
            super().afficheMessage ('lancement Eficas WEB' , 'le parametre appWeb est obligatoire')
            return 
 
 
-    #-----------------------------------------
-    def toWebApp(self,fction, sid, eid *args, **kwargs):
-    #-----------------------------------------
+    #------------------------------------------
+    def toWebApp(self,fction, *args, **kwargs):
+    #------------------------------------------
         #if fction =='propageValide' :
         debug=0
         if debug  : print ('PNPNPN : WebEficasAppli.toWebApp',  fction, sid, eid, *args, **kwargs)
         if self.appWeb == None  : return
         #if fction =='propageValide' : print ('self.appWeb.toWebApp propageValide', self.monEditeur.getNodeById(args[0]).nom)
-        self.appWeb.fromConnecteur(fction, sid, eid, *args, **kwargs)
-
-    #-----------------------
-    def createEditor(self):
-    #-----------------------
-        monEditor = self.editorManager.getEditor(self)
-        return monEditor
+        self.appWeb.fromConnecteur(fction, *args, **kwargs)
 
 
     @fonctionLoguee
-    #---------------------------
-    def openFile(self, fichier):
-    #---------------------------
+    #------------------------------------------------
+    def openDataset(self, sid, cataFile, datasetFile):
+    #--------------------------------------------------
         try:
-            monEditor = self.editorManager.getEditor(fichier)
+            (monEditor, codeErreur, message)  = self.editorManager.openDataset(sid, cataFile, datasetFile)
         except EficasException as exc:
             self.afficheMessage('erreur ouverture fichier', str(exc),critical=True)
             monEditor = None
-        return monEditor
+        return (monEditor, codeErreur, message)
 
     @fonctionLoguee
     #-----------------------------------------------------

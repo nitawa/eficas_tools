@@ -30,7 +30,7 @@ from Accas.extensions.eficas_translation import tr
 
 from InterfaceGUI.QT5.gereIcones import ContientIcones
 from InterfaceGUI.QT5.gereIcones import FacultatifOuOptionnel
-from InterfaceGUI.Common.traiteSaisie import SaisieValeur
+from InterfaceGUI.QT5.traiteSaisie import SaisieValeur
 
 nomMax = 230
 

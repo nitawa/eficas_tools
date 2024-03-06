@@ -31,7 +31,7 @@ class loggingEnvironnement(object):
         loggerForTrace.info('monEficasConnecteur=accasConnecteur("{}")'.format(code))
 
 
-def fonctionLoguee(laFonction, debug=True):
+def fonctionLoguee(laFonction, debug=False):
 #-------------------------------------------
     from inspect  import  getfullargspec
     from functools import wraps

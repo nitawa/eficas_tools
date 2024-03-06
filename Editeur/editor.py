@@ -40,25 +40,28 @@ class Editor:
     Editeur de jdc
     """
 
-    def __init__(self, appliEficas, fichier=None, jdc=None, include=0):
-    # ----------------------------------------------------------------------------#
+
+    def __init__(self, appliEficas, cataFile = None, dataSetFile = None,  jdc=None, include=0):
+    # ----------------------------------------------------------------------------------------#
         if debug: print("dans le init de Editor")
+        if debug : print (self, appliEficas, cataFile, dataSetFile,  jdc, include)
         self.appliEficas = appliEficas
 
-        self.fichier = fichier
-        self.fichierComplet = fichier
-        if fichier != None: self.extensionFichier = os.path.splitext(fichier)[1]
+        self.dataSetFile = dataSetFile
+        self.fichierComplet = dataSetFile
+        if dataSetFile != None: self.extensionFichier = os.path.splitext(dataSetFile)[1]
         else: self.extensionFichier = None
 
         self.jdc = jdc
+        self.cataFile = cataFile
         self.first = True
         self.jdc_item = None
         self.dicoNouveauxMC = {}
         self.dicoNouveauxFact = {}
         self.dict_reels = {}
         self.liste_simp_reel = []
-        self.idEditor = uuid1().hex
-        self.appliEficas.editorManager.dictEditors[self.idEditor]=self
+        self.editorId = uuid1().hex
+        self.appliEficas.editorManager.dictEditors[self.editorId]=self
 
 
         # ces attributs sont mis a jour par definitCode appelee par newEditor
@@ -121,24 +124,24 @@ class Editor:
         # ------- construction du jdc --------------
 
         if self.readercata.cata == None: 
-           if self.fichier is not None: 
-              print ('fichier comm mais pas de cata')
+           if self.dataSetFile is not None: 
+              print ('dataSetFile comm mais pas de cata')
            return  # Sortie Salome
 
         self.nouveau = 0
-        if self.fichier is not None:  #  fichier jdc fourni
+        if self.dataSetFile is not None:  #  fichier jdc fourni
             if jdc == None:
                 # print ('PNPN : chgt try en if')
                 try:
                 #if 1 :
-                    self.jdc = self.readFile(self.fichier)
+                    self.jdc = self.readFile(self.dataSetFile)
                 except Exception as e :
                 #else :
-                    print("mauvaise lecture du fichier")
+                    print("mauvaise lecture du dataSetFile")
                     raise EficasException("str(e)")
                 if self.appliEficas.salome:
                     try:
-                        self.appliEficas.addJdcInSalome(self.fichier)
+                        self.appliEficas.addJdcInSalome(self.dataSetFile)
                     except Exception as e:
                         print("mauvais enregistrement dans Salome")
                         raise EficasException("str(e)")
@@ -185,7 +188,7 @@ class Editor:
         fn = str(fn)
         jdcName = os.path.basename(fn)
 
-        # Il faut convertir le contenu du fichier en fonction du format
+        # Il faut convertir le contenu du dataSetFile en fonction du format
         formatIn = self.appliEficas.formatFichierIn
         if self.extensionFichier == ".xml" and self.appliEficas.withXSD:
             formatIn = "xml"
@@ -374,9 +377,9 @@ class Editor:
     # --------------------------#
     def getJdcFichierSource(self):
     # --------------------------#
-        if self.fichier == None: return "fichier source non defini"
-        if os.path.isfile(self.fichier):
-            f = open(self.fichier, "r")
+        if self.dataSetFile == None: return "fichier source non defini"
+        if os.path.isfile(self.dataSetFile):
+            f = open(self.dataSetFile, "r")
             texteSource = f.read()
             f.close()
             return texteSource
@@ -404,10 +407,21 @@ class Editor:
         texteGlobal, testOK = self.jdc.verifRegles()
         return texteGlobal
 
-    # ---------------------#
-    def getFileName(self):
-    # ---------------------#
-        return self.fichier
+    # -------------------------#
+    def getDataSetFileName(self):
+    # --------------------------#
+        return self.dataSetFile
+
+    # -------------------------#
+    def getCataFileName(self):
+    # --------------------------#
+        return self.cataFile
+
+    # -------------------------#
+    def getEditorId(self):
+    # --------------------------#
+        return self.editorId
+
 
     # -------------------#
     def initModif(self):
@@ -576,7 +590,7 @@ class Editor:
     def saveFileLegerAs(self, fileName=None):
     # --------------------------------------#
         if fileName != None:
-            self.fichier = fileName
+            self.dataSetFile = fileName
             return self.saveFileLeger(fileName)
         return self.saveFileLeger()
 
@@ -600,7 +614,7 @@ class Editor:
         if fichier == None:
             self.informe("Sauvegarde", "nom de fichier obligatoire pour sauvegarde")
             return 0, None
-        self.fichier = fichier
+        self.dataSetFile = fichier
         self.myWriter = writer.plugins["UQ"]()
         ret, comm = self.myWriter.creeNomsFichiers(fichier)
         # print (ret,comm)
@@ -724,13 +738,13 @@ class Editor:
             if self.myWriter != self.XMLWriter:
                 self.XMLWriter.gener(self.jdc)
                 self.XMLWriter.writeDefault(fichier)
-                return (1, self.fichier)
+                return (1, self.dataSetFile)
         if self.jdc.isValid() and hasattr(self.myWriter, "writeDefault"):
             self.myWriter.writeDefault(fichier)
         elif self.code == "TELEMAC" and hasattr(self.myWriter, "writeDefault"):
             self.myWriter.writeDefault(fichier)
         self.modified = 0
-        return (1, self.fichier)
+        return (1, self.dataSetFile)
 
     #
 

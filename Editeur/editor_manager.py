@@ -20,14 +20,16 @@
 
 import os
 from uuid import uuid1
+from multiprocessing import Lock
 
+debug = 1
 # --------------------------
 class EditorManager(object):
 # --------------------------
     """
-    classe mere des managers d editeur pour Qt et le web
-    permettent de gerer plusieurs ouvertures de fichiers simultannees en IHM
-    utilisee sans etre derivee pour le dumpXSD ou les transformations 
+    classe mere du manager d editeur pour Qt 
+    permet de gerer plusieurs ouvertures de fichiers simultannees en Web ou TUI
+    utilisee sans etre derivee  dans ces 2 cas
     """
     # remplace par l index du viewManager 
 
@@ -36,37 +38,94 @@ class EditorManager(object):
     # --------------------------------
         self.appliEficas = appliEficas
         self.mesIndexes = {}
-        self.dictEditors = {}
         self.editors = []
         self.doubles = {}
+        self.lock = Lock()
+        self.dictEditors = {}
+    # TODO : doit on prevoir l inverse ? a t on besoin pour une session de connaitre tous ces editeurs
+    # reflechir au close
+    # TODO
 
 
-    # -----------------------------------------------------------------
-    def getEditor(self, cata = None, fichier=None, jdc=None, include=0):
-    # -----------------------------------------------------------------
+    # -----------------------------------------------------
+    def getEditor(self, fichier=None, jdc=None, include=0):
+    # ------------------------------------------------------
         """
           Retourne un nouvel editeur ou None si doublon 
         """
+        # TODO : reflechir
+        print ('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+        print ('getEditor dans editor : pas programme --> derive en QT, utiliser getTUIEditor ou getWebEditor')
+        print ('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+        return None
 
-        if fichier == None :
-            self.appliEficas.afficheMessage('Eficas', 
-                 'nom de fichier obligatoire pour obtenir un editor')
-            return None
-        for indexEditor in self.dictEditors:
-            editor = self.dictEditors[indexEditor]
-            if self.samePath(fichier, editor.getFileName()):
-               self.appliEficas.afficheMessage('Eficas sans Ihm', 'Fichier deja ouvert')
-               return None
-        from Editeur.editor import Editor
-        editor = Editor(self.appliEficas, fichier, jdc, include)
-        if not editor.jdc :
-            self.appliEficas.afficheMessage('Eficas sans Ihm', 'impossible d allouer un editor')
-            return None
-        self.editors.append(editor)
-        self.dictEditors[editor.idEditor] = editor
-        return editor
+    # ----------------------------------------------------------------------------------------
+    def getTUIEditor(self,sId = None, cataFile = None, dataSetFile=None, jdc=None, include=0):
+    # -----------------------------------------------------------------------------------------
+        """
+          Retourne un nouvel editeur ou None si doublon
+        """
+        if cataFile == None :
+            self.appliEficas.afficheMessage(sId, 'Eficas',
+                 'nom de catalogue obligatoire pour obtenir un editor')
+            return (None, 1, 'nom de catalogue obligatoire pour obtenir un editor')
+        with self.lock :
+            for editor in self.dictEditors.values():
+                if self.samePath(dataSetFile, editor.getDataSetFileName()) and self.samePath(cataFile, editor.getCataFileName()):
+                    break
+            else:
+                from editor import Editor
+                editor = WebEditor(self.appliEficas, cataFile, dataSetFile)
 
-      
+            if editor.jdc:  # le fichier est bien un jdc
+                self.dictEditors[editor.editorId]=editor
+                self.editors.append(editor)
+                if  editor.editorId in self.appliEficas.dictEditorIdSessionId :
+                   self.appliEficas.dictEditorIdSessionId[editor.editorId].append(sId)
+                else :
+                   self.appliEficas.dictEditorIdSessionId[editor.editorId]=[sId,]
+            else:
+                return (None, 1, 'impossible d allouer l editor')
+
+    # ----------------------------------------------------------------------------------------
+    def getWebEditor(self,sId = None, cataFile = None, dataSetFile=None, jdc=None, include=0):
+    # -----------------------------------------------------------------------------------------
+        """
+          Retourne un nouvel editeur ou None si doublon
+        """
+        if cataFile == None :
+            self.appliEficas.afficheMessage(sId, 'Eficas',
+                 'nom de catalogue obligatoire pour obtenir un editor')
+            return (None, 1, 'nom de catalogue obligatoire pour obtenir un editor')
+        with self.lock :
+            for editor in self.dictEditors.values():
+                if self.samePath(dataSetFile, editor.getDataSetFileName()) and self.samePath(cataFile, editor.getCataFileName()):
+                    break
+            else:
+                from InterfaceGUI.Web.web_editor import WebEditor
+                editor = WebEditor(self.appliEficas, cataFile, dataSetFile)
+
+            if editor.jdc:  # le fichier est bien un jdc
+                self.dictEditors[editor.editorId]=editor
+                self.editors.append(editor)
+                if  editor.editorId in self.appliEficas.dictEditorIdSessionId :
+                   self.appliEficas.dictEditorIdSessionId[editor.editorId].append(sId)
+                else :
+                   self.appliEficas.dictEditorIdSessionId[editor.editorId]=[sId,]
+            else:
+                return (None, 1, 'impossible d allouer l editor')
+            return (editor, 0, '')
+
+
+    # --------------------------
+    def getEditorById(self, eId):
+    # ---------------------------
+        debug = 1
+        if eId in self.dictEditors:
+           return (self.dictEditors[eId], 0, "")
+        if debug : print ("getEditorById : {} non trouve ".format(eId))
+        return (None, 1, "getEditorById : {} non trouve ".format(eId))
+ 
 
     # -------------------------
     def samePath(self, f1, f2):
@@ -82,6 +141,8 @@ class EditorManager(object):
     #-------------------------------
     def indexChanged(self, newIndex):
     #--------------------------------
+    # cette fonction n a de sens qu en QT ou ?
+    # comment gerer le contexte?
         if newIndex in self.dictEditors:
             editor = self.dictEditors[newIndex]
             if editor.jdc != None:
@@ -157,7 +218,4 @@ class EditorManager(object):
             # print("editor non trouve")
             return
         self.dictEditors[index].saveFileLegerAs(fileName)
-
-
-
 

@@ -238,10 +238,11 @@ class MonWidgetCommande(Ui_WidgetCommande, Groupe):
         self.editor.afficheCommentaire(mess)
 
         # Notation scientifique
-        if test:
-            from InterfaceGUI.Common.politiquesValidation import Validation
-            validation = Validation(self.node, self.editor)
-            validation.ajoutDsDictReelEtape()
+        # 5 mars 24 : completement idiot ?
+        #if test:
+        #    from InterfaceGUI.Common.politiquesValidation import Validation
+        #    validation = Validation(self.node, self.editor)
+        #    validation.ajoutDsDictReelEtape()
 
     def afficheOptionnel(self):
         # N a pas de parentQt. doit donc etre redefini

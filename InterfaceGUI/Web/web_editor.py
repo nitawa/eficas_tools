@@ -46,13 +46,13 @@ class WebEditor(Editor):
        Editeur de jdc
     """
 
-    #--------------------------------------------------------------------------
-    def __init__ (self,appliEficas,fichier = None, jdc= None, session = None ):
-    #--------------------------------------------------------------------------
+    #---------------------------------------------------------------------------------------------
+    def __init__ (self,appliEficas,cataFile = None, dataSetFile = None, jdc = None, include = None ):
+    #-------------------------------------------------------------------------------------------
         
-        self.connecteur=appliEficas
+        self.editorManager=appliEficas.editorManager
         self.dicoIdNode={}
-        Editor.__init__(self,appliEficas,fichier)
+        Editor.__init__(self,appliEficas, cataFile, dataSetFile, jdc, include)
         comploader.chargerComposants('Web')
         self.tree=None
         if self.jdc:
@@ -96,20 +96,6 @@ class WebEditor(Editor):
         if self.tree == None : return {}
         return obj.getDicoForFancy()
 
-    #-------------------------------------
-    @fonctionLoguee
-    def afficheMessage(self,txt,couleur=None):
-    #---------------------------------------
-        self.connecteur.toWebApp('afficheMessage', txt, couleur) 
-        Editor.afficheMessage(self,'message to webapp',txt,couleur)
-
-    #-------------------------------------
-    @fonctionLoguee
-    def afficheAlerte(self,titre,message):
-    #-------------------------------------
-        self.connecteur.toWebApp('afficheAlerte', titre ,  message) 
-        Editor.afficheMessage(self,titre,message)
-
     #---------------------------
     @fonctionLoguee
     def getListeCommandes(self):
@@ -124,20 +110,34 @@ class WebEditor(Editor):
          if not monNode : return  (False, 'Node {} non trouve'.format(id))
          return monNode.fauxNoeudGraphique.updateSDName(sdnom)
 
-    #---------------------------------
-    @fonctionLoguee
-    def changeValeur(self,id,valeur) :
-    #---------------------------------
+    #-----------------------------------------
+    #@fonctionLoguee
+    def changeValeur(self,sId, nodeId, valeur) :
+    #-----------------------------------------
          """
          id : identifiant unique
          valeur : valeur saisie dans le formulaire
          doit-on mettre l ancienne valeur en retour qui serait utile si validité = Non
          """
-         monNode=self.getNodeById(id)
-         if not monNode : return  (id, False, 'Node {} non trouve'.format(id))
-         #print (' change Valeur', monNode)
-         #(idUnique, commentaire, validite)=monNode.fauxNoeudGraphique.traiteValeurSaisie(valeur)
-         #print ('retour ChangeValeur',idUnique, commentaire, validite )
-         # 
-         return monNode.fauxNoeudGraphique.traiteValeurSaisie(valeur)
+         debug = 1
+         if debug : print (' changeValeur sId, nodeId, valeur' ,sId, nodeId, valeur)
+         monNode=self.getNodeById(nodeId)
+         if debug : print ('monNode : ', monNode)
+         if not monNode : return  (nodeId, False, 'Node {} non trouve'.format(nodeId))
+         if debug : print (' change Valeur', monNode)
+         idRetour, commentaire, validite = monNode.fauxNoeudGraphique.traiteValeurSaisie(valeur)
+         if validite :
+             self.appliEficas.propageChange(sId, self.editorId, False, 'updateNodeInfo', nodeId, monNode.fauxNoeudGraphique.updateNodeInfo())
+# (self, emitSessionId, emitEditorID, toAll , 'updateNodeInfo', *args, **kwargs)
+             print ('if validite : self.treeParent.updateOptionnels')
+             return (idRetour, commentaire, validite)
+         if not validite :
+            return (idRetour, commentaire, validite)
 
+    #--------------------------------
+    def afficheMessage(self, texte):
+    #------------------------------------
+    # on ne fait rien
+    # contraitement a QT le commentaire est dans le retour de la fonction
+         debug = 0
+         if debug : print (texte)

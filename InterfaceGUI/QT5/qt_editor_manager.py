@@ -351,7 +351,7 @@ class QtEditorManager(EditorManager):
     #----------------------
         index = self.myQtab.currentIndex()
         editor = self.dictEditors[index]
-        oldName = editor.fichier
+        oldName = editor.dataSetFile
         ok, newName = editor.saveFileAs()
         if ok:
             fileName = os.path.basename(newName)
@@ -374,7 +374,7 @@ class QtEditorManager(EditorManager):
         if fn != None:
             titre = fn.split("/")[-1]
         editor = self.getEditor(fichier=fn, jdc=jdc, include=1)
-        self.appliEficas.addToRecentList(editor.getFileName())
+        self.appliEficas.addToRecentList(editor.getDataSetFileName())
 
 
     #------------------------------------------------------------------
@@ -388,7 +388,7 @@ class QtEditorManager(EditorManager):
         double = None
         for indexEditor in self.dictEditors:
             editor = self.dictEditors[indexEditor]
-            if self.samePath(fichier, editor.getFileName()):
+            if self.samePath(fichier, editor.getDataSetFileName()):
                 msgBox = QMessageBox()
                 msgBox.setWindowTitle(tr("Fichier"))
                 msgBox.setText(tr("Le fichier <b>%s</b> est deja ouvert", str(fichier)))
@@ -400,7 +400,7 @@ class QtEditorManager(EditorManager):
                 double = editor
         else:
             from qt_editor import QtEditor
-            editor = QtEditor(self.appliEficas, fichier, jdc, self.myQtab, include)
+            editor = QtEditor(self.appliEficas, cataFile=None, fichier=fichier, jdc=jdc, QWParent=self.myQtab, include=include)
         if double != None: self.doubles[editor] = double
         if editor.jdc:  # le fichier est bien un jdc
              self.editors.append(editor)
@@ -455,7 +455,7 @@ class QtEditorManager(EditorManager):
                 return 1
             return 2
         if editor.modified:
-            fn = editor.getFileName()
+            fn = editor.getDataSetFileName()
             if fn is None:
                 fn = tr("Noname")
             msgBox = QMessageBox(None)

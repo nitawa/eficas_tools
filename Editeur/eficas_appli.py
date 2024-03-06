@@ -25,14 +25,27 @@ from Editeur import session
 from Editeur.getVersion import getEficasVersion
 from Accas.extensions.eficas_translation import tr
 
+from threading import Lock
+sessionCount  = 0
+lock = Lock()
 
+
+activeLogging=0
+if activeLogging :
+   from Editeur.loggingEnvironnement import loggingEnvironnement, fonctionLoguee
+else :
+   fonctionLoguee = lambda func: func
+
+
+#-----------------
 class EficasAppli:
+#-----------------
     """
     Class implementing the main user interface.
     """
 
     #---------------------------------------------------------------------------------------------------------------------------------------------
-    def __init__(self, code=None, versionCode=None, salome=1, multi=False, langue="fr", ssCode=None, fichierCata=None, GUIPath=None, appWeb=None):
+    def __init__(self, code=None, versionCode=None, salome=1, multi=False, langue="fr", ssCode=None, cataFile=None, GUIPath=None, appWeb=None):
     #---------------------------------------------------------------------------------------------------------------------------------------------
         """
         Constructor d appli eficas. classe mere de appli-qtEficas et de appli-web eficas et utilisee sans IHM pour les
@@ -51,6 +64,8 @@ class EficasAppli:
         self.multi = multi
         self.salome = salome
         self.appWeb = appWeb
+        self.dictEditorIdSessionId = {}
+        self.dictTypeDeSession = {} # contient le type de la session ( QT, WEB pour rediriger les messages)
 
         version = getEficasVersion()
         self.versionEficas = "Eficas Salome " + version
@@ -63,8 +78,8 @@ class EficasAppli:
         self.mesScripts = {}
         self.listePathAEnlever = []
 
-        if fichierCata == None: self.fichierCata = session.d_env.fichierCata
-        else: self.fichierCata = fichierCata
+        if cataFile == None: self.cataFile = session.d_env.cataFile
+        else: self.cataFile = cataFile
 
         self.versionCode = versionCode
         if session.d_env.versionCode: self.versionCode = session.d_env.versionCode
@@ -84,7 +99,6 @@ class EficasAppli:
             self.definitCode(code, ssCode)
             if code == None: return
         else : 
-            # Est-ce que configBase a un interet avec le web  ?
             from Editeur.configuration import BaseConfiguration
             self.maConfiguration = BaseConfiguration(self)
 
@@ -142,32 +156,46 @@ class EficasAppli:
     def getEditor(self, fichier=None, jdc=None, include=0):
     #------------------------------------------------------
         #PN reflechir a ce que cela veut dire d avoir plusieurs editeurs
+        # en TUI
         if (hasattr(self, "editor")) and self.editor != None:
             print("un seul editeur par application eficas_appli sans Ihm ? ")
         #     sys.exit()
         self.editor = self.editorManager.getEditor(fichier, jdc, include)
         return self.editor
 
+    #--------------------------------------------------------------------------------
+    def getWebEditor(self, sId, cataFile = None, datasetFile=None, jdc=None, include=0):
+    #--------------------------------------------------------------------------------
+        debug = 1
+        if sId == None : 
+           titre = 'Requete non valide'
+           message = 'Le parametre identifiant la Session Eficas est obligatoire'
+           self.propageToWebApp('afficheMessage', titre+texte, 'rouge')
+        self.dictTypeDeSession[sId]  =  'Web'
+        (editor, CR, message)   = self.editorManager.getWebEditor(sId, cataFile,datasetFile, jdc, include)
+        if debug : 
+           print ('getWebEditor id de sesssion :', sId, ' editor : ', editor.editorId)
+           print (editor, CR, message)
+        return (editor, CR, message) 
 
-    #--------------------------
-    def getEditorById(self,id):
-    #--------------------------
-        return self.editorManager.getEditorById(id)
+    #------------------------------------------------------------------------------------------
+    def getTUIEditor (self,sId = None, cataFile = None, datasetFile=None, jdc=None, include=0):
+    #-------------------------------------------------------------------------------------------
+        if sId == None : 
+           self.affichageMessage('Requete non valide', 'Le parametre identifiant la Session Eficas est obligatoire',True)
+        self.dictTypeDeSession[sId]  =  'TUI'
+        (editor, CR, message)   = self.editorManager.getTUIEditor(sId, cata, fichier, fichier, jdc, include)
+        return (editor, CR, message) 
+
+    #---------------------------
+    def getEditorById(self, eId):
+    #----------------------------
+        return self.editorManager.getEditorById(eId)
 
     #----------------------------------
     def setCurrentEditorById(self,id):
     #----------------------------------
         return self.editorManager.setCurrentEditorById(self,id)
-
-    #---------------------------
-    def openDataSet(self, fichier):
-    #---------------------------
-        try:
-            monEditor = self.editorManager.openFile(fichier)
-        except EficasException as exc:
-            self.afficheMessage( 'erreur ouverture fichier', str(exc),critical=True)
-            monEditor = None
-        return monEditor
 
     #------------------
     def fileSave(self):
@@ -189,15 +217,6 @@ class EficasAppli:
         currentCata = CONTEXT.getCurrentCata()
         texteXSD = currentCata.dumpXsd(avecEltAbstrait)
         return texteXSD
-
-    #---------------------------------------------------
-    def afficheMessage(self, titre, texte,critical=True):
-    #----------------------------------------------------
-        print ('__________________________')
-        print (tr(titre))
-        print ('')
-        print (tr(texte))
-        print ('__________________________')
 
 
     #-------------------
@@ -315,6 +334,82 @@ class EficasAppli:
         self.withUQ = True
         self.formatFichierIn = "pythonUQ"  # par defaut
 
+    #----------------------
+    def getSessionId(self):
+    #----------------------
+    # TODO doit on mettre le type de session en parametre ?
+    # tant qu on a pas pris un editor la session est tague TUI
+        global sessionCount
+        try : 
+            with lock:
+                sessionCount += 1
+                self.dictTypeDeSession[sessionCount]='TUI'
+                return (sessionCount, 0, '')
+        except :
+            return (sessionCount, 1, 'impossible de donner un id : {}.format(str(e))')
+
+    #---------------------------------------------------------------------------
+    def propageToWebApp(self, fction, sessionId,  *args, **kwargs):
+    #---------------------------------------------------------------------------
+        #if fction =='propageValide' :
+        debug=1
+        if debug  : print ('PNPNPN : WebEficasAppli.toWebApp',  fction,  *args, **kwargs)
+        if self.appWeb == None  : return
+        self.appWeb.fromConnecteur(fction, sessionId,  *args, **kwargs)
+
+    #--------------------------------------------------------------------------
+    def afficheMessage (self, titre, texte, critical=True, emitEditorId = None ):
+    #--------------------------------------------------------------------------
+        print ('*******************************')
+        if emitEditor != None :
+            print ('message emis par ', emitEditorId)
+
+        print (titre)
+        print ('-------------------------------')
+        print (texte)
+        print ('-------------------------------')
+        if critical : exit(1)
+
+    #--------------------------------------------------------------------------
+    # Est-ce que cela sera utilise ?
+    def propageMessage (self, titre, texte, critical=True, emitEditorId = None ):
+    #--------------------------------------------------------------------------
+        if emitEditorId == None :
+           self.afficheMessage(titre, texte, critical)
+           return
+        for sessionId in self.dictEditorIdSessionId[emitEditorId]:
+            if self.dictTypeDeSession[sessionId] == 'TUI':
+               self.afficheMessage(self, titre, texte, critical, emitEditorId )
+            elif self.dictTypeDeSession[sessionId] == 'Web':
+                if critical : self.propageToWebApp('afficheMessage', sessionId,  titre+texte, 'rouge')
+                else : self.propageToWebApp('afficheMessage', sessionId, titre+texte)
+            else :
+                print ('propageInfo de Appli  : pb de type de session dans eficas')
+                
+    #-------------------------------------------------------------------------------------
+    def propageChange (self, emitSessionId, emitEditorId, toAll , fction, *args, **kwargs):
+    #--------------------------------------------------------------------------------------
+        debug = 1
+        if debug : 
+           print ("------------------------------------------ Eficas")
+           print ('propageChange avec les arguments ')
+           print ( emitSessionId, emitEditorId, toAll , fction, *args, **kwargs)
+           print (self.dictEditorIdSessionId)
+           print ("------------------------------------------ ")
+        for sessionId in self.dictEditorIdSessionId[emitEditorId]:
+            print ('sessionId', sessionId)
+            if not toAll and sessionId == emitSessionId : continue
+            if self.dictTypeDeSession[sessionId] == 'TUI': 
+                print ('la session est TUI, on ne fait rien')
+                continue # Rien a faire le JDC est correcte
+            elif self.dictTypeDeSession[sessionId] == 'Web': # on verra le QT apres
+                print ('on propage pour ', sessionId )
+                self.propageToWebApp(fction, sessionId,  *args, **kwargs)
+
+    #---------------------------------------------------------------------------
+    #PN --> normalement les codes retours et les messages de retour sont suffisants
+    #def displayMessageInSid (self, Sid, titre, texte, critical=True ):
+    #---------------------------------------------------------------------------
 
 if __name__ == "__main__":
     # Modules Eficas

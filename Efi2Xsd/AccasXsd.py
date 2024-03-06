@@ -2509,9 +2509,9 @@ class X_JDC_CATA:
 
     def dumpAvecEltAbstraitDesCommandes(self):
         cata = CONTEXT.getCurrentCata()
-        fichierCataSourceExt = os.path.basename(cata.cata.__file__)
-        fichierCataSource, extension = os.path.splitext(fichierCataSourceExt)
-        importCataSource = __import__(fichierCataSource, {}, {})
+        cataFileSourceExt = os.path.basename(cata.cata.__file__)
+        cataFileSource, extension = os.path.splitext(cataFileSourceExt)
+        importCataSource = __import__(cataFileSource, {}, {})
 
         texte = ""
         for m in sys.modules:
@@ -2555,7 +2555,7 @@ class X_JDC_CATA:
                     continue
                 if monModule.__name__[0:12] == "InterfaceQT":
                     continue
-                if monModule.__name__ == fichierCataSource:
+                if monModule.__name__ == cataFileSource:
                     continue
                 texte = texte + "try : import " + monModule.__name__ + " \n"
                 texte = texte + "except : pass \n"

@@ -28,7 +28,7 @@ class CatalogDescription(object):
     def __init__(
         self,
         versionCode,
-        fichierCata,
+        cataFile,
         formatFichierOut="python",
         formatFichierIn="python",
         default=False,
@@ -43,8 +43,8 @@ class CatalogDescription(object):
         :type  versionCode: string
         :param versionCode: unique versionCode for the catalog
 
-        :type  fichierCata: string
-        :param fichierCata: path of the file containing the catalog itself
+        :type  cataFile: string
+        :param cataFile: path of the file containing the catalog itself
 
         :type  fileFormatOut: string
         :param fileFormatOut: format of the files generated when using this catalog
@@ -73,7 +73,7 @@ class CatalogDescription(object):
         """
 
         self.versionCode = versionCode
-        self.fichierCata = fichierCata
+        self.cataFile = cataFile
         self.formatFichierOut = formatFichierOut
         self.formatFichierIn = formatFichierIn
         self.default = default
@@ -94,7 +94,7 @@ class CatalogDescription(object):
                 code=cataTuple[0],
                 ssCode=cataTuple[1],
                 versionCode=cataTuple[0] + cataTuple[1],
-                fichierCata=cataTuple[2],
+                cataFile=cataTuple[2],
                 formatFichierOut=cataTuple[3],
                 formatFichierIn=cataTuple[4],
             )
@@ -103,7 +103,7 @@ class CatalogDescription(object):
             desc = CatalogDescription(
                 code=cataTuple[0],
                 versionCode=cataTuple[1],
-                fichierCata=cataTuple[2],
+                cataFile=cataTuple[2],
                 ssCode=cataTuple[3],
                 formatFichierOut="MAP",
                 formatFichierIn="MAP",
@@ -112,7 +112,7 @@ class CatalogDescription(object):
             desc = CatalogDescription(
                 code=cataTuple[0],
                 versionCode=cataTuple[1],
-                fichierCata=cataTuple[2],
+                cataFile=cataTuple[2],
                 formatFichierOut=cataTuple[3],
                 formatFichierIn="python",
             )
@@ -120,7 +120,7 @@ class CatalogDescription(object):
             desc = CatalogDescription(
                 code=cataTuple[0],
                 versionCode=cataTuple[1],
-                fichierCata=cataTuple[2],
+                cataFile=cataTuple[2],
                 formatFichierOut=cataTuple[3],
                 formatFichierIn=cataTuple[4],
             )
@@ -128,7 +128,7 @@ class CatalogDescription(object):
             desc = CatalogDescription(
                 code=cataTuple[0],
                 versionCode=cataTuple[1],
-                fichierCata=cataTuple[2],
+                cataFile=cataTuple[2],
                 formatFichierOut=cataTuple[3],
                 formatFichierIn=cataTuple[4],
                 defaut=cataTuple[5],

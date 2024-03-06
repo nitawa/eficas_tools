@@ -31,17 +31,17 @@ from InterfaceGUI.Common.simp_treeItem_commun import SIMPTreeItemCommun
 
 class Node(browser.JDCNode,typeNode.PopUpMenuNodeMinimal):
 
-    def traiteValeurSaisie(self,valeur): 
+    def traiteValeurSaisie(self,  valeur): 
         if self.item.get_definition().max==1 : self.politique = PolitiqueUnique (self, self.editor)
         else  : self.politique = PolitiquePlusieurs(self, self.editor)
         if self.item.definition.validators != None :
             if self.item.definition.validators.verifItem(nouvelleValeur) !=1 :
                 commentaire=self.node.item.definition.validators.infoErreurItem()
-                return (self.item.idUnique, commentaire, false)
+                return (self.item.idUnique, 100 ,commentaire)
         nouvelleValeurFormat=self.politique.getValeurTexte(valeur)
         validite,commentaire=self.politique.recordValeur(nouvelleValeurFormat)
-        if validite : self.treeParent.updateOptionnels() 
-        return (self.item.idUnique, commentaire, validite)
+        #if validite : self.treeParent.updateOptionnels() 
+        return (self.item.idUnique, 0, 'commentaire')
         
 class SIMPTreeItem(SIMPTreeItemCommun):
     itemNode = Node

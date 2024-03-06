@@ -26,7 +26,7 @@ from Accas.extensions.eficas_translation import tr
 from InterfaceGUI.QT5.feuille import Feuille
 from UiQT5.desWidgetSimpBase import Ui_WidgetSimpBase
 from InterfaceGUI.Common.politiquesValidation import PolitiqueUnique
-from InterfaceGUI.Common.traiteSaisie import SaisieValeur
+from InterfaceGUI.QT5.traiteSaisie import SaisieValeur
 
 
 class MonWidgetSimpBase(Ui_WidgetSimpBase, Feuille):

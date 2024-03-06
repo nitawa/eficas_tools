@@ -310,7 +310,7 @@ def createparser():
         "--cata",
         action="store",
         type="string",
-        dest="fichierCata",
+        dest="cataFile",
         help=tr("catalogue a utiliser"),
     )
 
@@ -389,8 +389,8 @@ def parse(args):
     if not hasattr(options, "studies"):
         options.studies = []
         options.comm = []
-    if not hasattr(options, "fichierCata"):
-        options.fichierCata = None
+    if not hasattr(options, "cataFile"):
+        options.cataFile = None
     if not hasattr(options, "versionCode"):
         options.versionCode = None
     if not hasattr(options, "fichierXMLOut"):

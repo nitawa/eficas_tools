@@ -34,6 +34,7 @@ from Accas.catalog import uiinfo
 from Accas.extensions.eficas_translation import tr
 from Accas.extensions.eficas_exception import EficasException
 
+debug = 0
 
 # -----------------------------
 class ReaderCataCommun(object):
@@ -69,7 +70,7 @@ class ReaderCataCommun(object):
         #if ret == QDialog.Accepted:
         if ret == 1:
             cata = cataListeChoix[widgetChoix.CBChoixCata.currentIndex()]
-            self.fichierCata = cata.fichierCata
+            self.cataFile = cata.cataFile
             self.versionCode = cata.versionCode
             self.appliEficas.formatFichierOut = cata.formatFichierOut
             self.appliEficas.formatFichierIn = cata.formatFichierIn
@@ -114,7 +115,7 @@ class ReaderCataCommun(object):
             # La version a ete fixee
             for cata in listeCataPossibles:
                 if self.versionCode == cata.versionCode:
-                    self.fichierCata = cata.fichierCata
+                    self.cataFile = cata.cataFile
                     self.versionCode = cata.versionCode
                     self.appliEficas.formatFichierOut = cata.formatFichierOut
                     self.appliEficas.formatFichierIn = cata.formatFichierIn
@@ -128,17 +129,17 @@ class ReaderCataCommun(object):
                         cataChoiceList.append(cata)
 
         # le catalogue est fixe dans la ligne de commande
-        if self.appliEficas.fichierCata != None:
+        if self.appliEficas.cataFile != None:
             trouve = False
             for catalogue in listeTousLesCatas:
-                if os.path.abspath(catalogue.fichierCata) == ( os.path.abspath(self.appliEficas.fichierCata)):
+                if os.path.abspath(catalogue.cataFile) == ( os.path.abspath(self.appliEficas.cataFile)):
                     listeCataPossibles = (catalogue,)
                     trouve = True
                     break
             if not trouve:
                 # utilise par Telemac
                 catalogue = CatalogDescription.createFromTuple(
-                    ( self.code, self.code, self.appliEficas.fichierCata, "python", "python",)
+                    ( self.code, self.code, self.appliEficas.cataFile, "python", "python",)
                 )
                 listeCataPossibles = (catalogue,)
 
@@ -156,7 +157,7 @@ class ReaderCataCommun(object):
             # La version a ete fixee
             for cata in listeCataPossibles:
                 if self.versionCode == cata.versionCode:
-                    self.fichierCata = cata.fichierCata
+                    self.cataFile = cata.cataFile
                     self.appliEficas.formatFichierIn = cata.formatFichierIn
                     self.appliEficas.formatFichierOut = cata.formatFichierOut
         else:
@@ -173,7 +174,7 @@ class ReaderCataCommun(object):
                 if self.appliEficas.salome == 0: sys.exit(1)
 
             elif len(cataListeChoix) == 1:
-                self.fichierCata = cataListeChoix[0].fichierCata
+                self.cataFile = cataListeChoix[0].cataFile
                 self.versionCode = cataListeChoix[0].versionCode
                 self.appliEficas.formatFichierOut = cataListeChoix[0].formatFichierOut
                 self.appliEficas.formatFichierIn = cataListeChoix[0].formatFichierIn
@@ -185,7 +186,7 @@ class ReaderCataCommun(object):
                 self.demandeCatalogue = True
                 self.askChoixCatalogue(cataListeChoix)
 
-        if self.fichierCata == None:
+        if self.cataFile == None:
             if self.appliEficas.salome == 0:
                 print( "Pas de catalogue pour code %s, version %s" % (self.code, self.versionCode))
                 sys.exit(1)
@@ -211,7 +212,14 @@ class ReaderCata(ReaderCataCommun):
         self.appliEficas.formatFichierIn = "python"
         self.appliEficas.formatFichierOut = "python"
         self.versionCode = self.appliEficas.versionCode
-        self.fichierCata = self.appliEficas.fichierCata
+        # TODO
+        # En transitoire pour garder la versionQT5 compatbile avec la nouvelle API 
+        # Bien reflechir  pour conserver la possibilité du prefs_Code.py
+        if self.editor.cataFile != None :
+            self.cataFile = self.editor.cataFile
+        else :
+            self.cataFile = self.appliEficas.cataFile
+        if debug : print ('ReaderCata self.cataFile =', self.cataFile)
         self.openCata()
         self.traiteIcones()
         self.cataitem = None
@@ -226,10 +234,10 @@ class ReaderCata(ReaderCataCommun):
         dans le repertoire Cata
         """
         # import du catalogue
-        if self.fichierCata == None:
+        if self.cataFile == None:
             self.choisitCata()
 
-        self.cata = self.importCata(self.fichierCata)
+        self.cata = self.importCata(self.cataFile)
         if self.code == "NonConnu": self.code = self.cata.JdC.code
         modeleMetier = None
         dicoEltDif = {}
@@ -242,24 +250,24 @@ class ReaderCata(ReaderCataCommun):
                     )
                     exit()
                 try:
-                    nomCataXsd = os.path.splitext(os.path.basename(self.fichierCata))[0]
-                    fichierCataTrunc = os.path.splitext(
-                        os.path.basename(self.fichierCata)
+                    nomCataXsd = os.path.splitext(os.path.basename(self.cataFile))[0]
+                    cataFileTrunc = os.path.splitext(
+                        os.path.basename(self.cataFile)
                     )[0]
-                    nomCataXsd = fichierCataTrunc + "_driver"
+                    nomCataXsd = cataFileTrunc + "_driver"
 
-                    if os.path.dirname(self.fichierCata) == "":
+                    if os.path.dirname(self.cataFile) == "":
                         pathCata = "./raw/" + nomCataXsd + ".py"
                     else:
                         pathCata = (
-                            os.path.dirname(self.fichierCata)
+                            os.path.dirname(self.cataFile)
                             + "/raw/"
                             + nomCataXsd
                             + ".py"
                         )
 
                     self.cata.fileModeleMetier = (
-                        os.path.dirname(self.fichierCata)
+                        os.path.dirname(self.cataFile)
                         + "/raw/"
                         + nomCataXsd
                         + ".xsd"
@@ -304,7 +312,7 @@ class ReaderCata(ReaderCataCommun):
         self.cata.modeleMetier = modeleMetier
         if not self.cata:
             self.appliEficas.afficheMessage(
-                "Catalogue", "Impossible d'importer le catalogue " + self.fichierCata
+                "Catalogue", "Impossible d'importer le catalogue " + self.cataFile
             )
             self.appliEficas.close()
             if self.appliEficas.salome == 0:
@@ -348,7 +356,7 @@ class ReaderCata(ReaderCataCommun):
 
         self.titre = (
             self.versionEficas + tr(" avec le catalogue ")
-            + os.path.basename(self.fichierCata)
+            + os.path.basename(self.cataFile)
         )
         self.editor.titre = self.titre
         if hasattr(self.appliEficas, 'setWindowTitle') :
@@ -359,13 +367,16 @@ class ReaderCata(ReaderCataCommun):
         if hasattr(self.cata, "modifieCatalogueDeterministe"):
             self.cata.modifieCatalogueDeterministe(self.cata)
 
-    def importCata(self, fichierCata):
+    def importCata(self, cataFile):
         """
         Realise l'import du catalogue dont le chemin d'acces est donne par cata
         """
          
-        nomCata = os.path.splitext(os.path.basename(fichierCata))[0]
-        repCata = os.path.abspath(os.path.dirname(fichierCata))
+        if debug : print ('importCata cataFile', cataFile)
+        nomCata = os.path.splitext(os.path.basename(cataFile))[0]
+        repCata = os.path.abspath(os.path.dirname(cataFile))
+        if debug : print ('importCata nomCata', cataFile)
+        if debug : print ('importCata repCata', cataFile)
         sys.path[:0] = [repCata]
         self.appliEficas.listePathAEnlever.append(repCata)
 
@@ -385,14 +396,16 @@ class ReaderCata(ReaderCataCommun):
         # try: self.appliEficas.mesScripts[self.code] = __import__(mesScriptsNomFichier)
         # except: pass
 
-        try:
+        #try:
+        if 1 :
             #import importlib.util
             from importlib import util
-            cataSpec = util.spec_from_file_location(nomCata, fichierCata)
+            cataSpec = util.spec_from_file_location(nomCata, cataFile)
             leCata = util.module_from_spec(cataSpec)
             cataSpec.loader.exec_module(leCata)
             return leCata
-        except Exception as e:
+        #except Exception as e:
+        else :
             self.appliEficas.afficheMessage("catalog python", "unable to load catalog file")
             import traceback
             traceback.print_exc()
@@ -412,9 +425,9 @@ class ReaderCata(ReaderCataCommun):
         Retrouve l'ordre des mots-cles dans le catalogue, cad :
         Attention s appuie sur les commentaires
         """
-        nomCata = os.path.splitext(os.path.basename(self.fichierCata))[0]
-        repCata = os.path.dirname(self.fichierCata)
-        self.commandesOrdreCatalogue = analyse_ordre_impose.analyseCatalogue( self.fichierCata)
+        nomCata = os.path.splitext(os.path.basename(self.cataFile))[0]
+        repCata = os.path.dirname(self.cataFile)
+        self.commandesOrdreCatalogue = analyse_ordre_impose.analyseCatalogue( self.cataFile)
 
     def traiteIcones(self):
         if self.appliEficas.maConfiguration.ficIcones == None:

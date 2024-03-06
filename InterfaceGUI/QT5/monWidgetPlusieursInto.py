@@ -29,7 +29,7 @@ from Accas.extensions.eficas_translation import tr
 from InterfaceGUI.QT5.feuille import Feuille
 from UiQT5.desWidgetPlusieursInto import Ui_WidgetPlusieursInto
 from InterfaceGUI.Common.politiquesValidation import PolitiquePlusieurs
-from InterfaceGUI.Common.traiteSaisie import SaisieValeur
+from InterfaceGUI.QT5.traiteSaisie import SaisieValeur
 from InterfaceGUI.QT5.gereListe import GerePlie
 from InterfaceGUI.QT5.gereListe import GereListe
 

@@ -29,7 +29,7 @@ from InterfaceGUI.QT5.feuille import Feuille
 from UiQT5.desWidgetPlusieursPlie import Ui_WidgetPlusieursPlie
 
 from InterfaceGUI.Common.politiquesValidation import PolitiquePlusieurs
-from InterfaceGUI.Common.traiteSaisie import SaisieValeur
+from InterfaceGUI.QT5.traiteSaisie import SaisieValeur
 
 pattern_blanc = re.compile(r"^\s*$")
 

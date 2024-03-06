@@ -41,7 +41,7 @@ class QtEditor(Ui_editor5C, Editor, QWidget):
        Editeur de jdc 5C
     """
 
-    def __init__ (self,appliEficas,fichier = None, jdc=None, QWParent=None, include=0):
+    def __init__ (self,appliEficas,cataFile = None, fichier = None, jdc=None, QWParent=None, include=0):
     #------------------------------------------------------------------------------------------------
 
         debug = 0
@@ -49,7 +49,7 @@ class QtEditor(Ui_editor5C, Editor, QWidget):
 
         QWidget.__init__(self,None)
         self.setupUi(self)
-        Editor.__init__(self,appliEficas, fichier, jdc=jdc)
+        Editor.__init__(self,appliEficas, cataFile=None, fichier=fichier, jdc=jdc, QWParent=QWParent, include=include) 
         comploader.chargerComposants(self.appliEficas.GUIPath)
         self.initQTSignals()
         self.inhibeSplitter=0

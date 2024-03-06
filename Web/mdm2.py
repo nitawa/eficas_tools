@@ -1,6 +1,6 @@
 # coding: utf-8
 #!/usr/bin/env python3
-import sys
+import sys, os
 
 code='Essai'
 #code=None
@@ -41,6 +41,8 @@ app.config['SECRET_KEY']         = os.urandom(24)
 app.config['UPLOAD_FOLDER']      = 'data/'
 app.config['THUMBNAIL_FOLDER']   = 'data/thumbnail/'
 app.config['MAX_CONTENT_LENGTH'] = 50 * 1024 * 1024
+#PNPN
+#app.config['SESSION_REFRESH_EACH_REQUEST'] = False
 ALLOWED_EXTENSIONS = set(['py','comm','txt', 'gif', 'png', 'jpg', 'jpeg', 'bmp', 'rar', 'zip', '7zip', 'doc', 'docx'])
 IGNORED_FILES = set(['.gitignore'])
 
@@ -57,21 +59,23 @@ def createWebAppli(app):
     import os
     sys.path.append(os.path.join(os.path.abspath(os.path.dirname(__file__)),'..'))
     from Editeur.eficas_go import getEficas
-    eficasAppli=getEficas(code, langue='ang',GUIPath= 'Web',appWeb=app)
+    eficasAppli=getEficas(code, langue='ang',appWeb=app)
     return eficasAppli
 
 
 eficasAppli=createWebAppli(app)
 debug=1
-if debug : 
-    monEficasEditeur=eficasAppli.getEditor()
-    print ('les commandes dans le catalogue')
-    print ('_______________________________')
-    print (monEficasEditeur.getListeCommandes())
+# Plus possible, il faut d autres parametres a getEditor
+# si on veut la liste des commandes il faut enrichir l API
+#if debug : 
+#    monEficasEditeur=eficasAppli.getEditor()
+#    print ('les commandes dans le catalogue')
+#    print ('_______________________________')
+#    print (monEficasEditeur.getListeCommandes())
 
-def fromConnecteur(maFonction,*args,**kwargs):
+def fromConnecteur(maFonction, sessionId,*args,**kwargs):
   fnct=globals()[maFonction]
-  fnct(*args,**kwargs)
+  fnct(sessionId, *args,**kwargs)
 
 #TODO : Rattacher à une session
 #         gérer un appel register callback
@@ -84,30 +88,40 @@ app.fromConnecteur=fromConnecteur
 #    - ReAffichage d'un noeud (et ses enfants)
 #    - Changement d'un nom de mot-cle reference
 
-def propageValide(id, valid): #TODO: RENAME TO ... propagateValidation
+def propageValide(sId, id, valid): #TODO: RENAME TO ... propagateValidation
+    if sId != session['eficasSession']  : return
     print ('Flask/propageValide: ', id, valid)
     sse.publish( {'id':id, 'valid':valid, 'message': "Hello from propageValide!"}, type='propageValide')
 
-def updateNodeInfo(id, info):
+def updateNodeInfo(sId, id, info):
+    print ('Flask/updateNodeInfo', sId, id, info, session['eficasSession'])
+    print ('--------- sId',sId)
+    print ('--------- moimeme',session['eficasSession'])
+    print ('--------- monEditeur',session['eficasEditor'])
+    #if sId != session['eficasSession']  : return
     print ('Flask/updateNodeInfo: ', id, info)
     sse.publish( {'id':id, 'info':info, 'message': "Hello from updateNodeInfo!"}, type='updateNodeInfo')
 
-def appendChildren(id, fcyTreeJson, pos):
+def appendChildren(sId, id, fcyTreeJson, pos):
+    if sId != session['eficasSession']  : return
     print ('Flask/appendChildren: ', id, fcyTreeJson, pos)
     sse.publish( {'id':id, 'fcyTreeSrc':fcyTreeJson, 'pos':pos, 'message': "Hello from appendChildren!"}, type='appendChildren')
 
-def deleteChildren(idList):
+def deleteChildren(sId, idList):
+    if sId != session['eficasSession']  : return
     #print ('Flask/deleteChildren: ', idList)
     sse.publish( {'idList':idList,'message': "Hello from deleteChildren!"}, type='deleteChildren')
 
 #TODO: Câbler la sélection du catalogue avant d'activer les appels suivants
 #      car si la page Web n'est pas rendue et que le connecteur génère une erreur... boom !
-def afficheMessage(txt, couleur):                     #TODO: RENAME TO ... displayWarning
+def afficheMessage(sId, txt, couleur):                     #TODO: RENAME TO ... displayWarning
+    if sId != session['eficasSession']  : return
     print ('Flask/afficheMessage: ', txt, couleur)
     # sse.publish( {'txt':txt, 'color':couleur, 'messageClass':"alert-warning" ,'message': "Hello from afficheMessage!"},
     #              type='displayMessage')
 
-def afficheAlerte(titre, message):                  #TODO: RENAME TO ... displayDanger
+def afficheAlerte(sId, titre, message):                  #TODO: RENAME TO ... displayDanger
+    if sId != session['eficasSession']  : return
     print ('Flask/afficheAlerte: ', titre, message) #TODO: titre & message VS txt ?
     # sse.publish( {'txt':titre, 'color':couleur, 'messageClass':"alert-danger", 'message': "Hello from afficheAlerte!"},
     #              type='displayMessage')
@@ -132,14 +146,19 @@ def updateSimp():
         id=req['id'];value=req['value']
         # id, value = req.values()       # Dangereux correspondance implicite
         value             = str(value)   #On peut écrire Pi
-        eficasEditeur=eficasAppli.getEditorById(session['eficasEditeur'])
-        rId,message,changeDone       = eficasEditeur.changeValeur(id,value);
+
+        (eficasEditor, code, message) =eficasAppli.getEditorById(session['eficasEditor'])
+        #eficasEditor=eficasAppli.getEditorById(session['eficasEditor'])
+        sId = session['eficasSession'] 
+        print ('uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu', sId)
+
+        (rId,message,changeDone) = eficasEditor.changeValeur(sId, id,value);
         assert(rId==id)
         #changeDone        = True
         print ("changeDone : ",changeDone)
         # Ne pas recuperer et ne pas renvoyer le noeud dans le cas du SIMP
         #  (le changeDone et l''ancienne valeur ds la WebApp suffit 
-        node              = eficasEditeur.getDicoForFancy(eficasEditeur.getNodeById(id))
+        node              = eficasEditor.getDicoForFancy(eficasEditor.getNodeById(id))
         print("Flask/updateSimp node : ",node)
         # return jsonify([myTreeDico])
         
@@ -160,8 +179,8 @@ def updateSDName():
         # Print the dictionary
         id=req['id'];sdnom=req['sdnom']
         sdnom              = str(sdnom)   #On peut écrire Pi
-        eficasEditeur=eficasAppli.getEditorById(session['eficasEditeur'])
-        changeDone,message = eficasEditeur.updateSDName(id,sdnom);
+        eficasEditor=eficasAppli.getEditorById(session['eficasEditor'])
+        changeDone,message = eficasEditor.updateSDName(id,sdnom);
         #changeDone        = True
         print ("changeDone : ",changeDone)
         
@@ -184,8 +203,8 @@ def removeNode():
         # Print the dictionary
         print("/removeNode ",req);print("/removeNode ",req['id']);
         id  = req['id'];
-        eficasEditeur=eficasAppli.getEditorById(session['eficasEditeur'])
-        ret,message = eficasEditeur.suppNode(id);
+        eficasEditor=eficasAppli.getEditorById(session['eficasEditor'])
+        ret,message = eficasEditor.suppNode(id);
         print ("/removeNode : ret : ",ret," message : ",message)
         
         return make_response(json.dumps( {'ret':ret, 'message':message} ))
@@ -204,8 +223,8 @@ def appendChild():
         print(__file__+"/appendChild : ",req);
         id=req['id'];name=req['name'];pos=req['pos'];
         # id, value = req.values() # Dangereux correspondance implicite
-        #rId,message,changeDone  = eficasEditeur.appendChild(id,name,pos);
-        newId                    = eficasEditeur.appendChild(id,name,pos);
+        #rId,message,changeDone  = eficasEditor.appendChild(id,name,pos);
+        newId                    = eficasEditor.appendChild(id,name,pos);
         print (__file__+"/appendChild : newId : ",newId);
         
         return make_response(json.dumps( {'id':newId} ))
@@ -219,27 +238,59 @@ def appendChild():
 
 @app.route('/')
 def index():
+    print ('_______________________________________________')
+    print (session)
+    print ('_______________________________________________')
+    (eficasSession, codeErreur, message) =eficasAppli.getSessionId()
+    debug=1
+    if not codeErreur :
+        session['eficasSession'] = eficasSession
+        if debug : print (' enrolement de session : ', eficasSession)
+    else :
+        afficheMessage(message, 'red')
+        if not(eficasEditor)  :
+            return render_template('commandes_2.html',
+                titre='Pb a l enrolement ',
+                listeCommandes = [],
+                 tree= None
+            )
+    cataFile = os.path.abspath('../Codes/WebTest/cata_essai.py')
+    dataSetFile = os.path.abspath('../Codes/WebTest/web_tres_simple_avec_2Fact.comm')
+    if eficasSession == 3:
+        dataSetFile = os.path.abspath('../Codes/WebTest/web_tres_simple_incomplet.comm')
+    (eficasEditor, codeErreur, message) = eficasAppli.getWebEditor(eficasSession, cataFile, dataSetFile)
+    # TODO : separer les erreurs ouverture cata / ouvertur fichier
+    if debug : print ('dans index : eficasEditor : ', eficasEditor, ' code Erreur : ', codeErreur,'message : ', message)
+    if not codeErreur :
+        session['eficasEditor']=eficasEditor.getEditorId()
+    else :
+        afficheMessage(message, 'red')
+        if not(eficasEditor)  :
+            return render_template('commandes_2.html',
+                titre='Pb a l enrolement ',
+                listeCommandes = [],
+                 tree= None
+            )
 
-#PN decider de ce qu on appelle
-# Lecture du cata
-# Lecture du fichier
-    #eficasEditeur = eficasAppli.litFichierComm('../Codes/WebTest/web_tres_simple_avec_2Fact.comm')
-    #eficasAppli.litFichierComm('../WebTest/edg_REP1300_FULL_PN.comm')
-
-    eficasEditeur = eficasAppli.openFile('../Codes/WebTest/web_tres_simple_avec_2Fact.comm')
-    print ('_____________________________________')
-    print (eficasAppli)
-    print ('dans index : eficasEditeur', eficasEditeur)
-    if not(eficasEditeur)  :
+    if not(eficasEditor)  :
        return render_template('commandes_2.html',
           titre='Pb a la lecture',
           listeCommandes = [],
           tree= None
     )
-    #myFancyTreeDico=session['eficasEditeur'].getDicoForFancy(session['eficasEditeur'].tree.racine)
-    session['eficasEditeur']=eficasEditeur.idUnique
-    eficasEditeur=eficasAppli.getEditorById(session['eficasEditeur'])
-    myFancyTreeDico=eficasEditeur.getDicoForFancy(eficasEditeur.tree.racine)
+    (eficasEditor, code, message) =eficasAppli.getEditorById(session['eficasEditor'])
+    if codeErreur :
+        afficheMessage(message, 'red')
+        if not(eficasEditor)  :
+            return render_template('commandes_2.html',
+                titre='Pb a l ouverture du dataSet ',
+                listeCommandes = [],
+                 tree= None
+            )
+    if debug :   print ('idEditor = ', session['eficasEditor'])
+    if debug :   print ('eficasEditor  : ',eficasEditor)
+    
+    myFancyTreeDico=eficasEditor.getDicoForFancy(eficasEditor.tree.racine)
     myFancyTreeJS=json.dumps([myFancyTreeDico],indent=4)  #TODO : remove indent if not DEBUG
     
     #print("---- myFancyTreeDico ----")
@@ -249,11 +300,31 @@ def index():
 
     return render_template('commandes_2.html',
       titre=code,
-      listeCommandes = eficasEditeur.getListeCommandes(),
+      listeCommandes = eficasEditor.getListeCommandes(),
       tree=myFancyTreeJS,
       # tree=tree4Fancy,
     )
     # etape  = str(escape(request.args.get("etape", "")))
+
+@app.route('/get_eficasSession')
+def get_eficasSession():
+    if 'eficasSession' in session : print ( session['eficasSession'])
+    else : print ('pas de eficasSession')
+    return render_template('commandes_2.html',
+      titre=session['eficasSession'],
+      listeCommandes =  [],
+      tree=None,
+    )
+
+@app.route('/get_eficasEditor')
+def get_eficasEditor():
+    if 'eficasEditor' in session : print ( session['eficasEditor'])
+    else : print ('pas de eficasEditor')
+    return render_template('commandes_2.html',
+      titre=session['eficasEditor'],
+      listeCommandes =  [],
+      tree=None,
+    )
 
 
 #TODO: 

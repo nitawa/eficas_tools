@@ -43,7 +43,8 @@ class JDCTree():
         self.inhibeExpand  =  True
         self.childrenComplete=[]
         self.oldValidite='init'
-        self.editor.idUnique = self.tree.racine.item.idUnique
+        self.item.idUnique = self.tree.racine.item.idUnique
+        # Est-ce que l editeur a besoin de cet idUnique ?? a priori non 
         #print ('fin __init__ JDCTree')
 
     # def handleContextMenu(self,item,coord):
@@ -222,6 +223,7 @@ class JDCNode():
 
      
     def construitChildrenComplete(self):
+    #------------------------------------------
     # PN a tester avec des blocs de blocs
          from . import compobloc
          liste=[]
@@ -234,11 +236,9 @@ class JDCNode():
                 liste.append(itemFils)
          return liste
             
-
-
-    #-----------------------------------
+    #-------------------------
     def getDicoForFancy(self):
-    #-----------------------------------
+    #-------------------------
         return self.item.getDicoForFancy()
 
     #-----------------------------------
@@ -335,6 +335,7 @@ class JDCNode():
         self.oldStatut = statut 
         monDictPartiel={} 
         monDictPartiel['statut']=statut
+        #TODO remonter au pere si le statut change
         self.editor.connecteur.toWebApp('updateNodeInfo',self.getIdUnique(), monDictPartiel)
 
     def updateOptionnels(self):
@@ -342,87 +343,13 @@ class JDCNode():
         if self.item.nature == 'MCList' or self.item.nature == 'JDC' or self.item.nature=='MCSIMP' : return
         monDictPartiel={} 
         monDictPartiel['infoOptionnels'] = self.item.calculOptionnelInclutBlocs()
-        self.editor.connecteur.toWebApp('updateNodeInfo',self.getIdUnique(), monDictPartiel)
+        return monDictPartiel
 
-    #def chercheNoeudCorrespondant(self,objSimp):
-    #-------------------------------------------
-    #    sublist = self.item._getSubList()
-    #    for node in self.childrenComplete:
-    #        if node.item.object==objSimp : return node
-    #    return None
-    #def afficheCeNiveau(self):
-    #-------------------------
-    #def affichePanneau(self) :
-    #-------------------------
-    #def createPopUpMenu(self):
-    #-------------------------
-    #def commentIt(self):
-    #-------------------------
-    #def unCommentIt(self):
-    #-------------------------
-    #def addComment( self, after=True ):
-    #-----------------------------------
-    #def addParameters( self, after=True ):
-    #-------------------------------------
-    #def select( self ):
-    #------------------
-    #------------------------------------------------------------------
-    # Methodes de creation et destruction de noeuds
-    #------------------------------------------------------------------
-    #def appendBrother(self,name,pos='after',plier=False):
-    #----------------------------------------------------
-    #def verifiePosition(self,name,pos,aLaRacine=False):
-    #----------------------------------------------------
-    #def deplace(self):
-    #-----------------
-    #def deleteMultiple(self,liste=()):
-    #--------------------------------
+    def updateNodeInfo(self):
+    #----------------------
+        if self.item.nature == 'MCList' or self.item.nature == 'JDC' : print ('dans updateNodeInfo reflechir SVP')
+        monDico= self.item.getDicoForFancy()
+        return monDico
 
-    #def updateNodeValid(self):
-    #-----------------------
-        
-    #def updateNodeLabelInBlack(self):
-    #-------------------------------
-    #def updateNodeLabelInBlue(self):
-    #-------------------------------
-    #def updatePlusieursNodeLabelInBlue(self,liste):
-    #----------------------------------------------
-    #def updateNodeTexteInBlack(self):
-    #--------------------------------
-    #def updateNodeTexte(self):
-    #----------------------------
-    #def updateNodeTexteInBlue(self):
-    #--------------------------------
-    #def updateNodes(self):
-    #--------------------------------
-    #def updateValid(self) :
-    #----------------------
-    #def updateTexte(self):
-    #----------------------
-    #def forceRecalculChildren(self,niveau):
-    #--------------------------------------
-    #def doPaste(self,node_selected,pos='after'):
-    #--------------------------------------------
-    #def doPasteCommande(self,objet_a_copier,pos='after'):
-    #-----------------------------------------------------
-    #def doPastePremier(self,objet_a_copier):
-    #---------------------------------------
-    #def plieToutEtReafficheSaufItem(self, itemADeplier):
-    #---------------------------------------------------
-    #def plieToutEtReaffiche(self):
-    #-----------------------------
-    #def deplieToutEtReaffiche(self):
-    #-----------------------------
-    #def setPlie(self):
-    #-----------------
-    #def setPlieChildren(self):
-    #-----------------------------
-    #def setDeplie(self):
-    #-----------------------------
-    #def setDeplieChildren(self):
-    #-----------------------------
-    #def selectAvant(self):
-    #-----------------------------
-    #def selectApres(self):
-    #---------------------
+
 

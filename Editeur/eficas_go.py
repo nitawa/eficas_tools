@@ -62,8 +62,8 @@ def lanceQtEficas(code=None, versionCode = None, multi=False, langue="en",  GUIP
     sys.exit(res)
 
 
-def getEficas( code=None, ssCode = None, versionCode = None , multi=False, langue="en", GUIPath=None, appWeb = None, fichierCata = None):
-# ---------------------------------------------------------------------------------------------------------------------------------------
+def getEficas( code=None, ssCode = None, versionCode = None , multi=False, langue="en", appWeb = None, cataFile = None):
+# --------------------------------------------------------------------------------------------------------------------------
     """
     instancie l'appli EFICAS sans Ihm
     """
@@ -73,19 +73,20 @@ def getEficas( code=None, ssCode = None, versionCode = None , multi=False, langu
     if options.code != None:
         code = options.code
 
-    if GUIPath in ('QT5',  'cinqC') :
-        pathAbso=os.path.abspath(os.path.join(os.path.dirname(__file__),'..','InterfaceGUI',GUIPath))
-        if pathAbso not in sys.path : sys.path.insert(0,pathAbso)
-        from qt_eficas import QtEficasAppli as EficasAppli
-    if GUIPath in ( 'Web') :
-        pathAbso=os.path.abspath(os.path.join(os.path.dirname(__file__),'..','InterfaceGUI',GUIPath))
-        if pathAbso not in sys.path : sys.path.insert(0,pathAbso)
-        from web_eficas import WebEficasAppli as EficasAppli
-    else :
-        print ('lancement de Eficas avec GUIPath = {}'.format(GUIPath))
-        from Editeur.eficas_appli import EficasAppli
-
-    Eficas = EficasAppli(code=code, multi=multi, langue=langue, ssCode=ssCode, versionCode=versionCode,  fichierCata=fichierCata, GUIPath=GUIPath, appWeb=appWeb)
+    #if GUIPath in ('QT5',  'cinqC') :
+    #    print ('Attention : Pour lancer l application QT5 utiliser lanceQTEficas')
+    #    return
+        #pathAbso=os.path.abspath(os.path.join(os.path.dirname(__file__),'..','InterfaceGUI',GUIPath))
+        #if pathAbso not in sys.path : sys.path.insert(0,pathAbso)
+        #from qt_eficas import QtEficasAppli as EficasAppli
+    #if GUIPath in ( 'Web') :
+    #    pathAbso=os.path.abspath(os.path.join(os.path.dirname(__file__),'..','InterfaceGUI',GUIPath))
+    #    if pathAbso not in sys.path : sys.path.insert(0,pathAbso)
+    #    from web_eficas import WebEficasAppli as EficasAppli
+    #else :
+    print ('lancement de Eficas sans QT ')
+    from Editeur.eficas_appli import EficasAppli
+    Eficas = EficasAppli(code=code, multi=multi, langue=langue, ssCode=ssCode, salome = 0 , versionCode=versionCode,  cataFile=cataFile,  appWeb=appWeb)
     return Eficas
 
 
@@ -95,7 +96,7 @@ def genereXSD(code=None):
     options = session.parse(sys.argv)
     if code != None:
         options.code = code
-    if options.fichierCata == None:
+    if options.cataFile == None:
         print("Use -c cata_name.py")
         return
 
@@ -104,10 +105,10 @@ def genereXSD(code=None):
     monEditor = monEficas.getEditor()
     texteXSD = monEditor.dumpXsd(avecEltAbstrait=options.avecEltAbstrait)
 
-    fichierCataTrunc = os.path.splitext(os.path.basename(options.fichierCata))[0]
-    # if fichierCataTrunc[0:4] in ('cata','Cata'): fichierCataTrunc=fichierCataTrunc[4:]
-    # if fichierCataTrunc[0] in ('_','-') : fichierCataTrunc=fichierCataTrunc[1:]
-    fileXSD = fichierCataTrunc + ".xsd"
+    cataFileTrunc = os.path.splitext(os.path.basename(options.cataFile))[0]
+    # if cataFileTrunc[0:4] in ('cata','Cata'): cataFileTrunc=cataFileTrunc[4:]
+    # if cataFileTrunc[0] in ('_','-') : cataFileTrunc=cataFileTrunc[1:]
+    fileXSD = cataFileTrunc + ".xsd"
 
     f = open(str(fileXSD), "w")
     f.write(str(texteXSD))
@@ -120,7 +121,7 @@ def genereXML(code=None):
     options = session.parse(sys.argv)
     if code != None:
         options.code = code
-    if options.fichierCata == None:
+    if options.cataFile == None:
         print("Use -c cata_name.py")
         return
     try:
@@ -155,7 +156,7 @@ def genereStructure(code=None):
     options = session.parse(sys.argv)
     if code != None:
         options.code = code
-    if options.fichierCata == None:
+    if options.cataFile == None:
         print("Use -c cata_name.py")
         return
 
@@ -163,8 +164,8 @@ def genereStructure(code=None):
     monEditor = monEficas.getEditor()
     texteStructure = monEditor.dumpStructure()
 
-    fichierCataTrunc = os.path.splitext(os.path.basename(options.fichierCata))[0]
-    fileStructure = fichierCataTrunc + ".txt"
+    cataFileTrunc = os.path.splitext(os.path.basename(options.cataFile))[0]
+    fileStructure = cataFileTrunc + ".txt"
     f = open(str(fileStructure), "w")
     f.write(str(texteStructure))
     f.close()
@@ -177,7 +178,7 @@ def validateDataSet(code=None):
     options = session.parse(sys.argv)
     if code != None:
         options.code = code
-    if options.fichierCata == None:
+    if options.cataFile == None:
         print("Use -c cata_name.py")
         return
     fichier = options.comm[0]
@@ -234,7 +235,7 @@ def validateFonction(laFonction, debug=False):
 
 
 
-def createObjetPythonFromDocumentAccas(fichierCata=None, fichier=None, code=None):
+def createObjetPythonFromDocumentAccas(cataFile=None, fichier=None, code=None):
 # --------------------------------------------------------------------------------
 # activeSurcharge permet de surcharger [ pour
 # acceder aux objets Accas comme en python
@@ -242,7 +243,7 @@ def createObjetPythonFromDocumentAccas(fichierCata=None, fichier=None, code=None
     if fichier == None:
         print("file is needed")
         return None
-    if fichierCata == None:
+    if cataFile == None:
         print("cata file is needed")
         return None
 
@@ -250,7 +251,7 @@ def createObjetPythonFromDocumentAccas(fichierCata=None, fichier=None, code=None
     activeSurcharge()
     from .editorSsIhm import JDCEditorSsIhm
 
-    monEficas = getEficas(code="Essai", fichierCata=fichierCata)
+    monEficas = getEficas(code="Essai", cataFile=cataFile)
     monEditeur = JDCEditorSsIhm(monEficas, fichier)
     return monEditeur.jdc
 
