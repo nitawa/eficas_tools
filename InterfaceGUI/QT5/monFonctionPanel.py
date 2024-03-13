@@ -65,7 +65,7 @@ class MonFonctionPanel(MonPlusieursBasePanel):
             message = tr(
                 "La cardinalite n'est pas correcte, la derniere valeur est ignoree"
             )
-            self.editor.afficheMessage(message, Qt.red)
+            self.editor.afficheMessageQt(message, Qt.red)
         i = 0
         while i < len(liste):
             try:
@@ -121,7 +121,7 @@ class MonFonctionPanel(MonPlusieursBasePanel):
             commentaire += str(self.nbValeursASaisir)
             commentaire += tr(" valeurs")
             self.LEValeur.setText(str(liste))
-            self.editor.afficheMessage(commentaire, Qt.red)
+            self.editor.afficheMessageQt(commentaire, Qt.red)
             return
 
         if self.node.item.waitTuple() == 1:
@@ -153,7 +153,7 @@ class MonFonctionPanel(MonPlusieursBasePanel):
             )
         self.Commentaire.setText(tr(comm2))
         if not validite:
-            self.editor.afficheMessage(comm, Qt.red)
+            self.editor.afficheMessageQt(comm, Qt.red)
         else:
             self.LEValeur.setText("")
             l1 = self.listeValeursCourantes[:indexListe]
@@ -186,7 +186,7 @@ class MonFonctionPanel(MonPlusieursBasePanel):
         if len(liste) % self.nbValeurs != 0:
             texte = "Nombre de valeur incorrecte"
             # self.Commentaire.setText(texte)
-            self.editor.afficheMessage(texte, Qt.red)
+            self.editor.afficheMessageQt(texte, Qt.red)
             return
         listeDecoupee = self.decoupeListeValeurs(liste)
         for vals in listeDecoupee:

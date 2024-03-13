@@ -43,7 +43,7 @@ class Node(browser.JDCNode, typeNode.PopUpMenuNode):
         self.editor.initModif()
         test, mess = self.item.nommeSd(nom)
         if test == 0:
-            self.editor.afficheMessage(mess, "red")
+            self.editor.afficheMessageQt(mess, "red")
             old = self.item.getText()
             self.monWidgetNom.setText(old)
         else:

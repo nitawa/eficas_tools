@@ -52,8 +52,8 @@ class QtEditor(Editor, Ui_baseWidget, QWidget):
     Editeur de jdc
     """
 
-    def __init__( self, appliEficas, cataFile = None, fichier=None, jdc=None, QWParent=None, include=0):
-    # -----------------------------------------------------------------------------------------------
+    def __init__( self, appliEficas, cataFile = None, fichier=None, formatIn = 'python', formatOut = 'python', jdc=None, QWParent=None, include=0):
+    # ---------------------------------------------------------------------------------------------------------------------------------------------
 
         QWidget.__init__(self, None)
         self.setupUi(self)
@@ -69,7 +69,7 @@ class QtEditor(Editor, Ui_baseWidget, QWidget):
             self.sb = None
         self.QWParent = QWParent
 
-        Editor.__init__(self, appliEficas=appliEficas, cataFile = cataFile , dataSetFile = fichier , jdc = jdc, include = include)
+        Editor.__init__(self, appliEficas=appliEficas, cataFile = cataFile , dataSetFile = fichier , jdc = jdc, include = include, formatIn = formatIn , formatOut = formatOut)
 
         # on enleve la gestion du dicEditor necessaire dans les autres cas
         # mais ici l index est le numero de page et non l editorId
@@ -123,6 +123,28 @@ class QtEditor(Editor, Ui_baseWidget, QWidget):
         if self.jdc_item : self.tree = browser.JDCTree(self.jdc_item, self)
         self.adjustSize()
 
+    # -----------------#
+    def readCata(self) :
+    # -----------------#
+        if ( not hasattr(self.appliEficas, "readercata")
+            or self.appliEficas.readercata.demandeCatalogue == True
+            or self.appliEficas.multi == True):
+
+            if self.maConfiguration.typeDeCata == "XML":
+                from Accas.catalog import reader_cata_XML as reader_cata
+            else:
+                from Accas.catalog import reader_cata
+            self.readercata = reader_cata.ReaderCata(self.appliEficas, self)
+            self.appliEficas.readercata = self.readercata
+            self.appliEficas.code = self.code
+        else:
+            self.readercata = self.appliEficas.readercata
+
+        if self.readercata :
+            self.titre = self.readercata.titre
+
+
+
     # --------------------#
     def readFile(self, fn):
     # --------------------#
@@ -152,7 +174,7 @@ class QtEditor(Editor, Ui_baseWidget, QWidget):
     def informe(self, titre, txt, critique=True):
     # ------------------------------------------#
         if critique:
-            self.afficheMessage(tr(txt), Qt.red)
+            self.afficheMessageQt(tr(txt), Qt.red)
             QMessageBox.critical(self, tr(titre), tr(txt))
         else:
             QMessageBox.warning(self, tr(titre), tr(txt))
@@ -240,8 +262,15 @@ class QtEditor(Editor, Ui_baseWidget, QWidget):
             self.jdc.supprime()
         self.close()
 
+    # ----------------------------------------------------#
+    def afficheMessage(self, titre, message, couleur=Qt.black):
+    # ----------------------------------------------------#
+        # Pour garder le meme fonctionnement pour les 3 utilisations
+        # on a un afficheMessageQt qui affiche dans la SB
+        QMessageBox.information(self, titre, message)
+
     # ----------------------------------------------#
-    def afficheMessage(self, message, couleur=Qt.black):
+    def afficheMessageQt(self, message, couleur=Qt.black):
     # ----------------------------------------------#
         if couleur == "red": couleur = Qt.red
         if self.sb:
@@ -407,7 +436,7 @@ class QtEditor(Editor, Ui_baseWidget, QWidget):
                         tr("Eficas n a pas reussi a copier l objet"),
                     )
                     self.message = ""
-                    self.afficheMessage("Copie refusee", Qt.red)
+                    self.afficheMessageQt("Copie refusee", Qt.red)
                 if noeudACopier.treeParent.editor != noeudOuColler.treeParent.editor:
                     try:
                         nom = noeudACopier.item.sd.nom
@@ -423,7 +452,7 @@ class QtEditor(Editor, Ui_baseWidget, QWidget):
                     self, tr("Copie refusee"), tr("Copie refusee pour ce type d objet")
                 )
                 self.message = ""
-                self.afficheMessage("Copie refusee", Qt.red)
+                self.afficheMessageQt("Copie refusee", Qt.red)
                 return
 
         # il faut declarer le JDCDisplay_courant modifie

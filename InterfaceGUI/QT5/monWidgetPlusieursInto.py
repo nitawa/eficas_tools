@@ -91,7 +91,7 @@ class MonWidgetPlusieursInto(Ui_WidgetPlusieursInto, Feuille, GerePlie, GereList
             min, max = self.node.item.getMinMax()
             if max < len(self.listeAAfficher):
                 commentaire = tr("impossible de tout selectionner : max =") + str(max)
-                self.editor.afficheMessage(commentaire, Qt.red)
+                self.editor.afficheMessageQt(commentaire, Qt.red)
                 self.inhibe = False
                 return
             for i in range(len(self.listeAAfficher)):
@@ -235,17 +235,17 @@ class MonWidgetPlusieursInto(Ui_WidgetPlusieursInto, Feuille, GerePlie, GereList
             if valeur != None and valeur != "":
                 commentaire = self.ajout1Valeur(valeur)
                 if commentaire != None:
-                    self.editor.afficheMessage(commentaire, Qt.red)
+                    self.editor.afficheMessageQt(commentaire, Qt.red)
                     self.listeValeursCourantesAvant = self.listeValeursCourantes
                     self.setValeurs()
 
         min, max = self.node.item.getMinMax()
         if len(self.listeValeursCourantes) < min:
-            self.editor.afficheMessage(
+            self.editor.afficheMessageQt(
                 tr("Nombre minimal de valeurs : ") + str(min), Qt.red
             )
         elif len(self.listeValeursCourantes) > max:
-            self.editor.afficheMessage(
+            self.editor.afficheMessageQt(
                 tr("Nombre maximal de valeurs : ") + str(max), Qt.red
             )
 

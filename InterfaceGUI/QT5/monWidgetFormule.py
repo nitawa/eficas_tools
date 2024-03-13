@@ -125,10 +125,10 @@ class MonWidgetFormule(QWidget, Ui_WidgetFormule, FacultatifOuOptionnel):
         test, erreur = self.node.item.verifNom(nomFormule)
         if test:
             commentaire = nomFormule + tr(" est un nom valide pour une FORMULE")
-            self.editor.afficheMessage(commentaire)
+            self.editor.afficheMessageQt(commentaire)
         else:
             commentaire = nomFormule + tr(" n'est pas un nom valide pour une FORMULE")
-            self.editor.afficheMessage(commentaire, Qt.red)
+            self.editor.afficheMessageQt(commentaire, Qt.red)
             return
         if str(self.LENomsArgs.text()) != "" and str(self.LECorpsFormule.text()) != "":
             self.BOkPressedFormule()
@@ -141,10 +141,10 @@ class MonWidgetFormule(QWidget, Ui_WidgetFormule, FacultatifOuOptionnel):
         test, erreur = self.node.item.verifArguments(arguments)
         if test:
             commentaire = tr("Argument(s) valide(s) pour une FORMULE")
-            self.editor.afficheMessage(commentaire)
+            self.editor.afficheMessageQt(commentaire)
         else:
             commentaire = tr("Argument(s) invalide(s) pour une FORMULE")
-            self.editor.afficheMessage(commentaire, Qt.red)
+            self.editor.afficheMessageQt(commentaire, Qt.red)
         if (
             str(self.LECorpsFormule.text()) != ""
             and str(self.LENomFormule.text()) != ""
@@ -164,10 +164,10 @@ class MonWidgetFormule(QWidget, Ui_WidgetFormule, FacultatifOuOptionnel):
 
         if test:
             commentaire = tr("Corps de FORMULE valide")
-            self.editor.afficheMessage(commentaire)
+            self.editor.afficheMessageQt(commentaire)
         else:
             commentaire = tr("Corps de FORMULE invalide")
-            self.editor.afficheMessage(commentaire, Qt.red)
+            self.editor.afficheMessageQt(commentaire, Qt.red)
         if str(self.LENomsArgs.text()) != "" and str(self.LENomFormule.text()) != "":
             self.BOkPressedFormule()
 
@@ -178,13 +178,13 @@ class MonWidgetFormule(QWidget, Ui_WidgetFormule, FacultatifOuOptionnel):
         nomFormule = str(self.LENomFormule.text())
         test, erreur = self.node.item.verifNom(nomFormule)
         if not test:
-            self.editor.afficheMessage(erreur, Qt.red)
+            self.editor.afficheMessageQt(erreur, Qt.red)
             return
 
         arguments = str(self.LENomsArgs.text())
         test, erreur = self.node.item.verifArguments(arguments)
         if not test:
-            self.editor.afficheMessage(erreur, Qt.red)
+            self.editor.afficheMessageQt(erreur, Qt.red)
             return
 
         expression = str(self.LECorpsFormule.text())
@@ -192,7 +192,7 @@ class MonWidgetFormule(QWidget, Ui_WidgetFormule, FacultatifOuOptionnel):
             (nomFormule, "REEL", arguments, expression)
         )
         if not test:
-            self.editor.afficheMessage(erreur, Qt.red)
+            self.editor.afficheMessageQt(erreur, Qt.red)
             return
 
         test = self.node.item.object.updateFormulePython(
@@ -205,8 +205,8 @@ class MonWidgetFormule(QWidget, Ui_WidgetFormule, FacultatifOuOptionnel):
             self.node.onValid()
             self.node.update_valid()
             commentaire = "Formule saisie"
-            self.editor.afficheMessage(commentaire)
+            self.editor.afficheMessageQt(commentaire)
         else:
             commentaire = "Formule incorrecte : " + erreur
-            self.editor.afficheMessage(commentaire, Qt.red)
+            self.editor.afficheMessageQt(commentaire, Qt.red)
         self.editor.initModif()

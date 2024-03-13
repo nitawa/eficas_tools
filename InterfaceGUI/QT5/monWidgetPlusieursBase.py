@@ -231,7 +231,7 @@ class MonWidgetPlusieursBase(Ui_WidgetPlusieursBase, Feuille, GereListe, GerePli
 
         if len(listeComplete) > max:
             texte = tr("Nombre maximum de valeurs ") + str(max) + tr(" atteint")
-            self.editor.afficheMessage(texte, Qt.red)
+            self.editor.afficheMessageQt(texte, Qt.red)
             return
 
         validite, comm, comm2, listeRetour = self.politique.ajoutNTuple(listeComplete)
@@ -306,13 +306,13 @@ class MonWidgetPlusieursBase(Ui_WidgetPlusieursBase, Feuille, GereListe, GerePli
             if valeur != None and valeur != "":
                 commentaire = self.ajout1Valeur(valeur)
                 if commentaire != None:
-                    self.editor.afficheMessage(commentaire, Qt.red)
+                    self.editor.afficheMessageQt(commentaire, Qt.red)
                     courant.setText("")
                     donneFocus = courant
                     self.reaffiche()
                     return
                 else:
-                    self.editor.afficheMessage("")
+                    self.editor.afficheMessageQt("")
             elif donneFocus == None:
                 donneFocus = courant
 
@@ -329,7 +329,7 @@ class MonWidgetPlusieursBase(Ui_WidgetPlusieursBase, Feuille, GereListe, GerePli
             return
         min, max = self.node.item.getMinMax()
         if len(self.listeValeursCourantes) < self.monSimpDef.min:
-            self.editor.afficheMessage(
+            self.editor.afficheMessageQt(
                 tr("nb min de valeurs : ") + str(self.monSimpDef.min)
             )
         if len(self.listeValeursCourantes) < min and oblige == True:
@@ -338,7 +338,7 @@ class MonWidgetPlusieursBase(Ui_WidgetPlusieursBase, Feuille, GereListe, GerePli
             return
         retour = self.node.item.setValeur(self.listeValeursCourantes)
         if len(self.listeValeursCourantes) == self.monSimpDef.max:
-            self.editor.afficheMessage(tr("nb max de valeurs atteint"))
+            self.editor.afficheMessageQt(tr("nb max de valeurs atteint"))
         self.setValide()
         self.reaffiche()
         self.inhibeChangeValeur = False

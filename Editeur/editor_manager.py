@@ -21,6 +21,7 @@
 import os
 from uuid import uuid1
 from multiprocessing import Lock
+from Accas.extensions.codeErreur import dictErreurs
 
 debug = 1
 # --------------------------
@@ -59,14 +60,20 @@ class EditorManager(object):
         print ('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
         return None
 
-    # ----------------------------------------------------------------------------------------
-    def getTUIEditor(self,sId = None, cataFile = None, dataSetFile=None, jdc=None, include=0):
-    # -----------------------------------------------------------------------------------------
+    # ---------------------------------------------------------------------------------------------------------------------------------
+    def getTUIEditor(self,cId = None, cataFile = None, dataSetFile=None, jdc=None, include=0, formatIn ='python', formatOut = 'python'):
+    # ----------------------------------------------------------------------------------------------------------------------------------
         """
           Retourne un nouvel editeur ou None si doublon
         """
         if cataFile == None :
-            self.appliEficas.afficheMessage(sId, 'Eficas',
+            self.appliEficas.afficheMessage(cId, dictErreurs[1000],
+                 'nom de catalogue obligatoire pour obtenir un editor')
+        if not os.path.isfile(cataFile):
+            self.appliEficas.afficheMessage(cId, dictErreurs[3000] + dictErreurs[10],
+                 'fichier catalogue {} non trouve'.format(cataFile))
+        if cataFile == None :
+            self.appliEficas.afficheMessage(cId, 'Eficas',
                  'nom de catalogue obligatoire pour obtenir un editor')
             return (None, 1, 'nom de catalogue obligatoire pour obtenir un editor')
         with self.lock :
@@ -80,24 +87,33 @@ class EditorManager(object):
             if editor.jdc:  # le fichier est bien un jdc
                 self.dictEditors[editor.editorId]=editor
                 self.editors.append(editor)
-                if  editor.editorId in self.appliEficas.dictEditorIdSessionId :
-                   self.appliEficas.dictEditorIdSessionId[editor.editorId].append(sId)
+                if  editor.editorId in self.appliEficas.dictEditorIdChannelId :
+                   self.appliEficas.dictEditorIdChannelId[editor.editorId].append(cId)
                 else :
-                   self.appliEficas.dictEditorIdSessionId[editor.editorId]=[sId,]
+                   self.appliEficas.dictEditorIdChannelId[editor.editorId]=[cId,]
             else:
                 return (None, 1, 'impossible d allouer l editor')
 
-    # ----------------------------------------------------------------------------------------
-    def getWebEditor(self,sId = None, cataFile = None, dataSetFile=None, jdc=None, include=0):
-    # -----------------------------------------------------------------------------------------
+    # ---------------------------------------------------------------------------------------------------------------------
+    def getWebEditor(self, cId, cataFile = None, dataSetFile=None, jdc=None, include=0, formatIn ='python', formatOut = 'python'):
+    # ----------------------------------------------------------------------------------------------------------------------
         """
           Retourne un nouvel editeur ou None si doublon
         """
         if cataFile == None :
-            self.appliEficas.afficheMessage(sId, 'Eficas',
-                 'nom de catalogue obligatoire pour obtenir un editor')
-            return (None, 1, 'nom de catalogue obligatoire pour obtenir un editor')
+            self.appliEficas.afficheMessage(dictErreurs[1000], 'nom de catalogue obligatoire pour obtenir un editor')
+            return (None, 1000 , dictErreurs[1000] + ' : nom de catalogue obligatoire pour obtenir un editor', None)
+        if not os.path.isfile(cataFile):
+            self.appliEficas.afficheMessage(dictErreurs[3000] + dictErreurs[10], 'fichier catalogue {} non trouve'.format(cataFile))
+            return (None, 3000 + 10  , dictErreurs[3000] + dictErreurs[10].format(cataFile), None)
+        if dataSetFile == None :
+            self.appliEficas.afficheMessage(dictErreurs[1000] , 'nom de dataSet obligatoire pour obtenir un editor')
+            return (None, 1000 , dictErreurs[1000] + ' : nom de dataset obligatoire pour obtenir un editor', None)
+        if not os.path.isfile(cataFile):
+            self.appliEficas.afficheMessage(dictErreurs[4000] + dictErreurs[10], 'fichier dataSet {} non trouve'.format(cataFile))
+            return (None, 4000 + 10  , dictErreurs[4000] + dictErreurs[10].format(cataFile), None)
         with self.lock :
+            messageInfo = None
             for editor in self.dictEditors.values():
                 if self.samePath(dataSetFile, editor.getDataSetFileName()) and self.samePath(cataFile, editor.getCataFileName()):
                     break
@@ -105,16 +121,20 @@ class EditorManager(object):
                 from InterfaceGUI.Web.web_editor import WebEditor
                 editor = WebEditor(self.appliEficas, cataFile, dataSetFile)
 
+            if not editor.readercata :
+                return (None, 3000 + 30 , 'impossible d allouer l editor : {}'.format(editor.pbLectureCata), None)
+
             if editor.jdc:  # le fichier est bien un jdc
                 self.dictEditors[editor.editorId]=editor
                 self.editors.append(editor)
-                if  editor.editorId in self.appliEficas.dictEditorIdSessionId :
-                   self.appliEficas.dictEditorIdSessionId[editor.editorId].append(sId)
+                if  editor.editorId in self.appliEficas.dictEditorIdChannelId :
+                   self.appliEficas.dictEditorIdChannelId[editor.editorId].append(cId)
                 else :
-                   self.appliEficas.dictEditorIdSessionId[editor.editorId]=[sId,]
+                   self.appliEficas.dictEditorIdChannelId[editor.editorId]=[cId,]
             else:
-                return (None, 1, 'impossible d allouer l editor')
-            return (editor, 0, '')
+                # PN : cabler avec le message d info
+                return (None, 4000 + 30, 'impossible de creer le dataset ; {} '.format(editor.pbLectureDataSet), None)
+            return (editor, 0, '', messageInfo)
 
 
     # --------------------------

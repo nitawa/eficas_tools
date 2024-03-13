@@ -28,6 +28,7 @@ import Accas.IO.reader as reader
 import Accas.IO.writer as writer
 from uuid import uuid1
 from Accas.extensions.eficas_exception import EficasException
+from Accas.extensions.eficas_translation import tr
 
 Dictextensions = {"MAP": ".map", "TELEMAC": ".cas"}
 debug = False
@@ -41,8 +42,8 @@ class Editor:
     """
 
 
-    def __init__(self, appliEficas, cataFile = None, dataSetFile = None,  jdc=None, include=0):
-    # ----------------------------------------------------------------------------------------#
+    def __init__(self, appliEficas, cataFile = None, dataSetFile = None,  jdc=None, include=0, formatIn ='python', formatOut = 'python'):
+    # ---------------------------------------------------------------------------------------------------------------------------------#
         if debug: print("dans le init de Editor")
         if debug : print (self, appliEficas, cataFile, dataSetFile,  jdc, include)
         self.appliEficas = appliEficas
@@ -52,9 +53,9 @@ class Editor:
         if dataSetFile != None: self.extensionFichier = os.path.splitext(dataSetFile)[1]
         else: self.extensionFichier = None
 
-        self.jdc = jdc
         self.cataFile = cataFile
         self.first = True
+        self.jdc = None
         self.jdc_item = None
         self.dicoNouveauxMC = {}
         self.dicoNouveauxFact = {}
@@ -62,32 +63,15 @@ class Editor:
         self.liste_simp_reel = []
         self.editorId = uuid1().hex
         self.appliEficas.editorManager.dictEditors[self.editorId]=self
+        self.formatFichierOut = formatOut
+        self.formatFichierIn = formatIn
 
 
         # ces attributs sont mis a jour par definitCode appelee par newEditor
         self.code = self.appliEficas.maConfiguration.code
         self.maConfiguration = self.appliEficas.maConfiguration
 
-        if ( not hasattr(self.appliEficas, "readercata")
-            or self.appliEficas.readercata.demandeCatalogue == True
-            or self.appliEficas.multi == True):
-
-            if self.maConfiguration.typeDeCata == "XML":
-                from Accas.catalog import reader_cata_XML as reader_cata
-            else:
-                from Accas.catalog import reader_cata
-            self.readercata = reader_cata.ReaderCata(self.appliEficas, self)
-            self.appliEficas.readercata = self.readercata
-            self.appliEficas.code = self.code
-        else:
-            self.readercata = self.appliEficas.readercata
-
-        if self.readercata : 
-            self.titre = self.readercata.titre
-
-        self.formatFichierOut = self.appliEficas.formatFichierOut
-        self.formatFichierIn = self.appliEficas.formatFichierIn
-
+       
         if self.maConfiguration.writerModule :
             try:
                 _module = __import__(self.maConfiguration.writermodule)
@@ -121,63 +105,85 @@ class Editor:
         self.modified = False
         self.isReadOnly = False
 
-        # ------- construction du jdc --------------
+        self.readCata()
+        if self.readercata  : self.construitJdC(jdc)
 
+     
+    def construitJdC(self,jdc):
+    #-------------------------
+    # construction du jdc 
+    # Est-il encore necessaire de passer un jdc a l init ?
+    # je ne vois plus quel est le cas d usage
+    # je garde . 11 mars 2024
+        if jdc : 
+           self.jdc = jdc
+           return
+        self.pbLectureDataSet = None
         if self.readercata.cata == None: 
            if self.dataSetFile is not None: 
               print ('dataSetFile comm mais pas de cata')
-           return  # Sortie Salome
+              raise EficasException("dataSet fourni mais pas de catalogue'")
 
         self.nouveau = 0
         if self.dataSetFile is not None:  #  fichier jdc fourni
-            if jdc == None:
-                # print ('PNPN : chgt try en if')
+            # print ('PNPN : chgt try en if')
+            try:
+            #if 1 :
+                self.jdc = self.readFile(self.dataSetFile)
+            except Exception as e :
+            #else :
+                self.pbLectureDataSet = str(e)
+                self.jdc = None
+                print("mauvaise lecture du dataSetFile")
+                print (str(e))
+            if self.appliEficas.salome:
                 try:
-                #if 1 :
-                    self.jdc = self.readFile(self.dataSetFile)
-                except Exception as e :
-                #else :
-                    print("mauvaise lecture du dataSetFile")
-                    raise EficasException("str(e)")
-                if self.appliEficas.salome:
-                    try:
-                        self.appliEficas.addJdcInSalome(self.dataSetFile)
-                    except Exception as e:
-                        print("mauvais enregistrement dans Salome")
-                        raise EficasException("str(e)")
-            else:
-                self.jdc = jdc
-
+                    self.appliEficas.addJdcInSalome(self.dataSetFile)
+                except Exception as e:
+                    print("mauvais enregistrement dans Salome")
+                    raise EficasException(str(e))
         else:
-            if not self.jdc:  #  nouveau jdc
-                if not include:
-                    self.jdc = self._newJDC()
-                else:
-                    self.jdc = self._newJDCInclude()
-                self.nouveau = 1
+            if not include: self.jdc = self._newJDC()
+            else: self.jdc = self._newJDCInclude()
+            self.nouveau = 1
 
         if self.jdc:
             self.jdc.editor = self
             self.jdc.lang = self.appliEficas.langue
             self.jdc.aReafficher = False
             txt_exception = None
-            if not jdc:
-                if self.extensionFichier == ".xml":
-                    if self.appliEficas.withXSD:
-                        self.jdc.analyseXML()
-                    else:
-                        print("run MDM with -x option  (MDM for XML)")
-                        exit()
-                else:
-                    self.jdc.analyse()
-                    if hasattr(self, "monJDCReader") and hasattr(
-                        self.monJDCReader, "traitementApresLoad"
-                    ):
-                        self.monJDCReader.traitementApresLoad(self.jdc)
-                txt_exception = self.jdc.cr.getMessException()
-            if txt_exception:
+            if self.extensionFichier == ".xml":
+                if self.appliEficas.withXSD: self.jdc.analyseXML()
+                else: 
+                   # prevoir autre chose pour le web
+                   print("run MDM with -x option  (MDM for XML)")
+                   exit()
+            else:
+                self.jdc.analyse()
+                if hasattr(self, "monJDCReader") and hasattr( self.monJDCReader, "traitementApresLoad"):
+                    self.monJDCReader.traitementApresLoad(self.jdc)
+                self.pbLectureDataSet  = self.jdc.cr.getMessException()
+            if self.pbLectureDataSet :
                 self.jdc = None
-                self.informe("pb chargement jdc", txt_exception)
+                self.afficheMessage("pb chargement jdc", self.pbLectureDataSet)
+
+   
+    # -----------------#
+    def readCata(self) :
+    # -----------------#
+        # pour le TUI ou le Web appli eficas n a pas de cata
+        self.readercata = None
+        self.pbLectureCata = None
+        if self.maConfiguration.typeDeCata == "XML":
+            from Accas.catalog import reader_cata_XML as reader_cata
+        else:
+            from Accas.catalog import reader_cata
+        try :
+            self.readercata =  reader_cata.ReaderCata(self.appliEficas, self)
+        except Exception as e:
+            self.pbLectureCata = str(e)
+        if self.readercata : 
+            self.titre = self.readercata.titre
 
     # ---------------------#
     def readFile(self, fn):
@@ -187,6 +193,9 @@ class Editor:
 
         fn = str(fn)
         jdcName = os.path.basename(fn)
+        print ('-------------------------------------------')
+        print (fn)
+        print ('-------------------------------------------')
 
         # Il faut convertir le contenu du dataSetFile en fonction du format
         formatIn = self.appliEficas.formatFichierIn
@@ -204,11 +213,7 @@ class Editor:
             if formatIn != "xml":
                 pareil, texteNew = self.verifieChecksum(monJDCReader.text)
                 if not pareil:
-                    self.informe(
-                        ("fichier modifie"),
-                        ("Attention! fichier change hors EFICAS"),
-                        False,
-                    )
+                    self.afficheMessage( "fichier modifie", "Attention! fichier change hors EFICAS" )
                 monJDCReader.text = texteNew
                 memeVersion, texteNew = self.verifieVersionCataDuJDC(monJDCReader.text)
                 if memeVersion == 0:
@@ -216,23 +221,22 @@ class Editor:
                 monJDCReader.text = texteNew
                 text = monJDCReader.convert("exec", self.appliEficas)
                 if not monJDCReader.cr.estvide():
-                    self.afficheMessage("Erreur a la conversion", "red")
+                    self.afficheMessage(tr("Erreur a la conversion"),"pb lecture XML", "red")
             else:
                 text = monJDCReader.text
         else:
-            self.afficheMessage("Type de fichier non reconnu", "red")
-            self.informe(
+            self.afficheMessage(
                 "Type de fichier non reconnu",
                 "EFICAS ne sait pas ouvrir le type de fichier "
                 + self.appliEficas.formatFichierIn,
+                'red'
             )
             return None
 
         CONTEXT.unsetCurrentStep()
 
         # le jdc  n est pas charge
-        if not (hasattr(self.readercata, "dicoCataOrdonne")):
-            return
+        if not (hasattr(self.readercata, "dicoCataOrdonne")): return
         jdc = self.readercata.cata.JdC(
             procedure=text,
             appliEficas=self.appliEficas,
@@ -322,12 +326,11 @@ class Editor:
             p.readfile(file)
             text = p.convert("execnoparseur")
             if not p.cr.estvide():
-                self.afficheMessage("Erreur a la conversion", "red")
+                self.afficheMessage("Erreur a la conversion", p.cr.report(), "red")
             return text
         else:
             # Il n'existe pas c'est une erreur
-            self.afficheMessage("Type de fichier non reconnu", "red")
-            self.informe(
+            self.afficheMessage(
                 "Type de fichier non reconnu",
                 "EFICAS ne sait pas ouvrir le type de fichier "
                 + self.appliEficas.formatFichierIn,
@@ -464,7 +467,7 @@ class Editor:
                 "Le fichier" + str(fn) + "n a pas pu etre sauvegarde :",
                 str(why),
             )
-            self.afficheMessage(
+            self.afficheMessage( "Sauvegarde du Fichier",
                 "Le fichier" + str(fn) + "n a pas pu etre sauvegarde ", "red"
             )
             return 0
@@ -493,11 +496,11 @@ class Editor:
                 if self.code == "TELEMAC":
                     jdc_formate = self.myWriter.texteDico
             except ValueError as e:
-                self.informe("Erreur a la generation", str(e), "red")
+                self.afficheMessage("Erreur a la generation", str(e), "red")
                 return
 
             if not self.myWriter.cr.estvide():
-                self.informe(
+                self.afficheMessage(
                     "Erreur a la generation",
                     "EFICAS ne sait pas convertir ce JDC",
                     "red",
@@ -507,7 +510,7 @@ class Editor:
                 return jdc_formate
         else:
             # Il n'existe pas c'est une erreur
-            self.informe("Format de sortie ", format + " non reconnu")
+            self.afficheMessage("Format de sortie ", format + " non reconnu")
             return ""
 
     # ------------------------------#
@@ -561,8 +564,7 @@ class Editor:
             dico = self.myWriter.Dico
             return dico
         else:
-            self.afficheMessage(
-                tr("Format %s non reconnu", "Dictionnaire Imbrique"), "red"
+            self.afficheMessage( tr("Format %s non reconnu", "Dictionnaire Imbrique"), "red"
             )
             return ""
 
@@ -612,28 +614,28 @@ class Editor:
     def saveUQFile(self, fichier=None):
     # --------------------------------#
         if fichier == None:
-            self.informe("Sauvegarde", "nom de fichier obligatoire pour sauvegarde")
+            self.afficheMessage("Sauvegarde", "nom de fichier obligatoire pour sauvegarde")
             return 0, None
         self.dataSetFile = fichier
         self.myWriter = writer.plugins["UQ"]()
         ret, comm = self.myWriter.creeNomsFichiers(fichier)
         # print (ret,comm)
         if not ret:
-            self.informe("Sauvegarde UQ", self.myWriter.commentaire)
+            self.afficheMessage("Sauvegarde UQ", self.myWriter.commentaire)
             return ret, None
         ret = self.myWriter.gener(self.jdc)
         if not ret:
-            self.informe("Sauvegarde UQ", self.myWriter.commentaire)
+            self.afficheMessage("Sauvegarde UQ", self.myWriter.commentaire)
             return ret, None
         if ret == 2:
-            self.informe("Sauvegarde UQ", self.myWriter.commentaire, critique=False)
+            self.afficheMessage("Sauvegarde UQ", self.myWriter.commentaire, critique=False)
             self.modified = False
             return 1, fichier
         ret = self.myWriter.writeUQ(fichier)
         if not ret:
-            self.informe("Sauvegarde UQ", self.myWriter.commentaire)
+            self.afficheMessage("Sauvegarde UQ", self.myWriter.commentaire)
         else:
-            self.informe(
+            self.afficheMessage(
                 "Sauvegarde UQ",
                 "Sauvegardes des fichiers .comm, _det.comm  effectuées.\n"
                 "Création des fichiers _UQ.py et _@det.comm.",
@@ -646,7 +648,7 @@ class Editor:
     def sauvePourPersalys(self, fichier=None):
     # ---------------------------------------#
         if fichier == None:
-            self.informe(
+            self.afficheMessage(
                 "Sauvegarde Etude Persalys",
                 "nom de fichier obligatoire pour sauvegarde",
             )
@@ -654,11 +656,11 @@ class Editor:
         self.myWriter = writer.plugins["UQ"]()
         ret, comm = self.myWriter.creeNomsFichiers(fichier)
         if not ret:
-            self.informe("Sauvegarde Etude Persalys", self.myWriter.commentaire)
+            self.afficheMessage("Sauvegarde Etude Persalys", self.myWriter.commentaire)
         fichierPersalys = self.myWriter.fichierUQExe
         ret = self.myWriter.gener(self.jdc)
         if not ret:
-            self.informe("Sauvegarde Etude Persalys", self.myWriter.commentaire)
+            self.afficheMessage("Sauvegarde Etude Persalys", self.myWriter.commentaire)
             return ret, None
         txt = self.myWriter.txtScriptPersalys.split(
             "################ CUT THE FILE HERE IF YOU WANT TO IMPORT IT IN THE SALOME PERSALYS MODULE ################"
@@ -667,14 +669,14 @@ class Editor:
             with open(fichierPersalys, "w") as f:
                 f.write(txt)
                 f.close()
-            self.informe(
+            self.afficheMessage(
                 "Sauvegarde Etude Persalys",
                 "Le fichier " + str(fichierPersalys) + " a été sauvegardé",
                 critique=False,
             )
             return 1, " "
         except IOError as why:
-            self.informe(
+            self.afficheMessage(
                 "Sauvegarde Etude Persalys",
                 "Le fichier " + str(fichierPersalys) + " n a pas pu etre sauvegardé",
             )
@@ -683,12 +685,8 @@ class Editor:
     # --------------------------------------#
     def exeUQ(self, fichier=None, path=None):
     # --------------------------------------#
-        self.informe("Pas prevu pour l instant")
+        self.afficheMessage("Pas prevu pour l instant")
         return ret, None
-
-    # ---------------------------------------------
-    # Methodes Surchargees par avecIhm
-    # ---------------------------------------------
 
     # --------------------------------#
     def ajoutCommentaire(self):
@@ -696,33 +694,25 @@ class Editor:
         print("pas programme sans Ihm")
         print("prevenir la maintenance du besoin")
 
-    # --------------------------------------#
-    def informe(self, titre, txt, critique=True):
-    # --------------------------------------#
+    # ------------------------------------------------#
+    def afficheMessage(self, titre, txt, couleur=None):
+    # ------------------------------------------------#
         # methode differenre avec et sans ihm
-        if critique:
-            print("!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+        if couleur == 'red': print("!!!!!!!!!!!!!!!!!!!!!!!!!!!")
         print(titre)
         print(txt)
-        if critique:
-            print("!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+        if couleur == 'red': print("!!!!!!!!!!!!!!!!!!!!!!!!!!!")
 
-    # --------------------------------------#
-    def afficheMessage(self, txt, couleur=None):
-    # --------------------------------------#
-        # methode differenre avec et sans ihm
-        print(txt)
-
-    # -----------------------------------------------------------------------#
+    # ------------------------------------------------------------------------#
     def _viewText(self, txt, caption="FILE_VIEWER", largeur=1200, hauteur=600):
-    # --------------------------------------------------------------------#
+    # ------------------------------------------------------------------------#
         print("_____________________________")
         print(txt)
         print("_____________________________")
 
-    # -----------------------------------------------------------------#
+    # --------------------------------------------------#
     def saveFile(self, fichier, formatLigne="beautifie"):
-    # -----------------------------------------------------------------#
+    # --------------------------------------------------#
         """
         Public slot to save the text to a file.
 
@@ -746,8 +736,6 @@ class Editor:
         self.modified = 0
         return (1, self.dataSetFile)
 
-    #
-
     # -----------------------#
     def sauveLigneFile(self):
     # ----------------------#
@@ -764,9 +752,9 @@ class Editor:
         etape.buildIncludeInclude(texte)
         self.tree.racine.buildChildren()
 
-    # -----------------------------------#
+    # ----------------------------------------#
     def updateJdcEtape(self, itemApres, texte):
-    # ------------------------------------#
+    # ----------------------------------------#
         # ajoute une etape  de JdC a partir d un texte
         monItem = itemApres
         etape = monItem.item.object
@@ -782,15 +770,15 @@ class Editor:
         self.tree.racine.build_children()
         return ok
 
-    # -------------------------------------#
+    # --------------------------#
     def deleteEtape(self, etape):
-    # -------------------------------------#
+    # --------------------------#
         # dans le JDC
         self.jdc.suppentite(etape)
 
-    # -------------------------------------#
+    # ----------------------------------------------#
     def deleteMC(self, etape, MCFils, listeAvant=()):
-    # -------------------------------------#
+    # ----------------------------------------------#
         # dans le JDC
         ouChercher = etape
         for mot in listeAvant:
@@ -822,10 +810,10 @@ class Editor:
         monMC.isvalid()
         return 1
 
-    # --------------------------------------------------------#
+    # --------------------------------------------------------------------#
     def ajoutMCinMCFactUnique(self, etape, MCFils, valeurs, listeAvant=()):
         # Attention si +sieursMCFACT
-    # --------------------------------------------------------#
+    # --------------------------------------------------------------------#
         # dans le JDC
         debug = False
         if debug:
@@ -848,9 +836,9 @@ class Editor:
         monMC.isValid()
         return 1
 
-    # ----------------------------------------------#
+    # -------------------------------------------------#
     def ajoutMCFact(self, etape, MCFils, listeAvant=()):
-    # ----------------------------------------------#
+    # -------------------------------------------------#
         # dans le JDC
         ouChercher = etape
         for mot in listeAvant:
@@ -860,9 +848,9 @@ class Editor:
             monMC = ouChercher.addEntite(MCFils)
         monMC.isvalid()
 
-    # -----------------------------------------------------------------#
+    # ---------------------------------------------------------#
     def setValeurMCSimpInEtape(self, etape, listeAvant, valeur):
-    # -----------------------------------------------------------------#
+    # ---------------------------------------------------------#
         # pour VP
         monObj = etape
         for mot in listeAvant:
@@ -981,9 +969,9 @@ class Editor:
         monMC.state = "changed"
         monMC.isvalid()
 
-    # -------------------------------------------------------------------#
+    # -------------------------------------------------------------------------#
     def reCalculeValiditeMCApresChgtInto(self, nomEtape, MCFils, listeAvant=()):
-    # -------------------------------------------------------------------#
+    # -------------------------------------------------------------------------#
         # dans le JDC
         for e in self.jdc.etapes:
             if e.nom == nomEtape:
@@ -1015,26 +1003,29 @@ class Editor:
         monMC.state = "changed"
         return 1
 
+    # --------------------------------------#
     def dumpXsd(self, avecEltAbstrait=False):
-    # -----------------------------------------#
+    # --------------------------------------#
         if not self.readercata.cata:
             return
         texteXSD = self.readercata.cata.JdC.dumpXsd(avecEltAbstrait)
         return texteXSD
 
+    # ---------------------#
     def dumpStructure(self):
-    # ----------------------------#
+    # ---------------------#
         texteStructure = self.readercata.cata.JdC.dumpStructure()
         return texteStructure
 
+    # ----------------------------#
     def dumpGitStringFormat(self):
     # ----------------------------#
         texteGitStringFormat = self.readercata.cata.JdC.dumpGitStringFormat()
         return texteGitStringFormat
 
-    # -------------------------------------#
+    # -----------------------------------------------------#
     def changeDefautDefMC(self, nomEtape, listeMC, valeurs):
-    # -------------------------------------#
+    # -----------------------------------------------------#
         # dans le MDD
 
         # if isinstance (etape, str):
@@ -1053,9 +1044,9 @@ class Editor:
         mcAccas.defaut = valeurs
         return 1
 
-    # ------------------------------------------------#
+    # ------------------------------------------------------------------------#
     def changeIntoDefMC(self, etape, listeMC, valeurs, rechercheParNom=False):
-    # ------------------------------------------------#
+    # ------------------------------------------------------------------------#
         # dans le MDD
         # definitionEtape=getattr(self.jdc.cata[0],nomEtape)
         # definitionEtape=getattr(self.jdc.cata,nomEtape)
@@ -1093,9 +1084,9 @@ class Editor:
         )
         return 1
 
-    # -------------------------------------------------------------#
+    # ------------------------------------------------------#
     def deleteDefinitionMC(self, etape, listeAvant, nomDuMC):
-    # -------------------------------------------------------------#
+    # ------------------------------------------------------#
         # dans le MDD
         # print 'in deleteDefinitionMC', etape,listeAvant,nomDuMC
         if isinstance(etape, str):
@@ -1116,9 +1107,9 @@ class Editor:
         del ouChercher.entites[nomDuMC]
         del self.dicoNouveauxMC[nomDuMC]
 
-    # ------------------------------------------------------------------------#
+    # ---------------------------------------------------------------------#
     def ajoutDefinitionMC(self, nomEtape, listeAvant, nomDuMC, typ, **args):
-    # ------------------------------------------------------------------------#
+    # ---------------------------------------------------------------------#
         # dans le MDD
         # definitionEtape=getattr(self.jdc.cata[0],nomEtape)
         definitionEtape = getattr(self.jdc.cata, nomEtape)
@@ -1141,9 +1132,9 @@ class Editor:
         self.dicoNouveauxMC[nomDuMC] = (
             "ajoutDefinitionMC", nomEtape, listeAvant, nomDuMC, typ, args,)
 
-    # ---------------------------------------------------------------------#
+    # -----------------------------------------------------------------------------#
     def ajoutDefinitionMCFact(self, nomEtape, listeAvant, nomDuMC, listeMC, **args):
-    # ---------------------------------------------------------------------#
+    # -----------------------------------------------------------------------------#
         # dans le MDD
         print("ajoutDefinitionMCFact", nomDuMC)
         # definitionEtape=getattr(self.jdc.cata[0],nomEtape)
@@ -1181,9 +1172,9 @@ class Editor:
         # print self.dicoNouveauxMC
 
 
-    # ----------------------------------------------------#
+    # ---------------------------------------------------------#
     def changeIntoMCandSet(self, etape, listeMC, into, valeurs):
-    # ----------------------------------------------------#
+    # ---------------------------------------------------------#
         # dans le MDD et le JDC
 
         self.changeIntoDefMC(etape, listeMC, into)
@@ -1212,32 +1203,32 @@ class Editor:
         monMC.state = "changed"
         monMC.isvalid()
 
-    # -------------------------------------#
-    def ajoutVersionCataDsJDC(self, txt):
-    # -------------------------------------#
+    # ------------------------------------#
+    def ajoutVersionCataDsJDC(self, texte):
+    # ------------------------------------#
         # if not hasattr(self.readercata.cata[0],'VERSION_CATALOGUE'): return txt
         if not hasattr(self.readercata.cata, "VERSION_CATALOGUE"):
-            return txt
+            return texte
         ligneVersion = (
             "#VERSION_CATALOGUE:"
             + self.readercata.cata.VERSION_CATALOGUE
             + ":FIN VERSION_CATALOGUE\n"
         )
-        texte = txt + ligneVersion
+        texte = texte + ligneVersion
         return texte
 
-    # -------------------------------------#
-    def verifieVersionCataDuJDC(self, text):
-    # -------------------------------------#
+    # --------------------------------------#
+    def verifieVersionCataDuJDC(self, texte):
+    # --------------------------------------#
         memeVersion = False
-        indexDeb = text.find("#VERSION_CATALOGUE:")
-        indexFin = text.find(":FIN VERSION_CATALOGUE")
+        indexDeb = texte.find("#VERSION_CATALOGUE:")
+        indexFin = texte.find(":FIN VERSION_CATALOGUE")
         if indexDeb < 0:
             self.versionCataDuJDC = "sans"
-            textJDC = text
+            textJDC = texte
         else:
-            self.versionCataDuJDC = text[indexDeb + 19 : indexFin]
-            textJDC = text[0:indexDeb] + text[indexFin + 23 : -1]
+            self.versionCataDuJDC = texte[indexDeb + 19 : indexFin]
+            textJDC = texte[0:indexDeb] + texte[indexFin + 23 : -1]
 
         self.versionCata = "sans"
         if hasattr(self.readercata.cata, "VERSION_CATALOGUE"):
@@ -1273,7 +1264,7 @@ class Editor:
     # -------------------------------------------------#
     def dumpStringDataBase(self, nomDataBaseACreer=None):
     # -------------------------------------------------#
-        texteStringDataBase = self.readercata.cata.JdC.dumpStringDataBase( nomDataBaseACreer)
+        texteStringDataBase = self.readercata.cata.JdC.dumpStringDataBase(nomDataBaseACreer)
         return texteStringDataBase
 
 

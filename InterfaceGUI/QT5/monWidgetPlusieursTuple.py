@@ -378,7 +378,7 @@ class MonWidgetPlusieursTuple(Feuille, GereListe):
             if not validite:
                 if comm2 != "":
                     comm += " " + comm2
-                self.editor.afficheMessage(
+                self.editor.afficheMessageQt(
                     comm + " " + str(self.objSimp.definition.validators.typeDesTuples),
                     Qt.red,
                 )
@@ -393,7 +393,7 @@ class MonWidgetPlusieursTuple(Feuille, GereListe):
             return
         min, max = self.node.item.getMinMax()
         if self.indexDernierLabel == max:
-            self.editor.afficheMessage(tr("Nb maximum de valeurs atteint"))
+            self.editor.afficheMessageQt(tr("Nb maximum de valeurs atteint"))
         if self.indexDernierLabel < max and libre == False:
             self.ajoutLineEdit()
             self.listeAffichageWidget[-2].setFocus(True)
@@ -431,7 +431,7 @@ class MonWidgetPlusieursTuple(Feuille, GereListe):
 
         if len(liste) % self.nbValeurs != 0:
             texte = "Nombre incorrect de valeurs"
-            self.editor.afficheMessage(tr(texte), Qt.red)
+            self.editor.afficheMessageQt(tr(texte), Qt.red)
             return
 
         i = 0
@@ -450,12 +450,12 @@ class MonWidgetPlusieursTuple(Feuille, GereListe):
 
         if len(listeComplete) > max:
             texte = tr("Nombre maximum de valeurs ") + str(max) + tr(" atteint")
-            self.editor.afficheMessage(texte, Qt.red)
+            self.editor.afficheMessageQt(texte, Qt.red)
             return
 
         validite, comm, comm2, listeRetour = self.politique.ajoutNTuple(listeComplete)
         if not validite:
-            self.editor.afficheMessage(comm + comm2, Qt.red)
+            self.editor.afficheMessageQt(comm + comm2, Qt.red)
             return
 
         # on calcule le dernier lineedit rempli avant de changer la valeur

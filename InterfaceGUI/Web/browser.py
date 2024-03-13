@@ -149,12 +149,13 @@ class JDCNode():
 
         posOuAjouter=posDansArbre
                
-        self.editor.connecteur.toWebApp('appendChildren',ouAjouter,laListe,posOuAjouter)
+        self.editor.appliEficas.propageChange( self.editor.editorId, None, None, True, 'appendChildren',ouAjouter,laListe,posOuAjouter)
         #print ('la pos ', posOuAjouter)
         #print (' appel appendChild',self.item.idUnique,laListe,pos)
 
     def onSupp(self,suppression):
     #---------------------------
+        #print ('onSupp pour', self, self.item.nom, suppression)
         #if self.treeParent.oldValidite=='init'  : self.treeParent.oldValidite='unknown'
         if len(suppression) > 1 : 
             print ('onSupp suppression multiple non valeur')
@@ -172,7 +173,7 @@ class JDCNode():
             liste=(mcSupprime.idUnique,)
         self.buildChildren()
         self.updateOptionnels()
-        self.editor.connecteur.toWebApp('deleteChildren',liste)
+        self.editor.appliEficas.propageChange( self.editor.editorId, None, None, True, 'deleteChildren',  liste)
         #print (' appel deleteChildren',liste)
 
     def onRedessine(self):
@@ -286,18 +287,17 @@ class JDCNode():
                 elif type(name) == object : index = self.item.getIndexChild(name.nom)
                 elif self.item.nature != 'JDC' : index = self.item.getIndexChild(name)
                 else : index = self.item.getIndexChild(name)
-                #else : return None
             except :
                 txt=' Impossible d ajouter {} en position {}'.format(name, pos)
                 self.editor.afficheMessage(txt,'rouge')
-                return None
+                return (1, txt) 
             if debug : print ('name : ', name, ' a pour index : ', index)
             obj = self.item.addEntite(name,index) # emet le signal 'add'
         
-        if not obj : return None
+        if not obj : return (1, "message a affiner")
         if debug : print ('obj', obj.nom, obj.mcListe)
         self.updateOptionnels()
-        return True
+        return (0, "")
         #return child.getIdUnique()
 
     def delete(self):
@@ -337,6 +337,12 @@ class JDCNode():
         monDictPartiel['statut']=statut
         #TODO remonter au pere si le statut change
         self.editor.connecteur.toWebApp('updateNodeInfo',self.getIdUnique(), monDictPartiel)
+
+    def updateNodeName(self):
+    #-------------------------
+        monDictPartiel={} 
+        monDictPartiel['sdnom'] = self.item.sdnom
+        return monDictPartiel
 
     def updateOptionnels(self):
     #---------------------------

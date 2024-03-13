@@ -170,12 +170,12 @@ class Groupe(QWidget, FacultatifOuOptionnel):
             return
         if len(listeNode) == 1:
             listeNode[0].delete()
-            self.editor.afficheMessage("")
+            self.editor.afficheMessageQt("")
             return
         for noeud in listeNode:
             noeud.treeParent.item.suppItem(noeud.item)
         noeud.treeParent.buildChildren()
-        self.editor.afficheMessage("")
+        self.editor.afficheMessageQt("")
 
     def ajoutMC(self, texteListeNom):
         listeNom = texteListeNom.split("+")[1:]
@@ -192,7 +192,7 @@ class Groupe(QWidget, FacultatifOuOptionnel):
             if firstNode == None:
                 firstNode = nouveau
             if nouveau == None or nouveau == 0:
-                self.editor.afficheMessage(
+                self.editor.afficheMessageQt(
                     tr("insertion impossible a cet endroit pour " + nom), Qt.red
                 )
         try:

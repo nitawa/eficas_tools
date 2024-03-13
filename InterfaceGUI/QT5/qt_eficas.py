@@ -520,7 +520,7 @@ class QtEficasAppli(EficasAppli, Ui_Eficas, QMainWindow):
             try:
               os.makedirs(rep)
             except:
-              self.afficheMessage ('liste des fichiers recents','creation de la directory impossible')
+              self.afficheMessageQt ('liste des fichiers recents','creation de la directory impossible')
               return
           
         monFichier = rep + "/listefichiers_" + self.code
@@ -532,7 +532,7 @@ class QtEficasAppli(EficasAppli, Ui_Eficas, QMainWindow):
                     f.write(ligne)
                     index = index + 1
         except:
-            self.afficheMessage ('liste des fichiers recents','impossible de sauvegarder la liste des fichiers recents')
+            self.afficheMessageQt ('liste des fichiers recents','impossible de sauvegarder la liste des fichiers recents')
 
     #-------------------------
     def traductionV11V12(self):
@@ -553,7 +553,7 @@ class QtEficasAppli(EficasAppli, Ui_Eficas, QMainWindow):
         traduction(self.maConfiguration.repIni, self.editorManager, "V9V10")
 
     #--------------------------------------------------
-    def afficheMessage(self, titre, texte,critical=True):
+    def afficheMessageQt(self, titre, texte,critical=True):
     #--------------------------------------------------
         if critical :
           QMessageBox.critical( None, tr(titre), tr(texte))

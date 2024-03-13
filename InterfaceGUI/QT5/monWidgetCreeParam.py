@@ -35,7 +35,7 @@ class MonWidgetCreeParam(Ui_desWidgetCreeParam, QDialog):
 
     def __init__(self, editor, name=None, fl=0):
         self.editor = editor
-        self.editor.afficheMessage("")
+        self.editor.afficheMessageQt("")
         QDialog.__init__(self, editor)
         self.setupUi(self)
         self.connecterSignaux()
@@ -98,7 +98,7 @@ class MonWidgetCreeParam(Ui_desWidgetCreeParam, QDialog):
         exec("from math import *", contexte)
         jdc = self.editor.jdc
         if jdc == None:
-            self.editor.afficheMessage(
+            self.editor.afficheMessageQt(
                 tr(
                     "La Creation de parametre n est possible que dans un jeu de donnees"
                 ),
@@ -121,7 +121,7 @@ class MonWidgetCreeParam(Ui_desWidgetCreeParam, QDialog):
                 monTexte = "monParam='" + valString + "'"
                 self.val = "'" + valString + "'"
             except:
-                self.editor.afficheMessage(tr("Valeur incorrecte"), Qt.red)
+                self.editor.afficheMessageQt(tr("Valeur incorrecte"), Qt.red)
         if self.lineEditNom.text() != "" and self.dejaExistant == False:
             self.creeParametre()
 
@@ -131,11 +131,11 @@ class MonWidgetCreeParam(Ui_desWidgetCreeParam, QDialog):
         if not pattern_name.match(nom):
             self.lineEditNom.setText("")
             commentaire = nom + tr(" n est pas un identifiant correct\n ")
-            self.editor.afficheMessage(commentaire, Qt.red)
+            self.editor.afficheMessageQt(commentaire, Qt.red)
         for p in self.editor.jdc.params:
             if p.nom == nom:
                 commentaire = nom + tr(" existe deja\n ")
-                self.editor.afficheMessage(commentaire, Qt.red)
+                self.editor.afficheMessageQt(commentaire, Qt.red)
                 return
 
         if self.lineEditVal.text() != "":

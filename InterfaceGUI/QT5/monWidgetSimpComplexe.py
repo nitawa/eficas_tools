@@ -55,7 +55,7 @@ class MonWidgetSimpComplexe(Ui_WidgetSimpComplexe, Feuille):
         if type(valeur) not in (list, tuple):
             self.LEComp.setText(str(valeur))
             commentaire = tr("complexe form deprecated, od value : ", valeur)
-            self.editor.afficheMessage(commentaire, Qt.red)
+            self.editor.afficheMessageQt(commentaire, Qt.red)
         else:
             typ_cplx, x1, x2 = valeur
             self.LEReel.setText(str(x1))
@@ -76,15 +76,15 @@ class MonWidgetSimpComplexe(Ui_WidgetSimpComplexe, Feuille):
     #        v=eval(valeur,d)
     #    except :
     #        commentaire=tr("expression invalide")
-    #        self.editor.afficheMessage(commentaire,Qt.red)
+    #        self.editor.afficheMessageQt(commentaire,Qt.red)
     #        return
     #    try :
     #        i=v.imag
-    #        self.editor.afficheMessage(commentaire)
+    #        self.editor.afficheMessageQt(commentaire)
     #        self.valeurPressed()
     #    except :
     #        commentaire=tr("l expression n est pas de la forme a+bj")
-    #        self.editor.afficheMessage(commentaire,Qt.red)
+    #        self.editor.afficheMessageQt(commentaire,Qt.red)
 
     def LEReelRPressed(self):
         # self.LEComp.clear()
@@ -92,10 +92,10 @@ class MonWidgetSimpComplexe(Ui_WidgetSimpComplexe, Feuille):
         valeur = str(self.LEReel.text())
         try:
             a = locale.atof(valeur)
-            self.editor.afficheMessage(commentaire)
+            self.editor.afficheMessageQt(commentaire)
         except:
             commentaire = tr("expression invalide")
-            self.editor.afficheMessage(commentaire, Qt.red)
+            self.editor.afficheMessageQt(commentaire, Qt.red)
         if self.LEImag.text() != "":
             self.valeurPressed()
         else:
@@ -106,10 +106,10 @@ class MonWidgetSimpComplexe(Ui_WidgetSimpComplexe, Feuille):
         valeur = str(self.LEImag.text())
         try:
             a = locale.atof(valeur)
-            self.editor.afficheMessage(commentaire)
+            self.editor.afficheMessageQt(commentaire)
         except:
             commentaire = tr("expression invalide")
-            self.editor.afficheMessage(commentaire, Qt.red)
+            self.editor.afficheMessageQt(commentaire, Qt.red)
         if self.LEReel.text() != "":
             self.valeurPressed()
         else:
@@ -127,13 +127,13 @@ class MonWidgetSimpComplexe(Ui_WidgetSimpComplexe, Feuille):
     #        v=eval(valeur,d)
     #    except :
     #        commentaire=tr("expression invalide")
-    #        self.editor.afficheMessage(commentaire,Qt.red)
+    #        self.editor.afficheMessageQt(commentaire,Qt.red)
     #        return None
     #     try :
     #        i=v.imag
     #    except :
     #        commentaire=tr("expression n est pas de la forme a+bj")
-    #        self.editor.afficheMessage(commentaire,Qt.red)
+    #        self.editor.afficheMessageQt(commentaire,Qt.red)
     #        return None
     #    return v
 
@@ -159,7 +159,7 @@ class MonWidgetSimpComplexe(Ui_WidgetSimpComplexe, Feuille):
         elif self.RBRI.isChecked() == 1:
             l.append("RI")
         else:
-            self.editor.afficheMessage(commentaire, Qt.red)
+            self.editor.afficheMessageQt(commentaire, Qt.red)
             self.RBMP.setFocus(True)
             return None
         try:

@@ -27,6 +27,7 @@ import traceback
 # Modules Eficas
 from Accas.extensions.eficas_translation import tr
 from Accas.extensions.eficas_exception import EficasException
+from Accas.extensions.codeErreur import dictErreurs
 from Editeur.loggingEnvironnement import loggingEnvironnement, fonctionLoguee
 
 
@@ -102,42 +103,78 @@ class WebEditor(Editor):
     #---------------------------
         return (self.jdc.getListeCmd())
 
-    #---------------------------------
+    #-----------------------------------------------------
     @fonctionLoguee
-    def updateSDName(self,id,sdnom) :
-    #---------------------------------
-         monNode=self.getNodeById(id)
-         if not monNode : return  (False, 'Node {} non trouve'.format(id))
-         return monNode.fauxNoeudGraphique.updateSDName(sdnom)
+    def updateSDName(self,cId, externEditorId, nodeId, sdnom) :
+    #------------------------------------------------------
+         monNode=self.getNodeById(nodeId)
+         if not monNode : return  (6000, dictErreurs[6000].format(nodeId))
+         ok,message =  monNode.fauxNoeudGraphique.updateSDName(sdnom)
+         if ok :
+            self.appliEficas.propageChange(self.editorId, cId, externEditorId, False, 'updateNodeInfo', nodeId, monNode.fauxNoeudGraphique.updateNodeName())
+            return (0, message)
+         else :
+            return (7000, dictErreurs[7000].format(nodeId,message))
 
-    #-----------------------------------------
-    #@fonctionLoguee
-    def changeValeur(self,sId, nodeId, valeur) :
-    #-----------------------------------------
+    #-----------------------------------------------
+    @fonctionLoguee
+    def removeNode(self, cId, externEditorId, nodeId):
+    #-----------------------------------------------
+         monNode=self.getNodeById(nodeId)
+         if not monNode : return  (6000, dictErreurs[6000].format(nodeId))
+         if debug : print ('in suppNode pour monNode', monNode)
+         (ret,commentaire)=monNode.fauxNoeudGraphique.delete()
+        # TODO faire mieux les remontees d erreur
+         if not ret : return (0, "")
+         else : return ( 8000, commentaire)
+
+    #-------------------------------------------------------------
+    @fonctionLoguee
+    def appendChild(self,cid, externEditorId, id,name,pos=None):
+    #-------------------------------------
+        """
+        Methode pour ajouter un objet fils name a l objet associe au noeud id.
+        On peut l'ajouter en debut de liste (pos='first'), en fin (pos='last')
+        ou en position pos_ieme de la liste.
+        retour = nouvelIdUnique ou None
+        """
+        monNode=self.monEditeur.getNodeById(id)
+        if monNode.fauxNoeudGraphique == None :
+           print ('PNPN pas de noeud Graphique associe a l id')
+           return
+        if debug : print (monNode.fauxNoeudGraphique)
+        retour = monNode.fauxNoeudGraphique.appendChild(name,pos)
+        return retour
+
+
+    #-------------------------------------------------------------
+    @fonctionLoguee
+    def changeValeur(self, cId, externEditorId, nodeId, valeur) :
+    #-------------------------------------------------------------
          """
-         id : identifiant unique
+         cId : canal emetteur
+         externEditorId : canel de editor externe emetteur (pour la diffusion ou non)
+         nodeId : identifiant unique
          valeur : valeur saisie dans le formulaire
-         doit-on mettre l ancienne valeur en retour qui serait utile si validité = Non
          """
          debug = 1
-         if debug : print (' changeValeur sId, nodeId, valeur' ,sId, nodeId, valeur)
+         if debug : print (' changeValeur cId, externEditorId, nodeId, valeur' ,cId, externEditorId, nodeId, valeur)
          monNode=self.getNodeById(nodeId)
          if debug : print ('monNode : ', monNode)
          if not monNode : return  (nodeId, False, 'Node {} non trouve'.format(nodeId))
          if debug : print (' change Valeur', monNode)
          idRetour, commentaire, validite = monNode.fauxNoeudGraphique.traiteValeurSaisie(valeur)
          if validite :
-             self.appliEficas.propageChange(sId, self.editorId, False, 'updateNodeInfo', nodeId, monNode.fauxNoeudGraphique.updateNodeInfo())
-# (self, emitSessionId, emitEditorID, toAll , 'updateNodeInfo', *args, **kwargs)
-             print ('if validite : self.treeParent.updateOptionnels')
+             self.appliEficas.propageChange(self.editorId, cId, externEditorId, False, 'updateNodeInfo', nodeId, monNode.fauxNoeudGraphique.updateNodeInfo())
+             self.appliEficas.propageChange(self.editorId, cId, externEditorId, True, 'updateNodeInfo', nodeId, monNode.fauxNoeudGraphique.treeParent.updateOptionnels())
              return (idRetour, commentaire, validite)
          if not validite :
             return (idRetour, commentaire, validite)
 
-    #--------------------------------
-    def afficheMessage(self, texte):
-    #------------------------------------
+    #------------------------------------------------------
+    def afficheMessage(self, titre, texte, couleur = None):
+    #-----------------------------------------------------
     # on ne fait rien
     # contraitement a QT le commentaire est dans le retour de la fonction
          debug = 0
-         if debug : print (texte)
+         if debug : print (titre, texte)

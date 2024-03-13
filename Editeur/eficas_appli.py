@@ -24,6 +24,9 @@ from Accas.extensions.eficas_exception import EficasException
 from Editeur import session
 from Editeur.getVersion import getEficasVersion
 from Accas.extensions.eficas_translation import tr
+from Accas.extensions.codeErreur import dictErreurs 
+
+from uuid import uuid1
 
 from threading import Lock
 sessionCount  = 0
@@ -64,8 +67,10 @@ class EficasAppli:
         self.multi = multi
         self.salome = salome
         self.appWeb = appWeb
-        self.dictEditorIdSessionId = {}
-        self.dictTypeDeSession = {} # contient le type de la session ( QT, WEB pour rediriger les messages)
+        self.dictEditorIdChannelId = {}
+        self.dictEditorIdChannelIdExternEid = {}
+        self.dictExternalEidEditor = {}
+        self.dictChannelType = {} # contient le type de la session ( QT, WEB pour rediriger les messages)
 
         version = getEficasVersion()
         self.versionEficas = "Eficas Salome " + version
@@ -163,28 +168,56 @@ class EficasAppli:
         self.editor = self.editorManager.getEditor(fichier, jdc, include)
         return self.editor
 
-    #--------------------------------------------------------------------------------
-    def getWebEditor(self, sId, cataFile = None, datasetFile=None, jdc=None, include=0):
-    #--------------------------------------------------------------------------------
+    #-------------------------------------------------------------------------------------------------------------------
+    def getWebEditor(self, sId, cataFile = None, datasetFile=None, jdc=None, include=0, formatIn='python', formatOut='python'):
+    #-------------------------------------------------------------------------------------------------------------------
+        # en Web sId est le canal Id
         debug = 1
-        if sId == None : 
-           titre = 'Requete non valide'
-           message = 'Le parametre identifiant la Session Eficas est obligatoire'
-           self.propageToWebApp('afficheMessage', titre+texte, 'rouge')
-        self.dictTypeDeSession[sId]  =  'Web'
-        (editor, CR, message)   = self.editorManager.getWebEditor(sId, cataFile,datasetFile, jdc, include)
-        if debug : 
-           print ('getWebEditor id de sesssion :', sId, ' editor : ', editor.editorId)
-           print (editor, CR, message)
-        return (editor, CR, message) 
+        if sId in self.dictChannelType.keys() and self.dictChannelType[sId] != 'Web' :
+              message = 'Numero de Session deja allouée pour autre chose que de Web' 
+              CR = 1000
+              return (sId, None, CR, message, None) 
+        if not sId in self.dictChannelType.keys() :
+           self.dictChannelType[sId]  =  'Web'
+        (editor, CR, message, info)   = self.editorManager.getWebEditor(sId, cataFile,datasetFile, jdc, include)
+        if not editor :
+           return (None, CR, message, info)
 
-    #------------------------------------------------------------------------------------------
-    def getTUIEditor (self,sId = None, cataFile = None, datasetFile=None, jdc=None, include=0):
-    #-------------------------------------------------------------------------------------------
+        with lock :
+             externalEditorId = uuid1().hex
+        self.dictExternalEidEditor[externalEditorId] = editor
+        if editor.editorId not in self.dictEditorIdChannelIdExternEid.keys() :
+            self.dictEditorIdChannelIdExternEid[editor.editorId] = {}
+
+        if sId not in self.dictEditorIdChannelIdExternEid[editor.editorId] :
+            self.dictEditorIdChannelIdExternEid[editor.editorId][sId] = (externalEditorId,)
+        else : 
+            self.dictEditorIdChannelIdExternEid[editor.editorId][sId].append(externalEditorId)
+        if debug : 
+           if editor : print ('getWebEditor id de sesssion :', sId, ' editor : ', editor.editorId, 'externe ',  externalEditorId)
+           print (externalEditorId, CR, message, info)
+        return (externalEditorId, CR, message, info) 
+
+    #--------------------------------------
+    def getWebEditorById(self, sId, eId):
+    #--------------------------------------
         if sId == None : 
+           return ( None, 1000, dict[1000].format ('session Id'))
+        editor = self.dictExternalEidEditor[eId]
+        if sId not in self.dictEditorIdChannelIdExternEid[editor.editorId] :
+           return ( None, 1000, 'la session ne possede pas cet Editeur')
+        if eId not in self.dictEditorIdChannelIdExternEid[editor.editorId][sId] :
+           return ( None, 1000, 'incoherence entre Editeur et session')
+        return (editor, 0, "")
+        
+
+    #--------------------------------------------------------------------------------------------------------------------------------
+    def getTUIEditor (self,cId = None, cataFile = None, datasetFile=None, jdc=None, include=0, formatIn='python', formatOut='python'):
+    #---------------------------------------------------------------------------------------------------------------------------------
+        if cId == None : 
            self.affichageMessage('Requete non valide', 'Le parametre identifiant la Session Eficas est obligatoire',True)
-        self.dictTypeDeSession[sId]  =  'TUI'
-        (editor, CR, message)   = self.editorManager.getTUIEditor(sId, cata, fichier, fichier, jdc, include)
+        self.dictChannelType[cId]  =  'TUI'
+        (editor, CR, message)   = self.editorManager.getTUIEditor(cId, cata, fichier, fichier, jdc, include)
         return (editor, CR, message) 
 
     #---------------------------
@@ -343,25 +376,26 @@ class EficasAppli:
         try : 
             with lock:
                 sessionCount += 1
-                self.dictTypeDeSession[sessionCount]='TUI'
+                self.dictChannelType[sessionCount]='TUI'
                 return (sessionCount, 0, '')
-        except :
-            return (sessionCount, 1, 'impossible de donner un id : {}.format(str(e))')
+        except exception as e:
+            return (sessionCount, 1000, 'impossible de donner un id : {}.format(str(e))')
 
     #---------------------------------------------------------------------------
-    def propageToWebApp(self, fction, sessionId,  *args, **kwargs):
+    def propageToWebApp(self, fction, sessionId, externEditorId, *args, **kwargs):
     #---------------------------------------------------------------------------
         #if fction =='propageValide' :
         debug=1
         if debug  : print ('PNPNPN : WebEficasAppli.toWebApp',  fction,  *args, **kwargs)
         if self.appWeb == None  : return
-        self.appWeb.fromConnecteur(fction, sessionId,  *args, **kwargs)
+        self.appWeb.fromConnecteur(fction, sessionId, externEditorId,  *args, **kwargs)
 
     #--------------------------------------------------------------------------
-    def afficheMessage (self, titre, texte, critical=True, emitEditorId = None ):
+    def afficheMessage (self, titre, texte, critical=False, emitEditorId = None ):
     #--------------------------------------------------------------------------
         print ('*******************************')
-        if emitEditor != None :
+        print (titre, texte, critical, emitEditorId )
+        if emitEditorId != None :
             print ('message emis par ', emitEditorId)
 
         print (titre)
@@ -370,41 +404,28 @@ class EficasAppli:
         print ('-------------------------------')
         if critical : exit(1)
 
-    #--------------------------------------------------------------------------
-    # Est-ce que cela sera utilise ?
-    def propageMessage (self, titre, texte, critical=True, emitEditorId = None ):
-    #--------------------------------------------------------------------------
-        if emitEditorId == None :
-           self.afficheMessage(titre, texte, critical)
-           return
-        for sessionId in self.dictEditorIdSessionId[emitEditorId]:
-            if self.dictTypeDeSession[sessionId] == 'TUI':
-               self.afficheMessage(self, titre, texte, critical, emitEditorId )
-            elif self.dictTypeDeSession[sessionId] == 'Web':
-                if critical : self.propageToWebApp('afficheMessage', sessionId,  titre+texte, 'rouge')
-                else : self.propageToWebApp('afficheMessage', sessionId, titre+texte)
-            else :
-                print ('propageInfo de Appli  : pb de type de session dans eficas')
                 
-    #-------------------------------------------------------------------------------------
-    def propageChange (self, emitSessionId, emitEditorId, toAll , fction, *args, **kwargs):
-    #--------------------------------------------------------------------------------------
-        debug = 1
+    #-------------------------------------------------------------------------------------------------
+    def propageChange (self, editorId, emitChannelId , emitEditorId,  toAll , fction, *args, **kwargs):
+    #--------------------------------------------------------------------------------------------------
+        debug = 0
         if debug : 
            print ("------------------------------------------ Eficas")
            print ('propageChange avec les arguments ')
-           print ( emitSessionId, emitEditorId, toAll , fction, *args, **kwargs)
-           print (self.dictEditorIdSessionId)
+           print ( editorId, emitChannelId, emitEditorId, toAll , fction, *args, **kwargs)
+           print (self.dictEditorIdChannelId)
            print ("------------------------------------------ ")
-        for sessionId in self.dictEditorIdSessionId[emitEditorId]:
-            print ('sessionId', sessionId)
-            if not toAll and sessionId == emitSessionId : continue
-            if self.dictTypeDeSession[sessionId] == 'TUI': 
+        for channelId in self.dictEditorIdChannelId[editorId]:
+            if debug : print ('channelId', channelId)
+            if self.dictChannelType[channelId] == 'TUI': 
                 print ('la session est TUI, on ne fait rien')
                 continue # Rien a faire le JDC est correcte
-            elif self.dictTypeDeSession[sessionId] == 'Web': # on verra le QT apres
-                print ('on propage pour ', sessionId )
-                self.propageToWebApp(fction, sessionId,  *args, **kwargs)
+            elif self.dictChannelType[channelId] == 'Web': # on verra le QT apres
+                for exId in self.dictEditorIdChannelIdExternEid[editorId][channelId] :
+                    if debug : print ('exId', exId)
+                    if not toAll and exId == emitEditorId and channelId == emitChannelId : continue
+                    print ('on propage pour ', exId )
+                    self.propageToWebApp(fction, channelId, exId,  *args, **kwargs)
 
     #---------------------------------------------------------------------------
     #PN --> normalement les codes retours et les messages de retour sont suffisants

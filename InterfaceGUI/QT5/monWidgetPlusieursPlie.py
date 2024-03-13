@@ -84,13 +84,13 @@ class MonWidgetPlusieursPlie(Ui_WidgetPlusieursPlie, Feuille):
         listeValeur = []
         for v in listeValeursBrutes:
             if v == None or pattern_blanc.match(v):
-                self.editor.afficheMessage(
+                self.editor.afficheMessageQt(
                     str(listeValeur) + "   Valeurs saisies incorrectes", Qt.red
                 )
                 return
             liste, validite = SaisieValeur.TraiteLEValeur(self, str(v))
             if not validite:
-                self.editor.afficheMessage(
+                self.editor.afficheMessageQt(
                     str(listeValeur) + "   Valeurs saisies incorrectes", Qt.red
                 )
                 return
@@ -103,7 +103,7 @@ class MonWidgetPlusieursPlie(Ui_WidgetPlusieursPlie, Feuille):
             self.node.item.isValid()
             self.setValeurs()
         else:
-            self.editor.afficheMessage(str(listeValeur) + "   " + comm, Qt.red)
+            self.editor.afficheMessageQt(str(listeValeur) + "   " + comm, Qt.red)
             self.lineEditVal.setText("")
 
 

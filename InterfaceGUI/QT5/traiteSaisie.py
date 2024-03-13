@@ -38,7 +38,7 @@ class SaisieValeur(object):
         validite,commentaire=self.politique.recordValeur(nouvelleValeurFormat)
         if commentaire != "" :
             if validite : self.editor.afficheCommentaire(commentaire)
-            else        : self.editor.afficheMessage(commentaire,'red')
+            else        : self.editor.afficheMessageQt(commentaire,'red')
         self.inSaisieValeur=False
         self.setValide()
 
@@ -56,7 +56,7 @@ class SaisieValeur(object):
             try:
                 nouvelleValeur = str(self.lineEditVal.text())
             except UnicodeEncodeError as e:
-                self.editor.afficheMessage("pb d encoding", Qt.red)
+                self.editor.afficheMessageQt("pb d encoding", Qt.red)
                 validite, commentaire = self.politique.recordValeur(None)
                 self.lineEditVal.setText("")
                 self.setValide()
@@ -74,7 +74,7 @@ class SaisieValeur(object):
         if self.node.item.definition.validators != None:
             if self.node.item.definition.validators.verifItem(nouvelleValeur) != 1:
                 commentaire = self.node.item.definition.validators.infoErreurItem()
-                self.editor.afficheMessage(commentaire, Qt.red)
+                self.editor.afficheMessageQt(commentaire, Qt.red)
                 self.inSaisieValeur = False
                 return
 
@@ -82,7 +82,7 @@ class SaisieValeur(object):
         validite, commentaire = self.politique.recordValeur(nouvelleValeurFormat)
         if commentaire != "":
             if validite: self.editor.afficheCommentaire(commentaire)
-            else: self.editor.afficheMessage(commentaire, 'red')
+            else: self.editor.afficheMessageQt(commentaire, 'red')
         self.inSaisieValeur = False
         self.setValide()
 
@@ -134,7 +134,7 @@ class SaisieValeur(object):
                             commentaire = tr(
                                 "Veuillez entrer le complexe sous forme aster ou sous forme python"
                             )
-                            self.editor.afficheMessage(commentaire)
+                            self.editor.afficheMessageQt(commentaire)
                             return listeValeurs, 0
 
                     else:  # ce n'est pas un tuple a la mode aster
