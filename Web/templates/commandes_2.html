@@ -1,9 +1,9 @@
-{% extends 'available_catalogs.html' %}
+{% extends 'new_dataset.html' %}
 
 {% block content %}
 
 
-<!-- DOC : arrow functions () => x is short for () => { return x; }) -->
+<!-- DOC : arrow functions () => x is short for () => { return x; } -->
 
 <!--     {#- for key, value in mcTraite.items() recursive #} -->
 <!-- 	<h3>{#{ key }#} </h3> -->
@@ -63,32 +63,44 @@
 <!--     <h2> </h2> -->
 <!--     <\!-- <div id="treeview-searchable" class=""></div> -\-> -->
 <!-- </div> -->
-    
+
+ <!-- TODO : Créer une feuille de style-->
 <div class="row" id="row-main_and_optional_tree">
-  <div class="col-sm-8 panel panel-default" id="col-main_tree"> <!-- Panel Arbre Principal -->
-    <div class="panel-heading">DatasetName : {{titre}}</div>
     
-    <table id="tree1" class="table table-condensed table-hover table-striped fancytree-fade-expander">
-      <!-- TODO : Manage the space between Title and Value while choosing a Value size adapted to the value -->
-      <colgroup>
-	<col width="80px"></col>
-	<col width="30px"></col>
-	<col width="300px"></col>
-	<col width="300px"></col>
-	<col width="20px"></col>
-	<col width="20px"></col>
-	<col width="20px"></col>
-	<col width="*"></col>
-      </colgroup>
-      <thead>
-	<tr> <th></th> <th></th> <th>Mot Clé</th> <th>Value</th> <th></th> <th></th> <th></th> <th></th> </tr>
-      </thead>
-      <tbody>
-	<tr> <td></td> <td></td> <td></td> <td></td> <td></td> <td></td> <td></td> <td></td> </tr>
-      </tbody>
-      <!-- </div> -->
-    </table>
-  </div>
+  <div class="col-sm-8 panel panel-default" id="col-main_tree" style="padding-left: 0px;padding-right: 0px;"> <!-- Panel Arbre Principal -->
+    <!-- <div class="panel-heading">DatasetName : {{titre}}</div> -->
+    <div class="panel-heading" style="padding-bottom: 0px;padding-left: 0px;padding-right: 0px;">
+      <ul class="nav nav-tabs" id="efi-nav-tabs">
+	<!-- <li class="active"><a data-toggle="tab" href="#tree1Tab">Dataset : {{titre}}</a></li> -->
+	<!-- <li><a data-toggle="tab" href="#tree2">Dataset test 2</a></li> -->
+      </ul>
+    </div>
+
+    <div class="tab-content" id="efi-tab-content">
+
+      <!-- <\!-- <table id="tree1" class="table table-condensed table-hover table-striped fancytree-fade-expander"> -\-> -->
+      <!-- <table id="tree1" class="tab-pane fade in active table table-condensed table-hover table-striped fancytree-fade-expander"> -->
+      <!-- 	<\!-- TODO : Manage the space between Title and Value while choosing a Value size adapted to the value -\-> -->
+      <!-- 	<colgroup> -->
+      <!-- 	  <col width="80px"></col> -->
+      <!-- 	  <col width="30px"></col> -->
+      <!-- 	  <col width="300px"></col> -->
+      <!-- 	  <col width="300px"></col> -->
+      <!-- 	  <col width="20px"></col> -->
+      <!-- 	  <col width="20px"></col> -->
+      <!-- 	  <col width="20px"></col> -->
+      <!-- 	  <col width="*"></col> -->
+      <!-- 	</colgroup> -->
+      <!-- 	<thead> -->
+      <!-- 	  <tr> <th></th> <th></th> <th>Mot Clé</th> <th>Value</th> <th></th> <th></th> <th></th> <th></th> </tr> -->
+      <!-- 	</thead> -->
+      <!-- 	<tbody> -->
+      <!-- 	  <tr> <td></td> <td></td> <td></td> <td></td> <td></td> <td></td> <td></td> <td></td> </tr> -->
+      <!-- 	</tbody> -->
+      <!-- </table> -->
+      
+    </div> <!-- tab-content-->  
+  </div> <!-- col_main_tree-->
   
   <!-- <div class="col-sm-4" ><table class="fancytree-ext-table"><tr>Optionals :</tr></table> -->
   <div class="col-sm-4 panel panel-default" id="col-optional_tree" data-spy="affix" data-offset-top="0"> <!-- Panel Arbre Options -->
@@ -101,15 +113,56 @@
       <!-- </nav> -->
     </div> <!-- panel-body -->
     </nav>
-  </div>  <!-- col -->
+  </div>  <!-- col-optional_tree -->
   
 </div> <!-- row -->
 
     <div id='handsontable_test1'/>
     
 <script>
-    'use strict';
+  'use strict';
 
+  let efiNewTab=function(treeId) {
+      let _treeId = treeId;
+      if (treeId === undefined  || treeId ==  "") {
+	  _treeId = "tree"+ ($("#efi-tab-content > div").size()+1)
+      };
+
+      $("#efi-nav-tabs").prepend(function(treeId){
+	  let efiNavTab=`<li class="active"><a data-toggle="tab" href="#@treeId@Tab">Dataset : {{titre}}</a></li>`;
+	  return efiNavTab.replace("@treeId@",treeId);
+      }(_treeId));
+			     
+      $("#efi-tab-content").prepend(function(treeId){
+	  let efiFancyTreeTempl = `
+          <div id="@treeId@Tab" class="tab-pane fade in active">
+             <table id="@treeId@" class="table table-condensed table-hover table-striped fancytree-fade-expander">
+          	<!-- TODO : Manage the space between Title and Value while choosing a Value size adapted to the value -->
+          	<colgroup>
+          	  <col width="80px"></col>
+          	  <col width="30px"></col>
+          	  <col width="300px"></col>
+          	  <col width="300px"></col>
+          	  <col width="20px"></col>
+          	  <col width="20px"></col>
+          	  <col width="20px"></col>
+          	  <col width="*"></col>
+          	</colgroup>
+          	<thead>
+          	  <tr> <th></th> <th></th> <th>Mot Clé</th> <th>Value</th> <th></th> <th></th> <th></th> <th></th> </tr>
+          	</thead>
+          	<tbody>
+          	  <tr> <td></td> <td></td> <td></td> <td></td> <td></td> <td></td> <td></td> <td></td> </tr>
+          	</tbody>
+           </table>
+          </div>`;
+
+	  return efiFancyTreeTempl.replaceAll("@treeId@" ,treeId);
+      }(_treeId));
+  };
+  
+  efiNewTab();
+  
 const EFI_SUCCESS_COLOR = '#00ff00';
 const EFI_ERROR_COLOR   = '#ff0000';
 const EFI_WARNING_COLOR = '#ffff00';
@@ -140,7 +193,9 @@ const handsontable_data1 = [
     <!-- }); -->
 
   //$("#navbar-optionals").affix({offset: {top: $("#row-commands_menu").outerHeight(true)} }); 
+  $("#col-optional_tree").affix({offset: {top: $("#row-commands_menu").outerHeight(true)} }).css('right',0);
   $("#col-optional_tree").affix({offset: {top: $("#row-commands_menu").outerHeight(true)} }).css('right',0); 
+
 </script>
 
 <div class="row" data-spy="affix" id="row-tree1-messages">
@@ -211,7 +266,7 @@ function callService(serviceName, obj) {
         treeMessage(msgCssSelStr,"alert-success",message) ;
     };
 
-    const url    = "{{ url_for('appendChild') }}";          //WARN : jinja url_for évalué dynamiquent
+    const url    = "{{ url_for('appendChild') }}";          //WARN : jinja url_for évalué dynamiquement
     const newurl = url.replace("appendChild", serviceName); //TODO : Trouver une meilleure solution !
     return $.ajax({
         type		: "POST",
@@ -225,35 +280,10 @@ function callService(serviceName, obj) {
 };
 
 
-// TODO : Il faudrait s'assurer que si une requête de ce type est envoyée au serveur
-//        on récupère bien l'evenement appendChild --> validation, promise...
-// TODO : ?async?
-// cf callService		 
-// function callServiceOld(serviceName, obj, callBack) {
-//     const  msgCssSelStr  =  '#tree1-messages';
-//     const  success = function(data, status) {
-//         message="Successfull "+serviceName+" call with status : " + status;
-//         treeMessage(msgCssSelStr,"alert-success",message) ;
-// 	callBack(data);
-//     };
-
-//     const url    = "{{ url_for('appendChild') }}";          //ATT  : jinja url_for évalué dynamiquent
-//     const newurl = url.replace("appendChild", serviceName); //TODO : Trouver une meilleure solution !
-//     $.ajax({
-//         type		: "POST",
-//         url		: newurl,
-//         data		: JSON.stringify(obj),
-//         contentType	: "application/json; charset=utf-8",
-//         dataType	: "json", 
-//         success		: success,
-//         failure		: function(errMsg) { alert(errMsg); }
-//     });
-// };
-
 // APPELS EXPLICITES AU SERVER
 function clickOnRemove(treeCssSelStr, msgCssSelStr, key ) {
     'use strict';
-   const tree  = $.ui.fancytree.getTree(treeCssSelStr);
+    const tree  = $.ui.fancytree.getTree(treeCssSelStr);
     const _key  = key; 
     if ( key === undefined  || key ==  "") {
 	activeNode = tree.activeNode;
@@ -310,7 +340,7 @@ function sendAppendChild( key, name, pos) {
 
     const checkCallBack = function(data) {
 	// Tester data == NULL !
-	let rId = data['id'];
+	let rId = data['id']; //TODO : Changer en code d'erreur
 	if ( rId == 0 || rId == null ) {
 	    let message = "Unsuccessfull appendChild processing for command " + name + ". Service appendChild has returned an error ("+data.message+")";
 	    treeMessage(msgCssSelStr,"alert-danger",message) ;
@@ -331,9 +361,11 @@ function getParentCommandNode(node) {
 //                         utilsées dans les attributs des elements html  on="clickOn('arg1','arg2',)"
 function clickOnCommand(treeCssSelStr, msgCssSelStr, cmdName, key ) {
     'use strict';
-    const tree        = $.ui.fancytree.getTree(treeCssSelStr); //TODO : Une fonction pour récupérer le tree en paramètre soit par css ou objet
+    const tree                      = $.ui.fancytree.getTree(treeCssSelStr); //TODO : Une fonction pour récupérer le tree en paramètre soit par css ou objet
     const rootDatasetNode = tree.rootNode.children[0];
-    let fromNode =  null;
+    let     fromNode             =  null;
+    let     pos;
+    
     if ( key !== undefined && key !=  "") {
 	fromNode = tree.getNodeByKey(key);
     } else {    
@@ -342,7 +374,10 @@ function clickOnCommand(treeCssSelStr, msgCssSelStr, cmdName, key ) {
     if ( fromNode ==  null) {
         pos=0;
     } else {
-        parentList = fromNode.getParentList(); // default : (false,false)==(rootNode exclus, not self)
+	let activeCommandKey = "";
+	let commandList      = null;
+	let index            = 0;
+        let parentList = fromNode.getParentList(); // default : (false,false)==(rootNode exclus, not self)
 	console.log("clickOnCommand : parentList "+parentList)
 	if ( parentList.length  == 0 ) {       //If the current dataset filename node is activated
 	    console.log("clickOnCommand : index is forced = 0");
@@ -419,7 +454,7 @@ function sendUpdateSimp( node, eltNameWithValue) {
 	    console.log('wValue    : '+ node.data.wValue);
 	    console.log('validite  : '+validite);
 	} else {
-	    // Gérer le input pour laisser le focus et passer en rouge
+	    // TODO: Gérer le input pour laisser le focus et passer en rouge ?
 	    let message = "Unsuccessfull SIMP processing for |" + node.getPath() + "|, value |"+value+"| has not been accepted ("+rMessage+")";
 	    treeMessage(_msgCssSelStr,"alert-warning",message);
 	};
@@ -431,6 +466,63 @@ function sendUpdateSimp( node, eltNameWithValue) {
     
     //alert("sendUpdateSimp-1");
     return callService('updateSimp', {id: node.key, value:value } ).done( (data)=>checkCallBack(data) );
+
+
+};
+
+function sendNewDataset( catalogName, datasetName) {
+    'use strict';
+    
+    const _msgCssSelStr  =  '#tree1-messages';
+    const _treeCssSelStr =  '#tree1';
+    const tree           = $.ui.fancytree.getTree(_treeCssSelStr); //TODO : Une fonction pour récupérer le tree en paramètre soit par css ou objet
+
+    //let $input=$(node.tr).find('input');
+    // let $input=$(node.tr).find(eltNameWithValue);
+    // let value=$input.val();
+
+    let checkCallBack = function(data) {
+	// Tester data == NULL !
+        const source   = data.source;
+        const commands = data.commands;
+        const titre    = data.titre;
+	const rMessage = data.message
+	
+	// TODO: détacher la constuction des options fancytree de #tree1 !
+	//tree.destroy();
+	let message = "New Dataset has been loaded ("+rMessage+")";
+	tree.clear(); //Remove all the nodes but keep the configuration
+	tree.setOption('source', source);
+	tree.reload().done( ()=>treeMessage(_msgCssSelStr,"alert-success",message));
+	//TODO : Gérer les commandes
+	//TODO : Gérer le titre/code
+	
+	//node.fromDict()
+	//source=JSON.parse(getTree1())
+	// if ( changeIsAccepted ) {
+	//     // Il faudrait gérer les représentations des types pour activer cet assert (ex: string vs int)
+	//     //  or on laisse le kernel eficas vérifier des strings.
+	//     // $.ui.fancytree.assert(value == wValue);
+	//     // node.data.wValue   = wValue
+	//     // node.data.validite = validite
+	//     let message = "New Dataset "+node.title+" value to "+value+" has been accepted ("+rMessage+")";
+	//     treeMessage(_msgCssSelStr,"alert-success",message);
+	//     //node.data        = data.source ?? A priori, il est inutile d'essayer de remplacer la source complète du noeud  
+	//     console.log('wValue    : '+ node.data.wValue);
+	//     console.log('validite  : '+validite);
+	// } else {
+	//     // TODO: Gérer le input pour laisser le focus et passer en rouge ?
+	//     let message = "Unsuccessfull SIMP processing for |" + node.getPath() + "|, value |"+value+"| has not been accepted ("+rMessage+")";
+	//     treeMessage(_msgCssSelStr,"alert-warning",message);
+	// };
+	// //alert("sendNewDataset-2");
+	// node.render(true,false);  //force rendering the node (not parents nor descendants)
+	// if (eltNameWithValue != 'select') node.render(true,false);  //force rendering the node (not parents nor descendants)
+	//node.renderStatus();    //CSS element updates
+    };
+    
+    //alert("sendNewDataset-1");
+    return callService('newDataset', { catalogName:catalogName, datasetName:datasetName } ).done( (data)=>checkCallBack(data) );
 
 
 };
@@ -721,7 +813,10 @@ $(function(){
             const statut         = node.data.statut;
 	    const cmdName 	 = node.data.nomCommande;  // undefined if classeAccas != 'MCFACT'
 	    const repeatable	 = node.data.repetable;    // ?? undefined if classeAccas != 'MCFACT' ??
-	    const into           = node.data.into;         // only used for SIMP
+	    const into           = node.data.into;     // only used for SIMP //TODO: BUG: un into reel xx.0 devient ici un entier chaîne
+	                                                                // eficas doit envoyer tjrs des chaînes 
+            console.log("into :"+into);    //All JavaScript numbers are stored as decimal numbers (floating point).
+	                                                  //Numbers can be written with, or without decimals:
 	    const infoOptionnels = node.data.infoOptionnels;
             const key		 = node.key;
             const name		 = node.title;
@@ -796,12 +891,11 @@ $(function(){
 		    //let selectFunction = "alert(\"SELECT EVENT\");setTimeout(clickOnSelect(\"#tree1\", \"#tree1-messages\", \""+key+"\", \"select\"),50000)";
 		    // console.log("----AVANT html :------"+$tdList.eq(3).html());
 		    // console.log($tdList.eq(3).find("select").length);
-		    $tdList3
 		    let html=
 			"<form>"+ 
-			"<div class='form-group'>" +
-			"<select class='form-control input-sm'></select>"+
-			"</div>"+
+			  "<div class='form-group'>" +
+			    "<select class='form-control input-sm'></select>"+
+			  "</div>"+
 			"</form>";
 		    $tdList3
 			.html(html)

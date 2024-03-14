@@ -23,14 +23,16 @@ import traceback
 import json
 import os
 from   pprint      import pprint
+#from   forms       import BasicForm  #Essais WtForms
 from   collections import OrderedDict
 from   markupsafe  import escape
 
 # Flask management of Server Side Event
+# Necessite redis
 from flask_sse import sse
+# from flask_uploads import UploadSet, configure_uploads, IMAGES 
 
 app = Flask(__name__)
-app.secret_key = 'EssaiPN'
 
 # CATALOGS_EXT=("py","jpg") #TODO : supprimer jpg pour test
 # catalogs = UploadSet("catalogs",CATALOGS_EXT)
@@ -94,7 +96,8 @@ def propageValide(sId, eId, id, valid): #TODO: RENAME TO ... propagateValidation
 
 def updateNodeInfo(sId, eId, id, info):
     print ('Flask/updateNodeInfo', sId, eId, id, info)
-    sse.publish( {'eId' : eId, 'id':id, 'info':info, 'message': "Hello from updateNodeInfo!"}, type='updateNodeInfo', channel = sId)
+    sse.publish( {'eId' : eId, 'id':id, 'info':info, 'message': "Hello from updateNodeInfo!"}, type='updateNodeInfo')
+#    sse.publish( {'eId' : eId, 'id':id, 'info':info, 'message': "Hello from updateNodeInfo!"}, type='updateNodeInfo', channel = sId)
 
 def appendChildren(sId, eId, id, fcyTreeJson, pos):
     print ('Flask/appendChildren: ', id, fcyTreeJson, pos)
@@ -126,6 +129,7 @@ def afficheAlerte(sId, eId, titre, message):                  #TODO: RENAME TO .
 # Pour PROC : Ajoute, Supprime
 # Pour OPER : Ajoute, Supprime, Nomme, Renomme
 # @app.route('/post/<uuid:post_id>')
+
 @app.route("/updateSimp", methods=['POST'])
 def updateSimp():
     # Validate the request body contains JSON
@@ -171,6 +175,8 @@ def updateSDName():
         # Parse the JSON into a Python dictionary
         req = request.get_json()
         # Print the dictionary
+        #print(req)
+        #print(req['id'])
         id=req['id'];sdnom=req['sdnom']
         sdnom              = str(sdnom)   #On peut écrire Pi
          # On attendant que l externalEditorId soit dans le tree
@@ -218,9 +224,9 @@ def removeNode():
 @app.route("/appendChild", methods=['POST'])
 def appendChild():
     # Validate the request body contains JSON
-    print ('__________________________________________')
-    print ( 'in appendChild')
-    print ('__________________________________________')
+    # print ('__________________________________________')
+    # print ( 'in appendChild')
+    # print ('__________________________________________')
     if request.is_json:
         # Parse the JSON into a Python dictionary
         req = request.get_json()
@@ -235,10 +241,50 @@ def appendChild():
         (newId, codeErreur, message) = eficasEditor.appendChild(session['canalId'],session['externEditorId'],id,name,pos);
         print (__file__+"/appendChild : newId : ",newId);
         
-        return make_response(json.dumps( {'id':newId} ))
+        return make_response(json.dumps( {'id':newId} )) #TODO: Code Erreur
         # return make_response(json.dumps( {'source':node, 'changeIsAccepted' : changeDone, 'message': message} ))
         # Return a string along with an HTTP status code
         # return "JSON received!", 200
+    else:
+        # The request body wasn't JSON so return a 400 HTTP status code
+        return "Request was not JSON", 400
+        #return make_response(jsonify({"message": "Request body must be JSON"}), 400)
+
+@app.route("/newDataset", methods=['POST'])
+def newDataset():
+    
+    # Validate the request body contains JSON
+    if request.is_json:
+        # Parse the JSON into a Python dictionary
+        req = request.get_json()
+        # Print the dictionary
+        print(__file__+"/newDataset : ",req);
+        catalogName=req['catalogName'];datasetName=req['datasetName'];
+        #QUESAKO code ?
+        
+        #TODO: pour l'instant un seul connecteur mono utilisateur
+        #      il faudra gérer les différents utilisateurs avec la session Flask et
+        #      disposer de plusieurs connecteurs par utilisateur.
+        #try { ?
+        # monConnecteur=createConnecteur(app,catalogName,datasetName)
+        # ou
+        monConnecteur  = createConnecteur(app,catalogFile=os.path.join('data',catalogName))
+        #monConnecteur.litFichierComm(datasetName)
+        myFancyTreeDico= monConnecteur.getDicoForFancy(monConnecteur.monEditeur.tree.racine)
+        myFancyTreeJS  = json.dumps([myFancyTreeDico],indent=4)  #TODO : remove indent if not DEBUG
+        pprint( myFancyTreeJS)
+        commands       = monConnecteur.getListeCommandes();
+        #TODO: Gérer le titre
+        # return make_response(json.dumps( {'source':myFancyTreeJS, 'commands':commands, 'titre':code} ))
+
+         # TODO : Envoyer un evenement de création de JDD au javascript qui gèrera les onglets...
+         #        et ne relancera pas le render 
+        # return render_template('commandes_2.html',
+        #                         titre=code,
+        #                         listeCommandes = monConnecteur.getListeCommandes(),
+        #                         tree=myFancyTreeJS,
+        # )
+
     else:
         # The request body wasn't JSON so return a 400 HTTP status code
         return "Request was not JSON", 400
@@ -260,7 +306,7 @@ def index():
     #            listeCommandes = [],
     #             tree= None
     #        )
-    cataFile = os.path.abspath('../Codes/WebTest/cata_essai.py')
+    cataFile    = os.path.abspath('../Codes/WebTest/cata_essai.py')
     dataSetFile = os.path.abspath('../Codes/WebTest/web_tres_simple_avec_2Fact.comm')
     # En attendant la partie Eric
     # notion de plage
@@ -318,6 +364,43 @@ def index():
     # etape  = str(escape(request.args.get("etape", "")))
 
 
+
+# @app.route("/forward/", methods=['POST'])
+# def move_forward():
+#     #Moving forward code
+#     forward_message = "Moving Forward..."
+#     return render_template('mdm.html', message=forward_message)
+
+
+
+# @app.route('/form', methods=['GET', 'POST'])
+# def basicform():
+#    form = BasicForm(request.form)
+#    if request.method == 'POST' and form.validate():
+#       with open('/tmp/test.txt', 'w') as f:
+#           for k in request.form:
+#             f.write('{0}: {1}\n'.format(k, request.form[k]))
+#    return render_template('basic.html', form=form)
+
+# @app.route("/json", methods=["POST"])
+# def json_example():
+
+#     if request.is_json:
+
+#         req = request.get_json()
+
+#         response_body = {
+#             "message": "JSON received!",
+#             "sender": req.get("name")
+#         }
+
+#         res = make_response(jsonify(response_body), 200)
+
+#         return res
+
+#     else:
+
+#         return make_response(jsonify({"message": "Request body must be JSON"}), 400)
 
 #TODO: 
 #from fileManagement import *
@@ -435,6 +518,8 @@ def get_file(filename):
 # @app.route("/_upload", methods=['POST'])
 # def _upload():
 
+#     # Validate the request body contains JSON
+#     if request.is_json:
 #         # Parse the JSON into a Python dictionary
 #         req = request.get_json()
 #         # Print the dictionary
@@ -470,3 +555,51 @@ def get_file(filename):
 if __name__ == "__main__":
     app.run(host="localhost", port=8321, debug=True)
 
+#$("#386bc28a2ff811ec853cac220bca9aa6").html('<label class="form-check-label">Test1<input type="text" class="form-control form-control-sm"></label><essai>Essai</essai>')
+
+# $("#550f63502b6611ecab61ac220bca9aa6").hover(function(){
+#   alert("The text has been changed.");
+# });
+
+# $("#1f3ca24a2cf911ecab61ac220bca9aa6").hover(function(){
+#   $.post("{{ url_for('static', filename='demo_test.txt') }}",
+#   {
+#     id: $(this).attr("id"),
+#   },
+#   function(data, status){
+#     alert("Data: " + data + "\nStatus: " + status);
+#   });
+# });
+
+# $("#e0a1f2862cfa11ecab61ac220bca9aa6").hover(function(){
+#   $.post("http://127.0.0.1:8123/test1",
+#   {
+#     id: $(this).attr("id"),
+#   },
+#   function(data, status){
+#     alert("Data: " + data + "\nStatus: " + status);
+#   });
+# });
+
+# $(".MCSIMPValide").hover(function(){
+#   alert("-5-- :"+ $(this).text() + $("#e0a1f2862cfa11ecab61ac220bca9aa6").text() + $(this).attr("class") + $(this).attr("id"));
+#   $.post("http://127.0.0.1:8123/test1",
+#   {
+#     id: $(this).attr("id"),
+#   },
+#   function(data, status){
+#     alert("Data: " + data + "\nStatus: " + status +"\nId :", $(this).attr("id") );
+#   });
+# });
+
+
+# # # $("#550f63502b6611ecab61ac220bca9aa6")[0].id
+# $("#e0a1f2862cfa11ecab61ac220bca9aa6").hover(function(){
+#   alert("-4-- :"+ $(this).text() + $("#e0a1f2862cfa11ecab61ac220bca9aa6").text() + $(this).attr("class") + $(this).attr("id"));
+# });
+
+# $("#550f63502b6611ecab61ac220bca9aa6")[0].id
+
+#$("#ec7abddd2dca11ecab61ac220bca9aa6").parents()[0]
+# Pour obtenir le nodeid treeview a partir de l'eficasID
+#$("#ec7abddd2dca11ecab61ac220bca9aa6").parent()[0].attributes['data-nodeid'].value
