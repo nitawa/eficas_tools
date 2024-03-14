@@ -90,36 +90,33 @@ app.fromConnecteur=fromConnecteur
 #    - ReAffichage d'un noeud (et ses enfants)
 #    - Changement d'un nom de mot-cle reference
 
-def propageValide(sId, eId, id, valid): #TODO: RENAME TO ... propagateValidation
+def propageValide(cId, eId, id, valid): #TODO: RENAME TO ... propagateValidation
     print ('Flask/propageValide: ', id, valid)
-    sse.publish( {'id':id, 'valid':valid, 'message': "Hello from propageValide!"}, type='propageValide')
+    sse.publish( {'eId' : eId, 'id':id, 'valid':valid, 'message': "Hello from propageValide!"}, type='propageValide', channel = str(cId))
 
-def updateNodeInfo(sId, eId, id, info):
-    print ('Flask/updateNodeInfo', sId, eId, id, info)
-    sse.publish( {'eId' : eId, 'id':id, 'info':info, 'message': "Hello from updateNodeInfo!"}, type='updateNodeInfo')
-#    sse.publish( {'eId' : eId, 'id':id, 'info':info, 'message': "Hello from updateNodeInfo!"}, type='updateNodeInfo', channel = sId)
+def updateNodeInfo(cId, eId, id, info):
+    print ('Flask/updateNodeInfo', cId, eId, id, info)
+    sse.publish( {'eId' : eId, 'id':id, 'info':info, 'message': "Hello from updateNodeInfo!"}, type='updateNodeInfo', channel = str(cId))
 
-def appendChildren(sId, eId, id, fcyTreeJson, pos):
+def appendChildren(cId, eId, id, fcyTreeJson, pos):
     print ('Flask/appendChildren: ', id, fcyTreeJson, pos)
-    sse.publish( {'id':id, 'fcyTreeSrc':fcyTreeJson, 'pos':pos, 'message': "Hello from appendChildren!"}, type='appendChildren')
+    sse.publish( {'eId' : eId, 'id':id, 'fcyTreeSrc':fcyTreeJson, 'pos':pos, 'message': "Hello from appendChildren!"}, type='appendChildren', channel = str(cId))
 
-def deleteChildren(sId, eId, idList):
+def deleteChildren(cId, eId, idList):
     #print ('Flask/deleteChildren: ', idList)
-    sse.publish( {'idList':idList,'message': "Hello from deleteChildren!"}, type='deleteChildren')
+    sse.publish( {'eId' : eId, 'idList':idList,'message': "Hello from deleteChildren!"}, type='deleteChildren', channel = str(cId))
 
 #TODO: Câbler la sélection du catalogue avant d'activer les appels suivants
 #      car si la page Web n'est pas rendue et que le connecteur génère une erreur... boom !
-def afficheMessage(sId, eId,  txt, couleur):                     #TODO: RENAME TO ... displayWarning
-    if sId != session['canalId']  : return
+def afficheMessage(cId, eId,  txt, couleur):                     #TODO: RENAME TO ... displayWarning
     print ('Flask/afficheMessage: ', txt, couleur)
-    # sse.publish( {'txt':txt, 'color':couleur, 'messageClass':"alert-warning" ,'message': "Hello from afficheMessage!"},
-    #              type='displayMessage')
+    sse.publish( {'txt':txt, 'color':couleur, 'messageClass':"alert-warning" ,'message': "Hello from afficheMessage!"},
+                 type='displayMessage', channel = str(cId))
 
-def afficheAlerte(sId, eId, titre, message):                  #TODO: RENAME TO ... displayDanger
-    if sId != session['canalId']  : return
+def afficheAlerte(cId, eId, titre, message):                  #TODO: RENAME TO ... displayDanger
     print ('Flask/afficheAlerte: ', titre, message) #TODO: titre & message VS txt ?
-    # sse.publish( {'txt':titre, 'color':couleur, 'messageClass':"alert-danger", 'message': "Hello from afficheAlerte!"},
-    #              type='displayMessage')
+    sse.publish( {'txt':titre, 'color':couleur, 'messageClass':"alert-danger", 'message': "Hello from afficheAlerte!"},
+                 type='displayMessage', channel = str(cId))
 
 
 
@@ -148,7 +145,7 @@ def updateSimp():
         if codeErreur : 
            print ('il faut faire qqchose')
 
-        # TODO (rId, codeErreur, message) = eficasEditor.changeValeur(sId, id,value)
+        # TODO (rId, codeErreur, message) = eficasEditor.changeValeur(cId, id,value)
         (rId, message, changeDone) = eficasEditor.changeValeur(session['canalId'], session['externEditorId'], id,value);
         assert(rId==id)
 
@@ -357,6 +354,7 @@ def index():
     if debug : print ( 'liste des commandes',  eficasEditor.getListeCommandes())
     return render_template('commandes_2.html',
       titre=code,
+      efi_update_channel = str(canalId),
       listeCommandes = eficasEditor.getListeCommandes(),
       tree=myFancyTreeJS,
       # tree=tree4Fancy,

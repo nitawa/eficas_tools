@@ -529,7 +529,8 @@ function sendNewDataset( catalogName, datasetName) {
 
 
 //GESTION DES EVENEMENTS PROVENANT DU SERVEUR
-const source = new EventSource("{{ url_for('sse.stream') }}");
+      const source = new EventSource("{{ url_for('sse.stream' , channel=efi_update_channel ) }}");
+      
 source.addEventListener('error', function(event) {
     alert("Failed to connect to event stream. Is Redis running?");
 }, false);
