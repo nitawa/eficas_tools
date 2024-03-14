@@ -151,6 +151,8 @@ class OBJECT(object):
             texteValeurs = texteValeurs[0:-1] + ");\n"
         return (texteColonnes, texteValeurs, texteAutresTables)
 
+    def longueurDsArbreAvecConsigne(self):
+        return 1
 
 class ErrorObj(OBJECT):
 

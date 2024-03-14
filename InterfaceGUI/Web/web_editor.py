@@ -130,21 +130,20 @@ class WebEditor(Editor):
 
     #-------------------------------------------------------------
     @fonctionLoguee
-    def appendChild(self,cid, externEditorId, id,name,pos=None):
-    #-------------------------------------
-        """
-        Methode pour ajouter un objet fils name a l objet associe au noeud id.
-        On peut l'ajouter en debut de liste (pos='first'), en fin (pos='last')
-        ou en position pos_ieme de la liste.
-        retour = nouvelIdUnique ou None
-        """
-        monNode=self.monEditeur.getNodeById(id)
-        if monNode.fauxNoeudGraphique == None :
-           print ('PNPN pas de noeud Graphique associe a l id')
-           return
-        if debug : print (monNode.fauxNoeudGraphique)
-        retour = monNode.fauxNoeudGraphique.appendChild(name,pos)
-        return retour
+    def appendChild(self,cid, externEditorId, nodeId,name,pos=None):
+    #-------------------------------------------------------------
+         """
+         Methode pour ajouter un objet fils name a l objet associe au noeud id.
+         On peut l'ajouter en debut de liste (pos='first'), en fin (pos='last')
+         ou en position pos_ieme de la liste. (pos = n, avec n = 0 pour avant la 1ere commande)
+         retour = nouvelIdUnique ou None
+         """
+         monNode=self.getNodeById(nodeId)
+         if not monNode : return  (6000, dictErreurs[6000].format(nodeId))
+         if debug : print (monNode.fauxNoeudGraphique)
+         newId, retour, commentaire = monNode.fauxNoeudGraphique.appendChild(name,pos)
+         if not retour : return (newId, 0, commentaire)
+         else : return (newId,  8000, commentaire)
 
 
     #-------------------------------------------------------------

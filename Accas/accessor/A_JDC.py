@@ -569,6 +569,7 @@ class JDC(A_OBJECT.OBJECT):
 
         self.resetContext()
         CONNECTOR.Emit(self, "supp", etapeSup)
+        print ('iiiiiiiiiiiiiiiii CONNECTOR.Emit JDC')
         self.finModif()
         return 1
 
@@ -717,9 +718,9 @@ class JDC(A_OBJECT.OBJECT):
 
     def finModif(self):
         # print "finModif",self
+        # ??? pourquoi le isValid est apres le Emit ??
         CONNECTOR.Emit(self, "valid")
         self.isValid()
-        pass
 
     def deepUpdateConditionBloc(self, motClef=None):
         # pour le moment, on ne fait rien

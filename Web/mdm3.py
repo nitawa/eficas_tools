@@ -218,6 +218,9 @@ def removeNode():
 @app.route("/appendChild", methods=['POST'])
 def appendChild():
     # Validate the request body contains JSON
+    print ('__________________________________________')
+    print ( 'in appendChild')
+    print ('__________________________________________')
     if request.is_json:
         # Parse the JSON into a Python dictionary
         req = request.get_json()
@@ -305,6 +308,7 @@ def index():
     #print("---- myFancyTreeJS ----")
     #pprint( myFancyTreeJS)
 
+    if debug : print ( 'liste des commandes',  eficasEditor.getListeCommandes())
     return render_template('commandes_2.html',
       titre=code,
       listeCommandes = eficasEditor.getListeCommandes(),

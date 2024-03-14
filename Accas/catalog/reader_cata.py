@@ -224,8 +224,7 @@ class ReaderCata(ReaderCataCommun):
         self.traiteIcones()
         self.cataitem = None
         self.creeDicoInverse()
-        if self.code == "TELEMAC":
-            self.creeDicoCasToCata()
+        if self.code == "TELEMAC": self.creeDicoCasToCata()
 
     def openCata(self):
     # _________________
@@ -234,8 +233,7 @@ class ReaderCata(ReaderCataCommun):
         dans le repertoire Cata
         """
         # import du catalogue
-        if self.cataFile == None:
-            self.choisitCata()
+        if self.cataFile == None: self.choisitCata()
 
         self.cata = self.importCata(self.cataFile)
         if self.code == "NonConnu": self.code = self.cata.JdC.code
@@ -396,19 +394,20 @@ class ReaderCata(ReaderCataCommun):
         # try: self.appliEficas.mesScripts[self.code] = __import__(mesScriptsNomFichier)
         # except: pass
 
-        #try:
-        if 1 :
+        try:
+        #if 1 :
             #import importlib.util
             from importlib import util
             cataSpec = util.spec_from_file_location(nomCata, cataFile)
             leCata = util.module_from_spec(cataSpec)
             cataSpec.loader.exec_module(leCata)
             return leCata
-        #except Exception as e:
-        else :
+        except Exception as e:
+        #else :
             self.appliEficas.afficheMessage("catalog python", "unable to load catalog file")
             import traceback
             traceback.print_exc()
+            raise EficasException(str(e))
             exit(1) 
 
     def retrouveOrdreCata(self):

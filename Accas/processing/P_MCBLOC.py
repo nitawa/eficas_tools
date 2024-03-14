@@ -114,6 +114,28 @@ class MCBLOC(P_MCCOMPO.MCCOMPO):
                         dico[k] = None
 
         return dico
+    def longueurDsArbreAvecConsigne(self):
+        longueur=0
+        for mc in self.mcListe :
+            longueur = longueur + mc.longueurDsArbreAvecConsigne()
+        return longueur
+
+    def longueurDsArbre(self):
+        # PN 24/01/22 --> Cette methde n est pas surchage
+        # il y a une surchagre sur N_BLOC mais pas sur N_MCBLOC
+        # ???
+        print ('bizarre, ne devrait on pas surchager la methode')
+        return 
+
+    def getAllChildInBloc(self):
+    # contrairement a getValeur ne retourne que les enfants de mcListe
+        liste=[]
+        for mc in self.mcListe:
+            if mc.isBLOC():
+                for petitfils in mc.getAllChildInBloc() : liste.append(petitfils)
+            else:
+                liste.append(mc)
+        return liste
 
     def isBLOC(self):
         """

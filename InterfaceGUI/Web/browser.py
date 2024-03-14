@@ -274,7 +274,7 @@ class JDCNode():
             except :
                 txt=' Impossible d ajouter {} en position {}'.format(name, pos)
                 self.editor.afficheMessage(txt,'rouge')
-                return None
+                return (None, 1, txt)
             if debug : print ('name : ', name, ' a pour index : ', index)
             obj = mcPere.addEntite(name,index)
             if debug : print ('mcPere', mcPere.nom, mcPere.mcListe)
@@ -290,14 +290,15 @@ class JDCNode():
             except :
                 txt=' Impossible d ajouter {} en position {}'.format(name, pos)
                 self.editor.afficheMessage(txt,'rouge')
-                return (1, txt) 
+                return (None,1, txt) 
             if debug : print ('name : ', name, ' a pour index : ', index)
             obj = self.item.addEntite(name,index) # emet le signal 'add'
         
-        if not obj : return (1, "message a affiner")
+        if not obj : return (None, 1, "message a affiner")
         if debug : print ('obj', obj.nom, obj.mcListe)
         self.updateOptionnels()
-        return (0, "")
+        # on n a pas l ID unique a ce stade car il est porte par l ObjectTreeItem
+        return ( 1, 0, "")
         #return child.getIdUnique()
 
     def delete(self):

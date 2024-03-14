@@ -263,6 +263,7 @@ class PARAMETRE(P_OBJECT.OBJECT, A_OBJECT.OBJECT, Formula):
         self.jdc.delParam(self)
         self.jdc.deleteConceptAfterEtape(self, self)
         CONNECTOR.Emit(self, "supp", None)
+        print ('CONNECTOR.Emit parametre')
         CONNECTOR.Emit(self, "valid")
 
     def isActif(self):

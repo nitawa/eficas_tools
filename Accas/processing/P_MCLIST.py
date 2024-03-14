@@ -241,3 +241,5 @@ class MCList(UserList):
     def longueurDsArbre(self):
         # pour Pyxb : longueur  dans le orderedcontent de pyxb
         return len(self)
+    def longueurDsArbreAvecConsigne(self):
+        return self.longueurDsArbre()

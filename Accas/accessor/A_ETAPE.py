@@ -110,10 +110,7 @@ class ETAPE(A_MCCOMPO.MCCOMPO):
 
         # pour eviter que le nom du concept soit le nom de la classe --> souci pour utiliser le concept
         if nom == self.definition.nom:
-            return (
-                0,
-                tr("un concept de type ") + nom + tr(" ne peut pas se nommer ") + nom,
-            )
+            return ( 0, tr("un concept de type ") + nom + tr(" ne peut pas se nommer ") + nom)
         if nom in dir(self.jdc.cata):
             return (0, nom + tr("est un not reserve"))
         # if (not isinstance(nom,str)) : return (0, tr("Le nom ") + nom + tr(" est un mot reserve"))
@@ -171,9 +168,7 @@ class ETAPE(A_MCCOMPO.MCCOMPO):
                 if old_reuse:
                     self.sd = self.reuse = old_reuse
                     self.sdnom = old_reuse.nom
-                return 0, tr(
-                    "Nommage du concept refuse : un concept de meme nom existe deja"
-                )
+                return 0, tr( "Nommage du concept refuse : un concept de meme nom existe deja")
             else:
                 # Il n'existe pas de concept de ce nom dans le voisinage de l'etape courante
                 # On peut donc creer le concept retourne
@@ -197,9 +192,7 @@ class ETAPE(A_MCCOMPO.MCCOMPO):
                 # par contre si le concept existe et qu'il s'appelle sansnom c'est que l'etape est valide
                 # on peut donc le nommer sans test prealable
                 if self.parent.getSdAutourEtape(nom, self):
-                    return 0, tr(
-                        "Nommage du concept refuse : un concept de meme nom existe deja"
-                    )
+                    return 0, tr( "Nommage du concept refuse : un concept de meme nom existe deja")
                 else:
                     # Renommage du concept : Il suffit de changer son attribut nom pour le nommer
                     self.sd.nom = nom
@@ -212,9 +205,7 @@ class ETAPE(A_MCCOMPO.MCCOMPO):
                 # Il suffit de specifier l attribut nom de sd pour le nommer si le nom n est pas
                 # deja attribue
                 if self.parent.getSdAutourEtape(nom, self):
-                    return 0, tr(
-                        "Nommage du concept refuse : un concept de meme nom existe deja"
-                    )
+                    return 0, tr( "Nommage du concept refuse : un concept de meme nom existe deja")
                 else:
                     # Renommage du concept : Il suffit de changer son attribut nom pour le nommer
                     self.sd.nom = nom
@@ -224,7 +215,7 @@ class ETAPE(A_MCCOMPO.MCCOMPO):
                     return 1, tr("Nommage du concept effectue")
             else:
                 # Normalement on ne devrait pas passer ici
-                return 0, "Normalement on ne devrait pas passer ici"
+                return 0, "nommeSd de Etape : Normalement on ne devrait pas passer ici"
 
     def getIndexDsParent(self):
         return self.parent.getIndex(self)
@@ -267,6 +258,7 @@ class ETAPE(A_MCCOMPO.MCCOMPO):
         if self.sd:
             self.jdc.delSdprod(self.sd)
             self.jdc.deleteConceptAfterEtape(self, self.sd)
+        print ('jjjjjjjjjj CONNECTOR.Emit ETAPE')
         CONNECTOR.Emit(self, "supp", None)
         CONNECTOR.Emit(self, "valid")
 

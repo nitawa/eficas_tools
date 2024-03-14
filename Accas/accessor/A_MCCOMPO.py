@@ -296,6 +296,9 @@ class MCCOMPO(A_OBJECT.OBJECT):
         objet.deleteRef()
         self.mcListe.remove(objet)
         CONNECTOR.Emit(self, "supp", objet)
+        print ('iiiiiiiiiii CONNECTOR.Emit MCCOMPO')
+        import traceback
+        traceback.print_stack()
         objet.deleteMcGlobal()
         objet.updateConditionBloc()
         objet.supprime()
