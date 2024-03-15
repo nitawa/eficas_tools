@@ -485,15 +485,18 @@ function sendNewDataset( catalogName, datasetName) {
 	// Tester data == NULL !
         const source   = data.source;
         const commands = data.commands;
-        const titre    = data.titre;
-	const rMessage = data.message
+        const title    = data.title;
+	const rMessage = data.message;
+	console.log(source);
 	
 	// TODO: détacher la constuction des options fancytree de #tree1 !
 	//tree.destroy();
 	let message = "New Dataset has been loaded ("+rMessage+")";
 	tree.clear(); //Remove all the nodes but keep the configuration
 	tree.setOption('source', source);
-	tree.reload().done( ()=>treeMessage(_msgCssSelStr,"alert-success",message));
+	
+	//?? FAIT BUGGER  tree.reload().done( ()=>treeMessage(_msgCssSelStr,"alert-success",message));
+	
 	//TODO : Gérer les commandes
 	//TODO : Gérer le titre/code
 	
@@ -529,7 +532,7 @@ function sendNewDataset( catalogName, datasetName) {
 
 
 //GESTION DES EVENEMENTS PROVENANT DU SERVEUR
-      const source = new EventSource("{{ url_for('sse.stream' , channel=efi_update_channel ) }}");
+const source = new EventSource("{{ url_for('sse.stream' , channel=efi_update_channel ) }}");
       
 source.addEventListener('error', function(event) {
     alert("Failed to connect to event stream. Is Redis running?");
@@ -689,17 +692,19 @@ source.addEventListener('message', function(event) {
 
 
     
-function getTree1() {
+function getTree() {
     // Some logic to retrieve, or generate tree structure
     return  {{ tree|tojson }};
-}
+};
 
-
+$(function(){
+    'use strict';
+    $("#tree1").fancytree(efiFancytreeOptions());
+    //sendNewDataset("","");
+});
 
 // $("#tree1").fancytree({ source: [ {title: "Node 1", key: "1000"},{title: "Folder 2", key: "2", folder: true, children: [ {title: "Node 2.1", key: "3000"},{title: "Node 2.2", key: "44"} ]}    ], })
 // $("#tree1").fancytree({ source: JSON.parse(getTree1()), })
-
-
 
 //Doublon cf. base.html
 var glyph_opts = {
@@ -728,16 +733,17 @@ function efiIconRendering(event, data) {
     };
 };
 
-$(function(){
-    'use strict';
 
-    $("#tree1").fancytree({
+//créer une fonction pour changer l'appel à getTree
+let efiFancytreeOptions=function(){
+    'use strict';
+    return {
 	//focusOnSelect:true,
-	debug:4, //if null: use global setting $.ui.fancytree.debugLevel
+	debug:4,     //if null: use global setting $.ui.fancytree.debugLevel
 	debuLevel:4, //if null: use global setting $.ui.fancytree.debugLevel
 	//extensions: ["dnd5", "edit", "glyph", "wide", "table", "gridnav"],
 	extensions: [ "glyph", "table", "ariagrid"], // https://github.com/mar10/fancytree/wiki/ExtTable
-	//extensions: [ "glyph", "table", "gridnav"],
+	//extensions: [ "glyph", "table", "gridnav"], // utilisation d'ariagrid et non de gridnav
 	checkbox: true, // Activate the use of checkboxes next to the nodes
 
 	// selectMode: 1: single selection
@@ -754,7 +760,7 @@ $(function(){
             dragDrop : function(node, data) { data.otherNode.copyTo(node, data.hitMode); }
 	},
 	glyph: glyph_opts,
-	source: JSON.parse(getTree1()), //TODO: Vérifier que la transformation JSON n'est pas double avec Flask
+	source: JSON.parse(getTree()), //TODO: Vérifier que la transformation JSON n'est pas double avec Flask
 	//wide: {
 	//  iconWidth: "1em",       // Adjust this if @fancy-icon-width != "16px"
 	//  iconSpacing: "0.5em",   // Adjust this if @fancy-icon-spacing != "3px"
@@ -1176,9 +1182,9 @@ $(function(){
 	renderNode: function(event, data) {
             console.log("event.type, data :"+event.type+" , "+data);
 	},
-	
-    });
-});
+    };
+};
+    
 
 function efiDefaultGridAction(event, data) { //(used by ext-aria) The user hit enter on the active row or cell.
     //return true;
