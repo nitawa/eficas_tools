@@ -81,6 +81,14 @@ class MCSIMP(A_OBJECT.OBJECT):
         monDico["max"] = self.definition.max
         monDico["min"] = self.definition.min
         monDico["into"] = self.definition.into
+        if self.definition.into != None and self.waitReel() :
+           monDico["into"] = []
+           for r in self.definition.into :
+               chaineR=str(r)
+               if not chaineR.find('.') : chaineR = chaineR + '.'
+               monDico["into"].append(chaineR)
+           if not monDico["wValue"].find('.') : monDico["wValue"]+'.'
+               
         monDico["statut"] = self.definition.statut
         # a priori jamais vrai sauf si on a change un nom de userassd
         if monDico["validite"] == 0 and monDico["statut"] == "f":
@@ -289,6 +297,12 @@ class MCSIMP(A_OBJECT.OBJECT):
         """
         for typ in self.definition.type:
             if typ == "TXM":
+                return 1
+        return 0
+
+    def waitReel(self):
+        for typ in self.definition.type:
+            if typ == "R":
                 return 1
         return 0
 
