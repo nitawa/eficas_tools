@@ -111,7 +111,7 @@ class WebEditor(Editor):
          if not monNode : return  (6000, dictErreurs[6000].format(nodeId))
          ok,message =  monNode.fauxNoeudGraphique.updateSDName(sdnom)
          if ok :
-            self.appliEficas.propageChange(self.editorId, cId, externEditorId, False, 'updateNodeInfo', nodeId, monNode.fauxNoeudGraphique.updateNodeName())
+            self.appliEficas.propageChange(self.editorId, cId, externEditorId, False, 'updateNodeInfo', nodeId, monNode.fauxNoeudGraphique.getDicoForUpdateNodeName())
             return (0, message)
          else :
             return (7000, dictErreurs[7000].format(nodeId,message))
@@ -164,8 +164,8 @@ class WebEditor(Editor):
          if debug : print (' change Valeur', monNode)
          idRetour, commentaire, validite = monNode.fauxNoeudGraphique.traiteValeurSaisie(valeur)
          if validite :
-             self.appliEficas.propageChange(self.editorId, cId, externEditorId, False, 'updateNodeInfo', nodeId, monNode.fauxNoeudGraphique.updateNodeInfo())
-             self.appliEficas.propageChange(self.editorId, cId, externEditorId, True, 'updateNodeInfo', nodeId, monNode.fauxNoeudGraphique.treeParent.updateOptionnels())
+             self.appliEficas.propageChange(self.editorId, cId, externEditorId, False, 'updateNodeInfo', nodeId, monNode.fauxNoeudGraphique.getDicoForUpdateNodeInfo())
+             self.appliEficas.propageChange(self.editorId, cId, externEditorId, True, 'updateNodeInfo', nodeId, monNode.fauxNoeudGraphique.treeParent.getDicoForUpdateOptionnels())
              return (idRetour, commentaire, validite)
          if not validite :
             return (idRetour, commentaire, validite)

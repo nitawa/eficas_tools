@@ -108,7 +108,7 @@ class JDCNode():
            if debug : print ('self.item.state' , self.item.state)
            if self.item.state != 'modified' :  return
         self.oldValidite=validite
-        self.editor.connecteur.toWebApp('propageValide',self.getIdUnique(), validite)
+        self.appliEficas.propageChange(self.editor.editorId, None, None, True, 'propageValide',self.getIdUnique(), validite)
         if debug : print ('appel de propageValide pour ', self.item.nom, validite,self.oldValidite)
 
     def onAdd(self,ajout):
@@ -314,13 +314,20 @@ class JDCNode():
            self.treeParent.updateOptionnels()
         return (ret,commentaire) 
 
+    def updateOptionnels(self):
+    #-----------------------------------
+        if self.item.nature == 'MCList' or self.item.nature == 'JDC' or self.item.nature=='MCSIMP' : return
+        monDictPartiel={} 
+        monDictPartiel['infoOptionnels'] = self.item.calculOptionnelInclutBlocs()
+        self.appliEficas.propageChange(self.editor.editorId, None, None, True, 'updateNodeInfo',self.getIdUnique(), monDictPartiel)
+
     def updateNodeLabel(self):
     #-------------------------
         monDictPartiel={} 
         label=self.item.getLabelText()[0]
         if label[-1]==":" : label=label[0:-1]
         monDictPartiel['title']=label
-        self.editor.connecteur.toWebApp('updateNodeInfo',self.getIdUnique(), monDictPartiel)
+        self.appliEficas.propageChange(self.editor.editorId, None, None, True, 'updateNodeInfo',self.getIdUnique(), monDictPartiel)
 
     def updateRepetable(self,isRepetable):
     #-------------------------------------
@@ -328,7 +335,7 @@ class JDCNode():
         self.oldRepetable = isRepetable 
         monDictPartiel={} 
         monDictPartiel['repetable']=isRepetable
-        self.editor.connecteur.toWebApp('updateNodeInfo',self.getIdUnique(), monDictPartiel)
+        self.appliEficas.propageChange(self.editor.editorId, None, None, True, 'updateNodeInfo',self.getIdUnique(), monDictPartiel)
 
     def updateStatut(self,statut):
     #-----------------------------
@@ -336,24 +343,23 @@ class JDCNode():
         self.oldStatut = statut 
         monDictPartiel={} 
         monDictPartiel['statut']=statut
-        #TODO remonter au pere si le statut change
-        self.editor.connecteur.toWebApp('updateNodeInfo',self.getIdUnique(), monDictPartiel)
+        self.appliEficas.propageChange(self.editor.editorId, None, None, True, 'updateNodeInfo',self.getIdUnique(), monDictPartiel)
 
-    def updateNodeName(self):
-    #-------------------------
+    def getDicoForUpdateNodeName(self):
+    #---------------------------------
         monDictPartiel={} 
         monDictPartiel['sdnom'] = self.item.sdnom
         return monDictPartiel
 
-    def updateOptionnels(self):
-    #---------------------------
+    def getDicoForUpdateOptionnels(self):
+    #-----------------------------------
         if self.item.nature == 'MCList' or self.item.nature == 'JDC' or self.item.nature=='MCSIMP' : return
         monDictPartiel={} 
         monDictPartiel['infoOptionnels'] = self.item.calculOptionnelInclutBlocs()
         return monDictPartiel
 
-    def updateNodeInfo(self):
-    #----------------------
+    def getDicoForUpdateNodeInfo(self):
+    #---------------------------------
         if self.item.nature == 'MCList' or self.item.nature == 'JDC' : print ('dans updateNodeInfo reflechir SVP')
         monDico= self.item.getDicoForFancy()
         return monDico

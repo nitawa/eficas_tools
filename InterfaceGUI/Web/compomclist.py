@@ -55,18 +55,6 @@ class Node(browser.JDCNode,typeNode.PopUpMenuNodeMinimal):
        # on ne fait rien
        pass
 
-    def onValidBad(self):
-    #-----------------
-       #print( self.item.nature)
-        if self.item.nature == 'MCFACT' : 
-            validite=self.item.isValid()
-            if self.oldValidite != validite :
-               self.editor.connecteur.toWebApp('propageValide',self.item.idUnique, validite)
-               self.oldValidite = validite
-
-        if self.item.state != 'modified' :  return
-        self.treeParent.item.state= 'modified'
-
     def onAdd(self,ajout):
     #----------------------
         debug=0
@@ -106,7 +94,7 @@ class Node(browser.JDCNode,typeNode.PopUpMenuNodeMinimal):
             posDansArbre +=c.item.longueurDsArbreAvecConsigne()
 
         if debug : print  (' posDansArbre ', posDansArbre , ' posDansSelf ', posDansSelf)
-        self.editor.connecteur.toWebApp('appendChildren',ouAjouter,laListe,posDansArbre)
+        self.editor.appliEficas.propageChange( self.editor.editorId, None, None, True, 'appendChildren',ouAjouter,laListe,posDansArbre)
         #print ('la pos ', posOuAjouter)
         #print (' appel appendChild',self.item.idUnique,laListe,pos)
         self.updateChildrenProperties()
