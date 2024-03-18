@@ -63,6 +63,7 @@ class Editor:
         self.liste_simp_reel = []
         self.editorId = uuid1().hex
         self.appliEficas.editorManager.dictEditors[self.editorId]=self
+        self.include = include
         self.formatFichierOut = formatOut
         self.formatFichierIn = formatIn
 
@@ -143,7 +144,7 @@ class Editor:
                     print("mauvais enregistrement dans Salome")
                     raise EficasException(str(e))
         else:
-            if not include: self.jdc = self._newJDC()
+            if not self.include: self.jdc = self._newJDC()
             else: self.jdc = self._newJDCInclude()
             self.nouveau = 1
 

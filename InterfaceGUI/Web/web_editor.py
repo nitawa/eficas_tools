@@ -156,16 +156,17 @@ class WebEditor(Editor):
          nodeId : identifiant unique
          valeur : valeur saisie dans le formulaire
          """
-         debug = 1
+         debug = 0
          if debug : print (' changeValeur cId, externEditorId, nodeId, valeur' ,cId, externEditorId, nodeId, valeur)
          monNode=self.getNodeById(nodeId)
-         if debug : print ('monNode : ', monNode)
          if not monNode : return  (nodeId, False, 'Node {} non trouve'.format(nodeId))
-         if debug : print (' change Valeur', monNode)
+         if debug : print (' changeValeur', monNode)
          idRetour, commentaire, validite = monNode.fauxNoeudGraphique.traiteValeurSaisie(valeur)
          if validite :
              self.appliEficas.propageChange(self.editorId, cId, externEditorId, False, 'updateNodeInfo', nodeId, monNode.fauxNoeudGraphique.getDicoForUpdateNodeInfo())
-             self.appliEficas.propageChange(self.editorId, cId, externEditorId, True, 'updateNodeInfo', nodeId, monNode.fauxNoeudGraphique.treeParent.getDicoForUpdateOptionnels())
+             #self.appliEficas.propageChange(self.editorId, cId, externEditorId, True, 'updateNodeInfo', nodeId, monNode.fauxNoeudGraphique.treeParent.getDicoForUpdateOptionnels())
+             if debug : print (' changeValeur', monNode.fauxNoeudGraphique.treeParent, monNode.fauxNoeudGraphique.treeParent.item.nom)
+             monNode.fauxNoeudGraphique.treeParent.updateOptionnels()
              return (idRetour, commentaire, validite)
          if not validite :
             return (idRetour, commentaire, validite)

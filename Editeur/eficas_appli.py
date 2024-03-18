@@ -190,7 +190,7 @@ class EficasAppli:
             self.dictEditorIdChannelIdExternEid[editor.editorId] = {}
 
         if sId not in self.dictEditorIdChannelIdExternEid[editor.editorId] :
-            self.dictEditorIdChannelIdExternEid[editor.editorId][sId] = (externalEditorId,)
+            self.dictEditorIdChannelIdExternEid[editor.editorId][sId] = [externalEditorId,]
         else : 
             self.dictEditorIdChannelIdExternEid[editor.editorId][sId].append(externalEditorId)
         if debug : 
@@ -385,8 +385,8 @@ class EficasAppli:
     def propageToWebApp(self, fction, sessionId, externEditorId, *args, **kwargs):
     #---------------------------------------------------------------------------
         #if fction =='propageValide' :
-        debug=1
-        if debug  : print ('PNPNPN : WebEficasAppli.toWebApp',  fction,  *args, **kwargs)
+        debug=0
+        if debug  : print ('WebEficasAppli.toWebApp',  fction,  *args, **kwargs)
         if self.appWeb == None  : return
         self.appWeb.fromConnecteur(fction, sessionId, externEditorId,  *args, **kwargs)
 
@@ -424,7 +424,8 @@ class EficasAppli:
                 for exId in self.dictEditorIdChannelIdExternEid[editorId][channelId] :
                     if debug : print ('exId', exId)
                     if not toAll and exId == emitEditorId and channelId == emitChannelId : continue
-                    print ('on propage pour ', exId )
+                    if debug : print ('on propage pour ', exId )
+                    if debug and 'indexId' in args : print (' et pour ', args['indexId'])
                     self.propageToWebApp(fction, channelId, exId,  *args, **kwargs)
 
     #---------------------------------------------------------------------------
