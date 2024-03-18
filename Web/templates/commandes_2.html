@@ -122,20 +122,22 @@
 <script>
   'use strict';
 
-  let efiNewTab=function(treeId) {
+  let efiNewTab=function(catalogName,datasetName,treeId) {
       let _treeId = treeId;
       if (treeId === undefined  || treeId ==  "") {
 	  _treeId = "tree"+ ($("#efi-tab-content > div").size()+1)
       };
 
       $("#efi-nav-tabs").prepend(function(treeId){
-	  let efiNavTab=`<li class="active"><a data-toggle="tab" href="#@treeId@Tab">Dataset : {{titre}}</a></li>`;
-	  return efiNavTab.replace("@treeId@",treeId);
+	  // let efiNavTab='<li class="active"><a data-toggle="tab" href="#@treeId@Tab">'+catalogName+'/'+datasetName+'</a></li>';
+	  let efiNavTab='<li><a id="@treeId@Nav" data-toggle="tab" href="#@treeId@Tab">'+catalogName+'/'+datasetName+'</a></li>';
+	  return efiNavTab.replaceAll("@treeId@",treeId);
       }(_treeId));
 			     
       $("#efi-tab-content").prepend(function(treeId){
 	  let efiFancyTreeTempl = `
-          <div id="@treeId@Tab" class="tab-pane fade in active">
+          <!-- <div id="@treeId@Tab" class="tab-pane fade in active"> -->
+          <div id="@treeId@Tab" class="tab-pane fade">
              <table id="@treeId@" class="table table-condensed table-hover table-striped fancytree-fade-expander">
           	<!-- TODO : Manage the space between Title and Value while choosing a Value size adapted to the value -->
           	<colgroup>
@@ -159,9 +161,10 @@
 
 	  return efiFancyTreeTempl.replaceAll("@treeId@" ,treeId);
       }(_treeId));
+      return _treeId;
   };
   
-  efiNewTab();
+//  efiNewTab();
   
 const EFI_SUCCESS_COLOR = '#00ff00';
 const EFI_ERROR_COLOR   = '#ff0000';
@@ -285,6 +288,12 @@ function clickOnRemove(treeCssSelStr, msgCssSelStr, key ) {
     'use strict';
     const tree  = $.ui.fancytree.getTree(treeCssSelStr);
     const _key  = key; 
+    if ( tree ==  null) {
+	let message = "Unsuccessfull removeNode processing for key " + _key + ". Tree ("+treeCssSelStr+") returned (null)" ;
+	alert(message) ;
+	return;
+    };
+    
     if ( key === undefined  || key ==  "") {
 	activeNode = tree.activeNode;
 	if ( activeNode !=  null) {
@@ -311,6 +320,11 @@ function clickOnRemoveRef(treeCssSelStr, msgCssSelStr, key ) {
     'use strict';
     const tree  = $.ui.fancytree.getTree(treeCssSelStr);
     const _key  = key; 
+    if ( tree ==  null) {
+	let message = "Unsuccessfull removeRef processing for key " + _key + ". Tree ("+treeCssSelStr+") returned (null)" ;
+	alert(message) ;
+	return;
+    };
     if ( key ==  "") {
 	activeNode = tree.activeNode;
 	if ( activeNode !=  null) {
@@ -362,9 +376,14 @@ function getParentCommandNode(node) {
 function clickOnCommand(treeCssSelStr, msgCssSelStr, cmdName, key ) {
     'use strict';
     const tree                      = $.ui.fancytree.getTree(treeCssSelStr); //TODO : Une fonction pour récupérer le tree en paramètre soit par css ou objet
+    if ( tree ==  null) {
+	let message = "Unsuccessfull clickOnCommand processing for key " + key + ". Tree ("+treeCssSelStr+") returned (null)" ;
+	alert(message) ;
+	return;
+    };
     const rootDatasetNode = tree.rootNode.children[0];
-    let     fromNode             =  null;
-    let     pos;
+    let   fromNode             =  null;
+    let   pos;
     
     if ( key !== undefined && key !=  "") {
 	fromNode = tree.getNodeByKey(key);
@@ -414,6 +433,11 @@ function clickOnSelect(treeCssSelStr, msgCssSelStr, key, eltNameWithValue ) {
     'use strict';
     const tree        = $.ui.fancytree.getTree(treeCssSelStr); //TODO : Une fonction pour récupérer le tree en paramètre soit par css ou objet
     var   node = null;
+    if ( tree ==  null) {
+	let message = "Unsuccessfull clickOnSelect processing for key " + key + ". Tree ("+treeCssSelStr+") returned (null)" ;
+	alert(message);
+	return;
+    };
     if ( key !== undefined && key !=  "") {
 	node = tree.getNodeByKey(key);
     };
@@ -470,12 +494,12 @@ function sendUpdateSimp( node, eltNameWithValue) {
 
 };
 
-function sendNewDataset( catalogName, datasetName) {
+function sendNewDataset(catalogName, datasetName) {
     'use strict';
     
-    const _msgCssSelStr  =  '#tree1-messages';
-    const _treeCssSelStr =  '#tree1';
-    const tree           = $.ui.fancytree.getTree(_treeCssSelStr); //TODO : Une fonction pour récupérer le tree en paramètre soit par css ou objet
+    // const _msgCssSelStr  = '#tree1-messages';
+    // const _treeCssSelStr = '#tree1';
+    // const tree           = $.ui.fancytree.getTree(_treeCssSelStr); //TODO : Une fonction pour récupérer le tree en paramètre soit par css ou objet
 
     //let $input=$(node.tr).find('input');
     // let $input=$(node.tr).find(eltNameWithValue);
@@ -483,19 +507,43 @@ function sendNewDataset( catalogName, datasetName) {
 
     let checkCallBack = function(data) {
 	// Tester data == NULL !
+	let   _treeId;
+	let   _treeCssIdTab;
+	let   _treeCssIdNav;
+	let   _treeCssSelStr;
         const source   = data.source;
         const commands = data.commands;
         const title    = data.title;
 	const rMessage = data.message;
 	console.log(source);
 	
-	// TODO: détacher la constuction des options fancytree de #tree1 !
-	//tree.destroy();
-	let message = "New Dataset has been loaded ("+rMessage+")";
-	tree.clear(); //Remove all the nodes but keep the configuration
-	tree.setOption('source', source);
+	// // TODO: détacher la constuction des options fancytree de #tree1 !
+	// //tree.destroy();
+	// let message = "New Dataset has been loaded ("+rMessage+")";
+	// tree.clear(); //Remove all the nodes but keep the configuration
+	// tree.setOption('source', source);
+	// //?? FAIT BUGGER  tree.reload().done( ()=>treeMessage(_msgCssSelStr,"alert-success",message));
+
 	
-	//?? FAIT BUGGER  tree.reload().done( ()=>treeMessage(_msgCssSelStr,"alert-success",message));
+	// efiNewTab("tree1");
+	// $("#tree1").fancytree(efiFancytreeOptions("#tree1",source));
+	_treeId=efiNewTab(catalogName, datasetName);
+	_treeCssIdTab='#'+_treeId+'Tab';
+	_treeCssIdNav='#'+_treeId+'Nav';
+	_treeCssSelStr='#'+_treeId;
+	$(_treeCssSelStr).fancytree(efiFancytreeOptions(_treeCssSelStr,source));
+	createNewSetOfEvents(_treeCssSelStr,'#tree1-messages');
+	console.log($(_treeCssIdNav));
+	$('.nav-tabs a[href="'+_treeCssIdTab+'"]').tab('show')
+	//$(_treeCssIdNav).tab('show');
+	// if ( tree ==  null) {
+	//     let message = "Unsuccessfull sendNewDataset processing. Tree ("+_treeCssSelStr+") returned (null)" ;
+	//     alert(message);
+	//     return;
+	// };
+
+	let message = "New Dataset has been loaded ("+rMessage+")";
+
 	
 	//TODO : Gérer les commandes
 	//TODO : Gérer le titre/code
@@ -542,154 +590,157 @@ source.addEventListener('message', function(event) {
 }, false);
 
 // --- propageValid ---
-(function (treeCssSelStr, msgCssSelStr) {
-    'use strict';
-    let _treeCssSelStr  = treeCssSelStr; //inutile
-    let _msgCssSelStr   = msgCssSelStr;  //inutile
-    // var  _tree          = $.ui.fancytree.getTree(_treeCssSelStr);
-    source.addEventListener('propageValide', function(event) {
-        const data     = JSON.parse(event.data);
-        const id       = data.id;
-        const valid    = data.valid;
-        const message  = "The server says " + data.message +" , id: "+id;
-        const msgerror = "Event propageValid : can't find node with key :"+id;
-        const tree     = $.ui.fancytree.getTree(_treeCssSelStr); //TODO: event.tree ?
-        
-        treeMessage(_msgCssSelStr,"alert-info",message);
-        // console.log("_tree : "+ _tree); //?Expliquer pourquoi null: à cause de $.?
-        let node=tree.getNodeByKey(id);
-	if (node == null) {
-	    treeMessage(_msgCssSelStr,"alert-danger",msgerror);
-	    return;
-	};   
-        node.data.validite=valid;  //TODO : ?? Pas encore réussi à tester ... ??
-	//alert("propageValid");
-        node.render(true,false);       //force rendering the node (not parents nor descendants)
-        //node.renderStatus();     //CSS element updates only
-    }, false);
-})('#tree1','#tree1-messages');
+function createNewSetOfEvents(treeCssSelStr, msgCssSelStr) {
+    //TODO: Vérifier l'eid dans chacune des fonctions suivantes
+    //çà fonctionne sans car les Id sont dess UUID uniques sauf qs c'est le même dataset !
+    (function (treeCssSelStr, msgCssSelStr) {
+	'use strict';
+	let _treeCssSelStr  = treeCssSelStr; //inutile
+	let _msgCssSelStr   = msgCssSelStr;  //inutile
+	// var  _tree          = $.ui.fancytree.getTree(_treeCssSelStr);
+	source.addEventListener('propageValide', function(event) {
+            const data     = JSON.parse(event.data);
+            const id         = data.id;
+            const valid    = data.valid;
+            const message  = "The server says " + data.message +" , id: "+id;
+            const msgerror = "Event propageValid : can't find node with key :"+id;
+            const tree     = $.ui.fancytree.getTree(_treeCssSelStr); //TODO: event.tree ?
+            
+            treeMessage(_msgCssSelStr,"alert-info",message);
+            // console.log("_tree : "+ _tree); //?Expliquer pourquoi null: à cause de $.?
+            let node=tree.getNodeByKey(id);
+	    if (node == null) {
+		treeMessage(_msgCssSelStr,"alert-danger",msgerror);
+		return;
+	    };   
+            node.data.validite=valid;  //TODO : ?? Pas encore réussi à tester ... ??
+	    //alert("propageValid");
+            node.render(true,false);       //force rendering the node (not parents nor descendants)
+            //node.renderStatus();     //CSS element updates only
+	}, false);
+    })(treeCssSelStr,'#tree1-messages');
 
-// --- displayMessage ---
-(function (treeCssSelStr, msgCssSelStr) {
-    'use strict';
-    source.addEventListener('displayMessage', function(event) {
-        const data         = JSON.parse(event.data);
-        const txt          = data.txt;
-        const color        = data.color;
-        const message      = data.message;
-        const messageClass = data.messageClass;
-        const _message     = "The server says " + data.message;
-        
-        treeMessage(_msgCssSelStr,messageClass,_message);
-        treeMessage(_msgCssSelStr,messageClass,txt);
-    }, false);
-})('#tree1','#tree1-messages');
+    // --- displayMessage ---
+    (function (treeCssSelStr, msgCssSelStr) {
+	'use strict';
+	source.addEventListener('displayMessage', function(event) {
+            const data         = JSON.parse(event.data);
+            const txt          = data.txt;
+            const color        = data.color;
+            const message      = data.message;
+            const messageClass = data.messageClass;
+            const _message     = "The server says " + data.message;
+            
+            treeMessage(_msgCssSelStr,messageClass,_message);
+            treeMessage(_msgCssSelStr,messageClass,txt);
+	}, false);
+    })(treeCssSelStr,'#tree1-messages');
 
-// --- updateNodeInfo ---
-(function (treeCssSelStr, msgCssSelStr) {
-    'use strict';
-    const _treeCssSelStr  = treeCssSelStr; //inutile
-    const _msgCssSelStr   = msgCssSelStr;  //inutile
-    // var  _tree          = $.ui.fancytree.getTree(_treeCssSelStr);
-    source.addEventListener('updateNodeInfo', function(event) {
-        const data    = JSON.parse(event.data);
-        const id      = data.id;
-        const info    = data.info;
-        const message = "The server says " + data.message +" , id: "+id;
-        const msgerror = "Event updateNodeInfo : can't find node with key :"+id;
-	const tree    = $.ui.fancytree.getTree(_treeCssSelStr);
+    // --- updateNodeInfo ---
+    (function (treeCssSelStr, msgCssSelStr) {
+	'use strict';
+	const _treeCssSelStr  = treeCssSelStr; //inutile
+	const _msgCssSelStr   = msgCssSelStr;  //inutile
+	// var  _tree          = $.ui.fancytree.getTree(_treeCssSelStr);
+	source.addEventListener('updateNodeInfo', function(event) {
+            const data    = JSON.parse(event.data);
+            const id      = data.id;
+            const info    = data.info;
+            const message = "The server says " + data.message +" , id: "+id;
+            const msgerror = "Event updateNodeInfo : can't find node with key :"+id;
+	    const tree    = $.ui.fancytree.getTree(_treeCssSelStr);
 
-        treeMessage(_msgCssSelStr,"alert-info",message);
-	// treeMessage(_msgCssSelStr,"alert-info","data.wValue : "+data.wValue);
-        const node=tree.getNodeByKey(id);
-	if (node == null) {
-	    treeMessage(_msgCssSelStr,"alert-danger",msgerror);
-	    return;
-	};
-        // console.log("-------------  message 2a: "+ node.data.title); 
-        // console.log("-------------  message 2b: "+ info.title);
-	// En fait, il faut que fancytree trie les propriétés qui l'interesse de celles qui vont dans data
-	// Object.assign(node.data,info); //merge new options to node.data
-	node.fromDict(info);   //WARN : Merge data.info only
-        // console.log("-------------  message 2c: "+ node.data.title);
-	//alert("updateNodeInfo");
-        node.render(true,false);       //force rendering the node (not parents nor descendants)
-        //node.renderStatus();         //CSS element updates only	    
-    }, false);
-})('#tree1','#tree1-messages');
+            treeMessage(_msgCssSelStr,"alert-info",message);
+	    // treeMessage(_msgCssSelStr,"alert-info","data.wValue : "+data.wValue);
+            const node=tree.getNodeByKey(id);
+	    if (node == null) {
+		treeMessage(_msgCssSelStr,"alert-danger",msgerror);
+		return;
+	    };
+            // console.log("-------------  message 2a: "+ node.data.title); 
+            // console.log("-------------  message 2b: "+ info.title);
+	    // En fait, il faut que fancytree trie les propriétés qui l'interesse de celles qui vont dans data
+	    // Object.assign(node.data,info); //merge new options to node.data
+	    node.fromDict(info);   //WARN : Merge data.info only
+            // console.log("-------------  message 2c: "+ node.data.title);
+	    //alert("updateNodeInfo");
+            node.render(true,false);       //force rendering the node (not parents nor descendants)
+            //node.renderStatus();         //CSS element updates only	    
+	}, false);
+    })(treeCssSelStr,'#tree1-messages');
 
-// --- appendChildren ---
-(function (treeCssSelStr, msgCssSelStr) {
-    'use strict';
-    const _treeCssSelStr  = treeCssSelStr; //inutile
-    const _msgCssSelStr   = msgCssSelStr;  //inutile
-    const _tree           = $.ui.fancytree.getTree(_treeCssSelStr);
-    source.addEventListener('appendChildren', function(event) {
-        const data      = JSON.parse(event.data);
-        const id        = data.id;
-        const source    = data.fcyTreeSrc;
-        const pos       = data.pos;
-        //var   message = data.message;
-        const message   = "The server says " + data.message +" , id: "+id;
-        const msgerror  = "Event appendChildren : can't find node with key :"+id;
-	
-        treeMessage(_msgCssSelStr,"alert-info",message);
-        console.log("_tree : "+ _tree); //?Expliquer pourquoi null: à cause de $.?
-        const tree          = $.ui.fancytree.getTree(_treeCssSelStr);
-        const node          = tree.getNodeByKey(id);
-	if (node == null) {
-	    treeMessage(_msgCssSelStr,"alert-danger",msgerror);
-	    return;
-	};   	
-        const countChildren = node.countChildren(false);
-        console.log("countChildren : "+ countChildren); 
-        console.log("pos           : "+ pos); 
-        if ( pos >= countChildren) {
-            node.addChildren(source);
-        } else {
-            node.addChildren(source,pos);
-        }
-            <!-- node.addChildren({ -->
-	    <!--   title: "Document using a custom icon", -->
-	    <!--   icon: "customdoc1.gif" -->
-	    <!-- }); -->
-    }, false);
-})('#tree1','#tree1-messages');
+    // --- appendChildren ---
+    (function (treeCssSelStr, msgCssSelStr) {
+	'use strict';
+	const _treeCssSelStr  = treeCssSelStr; //inutile
+	const _msgCssSelStr   = msgCssSelStr;  //inutile
+	const _tree           = $.ui.fancytree.getTree(_treeCssSelStr);
+	source.addEventListener('appendChildren', function(event) {
+            const data      = JSON.parse(event.data);
+            const id        = data.id;
+            const source    = data.fcyTreeSrc;
+            const pos       = data.pos;
+            //var   message = data.message;
+            const message   = "The server says " + data.message +" , id: "+id;
+            const msgerror  = "Event appendChildren : can't find node with key :"+id;
+	    
+            treeMessage(_msgCssSelStr,"alert-info",message);
+            console.log("_tree : "+ _tree); //?Expliquer pourquoi null: à cause de $.?
+            const tree          = $.ui.fancytree.getTree(_treeCssSelStr);
+            const node          = tree.getNodeByKey(id);
+	    if (node == null) {
+		treeMessage(_msgCssSelStr,"alert-danger",msgerror);
+		return;
+	    };   	
+            const countChildren = node.countChildren(false);
+            console.log("countChildren : "+ countChildren); 
+            console.log("pos           : "+ pos); 
+            if ( pos >= countChildren) {
+		node.addChildren(source);
+            } else {
+		node.addChildren(source,pos);
+            }
+		<!-- node.addChildren({ -->
+					<!--   title: "Document using a custom icon", -->
+					<!--   icon: "customdoc1.gif" -->
+					<!-- }); -->
+	}, false);
+    })(treeCssSelStr,'#tree1-messages');
 
-// --- deleteChildren ---    
-(function (treeCssSelStr, msgCssSelStr) {
-    'use strict';
-    const _treeCssSelStr  = treeCssSelStr; //inutile
-    const _msgCssSelStr   = msgCssSelStr;  //inutile
-    const  _tree          = $.ui.fancytree.getTree(_treeCssSelStr);
-    source.addEventListener('deleteChildren', function(event) {
-	const data        = JSON.parse(event.data);
-	// const keySet = new Set(data.idList); 
-	const keyList     = data.idList;
-	const tree        = $.ui.fancytree.getTree("#tree1");
-	const message     = "The server says " + data.message +" , keyList: "+keyList;
+    // --- deleteChildren ---    
+    (function (treeCssSelStr, msgCssSelStr) {
+	'use strict';
+	const _treeCssSelStr  = treeCssSelStr; //inutile
+	const _msgCssSelStr   = msgCssSelStr;  //inutile
+	const  _tree          = $.ui.fancytree.getTree(_treeCssSelStr);
+	source.addEventListener('deleteChildren', function(event) {
+	    const data        = JSON.parse(event.data);
+	    // const keySet = new Set(data.idList); 
+	    const keyList     = data.idList;
+	    const tree        = $.ui.fancytree.getTree(treeCssSelStr);
+	    const message     = "The server says " + data.message +" , keyList: "+keyList;
 
-        treeMessage(_msgCssSelStr,"alert-info",message);
-        // const nodeAsKey = function (node,keys) {
-        //   //?keySet = _isFunction(match) ? keys : _makeNodeTitleMatcher(match);
-        //   if (node.key === key ) return true;
-        //   return false;
-        // };
-	// var myNodeAsKey= function(n) {return nodeAsKey(n,'efbab07c5d8e11ecbd14ac220bca9aa6');}
-	//alert("The server says " + data.message);
-	//TODO : Vérifier les keys doublons demandées en supression !    
-	let nodeList       = keyList.map( (x) => { return tree.getNodeByKey(x) } );
-	nodeList.map( (x) => { x.remove()} );
-	
-	//tree.findAll(match);
-	//var fromNode = tree.getActiveNode();
-	//fromNode.addChildren({
-	//  title: "Document using a custom icon",
-	//  icon: "customdoc1.gif"
-	//});
-    }, false);
-})('#tree1','#tree1-messages');
-
+            treeMessage(_msgCssSelStr,"alert-info",message);
+            // const nodeAsKey = function (node,keys) {
+            //   //?keySet = _isFunction(match) ? keys : _makeNodeTitleMatcher(match);
+            //   if (node.key === key ) return true;
+            //   return false;
+            // };
+	    // var myNodeAsKey= function(n) {return nodeAsKey(n,'efbab07c5d8e11ecbd14ac220bca9aa6');}
+	    //alert("The server says " + data.message);
+	    //TODO : Vérifier les keys doublons demandées en supression !    
+	    let nodeList       = keyList.map( (x) => { return tree.getNodeByKey(x) } );
+	    nodeList.map( (x) => { x.remove()} );
+	    
+	    //tree.findAll(match);
+	    //var fromNode = tree.getActiveNode();
+	    //fromNode.addChildren({
+	    //  title: "Document using a custom icon",
+	    //  icon: "customdoc1.gif"
+	    //});
+	}, false);
+    })(treeCssSelStr,'#tree1-messages');
+};
 
     
 function getTree() {
@@ -697,11 +748,11 @@ function getTree() {
     return  {{ tree|tojson }};
 };
 
-$(function(){
-    'use strict';
-    $("#tree1").fancytree(efiFancytreeOptions());
-    //sendNewDataset("","");
-});
+// $(function(){
+//     'use strict';
+//     $("#tree1").fancytree(efiFancytreeOptions("#tree1",[]));
+//     sendNewDataset("","");
+// });
 
 // $("#tree1").fancytree({ source: [ {title: "Node 1", key: "1000"},{title: "Folder 2", key: "2", folder: true, children: [ {title: "Node 2.1", key: "3000"},{title: "Node 2.2", key: "44"} ]}    ], })
 // $("#tree1").fancytree({ source: JSON.parse(getTree1()), })
@@ -735,7 +786,7 @@ function efiIconRendering(event, data) {
 
 
 //créer une fonction pour changer l'appel à getTree
-let efiFancytreeOptions=function(){
+let efiFancytreeOptions=function(treeCssSelStr,source){
     'use strict';
     return {
 	//focusOnSelect:true,
@@ -760,7 +811,9 @@ let efiFancytreeOptions=function(){
             dragDrop : function(node, data) { data.otherNode.copyTo(node, data.hitMode); }
 	},
 	glyph: glyph_opts,
-	source: JSON.parse(getTree()), //TODO: Vérifier que la transformation JSON n'est pas double avec Flask
+	source: source,
+	//source: JSON.parse(getTree()), //TODO: Vérifier que la transformation JSON n'est pas double avec Flask
+	//source: getTree(),
 	//wide: {
 	//  iconWidth: "1em",       // Adjust this if @fancy-icon-width != "16px"
 	//  iconSpacing: "0.5em",   // Adjust this if @fancy-icon-spacing != "3px"
@@ -894,7 +947,7 @@ let efiFancytreeOptions=function(){
 		} else { //WITH INTO
 		    //TODO : GERER LA NAVIGATION CLAVIER
 		    // alert("SELECT ENTER");
-		    let selectFunction = "clickOnSelect(\"#tree1\", \"#tree1-messages\", \""+key+"\", \"select\")";
+		    let selectFunction = "clickOnSelect(\""+treeCssSelStr+"\", \"#tree1-messages\", \""+key+"\", \"select\")";
 		    //let selectFunction = "alert(\"SELECT EVENT\");setTimeout(clickOnSelect(\"#tree1\", \"#tree1-messages\", \""+key+"\", \"select\"),50000)";
 		    // console.log("----AVANT html :------"+$tdList.eq(3).html());
 		    // console.log($tdList.eq(3).find("select").length);
@@ -915,7 +968,7 @@ let efiFancytreeOptions=function(){
 		    $select.html(selectInto)
 			.val(wValue)
 			.css('color','black')
-			.change( ()=>clickOnSelect("#tree1", "#tree1-messages", key, "select") );
+			.change( ()=>clickOnSelect(treeCssSelStr, "#tree1-messages", key, "select") );
 		    //			.find("select").val(wValue).css('color','black'); //TODO : A placer ds le CSS
 		    //  console.log("----APRES------"+$tdList.eq(3).html());
 
@@ -970,7 +1023,7 @@ let efiFancytreeOptions=function(){
 	    let actionListIndex = 0;
 	    let plusFunction  = undefined;
 	    //trashFunction = "alert(\"glyphicon-trash : "+key+"\")";
-	    let trashFunction = "clickOnRemove( \"#tree1\", \"#tree1-messages\", \""+key+"\" )";
+	    let trashFunction = "clickOnRemove( \""+treeCssSelStr+"\", \"#tree1-messages\", \""+key+"\" )";
 	    
 	    if ( classeAccas ==  "MCSIMP" || classeAccas ==  "OPERATEUR" ) {
 		actionListIndex = 4;              //TODO : Le paramétrer, dépend du colspan
@@ -982,7 +1035,7 @@ let efiFancytreeOptions=function(){
 
 	    // Define plusFunction
 	    if ( classeAccas ==  "PROCEDURE" || classeAccas ==  "OPERATEUR" ) {
-		plusFunction  = "clickOnCommand( \"#tree1\", \"#tree1-messages\", \""+name+"\", \""+key+"\" )";
+		plusFunction  = "clickOnCommand( \""+treeCssSelStr+"\", \"#tree1-messages\", \""+name+"\", \""+key+"\" )";
 	    } else if ( classeAccas ==  "MCFACT" ) {
 		if (repeatable) {
 		    plusFunction = "sendAppendChild( \""+parentKey+"\", \""+cmdName+"\",null)";
@@ -1308,6 +1361,11 @@ function efiDefaultGridAction(event, data) { //(used by ext-aria) The user hit e
     </script>
 
 {% endblock %}
+
+
+
+
+
 
 // # Différents tests :
 

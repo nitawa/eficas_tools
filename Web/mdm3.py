@@ -256,10 +256,10 @@ def newDataset():
         req = request.get_json()
         # Print the dictionary
         print(__file__+"/newDataset : ",req);
-        cataFile   =req['catalogName'];
-        dataSeFile =req['datasetName'];
-        cataFile    = os.path.abspath('../Codes/WebTest/cata_essai.py')
-        dataSetFile = os.path.abspath('../Codes/WebTest/web_tres_simple_avec_2Fact.comm')
+        cataFile   =os.path.abspath("./data/"+req['catalogName']);
+        dataSetFile =os.path.abspath("./data/"+req['datasetName']);
+        # cataFile    = os.path.abspath('../Codes/WebTest/cata_essai.py')
+        # dataSetFile = os.path.abspath('../Codes/WebTest/web_tres_simple_avec_2Fact.comm')
     else:
         # The request body wasn't JSON so return a 400 HTTP status code
         return "Request was not JSON", 400
@@ -293,7 +293,7 @@ def newDataset():
     #fancyTreeJS=json.dumps([fancyTreeDict],indent=4)                #TODO : remove indent if not DEBUG
     
     #print("---- myFancyTreeDico ----")
-    #pprint(myFancyTreeDico)
+    pprint(fancyTreeDict)
     #print("---- myFancyTreeJS ----")
     #pprint( myFancyTreeJS)
     commands = eficasEditor.getListeCommandes(); #TODO: Renommer la fonction
@@ -306,6 +306,7 @@ def newDataset():
 @app.route('/')
 def index():
 
+   #  Example :
    #  tree4Fancy = """ [
    #     {"title": "Node 1",   "key": "1"},
    #     {"title": "Folder 2", "key": "2", "folder": true, "children": [
@@ -316,22 +317,10 @@ def index():
    # """.replace('\n','')
 
     print ('_______________________________________________')
-    #(canalId, codeErreur, message) = eficasAppli.getSessionId()
-    #debug=1
-    #if not codeErreur :
-    #    session['canalId'] = canalId
-    #    if debug : print (' enrolement de session : ', canalId)
-    #else :
-    #    afficheMessage(message, 'red')
-    #    if not(eficasEditor)  :
-    #        return render_template('commandes_2.html',
-    #            titre='Pb a l enrolement ',
-    #            listeCommandes = [],
-    #             tree= None
-    #        )
     cataFile    = os.path.abspath('../Codes/WebTest/cata_essai.py')
     dataSetFile = os.path.abspath('../Codes/WebTest/web_tres_simple_avec_2Fact.comm')
-    # En attendant la partie Eric
+    
+    # En attendant la génération d'un n° de canal unique
     # notion de plage
     global _no
     _no = _no + 1
@@ -578,6 +567,9 @@ def get_file(filename):
 
 if __name__ == "__main__":
     app.run(host="localhost", port=8321, debug=True)
+
+
+
 
 #$("#386bc28a2ff811ec853cac220bca9aa6").html('<label class="form-check-label">Test1<input type="text" class="form-control form-control-sm"></label><essai>Essai</essai>')
 
