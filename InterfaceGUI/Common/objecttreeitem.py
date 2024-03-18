@@ -242,6 +242,10 @@ class ObjectTreeItem(TreeItem, Delegate):
 
     def getRegles(self):
         """retourne les regles de l'objet pointe par self"""
+        # Attention aux MCList
+        # on prend le 1er : tous ont la meme regle
+        if self.object.isMCList(): 
+           return self.object[0].getRegles()
         return self.object.getRegles()
 
     def getListeMcPresents(self):

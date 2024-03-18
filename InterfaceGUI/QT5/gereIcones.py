@@ -39,12 +39,7 @@ class FacultatifOuOptionnel(object):
     """ Gere les boutons """
     def setReglesEtAide(self):
         listeRegles = ()
-        # PN fevrier 24 pourquoi ce try ?
-        # FACT multiple ?
-        try: listeRegles = self.node.item.getRegles()
-        except:
-            print ('FacultatifOuOptionnel, dans le except pour', self.node.item.nom)
-            pass
+        listeRegles = self.node.item.getRegles()
         if hasattr(self, "RBRegle"):
             if listeRegles == (): self.RBRegle.close()
             else:

@@ -75,7 +75,9 @@ class Node(browser.JDCNode,typeNode.PopUpMenuNodeMinimal):
             index=index+1
                
 
-        self.editor.connecteur.toWebApp('appendChildren',ouAjouter,laListe,posOuAjouter)
+        #self.editor.connecteur.toWebApp('appendChildren',ouAjouter,laListe,posOuAjouter)
+        self.appliEficas.propageChange(self.editor.editorId, None, None, True, 'appendChildren',ouAjouter,laListe,posOuAjouter)
+
         #print ('la pos ', posOuAjouter)
         #print (' appel appendChild',self.item.idUnique,laListe,pos)
 

@@ -40,12 +40,9 @@ class OBJECT:
         """
         Retourne les regles de self
         """
-        if hasattr(self, "definition"):
-            return self.definition.regles
-        elif hasattr(self, "regles"):
-            return self.regles
-        else:
-            return []
+        if hasattr(self, "definition"): return self.definition.regles
+        elif hasattr(self, "regles"): return self.regles
+        else: return []
 
     def initModif(self):
         """
