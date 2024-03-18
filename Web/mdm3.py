@@ -256,39 +256,65 @@ def newDataset():
         req = request.get_json()
         # Print the dictionary
         print(__file__+"/newDataset : ",req);
-        catalogName=req['catalogName'];datasetName=req['datasetName'];
-        #QUESAKO code ?
-        
-        #TODO: pour l'instant un seul connecteur mono utilisateur
-        #      il faudra gérer les différents utilisateurs avec la session Flask et
-        #      disposer de plusieurs connecteurs par utilisateur.
-        #try { ?
-        # monConnecteur=createConnecteur(app,catalogName,datasetName)
-        # ou
-        monConnecteur  = createConnecteur(app,catalogFile=os.path.join('data',catalogName))
-        #monConnecteur.litFichierComm(datasetName)
-        myFancyTreeDico= monConnecteur.getDicoForFancy(monConnecteur.monEditeur.tree.racine)
-        myFancyTreeJS  = json.dumps([myFancyTreeDico],indent=4)  #TODO : remove indent if not DEBUG
-        pprint( myFancyTreeJS)
-        commands       = monConnecteur.getListeCommandes();
-        #TODO: Gérer le titre
-        # return make_response(json.dumps( {'source':myFancyTreeJS, 'commands':commands, 'titre':code} ))
-
-         # TODO : Envoyer un evenement de création de JDD au javascript qui gèrera les onglets...
-         #        et ne relancera pas le render 
-        # return render_template('commandes_2.html',
-        #                         titre=code,
-        #                         listeCommandes = monConnecteur.getListeCommandes(),
-        #                         tree=myFancyTreeJS,
-        # )
-
+        cataFile   =req['catalogName'];
+        dataSeFile =req['datasetName'];
+        cataFile    = os.path.abspath('../Codes/WebTest/cata_essai.py')
+        dataSetFile = os.path.abspath('../Codes/WebTest/web_tres_simple_avec_2Fact.comm')
     else:
         # The request body wasn't JSON so return a 400 HTTP status code
         return "Request was not JSON", 400
         #return make_response(jsonify({"message": "Request body must be JSON"}), 400)
+       
+    (editorId, errorCode, errorMessage, messageInfo) = eficasAppli.getWebEditor(session['canalId'], cataFile, dataSetFile)
+    debug = 1
+    if debug :
+        print ('apres getWebEditor : canalId, : ', session['canalId'],  ' editorId, : ', editorId,
+               ' code Erreur : ', errorCode,'message : ', errorMessage, 'messageInfo ', messageInfo)
+        
+    if not errorCode :
+        if debug : 
+            print ('_______________________________________________')
+            print ('canalId', session['canalId'])
+            print ('editorId', editorId)
+            print ('_______________________________________________')
+        #La session est ouvert par le service /index session['canalId']  = canalId
+        session['externEditorId'] = editorId;
+    else :
+        # Il faudrait gerer les erreurs
+        return make_response(jsonify({"message": errorMessage, "code": errorCode}), 400)
+    
+    if debug :   print ('idEditor = ', session['externEditorId'])
+    (eficasEditor, errorCode, errorMessage)  = eficasAppli.getWebEditorById(session['canalId'],editorId) 
+    if errorCode:
+         return make_response(jsonify({"message": errorMessage, "code": errorCode}), 400)
+
+    
+    fancyTreeDict=eficasEditor.getDicoForFancy(eficasEditor.tree.racine) #TODO: changer le nom Dico en Dict
+    #fancyTreeJS=json.dumps([fancyTreeDict],indent=4)                #TODO : remove indent if not DEBUG
+    
+    #print("---- myFancyTreeDico ----")
+    #pprint(myFancyTreeDico)
+    #print("---- myFancyTreeJS ----")
+    #pprint( myFancyTreeJS)
+    commands = eficasEditor.getListeCommandes(); #TODO: Renommer la fonction
+
+    title = os.path.basename(cataFile)+'/'+os.path.basename(dataSetFile)
+    if debug : print ( 'liste des commandes',  eficasEditor.getListeCommandes())
+    return make_response(json.dumps( {'source': [fancyTreeDict], 'commands':commands, 'title':title,} ))
+
 
 @app.route('/')
 def index():
+
+   #  tree4Fancy = """ [
+   #     {"title": "Node 1",   "key": "1"},
+   #     {"title": "Folder 2", "key": "2", "folder": true, "children": [
+   #       {"title": "Node 2.1", "key": "3"},
+   #       {"title": "Node 2.2", "key": "4"}
+   #     ]}
+   # ]
+   # """.replace('\n','')
+
     print ('_______________________________________________')
     #(canalId, codeErreur, message) = eficasAppli.getSessionId()
     #debug=1
