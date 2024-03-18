@@ -91,30 +91,30 @@ app.fromConnecteur=fromConnecteur
 #    - Changement d'un nom de mot-cle reference
 
 def propageValide(cId, eId, id, valid): #TODO: RENAME TO ... propagateValidation
-    print ('Flask/propageValide: ', id, valid)
+    if debug : print ('Flask/propageValide: ', id, valid)
     sse.publish( {'eId' : eId, 'id':id, 'valid':valid, 'message': "Hello from propageValide!"}, type='propageValide', channel = str(cId))
 
 def updateNodeInfo(cId, eId, id, info):
-    print ('Flask/updateNodeInfo', cId, eId, id, info)
+    if debug : print ('Flask/updateNodeInfo', cId, eId, id, info)
     sse.publish( {'eId' : eId, 'id':id, 'info':info, 'message': "Hello from updateNodeInfo!"}, type='updateNodeInfo', channel = str(cId))
 
 def appendChildren(cId, eId, id, fcyTreeJson, pos):
-    print ('Flask/appendChildren: ', id, fcyTreeJson, pos)
+    if debug : print ('Flask/appendChildren: ', id, fcyTreeJson, pos)
     sse.publish( {'eId' : eId, 'id':id, 'fcyTreeSrc':fcyTreeJson, 'pos':pos, 'message': "Hello from appendChildren!"}, type='appendChildren', channel = str(cId))
 
 def deleteChildren(cId, eId, idList):
-    #print ('Flask/deleteChildren: ', idList)
+    if debug : print ('Flask/deleteChildren: ', idList)
     sse.publish( {'eId' : eId, 'idList':idList,'message': "Hello from deleteChildren!"}, type='deleteChildren', channel = str(cId))
 
 #TODO: Câbler la sélection du catalogue avant d'activer les appels suivants
 #      car si la page Web n'est pas rendue et que le connecteur génère une erreur... boom !
 def afficheMessage(cId, eId,  txt, couleur):                     #TODO: RENAME TO ... displayWarning
-    print ('Flask/afficheMessage: ', txt, couleur)
+    if debug : print ('Flask/afficheMessage: ', txt, couleur)
     sse.publish( {'txt':txt, 'color':couleur, 'messageClass':"alert-warning" ,'message': "Hello from afficheMessage!"},
                  type='displayMessage', channel = str(cId))
 
 def afficheAlerte(cId, eId, titre, message):                  #TODO: RENAME TO ... displayDanger
-    print ('Flask/afficheAlerte: ', titre, message) #TODO: titre & message VS txt ?
+    if debug : print ('Flask/afficheAlerte: ', titre, message) #TODO: titre & message VS txt ?
     sse.publish( {'txt':titre, 'color':couleur, 'messageClass':"alert-danger", 'message': "Hello from afficheAlerte!"},
                  type='displayMessage', channel = str(cId))
 
@@ -134,8 +134,8 @@ def updateSimp():
         # Parse the JSON into a Python dictionary
         req = request.get_json()
         # Print the dictionary
-        print("Flask/updateSimp request : ", req)
-        print("Flask/updateSimp request['id'] : ",req['id'])
+        if debug : print("Flask/updateSimp request : ", req)
+        if debug : print("Flask/updateSimp request['id'] : ",req['id'])
         id=req['id'];value=req['value']
         # id, value = req.values()       # Dangereux correspondance implicite
         value             = str(value)   #On peut écrire Pi
@@ -150,11 +150,11 @@ def updateSimp():
         assert(rId==id)
 
         #changeDone        = True
-        print ("changeDone : ",changeDone)
+        if debug : print ("Flask/updateSimp changeDone : ",changeDone)
         # Ne pas recuperer et ne pas renvoyer le noeud dans le cas du SIMP
         #  (le changeDone et l''ancienne valeur ds la WebApp suffit 
         node              = eficasEditor.getDicoForFancy(eficasEditor.getNodeById(id))
-        print("Flask/updateSimp node : ",node)
+        if debug : print("Flask/updateSimp node : ",node)
         # return jsonify([myTreeDico])
         
         return make_response(json.dumps( {'source':node, 'changeIsAccepted' : changeDone, 'message': message} ))
@@ -185,7 +185,7 @@ def updateSDName():
         #changeDone,message = eficasEditor.updateSDName(id,sdnom);
         #changeDone        = True
         if not codeErreur : changeDone = True
-        print ("changeDone : ",changeDone)
+        if debug : print ("Flask/updateSDName changeDone : ",changeDone)
         
         #return make_response(json.dumps( {'id':id , 'changeIsAccepted' : changeDone, 'message': message} ))
         return make_response(json.dumps( {'changeIsAccepted' : changeDone, 'message': message} ))
@@ -204,13 +204,13 @@ def removeNode():
         # Parse the JSON into a Python dictionary
         req = request.get_json()
         # Print the dictionary
-        print("/removeNode ",req);print("/removeNode ",req['id']);
+        if debug : print("Flask/removeNode ",req);print("/removeNode ",req['id']);
         id  = req['id'];
         (eficasEditor, codeErreur, message) = eficasAppli.getWebEditorById(session['canalId'],session['externEditorId'])
         if codeErreur : 
            print ('il faut faire qqchose')
         ret,message = eficasEditor.removeNode(session['canalId'],session['externEditorId'],id);
-        print ("/removeNode : ret : ",ret," message : ",message)
+        if debug : print ("Flask/removeNode : ret : ",ret," message : ",message)
         
         return make_response(json.dumps( {'ret':ret, 'message':message} ))
     else:
@@ -228,7 +228,7 @@ def appendChild():
         # Parse the JSON into a Python dictionary
         req = request.get_json()
         # Print the dictionary
-        print(__file__+"/appendChild : ",req);
+        if debug :  print(__file__+"Flask/appendChild : ",req);
         id=req['id'];name=req['name'];pos=req['pos'];
         # id, value = req.values() # Dangereux correspondance implicite
         #rId,message,changeDone  = eficasEditor.appendChild(id,name,pos);
@@ -236,7 +236,7 @@ def appendChild():
         if codeErreur : 
            print ('il faut faire qqchose')
         (newId, codeErreur, message) = eficasEditor.appendChild(session['canalId'],session['externEditorId'],id,name,pos);
-        print (__file__+"/appendChild : newId : ",newId);
+        if debug : print (__file__+"Flask/appendChild : newId : ",newId);
         
         return make_response(json.dumps( {'id':newId} )) #TODO: Code Erreur
         # return make_response(json.dumps( {'source':node, 'changeIsAccepted' : changeDone, 'message': message} ))
@@ -359,6 +359,7 @@ def index():
 
     
     myFancyTreeDico=eficasEditor.getDicoForFancy(eficasEditor.tree.racine)
+    if debug : pprint (myFancyTreeDico)
     myFancyTreeJS=json.dumps([myFancyTreeDico],indent=4)  #TODO : remove indent if not DEBUG
     
     #print("---- myFancyTreeDico ----")

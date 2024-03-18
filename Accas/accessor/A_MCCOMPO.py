@@ -176,28 +176,24 @@ class MCCOMPO(A_OBJECT.OBJECT):
         self.dictMCVenantDesBlocs = {}
         liste, listeRouge, dictToolTipMc = self.calculOptionnel()
         dictNomsPresents = self.dictMcPresents()
-        for mc in liste:
-            self.dictMCVenantDesBlocs[mc] = self
+        for mc in liste: self.dictMCVenantDesBlocs[mc] = self
         for mc in self.listeMcPresents():
             obj = dictNomsPresents[mc]
-            if obj.nature != "MCBLOC":
-                continue
-            if debug:
-                print(mc, "est present")
+            if obj.nature != "MCBLOC": continue
+            if debug: print(mc, "est present")
             (l, lr, d) = obj.calculOptionnelInclutBlocs()
-            # print ('optionnels', l)
+            if debug : print ('optionnels', l, lr)
             liste = liste + l
             listeRouge = listeRouge + lr
-            for k in d:
-                dicToolTipMC[k] = d[k]
-            for k, v in obj.dictMCVenantDesBlocs.items():
-                self.dictMCVenantDesBlocs[k] = v
+            for k in d: dicToolTipMC[k] = d[k]
+            for k, v in obj.dictMCVenantDesBlocs.items(): self.dictMCVenantDesBlocs[k] = v
 
         if debug:
             print("ccOptio", self.nom, self.dictMCVenantDesBlocs)
         if debug:
             print("fin calculOPtionnel", self.nom, "_____________")
         return (liste, listeRouge, dictToolTipMc)
+
     def listeMcPresents(self):
         """
         Retourne la liste des noms des mots-cles fils de self presents construite
@@ -296,9 +292,6 @@ class MCCOMPO(A_OBJECT.OBJECT):
         objet.deleteRef()
         self.mcListe.remove(objet)
         CONNECTOR.Emit(self, "supp", objet)
-        print ('iiiiiiiiiii CONNECTOR.Emit MCCOMPO')
-        import traceback
-        traceback.print_stack()
         objet.deleteMcGlobal()
         objet.updateConditionBloc()
         objet.supprime()

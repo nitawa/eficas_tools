@@ -315,10 +315,13 @@ class JDCNode():
         return (ret,commentaire) 
 
     def updateOptionnels(self):
-    #-----------------------------------
+    #--------------------------
+        debug = 0
+        if debug : print ('updateOptionnels pour', self.item.nom)
         if self.item.nature == 'MCList' or self.item.nature == 'JDC' or self.item.nature=='MCSIMP' : return
         monDictPartiel={} 
         monDictPartiel['infoOptionnels'] = self.item.calculOptionnelInclutBlocs()
+        if debug : print ('updateOptionnels pour', monDictPartiel)
         self.appliEficas.propageChange(self.editor.editorId, None, None, True, 'updateNodeInfo',self.getIdUnique(), monDictPartiel)
 
     def updateNodeLabel(self):
