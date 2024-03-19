@@ -95,11 +95,12 @@ def propageValide(cId, eId, id, valid): #TODO: RENAME TO ... propagateValidation
     sse.publish( {'eId' : eId, 'id':id, 'valid':valid, 'message': "Hello from propageValide!"}, type='propageValide', channel = str(cId))
 
 def updateNodeInfo(cId, eId, id, info):
+    debug=1
     if debug : print ('Flask/updateNodeInfo', cId, eId, id, info)
     sse.publish( {'eId' : eId, 'id':id, 'info':info, 'message': "Hello from updateNodeInfo!"}, type='updateNodeInfo', channel = str(cId))
 
 def appendChildren(cId, eId, id, fcyTreeJson, pos):
-    debug = 1
+    debug = 0
     if debug : print ('Flask/appendChildren: ', id, fcyTreeJson, pos)
     sse.publish( {'eId' : eId, 'id':id, 'fcyTreeSrc':fcyTreeJson, 'pos':pos, 'message': "Hello from appendChildren!"}, type='appendChildren', channel = str(cId))
 
@@ -137,17 +138,17 @@ def updateSimp():
         # Print the dictionary
         if debug : print("Flask/updateSimp request : ", req)
         if debug : print("Flask/updateSimp request['id'] : ",req['id'])
-        id=req['id'];value=req['value']
+        eId = req['eId'];id=req['id'];value=req['value']
         # id, value = req.values()       # Dangereux correspondance implicite
-        value             = str(value)   #On peut écrire Pi
+        value             = str(value)   # L'utilisateur peut écrire la valeur Pi
 
          # On attendant que l externalEditorId soit dans le tree
-        (eficasEditor, codeErreur, message) = eficasAppli.getWebEditorById(session['canalId'],session['externEditorId'])
+        (eficasEditor, codeErreur, message) = eficasAppli.getWebEditorById(session['canalId'],eId)
         if codeErreur : 
            print ('il faut faire qqchose')
 
         # TODO (rId, codeErreur, message) = eficasEditor.changeValeur(cId, id,value)
-        (rId, message, changeDone) = eficasEditor.changeValeur(session['canalId'], session['externEditorId'], id,value);
+        (rId, message, changeDone) = eficasEditor.changeValeur(session['canalId'], eId, id,value);
         assert(rId==id)
 
         #changeDone        = True
@@ -175,14 +176,14 @@ def updateSDName():
         # Print the dictionary
         #print(req)
         #print(req['id'])
-        id=req['id'];sdnom=req['sdnom']
+        eId=req['eId'];id=req['id'];sdnom=req['sdnom']
         sdnom              = str(sdnom)   #On peut écrire Pi
          # On attendant que l externalEditorId soit dans le tree
-        (eficasEditor, codeErreur, message) = eficasAppli.getWebEditorById(session['canalId'],session['externEditorId'])
+        (eficasEditor, codeErreur, message) = eficasAppli.getWebEditorById(session['canalId'],eId)
         if codeErreur : 
            print ('il faut faire qqchose')
 
-        (codeErreur, changeDone) = eficasEditor.updateSDName(session['canalId'], session['externEditorId'], id,sdnom);
+        (codeErreur, changeDone) = eficasEditor.updateSDName(session['canalId'],eId,id,sdnom);
         #changeDone,message = eficasEditor.updateSDName(id,sdnom);
         #changeDone        = True
         if not codeErreur : changeDone = True

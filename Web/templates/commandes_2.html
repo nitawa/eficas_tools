@@ -99,7 +99,6 @@
 	  
       $("#efi-tab-content").prepend(function(treeId){
 	  let efiFancyTreeTempl = `
-          <!-- <div class="row" class="tab-pane fade" id="@treeId@Tab">  -->
           <div class="tab-pane fade" id="@treeId@Tab">
             <!-- Panel Arbre Principal -->
             <!-- col-main_tree-->
@@ -243,9 +242,9 @@ let treeMessage=function(msgCssSelStr,messageClass,message) {
 }
 
 // APPELS EXPLICITES AU SERVER
-function callService(serviceName, obj) {
+function callService(msgCssSelStr, serviceName, obj) {
     'use strict';
-    const  msgCssSelStr  =  '#tree1-messages';
+
     const  success = function(data, status) {
         let message="Successfull "+serviceName+" call with status : " + status;
         treeMessage(msgCssSelStr,"alert-success",message) ;
@@ -296,7 +295,7 @@ function clickOnRemove(treeCssSelStr, msgCssSelStr, key ) {
 	};
     };
 
-    return callService('removeNode', {eId:_eId, id: _key} ).done( (data)=>checkCallBack(data) );
+    return callService(msgCssSelStr, 'removeNode', {eId:_eId, id: _key} ).done( (data)=>checkCallBack(data) );
 };
 
 // APPELS EXPLICITES AU SERVER
@@ -328,7 +327,7 @@ function clickOnRemoveRef(treeCssSelStr, msgCssSelStr, key ) {
 	    treeMessage(msgCssSelStr,"alert-danger",message) ;
 	};
     };
-    return callService('removeNodeRef', {eId:_rootNode.data.eId, id: _key} ).done( (data)=>checkCallBack(data) );
+    return callService(msgCssSelStr, 'removeNodeRef', {eId:_rootNode.data.eId, id: _key} ).done( (data)=>checkCallBack(data) );
 
 };
 
@@ -354,7 +353,7 @@ function sendAppendChild(treeCssSelStr, msgCssSelStr, key, name, pos) {
 	    treeMessage(msgCssSelStr,"alert-danger",message) ;
 	};
     };
-    return callService('appendChild', {eId:_eId, id: key, name:name, pos:pos } ).done( (data)=>checkCallBack(data) );
+    return callService(msgCssSelStr, 'appendChild', {eId:_eId, id: key, name:name, pos:pos } ).done( (data)=>checkCallBack(data) );
 
 };
 
@@ -428,10 +427,13 @@ function clickOnSelect(treeCssSelStr, msgCssSelStr, key, eltNameWithValue ) {
     const tree        = $.ui.fancytree.getTree(treeCssSelStr); //TODO : Une fonction pour récupérer le tree en paramètre soit par css ou objet
     var   node = null;
     if ( tree ==  null) {
-	let message = "Unsuccessfull clickOnSelect processing for key " + key + ". Tree ("+treeCssSelStr+") returned (null)" ;
+	let message = "Unsuccessfull clickOnSelect tree selection ("+treeCssSelStr+") returned (null)";
 	alert(message);
 	return;
     };
+    const _rootNode = tree.rootNode.children[0];
+    const _eId=_rootNode.data.eId;
+    
     if ( key !== undefined && key !=  "") {
 	node = tree.getNodeByKey(key);
     };
@@ -439,13 +441,21 @@ function clickOnSelect(treeCssSelStr, msgCssSelStr, key, eltNameWithValue ) {
 	alert("clickOnSelect : The given key "+key+" could not be found.");
 	return;
     };
-    sendUpdateSimp( node, eltNameWithValue);
+    sendUpdateSimp(treeCssSelStr, msgCssSelStr, node, eltNameWithValue);
 };
 
-function sendUpdateSimp( node, eltNameWithValue) {
+function sendUpdateSimp(treeCssSelStr, msgCssSelStr, node, eltNameWithValue) {
     'use strict';
     
-    const _msgCssSelStr  =  '#tree1-messages';
+    const tree        = $.ui.fancytree.getTree(treeCssSelStr); //TODO : Une fonction pour récupérer le tree en paramètre soit par css ou objet
+    //var   node = null;
+    if ( tree ==  null) {
+	let message = "Unsuccessfull sendUpdateSimp tree selection ("+treeCssSelStr+") returned (null)";
+	alert(message);
+	return;
+    };
+    const _rootNode = tree.rootNode.children[0];
+    const _eId=_rootNode.data.eId;
 
     //let $input=$(node.tr).find('input');
     let $input=$(node.tr).find(eltNameWithValue);
@@ -467,14 +477,14 @@ function sendUpdateSimp( node, eltNameWithValue) {
 	    node.data.wValue   = wValue
 	    node.data.validite = validite
 	    let message = "Changing SIMP "+node.title+" value to "+value+" has been accepted ("+rMessage+")";
-	    treeMessage(_msgCssSelStr,"alert-success",message);
+	    treeMessage(msgCssSelStr,"alert-success",message);
 	    //node.data        = data.source ?? A priori, il est inutile d'essayer de remplacer la source complète du noeud  
 	    console.log('wValue    : '+ node.data.wValue);
 	    console.log('validite  : '+validite);
 	} else {
 	    // TODO: Gérer le input pour laisser le focus et passer en rouge ?
 	    let message = "Unsuccessfull SIMP processing for |" + node.getPath() + "|, value |"+value+"| has not been accepted ("+rMessage+")";
-	    treeMessage(_msgCssSelStr,"alert-warning",message);
+	    treeMessage(msgCssSelStr,"alert-warning",message);
 	};
 	//alert("sendUpdateSimp-2");
 	node.render(true,false);  //force rendering the node (not parents nor descendants)
@@ -483,7 +493,7 @@ function sendUpdateSimp( node, eltNameWithValue) {
     };
     
     //alert("sendUpdateSimp-1");
-    return callService('updateSimp', {id: node.key, value:value } ).done( (data)=>checkCallBack(data) );
+    return callService(msgCssSelStr, 'updateSimp', {eId:_eId, id: node.key, value:value } ).done( (data)=>checkCallBack(data) );
 
 
 };
@@ -491,7 +501,7 @@ function sendUpdateSimp( node, eltNameWithValue) {
 function sendNewDataset(catalogName, datasetName) {
     'use strict';
     
-    // const _msgCssSelStr  = '#tree1-messages';
+    const _msgCssSelStr  = '#tree1-messages'; //TODO: Réfléchir à la poule et l'oeuf ;)
     // const _treeCssSelStr = '#tree1';
     // const tree           = $.ui.fancytree.getTree(_treeCssSelStr); //TODO : Une fonction pour récupérer le tree en paramètre soit par css ou objet
 
@@ -522,9 +532,9 @@ function sendNewDataset(catalogName, datasetName) {
 	// efiNewTab("tree1");
 	// $("#tree1").fancytree(efiFancytreeOptions("#tree1",source));
 	_treeId=efiNewTab(catalogName, datasetName);
+	_treeCssSelStr='#'+_treeId;
 	_treeCssIdTab='#'+_treeId+'Tab';
 	_treeCssIdNav='#'+_treeId+'Nav';
-	_treeCssSelStr='#'+_treeId;
 	$(_treeCssSelStr).fancytree(efiFancytreeOptions(_treeCssSelStr,source));
 	createNewSetOfEvents(_treeCssSelStr,'#tree1-messages');
 	console.log($(_treeCssIdNav));
@@ -567,7 +577,7 @@ function sendNewDataset(catalogName, datasetName) {
     };
     
     //alert("sendNewDataset-1");
-    return callService('newDataset', { catalogName:catalogName, datasetName:datasetName } ).done( (data)=>checkCallBack(data) );
+    return callService(_msgCssSelStr, 'newDataset', { catalogName:catalogName, datasetName:datasetName } ).done( (data)=>checkCallBack(data) );
 
 
 };
@@ -637,13 +647,18 @@ function createNewSetOfEvents(treeCssSelStr, msgCssSelStr) {
 	const _msgCssSelStr   = msgCssSelStr;  //inutile
 	// var  _tree          = $.ui.fancytree.getTree(_treeCssSelStr);
 	source.addEventListener('updateNodeInfo', function(event) {
-            const data    = JSON.parse(event.data);
-            const id      = data.id;
-            const info    = data.info;
-            const message = "The server says " + data.message +" , id: "+id;
-            const msgerror = "Event updateNodeInfo : can't find node with key :"+id;
-	    const tree    = $.ui.fancytree.getTree(_treeCssSelStr);
+            const data      = JSON.parse(event.data);
+            const id        = data.id;
+            const eId       = data.eId;
+            const info      = data.info;
+            const message   = "The server says " + data.message +" , id: "+id;
+            const msgerror  = "Event updateNodeInfo : can't find node with key :"+id;
+	    const tree      = $.ui.fancytree.getTree(_treeCssSelStr);
+            const _rootNode = tree.rootNode.children[0];
+            const _eId      = _rootNode.data.eId;
 
+	    if ( eId == _eId ) return; //TODO: BUG
+	    
             treeMessage(_msgCssSelStr,"alert-info",message);
 	    // treeMessage(_msgCssSelStr,"alert-info","data.wValue : "+data.wValue);
             const node=tree.getNodeByKey(id);
@@ -1176,8 +1191,8 @@ let efiFancytreeOptions=function(treeCssSelStr,source){
 	    
 	// },
 	
-	defaultGridAction: efiDefaultGridAction,
-	
+	//defaultGridAction: efiDefaultGridAction,
+	defaultGridAction: (event, data) => { return efiDefaultGridAction(treeCssSelStr, "#tree1-messages",event, data); },
 	lazyLoad: function(event, data) {
             var node = data.node;
             console.log("event.type, data :"+event.type+" , "+data);
@@ -1233,11 +1248,20 @@ let efiFancytreeOptions=function(treeCssSelStr,source){
 };
     
 
-function efiDefaultGridAction(event, data) { //(used by ext-aria) The user hit enter on the active row or cell.
-    //return true;
+function efiDefaultGridAction(treeCssSelStr, msgCssSelStr, event, data) { //(used by ext-aria) The user hit enter on the active row or cell.
+
+    const tree        = $.ui.fancytree.getTree(treeCssSelStr); //TODO : Une fonction pour récupérer le tree en paramètre soit par css ou objet
+    //var   node = null;
+    if ( tree ==  null) {
+	let message = "Unsuccessfull efiDefaultGridAction tree selection ("+treeCssSelStr+") returned (null)";
+	alert(message);
+	return;
+    };
+    const _rootNode = tree.rootNode.children[0];
+    const _eId=_rootNode.data.eId;
+    
     const node = data.node
     // var   rValue,rValidite,rChangeIsAccepted
-    const _msgCssSelStr='#tree1-messages'; //TODO: A déplacer
     console.log("event.type, data :"+event.type+" , "+data);
     
     let $input=$(node.tr).find('input');
@@ -1257,7 +1281,7 @@ function efiDefaultGridAction(event, data) { //(used by ext-aria) The user hit e
     };
     
     if (node.data.classeAccas == "MCSIMP") {
-	sendUpdateSimp( node, 'input');
+	sendUpdateSimp(treeCssSelStr, msgCssSelStr, node, 'input');
 
 	// let checkCallBack = function(data) {
 	//     // Tester data == NULL !
@@ -1305,19 +1329,19 @@ function efiDefaultGridAction(event, data) { //(used by ext-aria) The user hit e
 		node.data.sdnom    = value
 		node.data.validite = 1
 		let message = "Changing OPERATOR "+node.title+" sdnom to |"+value+"| has been accepted ("+rMessage+")";
-		treeMessage(_msgCssSelStr,"alert-success",message);
+		treeMessage(msgCssSelStr,"alert-success",message);
 		//node.data        = data.source ?? A priori, il est inutile d'essayer de remplacer la source complète du noeud  
 		console.log('sdnom    : '+value);
 	    } else {
 		// Gérer le input pour laisser le focus et passer en rouge
 		let message = "Unsuccessfull OPERATOR processing for |" + node.getPath() + "|, sdnom |"+value+"| has not been accepted ("+rMessage+")";
-		treeMessage(_msgCssSelStr,"alert-warning",message) ;
+		treeMessage(msgCssSelStr,"alert-warning",message) ;
 	    };
 	    node.render(true,false);  //force rendering the node (not parents nor descendants)
 	    //node.renderStatus();    //CSS element updates
 	};
 	
-	callService('updateSDName', {id: node.key, sdnom:value } ).done( (data)=>checkCallBack(data) );
+	callService(msgCssSelStr, 'updateSDName', {eId:_eId, id: node.key, sdnom:value } ).done( (data)=>checkCallBack(data) );
 
     } // FIN OPERATEUR
 
