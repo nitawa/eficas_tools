@@ -204,9 +204,10 @@ def removeNode():
         # Parse the JSON into a Python dictionary
         req = request.get_json()
         # Print the dictionary
-        if debug : print("Flask/removeNode ",req);print("/removeNode ",req['id']);
+        if debug : print("Flask/removeNode ",req);print("/removeNode ",req['eId'],req['id']);
+        eId = req['eId'];
         id  = req['id'];
-        (eficasEditor, codeErreur, message) = eficasAppli.getWebEditorById(session['canalId'],session['externEditorId'])
+        (eficasEditor, codeErreur, message) = eficasAppli.getWebEditorById(session['canalId'],eId)
         if codeErreur : 
            print ('il faut faire qqchose')
         ret,message = eficasEditor.removeNode(session['canalId'],session['externEditorId'],id);
@@ -229,13 +230,13 @@ def appendChild():
         req = request.get_json()
         # Print the dictionary
         if debug :  print(__file__+"Flask/appendChild : ",req);
-        id=req['id'];name=req['name'];pos=req['pos'];
+        eId = req['eId'];id=req['id'];name=req['name'];pos=req['pos'];
         # id, value = req.values() # Dangereux correspondance implicite
         #rId,message,changeDone  = eficasEditor.appendChild(id,name,pos);
         (eficasEditor, codeErreur, message) = eficasAppli.getWebEditorById(session['canalId'],session['externEditorId'])
         if codeErreur : 
            print ('il faut faire qqchose')
-        (newId, codeErreur, message) = eficasEditor.appendChild(session['canalId'],session['externEditorId'],id,name,pos);
+        (newId, codeErreur, message) = eficasEditor.appendChild(session['canalId'],eId,id,name,pos);
         if debug : print (__file__+"Flask/appendChild : newId : ",newId);
         
         return make_response(json.dumps( {'id':newId} )) #TODO: Code Erreur
@@ -291,7 +292,7 @@ def newDataset():
     
     fancyTreeDict=eficasEditor.getDicoForFancy(eficasEditor.tree.racine) #TODO: changer le nom Dico en Dict
     #fancyTreeJS=json.dumps([fancyTreeDict],indent=4)                #TODO : remove indent if not DEBUG
-    
+    fancyTreeDict['eId']=editorId;
     #print("---- myFancyTreeDico ----")
     pprint(fancyTreeDict)
     #print("---- myFancyTreeJS ----")
