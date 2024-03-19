@@ -81,18 +81,19 @@ class EditorManager(object):
                 if self.samePath(dataSetFile, editor.getDataSetFileName()) and self.samePath(cataFile, editor.getCataFileName()):
                     break
             else:
-                from editor import Editor
-                editor = WebEditor(self.appliEficas, cataFile, dataSetFile)
+                from Editeur.editor import Editor
+                editor = Editor(self.appliEficas, cataFile, dataSetFile)
 
             if editor.jdc:  # le fichier est bien un jdc
                 self.dictEditors[editor.editorId]=editor
                 self.editors.append(editor)
                 if  editor.editorId in self.appliEficas.dictEditorIdChannelId :
-                   self.appliEficas.dictEditorIdChannelId[editor.editorId].append(cId)
+                   if cId not in self.appliEficas.dictEditorIdChannelId[editor.editorId] : self.appliEficas.dictEditorIdChannelId[editor.editorId].append(cId)
                 else :
                    self.appliEficas.dictEditorIdChannelId[editor.editorId]=[cId,]
             else:
                 return (None, 1, 'impossible d allouer l editor')
+            return (editor, 0, 'TUI editeur alloue', '')
 
     # ---------------------------------------------------------------------------------------------------------------------
     def getWebEditor(self, cId, cataFile = None, dataSetFile=None, jdc=None, include=0, formatIn ='python', formatOut = 'python'):
@@ -128,7 +129,7 @@ class EditorManager(object):
                 self.dictEditors[editor.editorId]=editor
                 self.editors.append(editor)
                 if  editor.editorId in self.appliEficas.dictEditorIdChannelId :
-                   self.appliEficas.dictEditorIdChannelId[editor.editorId].append(cId)
+                   if cId not in self.appliEficas.dictEditorIdChannelId[editor.editorId] : self.appliEficas.dictEditorIdChannelId[editor.editorId].append(cId)
                 else :
                    self.appliEficas.dictEditorIdChannelId[editor.editorId]=[cId,]
             else:
