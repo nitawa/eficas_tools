@@ -626,11 +626,12 @@ class MACRO_ETAPE(A_ETAPE.ETAPE):
             # Impossible de construire le jdc auxiliaire (sortie par exception)
             l = traceback.format_exception_only("Fichier invalide", sys.exc_info()[1])
             if self.jdc.editor is not None:
-                self.jdc.editor.afficheAlerte(
+                self.jdc.editor.afficheMessage(
                     tr("Erreur lors de l'evaluation du fichier inclus"),
                     message=tr(
                         "Ce fichier ne sera pas pris en compte\n %s", "".join(l)
                     ),
+                   couleur = 'red'
                 )
 
             self.g_context = {}
@@ -800,11 +801,12 @@ class MACRO_ETAPE(A_ETAPE.ETAPE):
 
         self.recorded_units = units
         if f is None and self.jdc.editor:
-            self.jdc.editor.afficheAlerte(
+            self.jdc.editor.afficheMessage(
                 tr("Erreur lors de l'evaluation du fichier inclus"),
                 message=tr(
                     "Ce fichier ne sera pas pris en compte\nLe fichier associe n'est pas defini"
                 ),
+               couleur = 'red'
             )
         return f, text
 
@@ -1079,18 +1081,20 @@ class MACRO_ETAPE(A_ETAPE.ETAPE):
         l = traceback.format_exception_only(tr("Fichier invalide"), sys.exc_info()[1])
         if self.jdc.editor is not None:
             if mess == None:
-                self.jdc.editor.afficheAlerte(
+                self.jdc.editor.afficheMessage(
                     tr("Erreur lors de l'evaluation du fichier inclus"),
                     message=tr(
                         "Le contenu de ce fichier ne sera pas pris en compte\n %s",
                         "".join(l),
                     ),
+                   couleur = 'red'
                 )
 
             else:
-                self.jdc.editor.afficheAlerte(
+                self.jdc.editor.afficheMessage(
                     tr("Erreur lors de l'evaluation du fichier inclus"),
                     message=tr(mess),
+                   couleur = 'red'
                 )
         # self.parent.recordUnit(unite,self)
         self.g_context = {}
@@ -1157,12 +1161,13 @@ class MACRO_ETAPE(A_ETAPE.ETAPE):
                     tr("Fichier invalide %s", sys.exc_info()[1])
                 )
                 if self.jdc.editor:
-                    self.jdc.editor.afficheAlerte(
+                    self.jdc.editor.afficheMessage(
                         tr("Erreur lors de l'evaluation du fichier inclus"),
                         message=tr(
                             "Le contenu de ce fichier ne sera pas pris en compte\n"
                             + "".join(l)
                         ),
+                   couleur = 'red'
                     )
                 self.parent.recordUnit(unite, self)
                 self.g_context = {}
@@ -1312,11 +1317,12 @@ class MACRO_ETAPE(A_ETAPE.ETAPE):
                     "Fichier invalide", sys.exc_info()[1]
                 )
                 if self.jdc.editor:
-                    self.jdc.editor.afficheAlerte(
+                    self.jdc.editor.afficheMessage(
                         tr("Erreur lors de l'evaluation du fichier poursuite"),
                         message=tr(
                             "Ce fichier ne sera pas pris en compte\n %s", "".join(l)
                         ),
+                   couleur = 'red'
                     )
                 self.parent.recordUnit(None, self)
                 self.g_context = {}

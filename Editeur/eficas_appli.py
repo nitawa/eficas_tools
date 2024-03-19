@@ -179,6 +179,8 @@ class EficasAppli:
               return (sId, None, CR, message, None) 
         if not sId in self.dictChannelType.keys() :
            self.dictChannelType[sId]  =  'Web'
+        #PN TODO initialiser info
+        info = None
         (editor, CR, message, info)   = self.editorManager.getWebEditor(sId, cataFile,datasetFile, jdc, include)
         if not editor :
            return (None, CR, message, info)
@@ -217,8 +219,8 @@ class EficasAppli:
         if cId == None : 
            self.affichageMessage('Requete non valide', 'Le parametre identifiant la Session Eficas est obligatoire',True)
         self.dictChannelType[cId]  =  'TUI'
-        (editor, CR, message)   = self.editorManager.getTUIEditor(cId, cata, fichier, fichier, jdc, include)
-        return (editor, CR, message) 
+        (editor, CR, errorMessage, infoMessage)   = self.editorManager.getTUIEditor(cId, cataFile, datasetFile, jdc, include)
+        return (editor, CR, errorMessage, infoMessage) 
 
     #---------------------------
     def getEditorById(self, eId):
@@ -408,19 +410,22 @@ class EficasAppli:
     #-------------------------------------------------------------------------------------------------
     def propageChange (self, editorId, emitChannelId , emitEditorId,  toAll , fction, *args, **kwargs):
     #--------------------------------------------------------------------------------------------------
-        debug = 0
+        if fction == 'appendChildren' : debug = 1
+        else : debug = 0
         if debug : 
            print ("------------------------------------------ Eficas")
            print ('propageChange avec les arguments ')
            print ( editorId, emitChannelId, emitEditorId, toAll , fction, *args, **kwargs)
            print (self.dictEditorIdChannelId)
            print ("------------------------------------------ ")
+           print (self.dictEditorIdChannelId[editorId])
         for channelId in self.dictEditorIdChannelId[editorId]:
             if debug : print ('channelId', channelId)
             if self.dictChannelType[channelId] == 'TUI': 
                 print ('la session est TUI, on ne fait rien')
                 continue # Rien a faire le JDC est correcte
             elif self.dictChannelType[channelId] == 'Web': # on verra le QT apres
+                if debug : print ( self.dictEditorIdChannelIdExternEid)
                 for exId in self.dictEditorIdChannelIdExternEid[editorId][channelId] :
                     if debug : print ('exId', exId)
                     if not toAll and exId == emitEditorId and channelId == emitChannelId : continue

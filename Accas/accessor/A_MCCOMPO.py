@@ -328,12 +328,13 @@ class MCCOMPO(A_OBJECT.OBJECT):
 
         # On verifie que l'ajout d'objet est autorise
         if self.ispermis(objet) == 0:
-            self.jdc.editor.afficheAlerte(
+            self.jdc.editor.afficheMessage(
                 tr("Erreur"),
                 tr(
                     "L'objet %(v_1)s ne peut  etre un fils de %(v_2)s",
                     {"v_1": objet.nom, "v_2": self.nom},
                 ),
+                couleur = 'red'
             )
             self.finModif()
             return 0
@@ -366,8 +367,9 @@ class MCCOMPO(A_OBJECT.OBJECT):
             # on cree une liste d'objets. Dans le cas contraire,
             # on emet un message d'erreur.
             if not old_obj.isRepetable():
-                self.jdc.editor.afficheAlerte(
-                    tr("Erreur"), tr("L'objet %s ne peut pas etre repete", objet.nom)
+                self.jdc.editor.afficheMessage(
+                    tr("Erreur"), tr("L'objet %s ne peut pas etre repete", objet.nom),
+                couleur = 'red'
                 )
                 self.finModif()
                 return 0

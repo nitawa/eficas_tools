@@ -121,8 +121,9 @@ class MCList:
             raise EficasException(tr("traitement non-prevu"))
 
         if not self.ajoutPossible():
-            self.jdc.editor.afficheAlerte(
-                tr("Erreur"), tr("L'objet {} ne peut pas etre ajoute").format(obj.nom)
+            self.jdc.editor.afficheMessage(
+                tr("Erreur"), tr("L'objet {} ne peut pas etre ajoute").format(obj.nom),
+                couleur='red'
             )
             return None
 

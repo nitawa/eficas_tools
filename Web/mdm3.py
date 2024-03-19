@@ -68,7 +68,7 @@ def createWebAppli(app):
 
 
 eficasAppli=createWebAppli(app)
-debug=1
+debug=0
 if debug : print ('eficasAppli = ', eficasAppli)
 
 def fromConnecteur(maFonction, sessionId, externEditorId, *args,**kwargs):
@@ -99,6 +99,7 @@ def updateNodeInfo(cId, eId, id, info):
     sse.publish( {'eId' : eId, 'id':id, 'info':info, 'message': "Hello from updateNodeInfo!"}, type='updateNodeInfo', channel = str(cId))
 
 def appendChildren(cId, eId, id, fcyTreeJson, pos):
+    debug = 1
     if debug : print ('Flask/appendChildren: ', id, fcyTreeJson, pos)
     sse.publish( {'eId' : eId, 'id':id, 'fcyTreeSrc':fcyTreeJson, 'pos':pos, 'message': "Hello from appendChildren!"}, type='appendChildren', channel = str(cId))
 
@@ -257,10 +258,11 @@ def newDataset():
         req = request.get_json()
         # Print the dictionary
         print(__file__+"/newDataset : ",req);
+        #cataFile   =os.path.abspath("../Codes/WebTest/"+req['catalogName']);
         cataFile   =os.path.abspath("./data/"+req['catalogName']);
-        dataSetFile =os.path.abspath("./data/"+req['datasetName']);
-        # cataFile    = os.path.abspath('../Codes/WebTest/cata_essai.py')
-        # dataSetFile = os.path.abspath('../Codes/WebTest/web_tres_simple_avec_2Fact.comm')
+        dataSetFile =os.path.abspath("./data"+req['datasetName']);
+        #cataFile    = os.path.abspath('../Codes/WebTest/cata_essai.py')
+        #dataSetFile = os.path.abspath('../Codes/WebTest/web_tres_simple_avec_2Fact.comm')
     else:
         # The request body wasn't JSON so return a 400 HTTP status code
         return "Request was not JSON", 400
@@ -323,15 +325,19 @@ def index():
     
     # En attendant la génération d'un n° de canal unique
     # notion de plage
-    global _no
-    _no = _no + 1
-    if _no == 3:
-        dataSetFile = os.path.abspath('../Codes/WebTest/web_tres_simple_incomplet.comm')
-    canalId = _no
+    if not 'canalId' in session :
+        global _no
+        _no = _no + 1
+        canalId = _no
+        session['canalId']  = canalId
+    else :
+        canalId = session['canalId']
+    #if _no == 3:
+    #    dataSetFile = os.path.abspath('../Codes/WebTest/web_tres_simple_incomplet.comm')
 
     #(canalId, eficasEditor, codeErreur, message) = eficasAppli.getWebEditor(cataFile, dataSetFile)
     (externEditorId, codeErreur, messageErreur, messageInfo) = eficasAppli.getWebEditor(canalId, cataFile, dataSetFile)
-    debug = 1
+    debug = 0
     if debug : print ('apres getWebEditor : canalId, : ', canalId,  ' externEditorId, : ', externEditorId, ' code Erreur : ', codeErreur,'message : ', messageErreur, 'messageInfo ', messageInfo)
     if not codeErreur :
         if debug : 
@@ -339,7 +345,6 @@ def index():
             print ('canalId', canalId)
             print ('externEditorId', externEditorId)
             print ('_______________________________________________')
-        session['canalId']  = canalId
         session['externEditorId'] = externEditorId
     else :
         # Il faudrait gerer les erreurs

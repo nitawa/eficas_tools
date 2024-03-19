@@ -102,7 +102,7 @@ class JDCNode():
         debug=0
         validite=self.item.isValid()
         if debug : print ('ds onValid', self.item.nom, self.oldValidite, validite)
-        if self.oldValidite==validite : return
+        #if self.oldValidite==validite : return
         if self.oldValidite=='init' : 
            self.oldValidite=validite
            if debug : print ('self.item.state' , self.item.state)
@@ -140,7 +140,7 @@ class JDCNode():
             posDansArbre+=c.item.longueurDsArbreAvecConsigne()
 
         if not trouve : print ('browser : souci au add *************************')
-        if debug : print  ('uuuu posDansSelf', posDansSelf)
+        if debug : print  ('posDansSelf', posDansSelf)
         if debug : print  ('posDansArbre', posDansArbre)
 
         if self.children[posDansSelf].item.nature == 'MCBLOC' : laListe=self.children[posDansSelf].item.getDicoForFancy()
