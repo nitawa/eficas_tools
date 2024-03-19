@@ -65,59 +65,22 @@
 <!-- </div> -->
 
  <!-- TODO : Créer une feuille de style-->
-<div class="row" id="row-main_and_optional_tree">
-    
-  <div class="col-sm-8 panel panel-default" id="col-main_tree" style="padding-left: 0px;padding-right: 0px;"> <!-- Panel Arbre Principal -->
-    <!-- <div class="panel-heading">DatasetName : {{titre}}</div> -->
-    <div class="panel-heading" style="padding-bottom: 0px;padding-left: 0px;padding-right: 0px;">
-      <ul class="nav nav-tabs" id="efi-nav-tabs">
-	<!-- <li class="active"><a data-toggle="tab" href="#tree1Tab">Dataset : {{titre}}</a></li> -->
-	<!-- <li><a data-toggle="tab" href="#tree2">Dataset test 2</a></li> -->
-      </ul>
-    </div>
+<div class="row" id="row-navtabs-and-main-and-optionals">
 
-    <div class="tab-content" id="efi-tab-content">
+  <div class="panel-heading" style="padding-bottom: 0px;padding-left: 0px;padding-right: 0px;">
+    <ul class="nav nav-tabs" id="efi-nav-tabs"></ul>
+  </div>
 
-      <!-- <\!-- <table id="tree1" class="table table-condensed table-hover table-striped fancytree-fade-expander"> -\-> -->
-      <!-- <table id="tree1" class="tab-pane fade in active table table-condensed table-hover table-striped fancytree-fade-expander"> -->
-      <!-- 	<\!-- TODO : Manage the space between Title and Value while choosing a Value size adapted to the value -\-> -->
-      <!-- 	<colgroup> -->
-      <!-- 	  <col width="80px"></col> -->
-      <!-- 	  <col width="30px"></col> -->
-      <!-- 	  <col width="300px"></col> -->
-      <!-- 	  <col width="300px"></col> -->
-      <!-- 	  <col width="20px"></col> -->
-      <!-- 	  <col width="20px"></col> -->
-      <!-- 	  <col width="20px"></col> -->
-      <!-- 	  <col width="*"></col> -->
-      <!-- 	</colgroup> -->
-      <!-- 	<thead> -->
-      <!-- 	  <tr> <th></th> <th></th> <th>Mot Clé</th> <th>Value</th> <th></th> <th></th> <th></th> <th></th> </tr> -->
-      <!-- 	</thead> -->
-      <!-- 	<tbody> -->
-      <!-- 	  <tr> <td></td> <td></td> <td></td> <td></td> <td></td> <td></td> <td></td> <td></td> </tr> -->
-      <!-- 	</tbody> -->
-      <!-- </table> -->
-      
-    </div> <!-- tab-content-->  
-  </div> <!-- col_main_tree-->
-  
-  <!-- <div class="col-sm-4" ><table class="fancytree-ext-table"><tr>Optionals :</tr></table> -->
-  <div class="col-sm-4 panel panel-default" id="col-optional_tree" data-spy="affix" data-offset-top="0"> <!-- Panel Arbre Options -->
-    <nav class="navbar" id="navbar-optionals" >
-    <div class="panel-heading">Optionals</div>
-    <div class="panel-body">
-      <!-- <nav class="navbar" id="navbar-optionals" data-spy="affix" data-offset-top="0"> -->
-	<div id="Optionals"></div>
-	<div id="Opt-testing"></div>
-      <!-- </nav> -->
-    </div> <!-- panel-body -->
-    </nav>
-  </div>  <!-- col-optional_tree -->
-  
-</div> <!-- row -->
+  <!-- tab-content-->
+  <!-- efi-tab-content -->
+  <!-- <div class="tab-content" id="efi-tab-content"></div> -->
+  <div class="row">
+    <div class="tab-content" id="efi-tab-content"></div>
+  </div>
 
-    <div id='handsontable_test1'/>
+</div> <!-- row-main-and-optionals -->
+
+<!-- <div id='handsontable_test1'/> -->
     
 <script>
   'use strict';
@@ -133,31 +96,50 @@
 	  let efiNavTab='<li><a id="@treeId@Nav" data-toggle="tab" href="#@treeId@Tab">'+catalogName+'/'+datasetName+'</a></li>';
 	  return efiNavTab.replaceAll("@treeId@",treeId);
       }(_treeId));
-			     
+	  
       $("#efi-tab-content").prepend(function(treeId){
 	  let efiFancyTreeTempl = `
-          <!-- <div id="@treeId@Tab" class="tab-pane fade in active"> -->
-          <div id="@treeId@Tab" class="tab-pane fade">
-             <table id="@treeId@" class="table table-condensed table-hover table-striped fancytree-fade-expander">
-          	<!-- TODO : Manage the space between Title and Value while choosing a Value size adapted to the value -->
-          	<colgroup>
-          	  <col width="80px"></col>
-          	  <col width="30px"></col>
-          	  <col width="300px"></col>
-          	  <col width="300px"></col>
-          	  <col width="20px"></col>
-          	  <col width="20px"></col>
-          	  <col width="20px"></col>
-          	  <col width="*"></col>
-          	</colgroup>
-          	<thead>
-          	  <tr> <th></th> <th></th> <th>Mot Clé</th> <th>Value</th> <th></th> <th></th> <th></th> <th></th> </tr>
-          	</thead>
-          	<tbody>
-          	  <tr> <td></td> <td></td> <td></td> <td></td> <td></td> <td></td> <td></td> <td></td> </tr>
-          	</tbody>
-           </table>
-          </div>`;
+          <!-- <div class="row" class="tab-pane fade" id="@treeId@Tab">  -->
+          <div class="tab-pane fade" id="@treeId@Tab">
+            <!-- Panel Arbre Principal -->
+            <!-- col-main_tree-->
+            <div class="col-sm-8 panel panel-default" id="col-main_tree"
+        	 style="padding-left: 0px;padding-right: 0px;"> 
+                     <table id="@treeId@" class="table table-condensed table-hover table-striped fancytree-fade-expander">
+                  	<!-- TODO : Manage the space between Title and Value while choosing a Value size adapted to the value -->
+                  	<colgroup>
+                  	  <col width="80px"></col>
+                  	  <col width="30px"></col>
+                  	  <col width="300px"></col>
+                  	  <col width="300px"></col>
+                  	  <col width="20px"></col>
+                  	  <col width="20px"></col>
+                  	  <col width="20px"></col>
+                  	  <col width="*"></col>
+                  	</colgroup>
+                  	<thead>
+                  	  <tr> <th></th> <th></th> <th>Mot Clé</th> <th>Value</th> <th></th> <th></th> <th></th> <th></th> </tr>
+                  	</thead>
+                  	<tbody>
+                  	  <tr> <td></td> <td></td> <td></td> <td></td> <td></td> <td></td> <td></td> <td></td> </tr>
+                  	</tbody>
+                     </table>
+            </div> <!-- col-main_tree-->
+        
+            <!-- Panel Arbre Options -->
+            <!-- col-optional_tree -->
+            <div class="col-sm-4 panel panel-default" id="col-optional_tree" data-spy="affix" data-offset-top="0">
+              <nav class="navbar" id="navbar-optionals" >
+        	<div class="panel-heading">Optionals (@treeId@)</div>
+        	<div class="panel-body">
+        	  <!-- <nav class="navbar" id="navbar-optionals" data-spy="affix" data-offset-top="0"> -->
+        	    <div id="@treeId@Optionals"></div>
+        	    <div id="Opt-testing"></div>
+        	</div> <!-- panel-body -->
+              </nav>
+            </div>  <!-- col-optional_tree -->
+        
+          </div> <!-- row @treeId@Tab-->`;
 
 	  return efiFancyTreeTempl.replaceAll("@treeId@" ,treeId);
       }(_treeId));
@@ -289,10 +271,12 @@ function clickOnRemove(treeCssSelStr, msgCssSelStr, key ) {
     const tree  = $.ui.fancytree.getTree(treeCssSelStr);
     const _key  = key; 
     if ( tree ==  null) {
-	let message = "Unsuccessfull removeNode processing for key " + _key + ". Tree ("+treeCssSelStr+") returned (null)" ;
+	let message = "Unsuccessfull removeNode tree selection ("+treeCssSelStr+") returned (null)";
 	alert(message) ;
 	return;
     };
+    const _rootNode = tree.rootNode.children[0];
+    const _eId=_rootNode.data.eId;
     
     if ( key === undefined  || key ==  "") {
 	activeNode = tree.activeNode;
@@ -311,8 +295,8 @@ function clickOnRemove(treeCssSelStr, msgCssSelStr, key ) {
 	    treeMessage(msgCssSelStr,"alert-danger",message) ;
 	};
     };
-	
-    return callService('removeNode', {id: _key} ).done( (data)=>checkCallBack(data) );
+
+    return callService('removeNode', {eId:_eId, id: _key} ).done( (data)=>checkCallBack(data) );
 };
 
 // APPELS EXPLICITES AU SERVER
@@ -325,6 +309,8 @@ function clickOnRemoveRef(treeCssSelStr, msgCssSelStr, key ) {
 	alert(message) ;
 	return;
     };
+    const _rootNode = tree.rootNode.children[0];
+    
     if ( key ==  "") {
 	activeNode = tree.activeNode;
 	if ( activeNode !=  null) {
@@ -342,16 +328,24 @@ function clickOnRemoveRef(treeCssSelStr, msgCssSelStr, key ) {
 	    treeMessage(msgCssSelStr,"alert-danger",message) ;
 	};
     };
-    return callService('removeNodeRef', {id: _key} ).done( (data)=>checkCallBack(data) );
+    return callService('removeNodeRef', {eId:_rootNode.data.eId, id: _key} ).done( (data)=>checkCallBack(data) );
 
 };
 
 // TODO : Il faudrait s'assurer que si une requête de ce type est envoyée au serveur
 //        on récupère bien l'evenement appendChild --> validation, promise... 
-function sendAppendChild( key, name, pos) {
+function sendAppendChild(treeCssSelStr, msgCssSelStr, key, name, pos) {
     'use strict';
-    const msgCssSelStr  =  '#tree1-messages';
-
+    const tree  = $.ui.fancytree.getTree(treeCssSelStr);
+    //const msgCssSelStr  =  '#tree1-messages';
+    if ( tree ==  null) {
+	let message = "Unsuccessfull appendChild tree selection ("+treeCssSelStr+") returned (null)"
+	alert(message) ;
+	return;
+    };
+    const _rootNode = tree.rootNode.children[0];
+    const _eId=_rootNode.data.eId;
+    
     const checkCallBack = function(data) {
 	// Tester data == NULL !
 	let rId = data['id']; //TODO : Changer en code d'erreur
@@ -360,7 +354,7 @@ function sendAppendChild( key, name, pos) {
 	    treeMessage(msgCssSelStr,"alert-danger",message) ;
 	};
     };
-    return callService('appendChild', {id: key, name:name, pos:pos } ).done( (data)=>checkCallBack(data) );
+    return callService('appendChild', {eId:_eId, id: key, name:name, pos:pos } ).done( (data)=>checkCallBack(data) );
 
 };
 
@@ -414,7 +408,7 @@ function clickOnCommand(treeCssSelStr, msgCssSelStr, cmdName, key ) {
         }
     }
     console.log("clickOnCommand : pos = "+pos);
-    let request=sendAppendChild( rootDatasetNode.key, cmdName, pos);
+    let request=sendAppendChild(treeCssSelStr, msgCssSelStr, rootDatasetNode.key, cmdName, pos);
     request.done(()=>{
 	rootDatasetNode.setExpanded();  //WARN: sendAppendChild must be completed/done
 	if ( tree.activeNode == null ) rootDatasetNode.setActive()
@@ -1038,7 +1032,7 @@ let efiFancytreeOptions=function(treeCssSelStr,source){
 		plusFunction  = "clickOnCommand( \""+treeCssSelStr+"\", \"#tree1-messages\", \""+name+"\", \""+key+"\" )";
 	    } else if ( classeAccas ==  "MCFACT" ) {
 		if (repeatable) {
-		    plusFunction = "sendAppendChild( \""+parentKey+"\", \""+cmdName+"\",null)";
+		    plusFunction = "sendAppendChild(\""+treeCssSelStr+"\", \"#tree1-messages\", \""+parentKey+"\", \""+cmdName+"\",null)";
 		};
 	    };
 
@@ -1073,7 +1067,7 @@ let efiFancytreeOptions=function(treeCssSelStr,source){
 
 	    $(node.tr).mouseenter(function(){
 		let optTreeSrc=buildOptionalTreeSrc(node);
-		let optFunction = "sendAppendChild( \""+key+"\", \""+cmdName+"\",null)";
+		let optFunction = "sendAppendChild(\""+treeCssSelStr+"\", \"#tree1-messages\", \""+key+"\", \""+cmdName+"\",null)";
 		let optTreeOptions = {
 		    glyph: glyph_opts,
 		    icon: function(event, data) { return efiIconRendering(event, data); },
@@ -1097,7 +1091,7 @@ let efiFancytreeOptions=function(treeCssSelStr,source){
 			    // 	    addedNode.setExpanded();
 			    // 	};
 			    // };
-			    sendAppendChild( parentKey, title, null); //TODO : retun node and apply expanded
+			    sendAppendChild(treeCssSelStr, "#tree1-messages", parentKey, title, null); //TODO : retun node and apply expanded
 			    //sendAppendChild( parentKey, title, null).done( (data)=>checkCallBack(data) );
 			    // tree.visit(function(node){
 			    // 	node.setExpanded(true);
@@ -1108,13 +1102,13 @@ let efiFancytreeOptions=function(treeCssSelStr,source){
 		//$("#bebe").text("---------"+optTreeSrc);
 		//console.debug('optTreeSrc :'+optTreeSrc);
 		// if ( optTreeSrc.length == 0 ) {
-		    let optTree     = $.ui.fancytree.getTree("#Optionals");
+		    let optTree     = $.ui.fancytree.getTree(treeCssSelStr+"Optionals");
 		    if (optTree != null) { optTree.destroy();};
 		// } else {
 		    // let $optTree   = $("#Optionals").fancytree( { source: optTreeSrc } );
-		    let $optTree   = $("#Optionals").fancytree( optTreeOptions );
+		    let $optTree   = $(treeCssSelStr+"Optionals").fancytree( optTreeOptions );
 		    //let optTree    = $optTree.fancytree;
-		    optTree    = $.ui.fancytree.getTree("#Optionals");
+		    optTree    = $.ui.fancytree.getTree(treeCssSelStr+"Optionals");
 		    optTree.expandAll();
 		// };
 		

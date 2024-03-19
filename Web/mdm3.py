@@ -234,7 +234,7 @@ def appendChild():
         eId = req['eId'];id=req['id'];name=req['name'];pos=req['pos'];
         # id, value = req.values() # Dangereux correspondance implicite
         #rId,message,changeDone  = eficasEditor.appendChild(id,name,pos);
-        (eficasEditor, codeErreur, message) = eficasAppli.getWebEditorById(session['canalId'],session['externEditorId'])
+        (eficasEditor, codeErreur, message) = eficasAppli.getWebEditorById(session['canalId'],eId)
         if codeErreur : 
            print ('il faut faire qqchose')
         (newId, codeErreur, message) = eficasEditor.appendChild(session['canalId'],eId,id,name,pos);
@@ -260,7 +260,7 @@ def newDataset():
         print(__file__+"/newDataset : ",req);
         #cataFile   =os.path.abspath("../Codes/WebTest/"+req['catalogName']);
         cataFile   =os.path.abspath("./data/"+req['catalogName']);
-        dataSetFile =os.path.abspath("./data"+req['datasetName']);
+        dataSetFile =os.path.abspath("./data/"+req['datasetName']);
         #cataFile    = os.path.abspath('../Codes/WebTest/cata_essai.py')
         #dataSetFile = os.path.abspath('../Codes/WebTest/web_tres_simple_avec_2Fact.comm')
     else:
