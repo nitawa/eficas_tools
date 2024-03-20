@@ -584,6 +584,8 @@ function sendNewDataset(catalogName, datasetName) {
 
 
 //GESTION DES EVENEMENTS PROVENANT DU SERVEUR
+//TODO: Tant que le serveur Flask/Eficas n'est pas relancé, le nbre d'éditeur augmente
+//      et le nombre d'évenement par type le suit
 const source = new EventSource("{{ url_for('sse.stream' , channel=efi_update_channel ) }}");
       
 source.addEventListener('error', function(event) {
@@ -595,21 +597,24 @@ source.addEventListener('message', function(event) {
 
 // --- propageValid ---
 function createNewSetOfEvents(treeCssSelStr, msgCssSelStr) {
-    //TODO: Vérifier l'eid dans chacune des fonctions suivantes
-    //çà fonctionne sans car les Id sont dess UUID uniques sauf qs c'est le même dataset !
+	  
     (function (treeCssSelStr, msgCssSelStr) {
 	'use strict';
 	let _treeCssSelStr  = treeCssSelStr; //inutile
 	let _msgCssSelStr   = msgCssSelStr;  //inutile
 	// var  _tree          = $.ui.fancytree.getTree(_treeCssSelStr);
 	source.addEventListener('propageValide', function(event) {
-            const data     = JSON.parse(event.data);
-            const id         = data.id;
-            const valid    = data.valid;
-            const message  = "The server says " + data.message +" , id: "+id;
-            const msgerror = "Event propageValid : can't find node with key :"+id;
-            const tree     = $.ui.fancytree.getTree(_treeCssSelStr); //TODO: event.tree ?
+            const data      = JSON.parse(event.data);
+            const id        = data.id;
+            const eId       = data.eId;
+            const valid     = data.valid;
+            const message   = "The server says " + data.message +" , id: "+id;
+            const msgerror  = "Event propageValid : can't find node with key :"+id;
+	    const tree      = $.ui.fancytree.getTree(_treeCssSelStr);
+            const _rootNode = tree.rootNode.children[0];
+            const _eId      = _rootNode.data.eId;
             
+	    if ( eId != _eId ) return;
             treeMessage(_msgCssSelStr,"alert-info",message);
             // console.log("_tree : "+ _tree); //?Expliquer pourquoi null: à cause de $.?
             let node=tree.getNodeByKey(id);
@@ -629,12 +634,18 @@ function createNewSetOfEvents(treeCssSelStr, msgCssSelStr) {
 	'use strict';
 	source.addEventListener('displayMessage', function(event) {
             const data         = JSON.parse(event.data);
+            const id           = data.id;
+            const eId          = data.eId;
             const txt          = data.txt;
             const color        = data.color;
             const message      = data.message;
             const messageClass = data.messageClass;
             const _message     = "The server says " + data.message;
+	    const tree      = $.ui.fancytree.getTree(_treeCssSelStr);
+            const _rootNode = tree.rootNode.children[0];
+            const _eId      = _rootNode.data.eId;
             
+	    if ( eId != _eId ) return;
             treeMessage(_msgCssSelStr,messageClass,_message);
             treeMessage(_msgCssSelStr,messageClass,txt);
 	}, false);
@@ -657,8 +668,7 @@ function createNewSetOfEvents(treeCssSelStr, msgCssSelStr) {
             const _rootNode = tree.rootNode.children[0];
             const _eId      = _rootNode.data.eId;
 
-	    if ( eId == _eId ) return; //TODO: BUG
-	    
+	    if ( eId != _eId ) return;
             treeMessage(_msgCssSelStr,"alert-info",message);
 	    // treeMessage(_msgCssSelStr,"alert-info","data.wValue : "+data.wValue);
             const node=tree.getNodeByKey(id);
@@ -687,15 +697,19 @@ function createNewSetOfEvents(treeCssSelStr, msgCssSelStr) {
 	source.addEventListener('appendChildren', function(event) {
             const data      = JSON.parse(event.data);
             const id        = data.id;
+            const eId       = data.eId;
             const source    = data.fcyTreeSrc;
             const pos       = data.pos;
             //var   message = data.message;
             const message   = "The server says " + data.message +" , id: "+id;
             const msgerror  = "Event appendChildren : can't find node with key :"+id;
+	    const tree      = $.ui.fancytree.getTree(_treeCssSelStr);
+            const _rootNode = tree.rootNode.children[0];
+            const _eId      = _rootNode.data.eId;
 	    
+	    if ( eId != _eId ) return;
             treeMessage(_msgCssSelStr,"alert-info",message);
             console.log("_tree : "+ _tree); //?Expliquer pourquoi null: à cause de $.?
-            const tree          = $.ui.fancytree.getTree(_treeCssSelStr);
             const node          = tree.getNodeByKey(id);
 	    if (node == null) {
 		treeMessage(_msgCssSelStr,"alert-danger",msgerror);
@@ -724,11 +738,15 @@ function createNewSetOfEvents(treeCssSelStr, msgCssSelStr) {
 	const  _tree          = $.ui.fancytree.getTree(_treeCssSelStr);
 	source.addEventListener('deleteChildren', function(event) {
 	    const data        = JSON.parse(event.data);
+            const eId         = data.eId;
 	    // const keySet = new Set(data.idList); 
 	    const keyList     = data.idList;
 	    const tree        = $.ui.fancytree.getTree(treeCssSelStr);
+            const _rootNode   = tree.rootNode.children[0];
+            const _eId        = _rootNode.data.eId;
 	    const message     = "The server says " + data.message +" , keyList: "+keyList;
 
+	    if ( eId != _eId ) return;
             treeMessage(_msgCssSelStr,"alert-info",message);
             // const nodeAsKey = function (node,keys) {
             //   //?keySet = _isFunction(match) ? keys : _makeNodeTitleMatcher(match);

@@ -139,7 +139,7 @@ class WebEditor(Editor):
          retour = nouvelIdUnique ou None
          """
          monNode=self.getNodeById(nodeId)
-         if not monNode : return  (6000, dictErreurs[6000].format(nodeId))
+         if not monNode : return  (None, 6000, dictErreurs[6000].format(nodeId))
          if debug : print (monNode.fauxNoeudGraphique)
          newId, retour, commentaire = monNode.fauxNoeudGraphique.appendChild(name,pos)
          if not retour : return (newId, 0, commentaire)
