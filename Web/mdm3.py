@@ -61,6 +61,7 @@ app.register_blueprint(sse, url_prefix='/stream')
 ### Eficas Connector
 def createWebAppli(app):
     import os
+    print('Create Appli');
     sys.path.append(os.path.join(os.path.abspath(os.path.dirname(__file__)),'..'))
     from Editeur.eficas_go import getEficas
     eficasAppli=getEficas(code, langue='ang',appWeb=app)
@@ -110,15 +111,28 @@ def deleteChildren(cId, eId, idList):
 
 #TODO: Câbler la sélection du catalogue avant d'activer les appels suivants
 #      car si la page Web n'est pas rendue et que le connecteur génère une erreur... boom !
-def afficheMessage(cId, eId,  txt, couleur):                     #TODO: RENAME TO ... displayWarning
-    if debug : print ('Flask/afficheMessage: ', txt, couleur)
-    sse.publish( {'txt':txt, 'color':couleur, 'messageClass':"alert-warning" ,'message': "Hello from afficheMessage!"},
-                 type='displayMessage', channel = str(cId))
+def afficheMessage(sId, txt, couleur):                     #TODO: RENAME TO ... displayWarning
+    if sId != session['eficasSession']  : return
+    print ('Flask/afficheMessage: ', txt, couleur)
+    # sse.publish( {'txt':txt, 'color':couleur, 'messageClass':"alert-warning" ,'message': "Hello from afficheMessage!"},
+    #              type='displayMessage')
 
-def afficheAlerte(cId, eId, titre, message):                  #TODO: RENAME TO ... displayDanger
+def afficheAlerte(sId, titre, message):                  #TODO: RENAME TO ... displayDanger
+    if sId != session['eficasSession']  : return
+    print ('Flask/afficheAlerte: ', titre, message) #TODO: titre & message VS txt ?
+    # sse.publish( {'txt':titre, 'color':couleur, 'messageClass':"alert-danger", 'message': "Hello from afficheAlerte!"},
+    #              type='displayMessage')
+
+#Messages Globaux ?
+def afficheMessage2(cId, eId,  txt, couleur):                     #TODO: RENAME TO ... displayWarning
+    if debug : print ('Flask/afficheMessage: ', txt, couleur)
+    sse.publish( {'txt':txt, 'color':couleur, 'messageClass':"alert-warning" ,'message': txt},
+                 type='message', channel = str(cId))
+
+def afficheAlerte2(cId, eId, titre, message, couleur):          #TODO: RENAME TO ... displayDanger
     if debug : print ('Flask/afficheAlerte: ', titre, message) #TODO: titre & message VS txt ?
     sse.publish( {'txt':titre, 'color':couleur, 'messageClass':"alert-danger", 'message': "Hello from afficheAlerte!"},
-                 type='displayMessage', channel = str(cId))
+                 type='error', channel = str(cId))
 
 
 
@@ -268,12 +282,14 @@ def newDataset():
         # The request body wasn't JSON so return a 400 HTTP status code
         return "Request was not JSON", 400
         #return make_response(jsonify({"message": "Request body must be JSON"}), 400)
-       
-    (editorId, errorCode, errorMessage, messageInfo) = eficasAppli.getWebEditor(session['canalId'], cataFile, dataSetFile)
+
+    cId=session['canalId'];
+    (editorId, errorCode, errorMessage, messageInfo) = eficasAppli.getWebEditor(cId, cataFile, dataSetFile)
     debug = 1
     if debug :
-        print ('apres getWebEditor : canalId, : ', session['canalId'],  ' editorId, : ', editorId,
+        print ('apres getWebEditor : canalId, : ', cId,  ' editorId, : ', editorId,
                ' code Erreur : ', errorCode,'message : ', errorMessage, 'messageInfo ', messageInfo)
+
         
     if not errorCode :
         if debug : 
@@ -285,10 +301,11 @@ def newDataset():
         session['externEditorId'] = editorId;
     else :
         # Il faudrait gerer les erreurs
+        afficheMessage2(cId, editorId, errorMessage,'macouleur');
         return make_response(jsonify({"message": errorMessage, "code": errorCode}), 400)
     
     if debug :   print ('idEditor = ', session['externEditorId'])
-    (eficasEditor, errorCode, errorMessage)  = eficasAppli.getWebEditorById(session['canalId'],editorId) 
+    (eficasEditor, errorCode, errorMessage)  = eficasAppli.getWebEditorById(session['canalId'],editorId)
     if errorCode:
          return make_response(jsonify({"message": errorMessage, "code": errorCode}), 400)
 
@@ -303,7 +320,7 @@ def newDataset():
     commands = eficasEditor.getListeCommandes(); #TODO: Renommer la fonction
 
     title = os.path.basename(cataFile)+'/'+os.path.basename(dataSetFile)
-    if debug : print ( 'liste des commandes',  eficasEditor.getListeCommandes())
+    if debug : print('liste des commandes',  eficasEditor.getListeCommandes())
     return make_response(json.dumps( {'source': [fancyTreeDict], 'commands':commands, 'title':title,} ))
 
 
@@ -572,6 +589,29 @@ def get_file(filename):
 # class MyFlask(Flask):
 #     """Flask subclass using the custom request class"""
 #     request_class = MyReq
+
+def create_app(test_config=None):
+    # create and configure the app
+    app = Flask(__name__, instance_relative_config=True)
+    app.config.from_mapping(
+        SECRET_KEY='dev',
+        DATABASE=os.path.join(app.instance_path, 'flaskr.sqlite'),
+    )
+
+    if test_config is None:
+        # load the instance config, if it exists, when not testing
+        app.config.from_pyfile('config.py', silent=True)
+    else:
+        # load the test config if passed in
+        app.config.from_mapping(test_config)
+
+    # ensure the instance folder exists
+    try:
+        os.makedirs(app.instance_path)
+    except OSError:
+        pass
+
+    return app
 
 if __name__ == "__main__":
     app.run(host="localhost", port=8321, debug=True)
