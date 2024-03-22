@@ -23,7 +23,7 @@ from uuid import uuid1
 from multiprocessing import Lock
 from Accas.extensions.codeErreur import dictErreurs
 
-debug = 1
+debug = 0
 # --------------------------
 class EditorManager(object):
 # --------------------------
@@ -110,11 +110,12 @@ class EditorManager(object):
         if dataSetFile == None :
             self.appliEficas.afficheMessage(dictErreurs[1000] , 'nom de dataSet obligatoire pour obtenir un editor')
             return (None, 1000 , dictErreurs[1000] + ' : nom de dataset obligatoire pour obtenir un editor', None)
-        if not os.path.isfile(cataFile):
+        if not os.path.isfile(dataSetFile):
             self.appliEficas.afficheMessage(dictErreurs[4000] + dictErreurs[10], 'fichier dataSet {} non trouve'.format(cataFile))
             return (None, 4000 + 10  , dictErreurs[4000] + dictErreurs[10].format(cataFile), None)
+        if debug :   print ('dictEditors', self.dictEditors)
+        messageInfo = ""
         with self.lock :
-            messageInfo = None
             for editor in self.dictEditors.values():
                 if self.samePath(dataSetFile, editor.getDataSetFileName()) and self.samePath(cataFile, editor.getCataFileName()):
                     break
@@ -123,7 +124,10 @@ class EditorManager(object):
                 editor = WebEditor(self.appliEficas, cataFile, dataSetFile)
 
             if not editor.readercata :
-                return (None, 3000 + 30 , 'impossible d allouer l editor : {}'.format(editor.pbLectureCata), None)
+                codeError = 3000 + 30
+                message = dict[3000] + ' '+dict[30] + ' '
+                message += 'impossible d allouer l editor : {}'.format(editor.pbLectureCata)
+                return (None, codeError , message, messageInfo)
 
             if editor.jdc:  # le fichier est bien un jdc
                 self.dictEditors[editor.editorId]=editor
@@ -134,19 +138,13 @@ class EditorManager(object):
                    self.appliEficas.dictEditorIdChannelId[editor.editorId]=[cId,]
             else:
                 # PN : cabler avec le message d info
-                return (None, 4000 + 30, 'impossible de creer le dataset ; {} '.format(editor.pbLectureDataSet), None)
+                codeError = 4000 + 30
+                message = dict[4000] + ' '+dict[30] + ' '
+                message +=  'impossible de creer le dataset ; {} '.format(editor.pbLectureDataSet)
+                return (None, 4000 + 30, 'impossible de creer le dataset ; {} '.format(editor.pbLectureDataSet), messageInfo)
             return (editor, 0, '', messageInfo)
 
 
-    # --------------------------
-    def getEditorById(self, eId):
-    # ---------------------------
-        debug = 1
-        if eId in self.dictEditors:
-           return (self.dictEditors[eId], 0, "")
-        if debug : print ("getEditorById : {} non trouve ".format(eId))
-        return (None, 1, "getEditorById : {} non trouve ".format(eId))
- 
 
     # -------------------------
     def samePath(self, f1, f2):
@@ -155,7 +153,7 @@ class EditorManager(object):
         compare two paths.
         """
         if f1 is None or f2 is None: return 0
-        if os.path.normcase(os.path.normpath(f1)) == os.path.normcase( os.path.normpath(f2)):
+        if os.path.realpath(os.path.normcase(os.path.normpath(f1))) == os.path.realpath(os.path.normcase( os.path.normpath(f2))):
             return 1
         return 0
 

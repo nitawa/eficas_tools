@@ -169,48 +169,68 @@ class EficasAppli:
         return self.editor
 
     #-------------------------------------------------------------------------------------------------------------------
-    def getWebEditor(self, sId, cataFile = None, datasetFile=None, jdc=None, include=0, formatIn='python', formatOut='python'):
+    def getWebEditor(self, cId, cataFile = None, datasetFile=None, jdc=None, include=0, formatIn='python', formatOut='python'):
     #-------------------------------------------------------------------------------------------------------------------
-        # en Web sId est le canal Id
-        debug = 1
-        if sId in self.dictChannelType.keys() and self.dictChannelType[sId] != 'Web' :
-              message = 'Numero de Session deja allouée pour autre chose que de Web' 
-              CR = 1000
-              return (sId, None, CR, message, None) 
-        if not sId in self.dictChannelType.keys() :
-           self.dictChannelType[sId]  =  'Web'
+        debug = 0
+        if debug : 
+           print ('______________________________ Eficas_appli getWebEditor ________________________')
+           print ('self', self)
+           print (cId, cataFile, datasetFile, jdc, include, formatIn, formatOut)
+
         #PN TODO initialiser info
-        info = None
-        (editor, CR, message, info)   = self.editorManager.getWebEditor(sId, cataFile,datasetFile, jdc, include)
-        if not editor :
+        info = ''
+        if cId == None :
+           CR = 1000 + 40
+           message = dictErreurs[1000].format('cId') + dictErreurs[40] 
            return (None, CR, message, info)
 
-        with lock :
-             externalEditorId = uuid1().hex
-        self.dictExternalEidEditor[externalEditorId] = editor
-        if editor.editorId not in self.dictEditorIdChannelIdExternEid.keys() :
-            self.dictEditorIdChannelIdExternEid[editor.editorId] = {}
+        if formatIn not in ('python', 'xml') : 
+           CR = 1000 + 40
+           message = dictErreurs[1000].format('formatIn') + dictErreurs[40] 
+           return (None, CR, message, info)
 
-        if sId not in self.dictEditorIdChannelIdExternEid[editor.editorId] :
-            self.dictEditorIdChannelIdExternEid[editor.editorId][sId] = [externalEditorId,]
-        else : 
-            self.dictEditorIdChannelIdExternEid[editor.editorId][sId].append(externalEditorId)
+        if formatOut not in ('python', 'xml') : 
+           CR = 1000 + 40
+           message = dictErreurs[1000].format('formatIn') + dictErreurs[40] 
+           return (None, CR, message, info)
+
+        if cId in self.dictChannelType.keys() and self.dictChannelType[cId] != 'Web' :
+            CR = 100
+            return (cId, None, CR, dictErreurs[100], info) 
+        if not cId in self.dictChannelType.keys() : self.dictChannelType[cId]  =  'Web'
+
+        (editor, CR, message, info)   = self.editorManager.getWebEditor(cId, cataFile,datasetFile, jdc, include)
+        if not editor : return (None, CR, message, info)
+
+        # on pose une lock egalement pour la mise a jour des dico
+        with lock :
+            externalEditorId = uuid1().hex
+            if editor.editorId not in self.dictEditorIdChannelIdExternEid.keys() :
+                self.dictEditorIdChannelIdExternEid[editor.editorId] = {}
+            if cId not in self.dictEditorIdChannelIdExternEid[editor.editorId] :
+                self.dictEditorIdChannelIdExternEid[editor.editorId][cId] = [externalEditorId,]
+            else : 
+                self.dictEditorIdChannelIdExternEid[editor.editorId][cId].append(externalEditorId)
+
+        self.dictExternalEidEditor[externalEditorId] = editor
+
         if debug : 
-           if editor : print ('getWebEditor id de sesssion :', sId, ' editor : ', editor.editorId, 'externe ',  externalEditorId)
-           print (externalEditorId, CR, message, info)
+           if editor : print ('getWebEditor id de sesssion :', cId, ' editor : ', editor.editorId, 'externe ',  externalEditorId)
+           print ('dictionnaire ' , self.dictEditorIdChannelIdExternEid)
+           print ('______________________________ fin getWebEditor ________________________')
         return (externalEditorId, CR, message, info) 
 
     #--------------------------------------
-    def getWebEditorById(self, sId, eId):
+    def getWebEditorById(self, cId, eId):
     #--------------------------------------
-        if sId == None : 
-           return ( None, 1000, dict[1000].format ('session Id'))
+        if cId == None : 
+           return ( None, 1000, dict[1000].format ('session Id'), "")
         editor = self.dictExternalEidEditor[eId]
-        if sId not in self.dictEditorIdChannelIdExternEid[editor.editorId] :
-           return ( None, 1000, 'la session ne possede pas cet Editeur')
-        if eId not in self.dictEditorIdChannelIdExternEid[editor.editorId][sId] :
-           return ( None, 1000, 'incoherence entre Editeur et session')
-        return (editor, 0, "")
+        if cId not in self.dictEditorIdChannelIdExternEid[editor.editorId] :
+           return ( None, 1000, 'la session ne possede pas cet Editeur', "")
+        if eId not in self.dictEditorIdChannelIdExternEid[editor.editorId][cId] :
+           return ( None, 1000, 'incoherence entre Editeur et session', "")
+        return (editor, 0, "", "")
         
 
     #--------------------------------------------------------------------------------------------------------------------------------
@@ -410,8 +430,9 @@ class EficasAppli:
     #-------------------------------------------------------------------------------------------------
     def propageChange (self, editorId, emitChannelId , emitEditorId,  toAll , fction, *args, **kwargs):
     #--------------------------------------------------------------------------------------------------
-        if fction == 'appendChildren' : debug = 1
-        else : debug = 0
+        #if fction == 'appendChildren' : debug = 1
+        #else : debug = 0
+        debug = 1
         if debug : 
            print ("------------------------------------------ Eficas")
            print ('propageChange avec les arguments ')

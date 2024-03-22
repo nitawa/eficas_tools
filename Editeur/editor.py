@@ -113,7 +113,7 @@ class Editor:
     def construitJdC(self,jdc):
     #-------------------------
     # construction du jdc 
-    # Est-il encore necessaire de passer un jdc a l init ?
+    # Est-il encore necessaire de passer en paramtre un jdc a l init ?
     # je ne vois plus quel est le cas d usage
     # je garde . 11 mars 2024
         if jdc : 
@@ -194,9 +194,11 @@ class Editor:
 
         fn = str(fn)
         jdcName = os.path.basename(fn)
-        print ('-------------------------------------------')
-        print (fn)
-        print ('-------------------------------------------')
+        debug = 0
+        if debug : 
+            print ('-------------------------------------------')
+            print (fn)
+            print ('-------------------------------------------')
 
         # Il faut convertir le contenu du dataSetFile en fonction du format
         formatIn = self.appliEficas.formatFichierIn
@@ -721,7 +723,10 @@ class Editor:
         @return tuple of two values (boolean, string) giving a success indicator and
             the name of the saved file
         """
+        #TODO PN : s occuper des suffixes
 
+        if fichier != self.dataSetFile :
+           return (1, 'utiliser saveFileAs pour changer le nom du fichier')
         self.fichierOut = fichier
         if not (self.writeFile(fichier, formatLigne=formatLigne)):
             return (0, None)
@@ -729,13 +734,19 @@ class Editor:
             if self.myWriter != self.XMLWriter:
                 self.XMLWriter.gener(self.jdc)
                 self.XMLWriter.writeDefault(fichier)
-                return (1, self.dataSetFile)
+                return (0, self.dataSetFile)
         if self.jdc.isValid() and hasattr(self.myWriter, "writeDefault"):
             self.myWriter.writeDefault(fichier)
         elif self.code == "TELEMAC" and hasattr(self.myWriter, "writeDefault"):
             self.myWriter.writeDefault(fichier)
         self.modified = 0
-        return (1, self.dataSetFile)
+        return (0, self.dataSetFile)
+
+    # --------------------------------------------------#
+    def saveFileAs(self, fichier, formatLigne="beautifie"):
+    # --------------------------------------------------#
+        self.dataSetFile  = fichier
+        return self.saveFile(fichier, formatLigne)
 
     # -----------------------#
     def sauveLigneFile(self):
@@ -1268,6 +1279,11 @@ class Editor:
         texteStringDataBase = self.readercata.cata.JdC.dumpStringDataBase(nomDataBaseACreer)
         return texteStringDataBase
 
+    # -----------------------------#
+    def getEtapesByName(self, name):
+    # -----------------------------#
+        if not self.jdc : return (1, 'pas de jdc')
+        return self.jdc.getEtapesByName(name)
 
 if __name__ == "__main__":
     print("a faire")
