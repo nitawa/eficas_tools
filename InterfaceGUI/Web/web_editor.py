@@ -111,10 +111,10 @@ class WebEditor(Editor):
          if not monNode : return  (6000, dictErreurs[6000].format(nodeId))
          ok,message =  monNode.fauxNoeudGraphique.updateSDName(sdnom)
          if ok :
-            self.appliEficas.propageChange(self.editorId, cId, externEditorId, False, 'updateNodeInfo', nodeId, monNode.fauxNoeudGraphique.getDicoForUpdateNodeName())
-            return (0, message)
+            self.appliEficas.propageChange(self.editorId, cId, externEditorId, True, 'updateNodeInfo', nodeId, monNode.fauxNoeudGraphique.getDicoForUpdateNodeName())
+            return (0, message, 'nommage effectué')
          else :
-            return (7000, dictErreurs[7000].format(nodeId,message))
+            return (7000, dictErreurs[7000].format(nodeId,message), "")
 
     #-----------------------------------------------
     @fonctionLoguee
@@ -124,9 +124,8 @@ class WebEditor(Editor):
          if not monNode : return  (6000, dictErreurs[6000].format(nodeId))
          if debug : print ('in suppNode pour monNode', monNode)
          (ret,commentaire)=monNode.fauxNoeudGraphique.delete()
-        # TODO faire mieux les remontees d erreur
-         if not ret : return (0, "")
-         else : return ( 8000, commentaire)
+         if ret : return (0, "", commentaire)
+         else : return ( 8000, commentaire, "")
 
     #-------------------------------------------------------------
     @fonctionLoguee
@@ -142,13 +141,13 @@ class WebEditor(Editor):
          if not monNode : return  (None, 6000, dictErreurs[6000].format(nodeId))
          if debug : print (monNode.fauxNoeudGraphique)
          newId, retour, commentaire = monNode.fauxNoeudGraphique.appendChild(name,pos)
-         if not retour : return (newId, 0, commentaire)
-         else : return (newId,  8000, commentaire)
+         if not retour : return (newId, 0, '', commentaire)
+         else : return (newId,  8000, commentaire, '')
 
 
     #-------------------------------------------------------------
     @fonctionLoguee
-    def changeValeur(self, cId, externEditorId, nodeId, valeur) :
+    def changeValue(self, cId, externEditorId, nodeId, valeur) :
     #-------------------------------------------------------------
          """
          cId : canal emetteur
@@ -159,17 +158,20 @@ class WebEditor(Editor):
          debug = 0
          if debug : print (' changeValeur cId, externEditorId, nodeId, valeur' ,cId, externEditorId, nodeId, valeur)
          monNode=self.getNodeById(nodeId)
-         if not monNode : return  (nodeId, False, 'Node {} non trouve'.format(nodeId))
+         if not monNode : 
+            codeErreur = 6000
+            msgErreur = dictErreurs[codeErreur].format(nodeId)
+            return (nodeId, CodeErreur, msgErreur, msgInfo)
          if debug : print (' changeValeur', monNode)
-         idRetour, commentaire, validite = monNode.fauxNoeudGraphique.traiteValeurSaisie(valeur)
+         idRetour, validite, commentaire = monNode.fauxNoeudGraphique.traiteValeurSaisie(valeur)
+         dicoNode = self.getDicoForFancy(monNode)
          if validite :
              self.appliEficas.propageChange(self.editorId, cId, externEditorId, False, 'updateNodeInfo', nodeId, monNode.fauxNoeudGraphique.getDicoForUpdateNodeInfo())
-             #self.appliEficas.propageChange(self.editorId, cId, externEditorId, True, 'updateNodeInfo', nodeId, monNode.fauxNoeudGraphique.treeParent.getDicoForUpdateOptionnels())
              if debug : print (' changeValeur', monNode.fauxNoeudGraphique.treeParent, monNode.fauxNoeudGraphique.treeParent.item.nom)
              monNode.fauxNoeudGraphique.treeParent.updateOptionnels()
-             return (idRetour, commentaire, validite)
+             return (dicoNode, 0, "", commentaire)
          if not validite :
-            return (idRetour, commentaire, validite)
+            return (dicoNode, 40, dictErreurs[40] + commentaire, "")
 
     #------------------------------------------------------
     def afficheMessage(self, titre, texte, couleur = None):

@@ -125,7 +125,7 @@ class EditorManager(object):
 
             if not editor.readercata :
                 codeError = 3000 + 30
-                message = dict[3000] + ' '+dict[30] + ' '
+                message = dictErreurs[3000] + ' ' + dictErreurs[30] + ' '
                 message += 'impossible d allouer l editor : {}'.format(editor.pbLectureCata)
                 return (None, codeError , message, messageInfo)
 
@@ -139,7 +139,7 @@ class EditorManager(object):
             else:
                 # PN : cabler avec le message d info
                 codeError = 4000 + 30
-                message = dict[4000] + ' '+dict[30] + ' '
+                message = dictErreurs[4000] + ' '+dictErreurs[30] + ' '
                 message +=  'impossible de creer le dataset ; {} '.format(editor.pbLectureDataSet)
                 return (None, 4000 + 30, 'impossible de creer le dataset ; {} '.format(editor.pbLectureDataSet), messageInfo)
             return (editor, 0, '', messageInfo)
