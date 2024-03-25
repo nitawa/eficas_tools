@@ -73,6 +73,7 @@ debug=0
 if debug : print ('eficasAppli = ', eficasAppli)
 
 def fromConnecteur(maFonction, sessionId, externEditorId, *args,**kwargs):
+  debug = 1
   if debug : 
      print ('________________________________________________________________________')
      print ('fromConnecteur : ', maFonction, sessionId, externEditorId, *args,**kwargs)
@@ -96,12 +97,10 @@ def propageValide(cId, eId, id, valid): #TODO: RENAME TO ... propagateValidation
     sse.publish( {'eId' : eId, 'id':id, 'valid':valid, 'message': "Hello from propageValide!"}, type='propageValide', channel = str(cId))
 
 def updateNodeInfo(cId, eId, id, info):
-    debug=1
     if debug : print ('Flask/updateNodeInfo', cId, eId, id, info)
     sse.publish( {'eId' : eId, 'id':id, 'info':info, 'message': "Hello from updateNodeInfo!"}, type='updateNodeInfo', channel = str(cId))
 
 def appendChildren(cId, eId, id, fcyTreeJson, pos):
-    debug = 0
     if debug : print ('Flask/appendChildren: ', id, fcyTreeJson, pos)
     sse.publish( {'eId' : eId, 'id':id, 'fcyTreeSrc':fcyTreeJson, 'pos':pos, 'message': "Hello from appendChildren!"}, type='appendChildren', channel = str(cId))
 
@@ -158,7 +157,7 @@ def updateSimp():
 
         (eficasEditor, errorCode, errorMsg, infoMsg) = eficasAppli.getWebEditorById(session['canalId'],eId)
         if errorCode : 
-            messageLevel = "alert-danger"
+            msgLevel = "alert-danger"
             message = errorMsg + infoMsg
             return make_response(json.dumps( {'errorCode' : errorCode, 'message': message,'msgLevel':msgLevel} ))
 
@@ -170,17 +169,19 @@ def updateSimp():
         # Ne pas recuperer et ne pas renvoyer le noeud dans le cas du SIMP
         #  (le changeDone et l''ancienne valeur ds la WebApp suffit 
         #(node, errorCode, errorMsg, errorLevel)  = eficasEditor.getDicoForFancy(eficasEditor.getNodeById(id))
-        if debug : print("Flask/updateSimp node : ",node)
+        #if debug : print("Flask/updateSimp node : ",node)
         # return jsonify([myTreeDico])
         
         (node, errorCode, errorMsg, infoMsg) = eficasEditor.changeValue(session['canalId'], eId, id,value);
         if errorCode : 
-            messageLevel = "alert-danger"
+            msgLevel = "alert-danger"
             message = errorMsg + infoMsg
-            return make_response(json.dumps( {'errorCode' : errorCode, 'message': message,'msgLevel':msgLevel} ))
-        if infoMessage != "" : msgLevel = 'alert-success'
+            return make_response(json.dumps( {'source':node,'errorCode' : errorCode, 'message': message,'msgLevel':msgLevel} ))
+        if infoMsg != "" : msgLevel = 'alert-success'
         else : msgLevel = "alert-info"
-        return make_response(json.dumps( {'source':node, 'errorCode' : errorCode, 'message': infoMessage,'msgLevel':msgLevel} ))
+        #PN --> a changer Eric ? je t envoie les infos dans le dico. Est-ce que ce n est pas cela qui est attendu ?
+        print ('source',node, 'errorCode' , errorCode, 'message', infoMsg,'msgLevel',msgLevel)
+        return make_response(json.dumps( {'source':node, 'errorCode' : errorCode, 'message': infoMsg,'msgLevel':msgLevel} ))
 
         # Return a string along with an HTTP status code
         # return "JSON received!", 200
@@ -203,16 +204,17 @@ def updateSDName():
          # On attendant que l externalEditorId soit dans le tree
         (eficasEditor, errorCode, errorMsg, infoMsg) = eficasAppli.getWebEditorById(session['canalId'],eId)
         if errorCode : 
-            messageLevel = "alert-danger"
+            msgLevel = "alert-danger"
             message = errorMsg + infoMsg
-            return make_response(json.dumps( {'changeIsAccepted' : changeDone, 'message': message} ))
+            return make_response(json.dumps( {'errorCode' : errorCode, 'message': message,'msgLevel':msgLevel} ))
 
         (errorCode, errorMsg, infoMsg) = eficasEditor.updateSDName(session['canalId'],eId,id,sdnom);
         if errorCode : 
-            messageLevel = "alert-danger"
+            msgLevel = "alert-danger"
             message = errorMsg + infoMsg
         else :
-            messageLevel = "alert-success"
+            message = infoMsg
+            msgLevel = "alert-success"
         return make_response(json.dumps( {'errorCode' : errorCode, 'message': message,'msgLevel':msgLevel} ))
     else:
         # The request body wasn't JSON so return a 400 HTTP status code
@@ -232,17 +234,18 @@ def removeNode():
         id  = req['id'];
         (eficasEditor, errorCode, errorMsg, infoMsg) = eficasAppli.getWebEditorById(session['canalId'],eId)
         if errorCode : 
-            messageLevel = "alert-danger"
+            msgLevel = "alert-danger"
             message = errorMsg + infoMsg
             return make_response(json.dumps( {'errorCode' : errorCode, 'message': message,'msgLevel':msgLevel} ))
 
         (errorCode, errorMsg, infoMsg) = eficasEditor.removeNode(session['canalId'],session['externEditorId'],id);
-        if debug : print ("Flask/removeNode : ret : ",ret," message : ",message)
+        if debug : print ("Flask/removeNode : errorCode : ",errorCode," errorMsg, : ",errorMsg, "infoMsg", infoMsg)
         if errorCode : 
-            messageLevel = "alert-danger"
-            message = errorMsg + infoMsg
+            msgLevel = "alert-danger"
+            message = errorMsg
         else :
-            messageLevel = "alert-success"
+            msgLevel = "alert-success"
+            message = infoMsg
 
         return make_response(json.dumps( {'errorCode' : errorCode, 'message': message,'msgLevel':msgLevel} ))
     else:
@@ -264,18 +267,18 @@ def appendChild():
         eId = req['eId'];id=req['id'];name=req['name'];pos=req['pos'];
         # id, value = req.values() # Dangereux correspondance implicite
         #rId,message,changeDone  = eficasEditor.appendChild(id,name,pos);
-        (eficasEditor, errorCode, message) = eficasAppli.getWebEditorById(session['canalId'],eId)
+        (eficasEditor, errorCode, errorMsg, infoMsg) = eficasAppli.getWebEditorById(session['canalId'],eId)
         if errorCode : 
-            messageLevel = "alert-danger"
+            msgLevel = "alert-danger"
             message = errorMsg + infoMsg
             return make_response(json.dumps( {'errorCode' : errorCode, 'message': message,'msgLevel':msgLevel} ))
-        (newId, errorCode, message) = eficasEditor.appendChild(session['canalId'],eId,id,name,pos);
+        (newId, errorCode, errorMsg,infoMsg) = eficasEditor.appendChild(session['canalId'],eId,id,name,pos);
         if debug : print (__file__+"Flask/appendChild : newId : ",newId);
         if errorCode : 
-            messageLevel = "alert-danger"
+            msgLevel = "alert-danger"
             message = errorMsg + infoMsg
         else :
-            messageLevel = "alert-success"
+            msgLevel = "alert-success"
         return make_response(json.dumps( {'id':newId, 'errorCode' : errorCode, 'message': message,'msgLevel':msgLevel} )) #TODO: Code Erreur
         # return make_response(json.dumps( {'source':node, 'changeIsAccepted' : changeDone, 'message': message} ))
         # Return a string along with an HTTP status code

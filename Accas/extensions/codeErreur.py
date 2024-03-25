@@ -12,7 +12,7 @@ dictErreurs = {
  10 : 'fichier {} non trouve',
  20 : 'erreur ecriture',
  30 : 'erreur a l execution',
- 40 : 'mauvaise valeur',
+ 40 : 'mauvaise valeur ',
 
 # Messages specifiques 
  100  : 'Numero de Session deja allouée pour autre chose que de Web',

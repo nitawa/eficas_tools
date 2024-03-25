@@ -37,11 +37,12 @@ class Node(browser.JDCNode,typeNode.PopUpMenuNodeMinimal):
         if self.item.definition.validators != None :
             if self.item.definition.validators.verifItem(nouvelleValeur) !=1 :
                 commentaire=self.node.item.definition.validators.infoErreurItem()
-                return (self.item.idUnique, 100 ,commentaire)
+                return (self.item.idUnique, False ,commentaire)
         nouvelleValeurFormat=self.politique.getValeurTexte(valeur)
         validite,commentaire=self.politique.recordValeur(nouvelleValeurFormat)
-        #if validite : self.treeParent.updateOptionnels() 
-        return (self.item.idUnique, 0, 'commentaire')
+        if not validite : 
+            return (self.item.idUnique, False, commentaire)
+        return (self.item.idUnique, True, commentaire)
         
 class SIMPTreeItem(SIMPTreeItemCommun):
     itemNode = Node

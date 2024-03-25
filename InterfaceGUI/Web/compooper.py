@@ -29,7 +29,7 @@ class Node(browser.JDCNode, typeNode.PopUpMenuNode):
         pass
 
     def updateSDName(self,nom):
-        debug=1
+        debug=0
         if debug : print ('updateSDName' , self.item.nom, nom)
         bOk,message = self.item.nommeSd(nom)
         if debug : print ('bool', bOk,'message', message)

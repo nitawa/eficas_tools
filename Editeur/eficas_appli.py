@@ -432,7 +432,7 @@ class EficasAppli:
     #--------------------------------------------------------------------------------------------------
         #if fction == 'appendChildren' : debug = 1
         #else : debug = 0
-        debug = 1
+        debug = 0
         if debug : 
            print ("------------------------------------------ Eficas")
            print ('propageChange avec les arguments ')

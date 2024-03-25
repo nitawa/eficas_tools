@@ -351,7 +351,7 @@ class JDCNode():
     def getDicoForUpdateNodeName(self):
     #---------------------------------
         monDictPartiel={} 
-        monDictPartiel['sdnom'] = self.item.sdnom
+        monDictPartiel['sdnom'] = self.item.getSdname()
         return monDictPartiel
 
     def getDicoForUpdateOptionnels(self):
