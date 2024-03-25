@@ -120,6 +120,7 @@ class Editor:
            self.jdc = jdc
            return
         self.pbLectureDataSet = None
+        self.messageInfo = None
         if self.readercata.cata == None: 
            if self.dataSetFile is not None: 
               print ('dataSetFile comm mais pas de cata')
@@ -217,6 +218,7 @@ class Editor:
                 pareil, texteNew = self.verifieChecksum(monJDCReader.text)
                 if not pareil:
                     self.afficheMessage( "fichier modifie", "Attention! fichier change hors EFICAS" )
+                    self.messageInfo = "fichier modifie, Attention! fichier change hors EFICAS"
                 monJDCReader.text = texteNew
                 memeVersion, texteNew = self.verifieVersionCataDuJDC(monJDCReader.text)
                 if memeVersion == 0:

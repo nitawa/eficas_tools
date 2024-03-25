@@ -114,7 +114,6 @@ class EditorManager(object):
             self.appliEficas.afficheMessage(dictErreurs[4000] + dictErreurs[10], 'fichier dataSet {} non trouve'.format(cataFile))
             return (None, 4000 + 10  , dictErreurs[4000] + dictErreurs[10].format(cataFile), None)
         if debug :   print ('dictEditors', self.dictEditors)
-        messageInfo = ""
         with self.lock :
             for editor in self.dictEditors.values():
                 if self.samePath(dataSetFile, editor.getDataSetFileName()) and self.samePath(cataFile, editor.getCataFileName()):
@@ -129,6 +128,7 @@ class EditorManager(object):
                 message += 'impossible d allouer l editor : {}'.format(editor.pbLectureCata)
                 return (None, codeError , message, messageInfo)
 
+            messageInfo = editor.messageInfo 
             if editor.jdc:  # le fichier est bien un jdc
                 self.dictEditors[editor.editorId]=editor
                 self.editors.append(editor)
