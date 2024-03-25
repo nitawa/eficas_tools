@@ -90,19 +90,13 @@
     
 <div class="row" data-spy="affix" id="row-tree1-messages">
 
-    <!-- <footer class="footer"> -->
     <nav class="navbar" >
-    <!--   <div class="container-fluid"> -->
-    <!-- <div class="navbar-header" > -->
-    <!--   <a class="navbar-brand" href="#">Messages</a> -->
-    <!-- </div> -->
-    <!-- <h2>Messages</h2> -->
-    <!-- <span id="tree1-messages" class="nav navbar-nav col-sm-12 navbar-right alert alert-success"  >....</span> -->
-    <footer class="footer alert alert-success" id="tree1-messages">No message.</footer>
-    <!-- alert alert-success alert-info alert-warning alert-danger -->
-    <!--   </div> -->
+      <!-- <span id="tree1-messages" class="nav navbar-nav col-sm-12 navbar-right alert alert-success"  >....</span> -->
+      <!-- <footer class="footer alert alert-success" id="tree1-messages" >No message.</footer> -->
+      <div id="tree1-messages" >
+	<nav class="nav-bar alert alert-success">No message.</nav>
+      </div>
     </nav>
-    <!-- </footer> -->
 
 </div> <!-- row -->
 
@@ -243,8 +237,10 @@ let treeMessage=function(msgCssSelStr,messageClass,message) {
     'use strict';
     const messageClasses = new Set(["alert-success","alert-info","alert-warning","alert-danger"]);
     if (messageClasses.has(messageClass)) {
+	
 	$(msgCssSelStr).removeClass("alert-success alert-info alert-warning alert-danger");
-        $(msgCssSelStr).addClass(messageClass);
+        // $(msgCssSelStr).addClass(messageClass);
+	
 	if ( messageClass == "alert-danger" ) {
 	    $.ui.fancytree.error(message);    // debugLevel >= 1
 	    // alert(message); // Activer lorsque la mise au point sera achevée.
@@ -256,7 +252,10 @@ let treeMessage=function(msgCssSelStr,messageClass,message) {
             console.debug(message);           // debugLevel >= 4
 	    $.ui.fancytree.debug(message);    // debugLevel >= 4
 	};
-        $(msgCssSelStr).text(message);
+        $(msgCssSelStr).html('<nav class="nav-bar alert">'+message+'</nav>'+$(msgCssSelStr).html());
+        //$("#row-tree1-messages > nav nav:first-child").addClass(messageClass);
+	$(msgCssSelStr+" > nav:first-child").addClass(messageClass);
+        //$(msgCssSelStr).text(message);
     } else {
 	alert("The messageClass : |"+messageClass+"| is not in "+messageClasses); //TODO afficher la chaine messageClasses
     }; 
