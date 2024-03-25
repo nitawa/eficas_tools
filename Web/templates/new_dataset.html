@@ -58,7 +58,7 @@
 		      dataType: 'json',
 		      context: $('#DatasetEdition')[0]
 		  }).done( function(result) {
-         	      console.log(result.files)
+         	      // console.log(result.files)
          	      let into = result.files;
          	      let selectInto = into.map((cV) => { return "<option>"+cV.name+"</option>" }).join('');
           	      $("#sel1").val(undefined);	   
@@ -87,7 +87,7 @@
 		      dataType: 'json',
 		      context: $('#DatasetEdition')[0]
 		  }).done( function(result) {
-        	      console.log(result.files)
+        	      //console.log(result.files)
         	      let into = result.files;
         	      let selectInto = into.map((cV) => { return "<option>"+cV.name+"</option>" }).join('');
 		      let newDataset = "New Dataset.comm"

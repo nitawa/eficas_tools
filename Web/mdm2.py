@@ -28,12 +28,10 @@ from   markupsafe  import escape
 from flask_sse import sse
 
 app = Flask(__name__)
-app.secret_key = 'EssaiPN'
 
 # CATALOGS_EXT=("py","jpg") #TODO : supprimer jpg pour test
 # catalogs = UploadSet("catalogs",CATALOGS_EXT)
 # app.config["UPLOADED_CATALOGS_DEST"] = "data/catalogs"
-# app.config["SECRET_KEY"]             = os.urandom(24)
 
 # configure_uploads(app, catalogs)
 
@@ -88,9 +86,11 @@ app.fromConnecteur=fromConnecteur
 #    - ReAffichage d'un noeud (et ses enfants)
 #    - Changement d'un nom de mot-cle reference
 
-def propageValide(sId, id, valid): #TODO: RENAME TO ... propagateValidation
+def propageValide(eId, id, valid): #TODO: RENAME TO ... propagateValidation
+#def propageValide(eId, cId, id, valid): #TODO: RENAME TO ... propagateValidation
     print ('Flask/propageValide: ', id, valid)
     sse.publish( {'id':id, 'valid':valid, 'message': "Hello from propageValide!"}, type='propageValide')
+#    sse.publish( {'eId':eId, 'id':id, 'valid':valid, 'message': "Hello from propageValide!"}, type='propageValide', channel=cId)
 
 def updateNodeInfo(sId, id, info):
     print ('Flask/updateNodeInfo', sId, id, info, session['eficasSession'])
@@ -239,7 +239,7 @@ def index():
     print ('_______________________________________________')
     print (session)
     print ('_______________________________________________')
-    (eficasSession, codeErreur, message) =eficasAppli.getSessionId()
+    (eficasSession, codeErreur, message) = eficasAppli.getSessionId()
     debug=1
     if not codeErreur :
         session['eficasSession'] = eficasSession
@@ -249,14 +249,19 @@ def index():
         if not(eficasEditor)  :
             return render_template('commandes_2.html',
                 titre='Pb a l enrolement ',
+                # efi_update_chanel,
                 listeCommandes = [],
-                 tree= None
+                tree= None
             )
     cataFile = os.path.abspath('../Codes/WebTest/cata_essai.py')
     dataSetFile = os.path.abspath('../Codes/WebTest/web_tres_simple_avec_2Fact.comm')
     if eficasSession == 3:
         dataSetFile = os.path.abspath('../Codes/WebTest/web_tres_simple_incomplet.comm')
     (eficasEditor, codeErreur, message) = eficasAppli.getWebEditor(eficasSession, cataFile, dataSetFile)
+    # ((N°canal_maj, N°eficasEditor), codeErreur, message) = eficasAppli.getWebEditor(eficasSession, cataFile, dataSetFile)
+    # ((N°canal_maj, N°eficasEditor), codeErreur, message) = eficasAppli.getWebEditor(eficasSession, cataFile, dataSetFile)
+    # ((N°canal_maj, N°eficasEditor), codeErreur, message) = eficasAppli.getWebEditor(eficasSession, cataFile, dataSetFile)
+    # ((N°canal_maj, N°eficasEditor), codeErreur, message) = eficasAppli.getWebEditor(eficasSession, cataFile, dataSetFile)
     # TODO : separer les erreurs ouverture cata / ouvertur fichier
     if debug : print ('dans index : eficasEditor : ', eficasEditor, ' code Erreur : ', codeErreur,'message : ', message)
     if not codeErreur :
@@ -266,8 +271,9 @@ def index():
         if not(eficasEditor)  :
             return render_template('commandes_2.html',
                 titre='Pb a l enrolement ',
+                # efi_update_chanel = efi_update_chanel,
                 listeCommandes = [],
-                 tree= None
+                tree= None
             )
 
     if not(eficasEditor)  :
@@ -298,6 +304,7 @@ def index():
 
     return render_template('commandes_2.html',
       titre=code,
+      # efi_update_chanel = efi_update_chanel,
       listeCommandes = eficasEditor.getListeCommandes(),
       tree=myFancyTreeJS,
       # tree=tree4Fancy,

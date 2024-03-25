@@ -266,7 +266,7 @@ function callService(msgCssSelStr, serviceName, obj) {
     'use strict';
 
     const  success = function(data, status) {
-        let message="Successfull "+serviceName+" call with status : " + status;
+        let message="Successfull call for "+serviceName+" with status : " + status;
         treeMessage(msgCssSelStr,"alert-success",message) ;
     };
 
@@ -283,6 +283,7 @@ function callService(msgCssSelStr, serviceName, obj) {
     });
 };
 
+// Les fonctions clickOn sont associées aux balises html
 function clickOnRemove(treeCssSelStr, msgCssSelStr, key ) {
     'use strict';
     const tree  = $.ui.fancytree.getTree(treeCssSelStr);
@@ -480,30 +481,46 @@ function sendUpdateSimp(treeCssSelStr, msgCssSelStr, node, eltNameWithValue) {
 
     let checkCallBack = function(data) {
 	// Tester data == NULL !
-        const changeIsAccepted = data.changeIsAccepted;
-        const wValue           = data.source['wValue'];
-        const validite         = data.source['validite'];
-	const rMessage         = data.message
+        // const changeIsAccepted = data.changeIsAccepted;
+	const errorCode = data.errorCode;
+	const msgLevel  = data.msgLevel;
+	const rMessage  = data.message;
+        const wValue    = data.source['wValue'];
+        const validite  = data.source['validite'];
 
 	//node.fromDict()
 	//source=JSON.parse(getTree1())
-	if ( changeIsAccepted ) {
-	    // Il faudrait gérer les représentations des types pour activer cet assert (ex: string vs int)
-	    //  or on laisse le kernel eficas vérifier des strings.
-	    // $.ui.fancytree.assert(value == wValue);
-	    node.data.wValue   = wValue
-	    node.data.validite = validite
-	    let message = "Changing SIMP "+node.title+" value to "+value+" has been accepted ("+rMessage+")";
-	    treeMessage(msgCssSelStr,"alert-success",message);
-	    //node.data        = data.source ?? A priori, il est inutile d'essayer de remplacer la source complète du noeud  
-	    console.log('wValue    : '+ node.data.wValue);
-	    console.log('validite  : '+validite);
-	} else {
-	    // TODO: Gérer le input pour laisser le focus et passer en rouge ?
+	if ( errorCode != undefined &&
+	     errorCode != 0 ) {
+	    // TODO: Gérer le input pour laisser le focus et passer en rouge ? Non ou bien rouge avec délai !
 	    let message = "Unsuccessfull SIMP processing for |" + node.getPath() + "|, value |"+value+"| has not been accepted ("+rMessage+")";
 	    treeMessage(msgCssSelStr,"alert-warning",message);
+	    treeMessage(_msgCssSelStr,msgLevel,rMessage);
+	    return;
 	};
+
+	if ( rMessage == undefined) rMessage='';
+	if ( wValue   == undefined) {
+	    let message = "Unsuccessfull SIMP processing for |" + node.getPath() + "|, wValue is undefined ("+rMessage+")";
+	    treeMessage(msgCssSelStr,"alert-danger",message);
+	};
+	if ( validite == undefined) {
+	    let message = "Unsuccessfull SIMP processing for |" + node.getPath() + "|, validite is undefined ("+rMessage+")";
+	    treeMessage(msgCssSelStr,"alert-danger",message);
+	};
+	
+	// Il faudrait gérer les représentations des types pour activer cet assert (ex: string vs int,double,...)
+	// or on laisse le kernel eficas vérifier des strings (ex. PI).
+	// $.ui.fancytree.assert(value == wValue);
+	node.data.wValue   = wValue;
+	node.data.validite = validite;
+	let message = "Changing SIMP "+node.title+" value to "+value+" has been accepted ("+rMessage+")";
+	treeMessage(msgCssSelStr,"alert-success",message);
+	//node.data        = data.source ?? A priori, il est inutile d'essayer de remplacer la source complète du noeud  
+	console.log('wValue    : '+ node.data.wValue);
+	console.log('validite  : '+validite);
 	//alert("sendUpdateSimp-2");
+	
 	node.render(true,false);  //force rendering the node (not parents nor descendants)
 	// if (eltNameWithValue != 'select') node.render(true,false);  //force rendering the node (not parents nor descendants)
 	//node.renderStatus();    //CSS element updates
@@ -532,11 +549,21 @@ function sendNewDataset(catalogName, datasetName) {
 	let   _treeCssIdTab;
 	let   _treeCssIdNav;
 	let   _treeCssSelStr;
-        const source   = data.source;
-        const commands = data.commands;
-        const title    = data.title;
-	const rMessage = data.message;
-	console.log(source);
+
+	const errorCode = data.errorCode;
+	const msgLevel  = data.msgLevel;
+	const rMessage  = data.message;
+        const source    = data.source;
+        const commands  = data.commands;
+        const title     = data.title;
+
+	if ( errorCode != undefined &&
+	     errorCode != 0 ) {
+	    treeMessage(_msgCssSelStr,msgLevel,rMessage);
+	    return;
+	};
+	
+	//console.log(source);
 	
 	// //tree.destroy();
 	// let message = "New Dataset has been loaded ("+rMessage+")";
@@ -547,15 +574,20 @@ function sendNewDataset(catalogName, datasetName) {
 	// efiNewTab("tree1");
 	// $("#tree1").fancytree(efiFancytreeOptions("#tree1",source));
 	
-	_treeId=efiNewTab(catalogName, datasetName,commands);
+	_treeId        = efiNewTab(catalogName, datasetName,commands);
 	_treeCssSelStr = '#'+_treeId;
 	_treeCssIdTab  = _treeCssSelStr+'Tab';
 	_treeCssIdNav  = _treeCssSelStr+'Nav';
+	
 	$("#Welcome").hide()
+	
 	$(_treeCssSelStr).fancytree(efiFancytreeOptions(_treeCssSelStr,source));
+	
 	createNewSetOfEvents(_treeCssSelStr,'#tree1-messages');
+
 	console.log($(_treeCssIdNav));
 	$('.nav-tabs a[href="'+_treeCssIdTab+'"]').tab('show')
+	
 	//$(_treeCssIdNav).tab('show');
 	// if ( tree ==  null) {
 	//     let message = "Unsuccessfull sendNewDataset processing. Tree ("+_treeCssSelStr+") returned (null)" ;
@@ -564,10 +596,6 @@ function sendNewDataset(catalogName, datasetName) {
 	// };
 
 	let message = "New Dataset has been loaded ("+rMessage+")";
-	
-	//TODO : Gérer les commandes
-	//TODO : Gérer le titre/code
-
     };
     
     //alert("sendNewDataset-1");
@@ -592,6 +620,28 @@ source.addEventListener('message', function(event) {
    const message   = data.message;
     alert(message);
 }, false);
+
+// --- displayMessage ---
+(function (treeCssSelStr, msgCssSelStr) {
+	'use strict';
+	source.addEventListener('displayMessage', function(event) {
+            const data         = JSON.parse(event.data);
+            const color        = data.color;
+            const message      = data.message;
+            const messageClass = data.messageClass;
+            const _message      = "The server says " + message;
+	    //const tree         = $.ui.fancytree.getTree(_treeCssSelStr);
+            //const _rootNode    = tree.rootNode.children[0];
+            //const _eId         = _rootNode.data.eId;
+        
+            //if ( eId != _eId ) return; //TODO:Lorsque l'on modifiera Flask/affiche{Message/Alerte}
+            if ( messageClass == 'alert-danger' ) {
+		alert(_message);
+	    } else {
+		treeMessage(msgCssSelStr,messageClass,_message);
+	    };
+	}, false);
+})('','#tree1-messages'); //TODO: Changer la balise
 
 // --- propageValid ---
 function createNewSetOfEvents(treeCssSelStr, msgCssSelStr) {
@@ -619,7 +669,7 @@ function createNewSetOfEvents(treeCssSelStr, msgCssSelStr) {
 	    if (node == null) {
 		treeMessage(_msgCssSelStr,"alert-danger",msgerror);
 		return;
-	    };   
+	    };
             node.data.validite=valid;  //TODO : ?? Pas encore réussi à tester ... ??
 	    //alert("propageValid");
             node.render(true,false);       //force rendering the node (not parents nor descendants)
@@ -627,27 +677,27 @@ function createNewSetOfEvents(treeCssSelStr, msgCssSelStr) {
 	}, false);
     })(treeCssSelStr,'#tree1-messages');
 
-    // --- displayMessage ---
-    (function (treeCssSelStr, msgCssSelStr) {
-	'use strict';
-	source.addEventListener('displayMessage', function(event) {
-            const data         = JSON.parse(event.data);
-            const id           = data.id;
-            const eId          = data.eId;
-            const txt          = data.txt;
-            const color        = data.color;
-            const message      = data.message;
-            const messageClass = data.messageClass;
-            const _message     = "The server says " + data.message;
-	    const tree      = $.ui.fancytree.getTree(_treeCssSelStr);
-            const _rootNode = tree.rootNode.children[0];
-            const _eId      = _rootNode.data.eId;
+    // // --- displayMessage ---
+    // (function (treeCssSelStr, msgCssSelStr) {
+    // 	'use strict';
+    // 	source.addEventListener('displayMessage', function(event) {
+    //         const data         = JSON.parse(event.data);
+    //         const id           = data.id;
+    //         const eId          = data.eId;
+    //         const txt          = data.txt;
+    //         const color        = data.color;
+    //         const message      = data.message;
+    //         const messageClass = data.messageClass;
+    //         const _message     = "The server says " + data.message;
+    // 	    const tree      = $.ui.fancytree.getTree(_treeCssSelStr);
+    //         const _rootNode = tree.rootNode.children[0];
+    //         const _eId      = _rootNode.data.eId;
             
-	    if ( eId != _eId ) return;
-            treeMessage(_msgCssSelStr,messageClass,_message);
-            treeMessage(_msgCssSelStr,messageClass,txt);
-	}, false);
-    })(treeCssSelStr,'#tree1-messages');
+    // 	    if ( eId != _eId ) return; //TODO:Lorsque l'on modifiera Flask/affiche{Message/Alerte}
+    //         treeMessage(_msgCssSelStr,messageClass,_message);
+    //         treeMessage(_msgCssSelStr,messageClass,txt);
+    // 	}, false);
+    // })(treeCssSelStr,'#tree1-messages');
 
     // --- updateNodeInfo ---
     (function (treeCssSelStr, msgCssSelStr) {
