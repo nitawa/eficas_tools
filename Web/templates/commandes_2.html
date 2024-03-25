@@ -247,6 +247,7 @@ let treeMessage=function(msgCssSelStr,messageClass,message) {
         $(msgCssSelStr).addClass(messageClass);
 	if ( messageClass == "alert-danger" ) {
 	    $.ui.fancytree.error(message);    // debugLevel >= 1
+	    // alert(message); // Activer lorsque la mise au point sera achevée.
 	} else if ( messageClass == "alert-warning" ) {
 	    $.ui.fancytree.warn(message);     // debugLevel >= 2
 	} else if ( messageClass == "alert-info" ) {
@@ -286,15 +287,17 @@ function callService(msgCssSelStr, serviceName, obj) {
 // Les fonctions clickOn sont associées aux balises html
 function clickOnRemove(treeCssSelStr, msgCssSelStr, key ) {
     'use strict';
+    
     const tree  = $.ui.fancytree.getTree(treeCssSelStr);
     const _key  = key; 
     if ( tree ==  null) {
 	let message = "Unsuccessfull removeNode tree selection ("+treeCssSelStr+") returned (null)";
-	alert(message) ;
+        treeMessage(msgCssSelStr,"alert-danger",message) ;
+	alert(message) ; // A supprimer lorsque ce sera activé ds treeMssage
 	return;
     };
     const _rootNode = tree.rootNode.children[0];
-    const _eId=_rootNode.data.eId;
+    const _eId           =_rootNode.data.eId;
     
     if ( key === undefined  || key ==  "") {
 	activeNode = tree.activeNode;
@@ -306,12 +309,19 @@ function clickOnRemove(treeCssSelStr, msgCssSelStr, key ) {
     };
 
     const checkCallBack = function(data) {
-	// Tester data == NULL (?None python?)!
-	const ret = data['ret'];
-	if ( ret == 0 | ret == null ) {
-	    let message = "Unsuccessfull removeNode processing for key " + _key + ". Service removeNode has returned an error ("+data.message+")";
-	    treeMessage(msgCssSelStr,"alert-danger",message) ;
+	const errorCode  = data.errorCode;
+	const msgLevel   = data.msgLevel;
+	const rMessage   = data.message;
+
+	if ( errorCode != undefined && errorCode != 0 ) {
+    	    let message = "Unsuccessfull removeNode processing for key " + _key + ". Service removeNode has returned an error ("+rMessage+")";
+	    treeMessage(msgCssSelStr,"alert-warning",message);
+	    treeMessage(msgCssSelStr,msgLevel,rMessage);
+	    return;
 	};
+
+	let message = "Successfull removeNode processing for key " + _key + ". Service removeNode has returned  ("+rMessage+")";
+	treeMessage(msgCssSelStr,msgLevel,message) ;
     };
 
     return callService(msgCssSelStr, 'removeNode', {eId:_eId, id: _key} ).done( (data)=>checkCallBack(data) );
@@ -319,6 +329,7 @@ function clickOnRemove(treeCssSelStr, msgCssSelStr, key ) {
 
 function clickOnRemoveRef(treeCssSelStr, msgCssSelStr, key ) {
     'use strict';
+    
     const tree  = $.ui.fancytree.getTree(treeCssSelStr);
     const _key  = key; 
     if ( tree ==  null) {
@@ -327,7 +338,8 @@ function clickOnRemoveRef(treeCssSelStr, msgCssSelStr, key ) {
 	return;
     };
     const _rootNode = tree.rootNode.children[0];
-    
+    const _eId           =_rootNode.data.eId;
+  
     if ( key ==  "") {
 	activeNode = tree.activeNode;
 	if ( activeNode !=  null) {
@@ -337,39 +349,52 @@ function clickOnRemoveRef(treeCssSelStr, msgCssSelStr, key ) {
 	};
     };
 
-    const checkCallBack = function(data) {
-	// Tester data == NULL !
-	ret = data['ret'];
-	if ( ret == 0 | ret == null ) {
-	    let message = "Unsuccessfull removeNode processing for key " + _key + ". Service removeNode has returned an error ("+data.message+")";
-	    treeMessage(msgCssSelStr,"alert-danger",message) ;
-	};
-    };
-    return callService(msgCssSelStr, 'removeNodeRef', {eId:_rootNode.data.eId, id: _key} ).done( (data)=>checkCallBack(data) );
+   const checkCallBack = function(data) {
+	const errorCode  = data.errorCode;
+	const msgLevel   = data.msgLevel;
+	const rMessage   = data.message;
 
+	if ( errorCode != undefined && errorCode != 0 ) {
+    	    let message = "Unsuccessfull removeRef processing for key " + _key + ". Service removeRef has returned an error ("+rMessage+")";
+	    treeMessage(msgCssSelStr,"alert-warning",message);
+	    treeMessage(msgCssSelStr,msgLevel,rMessage);
+	    return;
+	};
+
+	let message = "Successfull removeRef processing for key " + _key + ". Service removeRef has returned  ("+rMessage+")";
+	treeMessage(msgCssSelStr,msgLevel,message) ;
+    };
+    return callService(msgCssSelStr, 'removeNodeRef', {eId:_eId, id: _key} ).done( (data)=>checkCallBack(data) );
 };
 
 // TODO : Il faudrait s'assurer que si une requête de ce type est envoyée au serveur
 //        on récupère bien l'evenement appendChild --> validation, promise... 
 function sendAppendChild(treeCssSelStr, msgCssSelStr, key, name, pos) {
     'use strict';
+    
     const tree  = $.ui.fancytree.getTree(treeCssSelStr);
-    //const msgCssSelStr  =  '#tree1-messages';
     if ( tree ==  null) {
 	let message = "Unsuccessfull appendChild tree selection ("+treeCssSelStr+") returned (null)"
 	alert(message) ;
 	return;
     };
     const _rootNode = tree.rootNode.children[0];
-    const _eId=_rootNode.data.eId;
+    const _eId           = _rootNode.data.eId;
     
     const checkCallBack = function(data) {
-	// Tester data == NULL !
-	let rId = data['id']; //TODO : Changer en code d'erreur
-	if ( rId == 0 || rId == null ) {
-	    let message = "Unsuccessfull appendChild processing for command " + name + ". Service appendChild has returned an error ("+data.message+")";
-	    treeMessage(msgCssSelStr,"alert-danger",message) ;
+	const errorCode  = data.errorCode;
+	const msgLevel   = data.msgLevel;
+	const rMessage   = data.message;
+
+	if ( errorCode != undefined && errorCode != 0 ) {
+    	    let message = "Unsuccessfull AppendChild processing for key " + _key + ". Service AppendChild has returned an error ("+rMessage+")";
+	    treeMessage(msgCssSelStr,"alert-warning",message);
+	    treeMessage(msgCssSelStr,msgLevel,rMessage);
+	    return;
 	};
+
+	let message = "Successfull AppendChild processing for key " + _key + ". Service removeRef has returned  ("+rMessage+")";
+	treeMessage(msgCssSelStr,msgLevel,message) ;
     };
     return callService(msgCssSelStr, 'appendChild', {eId:_eId, id: key, name:name, pos:pos } ).done( (data)=>checkCallBack(data) );
 
@@ -398,7 +423,7 @@ function clickOnCommand(treeCssSelStr, msgCssSelStr, cmdName, key ) {
     
     if ( key !== undefined && key !=  "") {
 	fromNode = tree.getNodeByKey(key);
-    } else {    
+    } else {
 	fromNode = tree.activeNode;
     };
     if ( fromNode ==  null) {
@@ -473,7 +498,7 @@ function sendUpdateSimp(treeCssSelStr, msgCssSelStr, node, eltNameWithValue) {
 	return;
     };
     const _rootNode = tree.rootNode.children[0];
-    const _eId=_rootNode.data.eId;
+    const _eId           =_rootNode.data.eId;
 
     //let $input=$(node.tr).find('input');
     let $input=$(node.tr).find(eltNameWithValue);
@@ -485,35 +510,43 @@ function sendUpdateSimp(treeCssSelStr, msgCssSelStr, node, eltNameWithValue) {
 	const errorCode = data.errorCode;
 	const msgLevel  = data.msgLevel;
 	const rMessage  = data.message;
-        const wValue      = data.source['wValue'];
-        const validite      = data.source['validite'];
+        const source       = data.source;
 
 	//node.fromDict()
 	//source=JSON.parse(getTree1())
-	if ( errorCode != undefined &&
-	     errorCode != 0 ) {
+	if ( errorCode != undefined && errorCode != 0 ) {
 	    // TODO: Gérer le input pour laisser le focus et passer en rouge ? Non ou bien rouge avec délai !
 	    let message = "Unsuccessfull SIMP processing for |" + node.getPath() + "|, value |"+value+"| has not been accepted ("+rMessage+")";
 	    treeMessage(msgCssSelStr,"alert-warning",message);
-	    treeMessage(_msgCssSelStr,msgLevel,rMessage);
+	    treeMessage(msgCssSelStr,msgLevel         ,rMessage);
+    	    node.render(true,false);  //force rendering the node (not parents nor descendants)
 	    return;
 	};
 
+	if ( source   == undefined) {
+	    let message = "Unsuccessfull SIMP processing for |" + node.getPath() + "|, source is undefined ("+rMessage+")";
+	    treeMessage(msgCssSelStr,"alert-danger",message);
+	    return;
+	};
+        const wValue      = source['wValue'];
+        const validite      = source['validite'];
 	if ( rMessage == undefined) rMessage='';
 	if ( wValue   == undefined) {
 	    let message = "Unsuccessfull SIMP processing for |" + node.getPath() + "|, wValue is undefined ("+rMessage+")";
 	    treeMessage(msgCssSelStr,"alert-danger",message);
+	    return;
 	};
 	if ( validite == undefined) {
 	    let message = "Unsuccessfull SIMP processing for |" + node.getPath() + "|, validite is undefined ("+rMessage+")";
 	    treeMessage(msgCssSelStr,"alert-danger",message);
+	    return;
 	};
 	
 	// Il faudrait gérer les représentations des types pour activer cet assert (ex: string vs int,double,...)
 	// or on laisse le kernel eficas vérifier des strings (ex. PI).
 	// $.ui.fancytree.assert(value == wValue);
-	node.data.wValue   = wValue;
-	node.data.validite = validite;
+	node.data.wValue  = wValue;
+	node.data.validite  = validite;
 	let message = "Changing SIMP "+node.title+" value to "+value+" has been accepted ("+rMessage+")";
 	treeMessage(msgCssSelStr,"alert-success",message);
 	//node.data        = data.source ?? A priori, il est inutile d'essayer de remplacer la source complète du noeud  
@@ -550,15 +583,14 @@ function sendNewDataset(catalogName, datasetName) {
 	let   _treeCssIdNav;
 	let   _treeCssSelStr;
 
-	const errorCode = data.errorCode;
-	const msgLevel  = data.msgLevel;
-	const rMessage  = data.message;
-        const source    = data.source;
-        const commands  = data.commands;
-        const title     = data.title;
+	const errorCode   = data.errorCode;
+	const msgLevel    = data.msgLevel;
+	const rMessage    = data.message;
+        const source        = data.source;
+        const commands = data.commands;
+        const title             = data.title;
 
-	if ( errorCode != undefined &&
-	     errorCode != 0 ) {
+	if ( errorCode != undefined && errorCode != 0 ) {
 	    treeMessage(_msgCssSelStr,msgLevel,rMessage);
 	    return;
 	};
@@ -574,7 +606,7 @@ function sendNewDataset(catalogName, datasetName) {
 	// efiNewTab("tree1");
 	// $("#tree1").fancytree(efiFancytreeOptions("#tree1",source));
 	
-	_treeId        = efiNewTab(catalogName, datasetName,commands);
+	_treeId             = efiNewTab(catalogName, datasetName,commands);
 	_treeCssSelStr = '#'+_treeId;
 	_treeCssIdTab  = _treeCssSelStr+'Tab';
 	_treeCssIdNav  = _treeCssSelStr+'Nav';
@@ -585,7 +617,7 @@ function sendNewDataset(catalogName, datasetName) {
 	
 	createNewSetOfEvents(_treeCssSelStr,'#tree1-messages');
 
-	console.log($(_treeCssIdNav));
+	// console.log($(_treeCssIdNav));
 	$('.nav-tabs a[href="'+_treeCssIdTab+'"]').tab('show')
 	
 	//$(_treeCssIdNav).tab('show');
@@ -598,7 +630,6 @@ function sendNewDataset(catalogName, datasetName) {
 	let message = "New Dataset has been loaded ("+rMessage+")";
     };
     
-    //alert("sendNewDataset-1");
     return callService(_msgCssSelStr, 'newDataset', { catalogName:catalogName, datasetName:datasetName } ).done( (data)=>checkCallBack(data) );
 
 
@@ -643,9 +674,9 @@ source.addEventListener('message', function(event) {
 	}, false);
 })('','#tree1-messages'); //TODO: Changer la balise
 
-// --- propageValid ---
 function createNewSetOfEvents(treeCssSelStr, msgCssSelStr) {
 	  
+    // --- propageValid ---
     (function (treeCssSelStr, msgCssSelStr) {
 	'use strict';
 	let _treeCssSelStr  = treeCssSelStr; //inutile
