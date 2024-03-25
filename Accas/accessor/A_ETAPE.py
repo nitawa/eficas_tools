@@ -258,7 +258,7 @@ class ETAPE(A_MCCOMPO.MCCOMPO):
         if self.sd:
             self.jdc.delSdprod(self.sd)
             self.jdc.deleteConceptAfterEtape(self, self.sd)
-        print ('jjjjjjjjjj CONNECTOR.Emit ETAPE')
+        #print ('jjjjjjjjjj CONNECTOR.Emit ETAPE')
         CONNECTOR.Emit(self, "supp", None)
         CONNECTOR.Emit(self, "valid")
 

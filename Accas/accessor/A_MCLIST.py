@@ -99,7 +99,7 @@ class MCList:
         self.initModif()
         self.remove(obj)
         CONNECTOR.Emit(self, "supp", obj)
-        print ('jjjjjjjjjj CONNECTOR.Emit MCLIST')
+        #print ('jjjjjjjjjj CONNECTOR.Emit MCLIST')
         self.updateConditionBloc()
         obj.delObjPyxb()
         obj.supprime()
