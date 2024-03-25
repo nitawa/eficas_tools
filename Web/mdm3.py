@@ -73,6 +73,7 @@ debug=0
 if debug : print ('eficasAppli = ', eficasAppli)
 
 def fromConnecteur(maFonction, sessionId, externEditorId, *args,**kwargs):
+  debug = 1
   if debug : 
      print ('________________________________________________________________________')
      print ('fromConnecteur : ', maFonction, sessionId, externEditorId, *args,**kwargs)
@@ -101,7 +102,6 @@ def updateNodeInfo(cId, eId, id, info):
     sse.publish( {'eId' : eId, 'id':id, 'info':info, 'message': "Hello from updateNodeInfo!"}, type='updateNodeInfo', channel = str(cId))
 
 def appendChildren(cId, eId, id, fcyTreeJson, pos):
-    debug = 0
     if debug : print ('Flask/appendChildren: ', id, fcyTreeJson, pos)
     sse.publish( {'eId' : eId, 'id':id, 'fcyTreeSrc':fcyTreeJson, 'pos':pos, 'message': "Hello from appendChildren!"}, type='appendChildren', channel = str(cId))
 
@@ -124,15 +124,15 @@ def afficheAlerte(sId, titre, message):                  #TODO: RENAME TO ... di
     #              type='displayMessage')
 
 #Messages Globaux ?
-def afficheMessage2(cId, eId,  txt, couleur):                     #TODO: RENAME TO ... displayWarning
+def afficheMessage2(cId, eId, txt, couleur):                     #TODO: RENAME TO ... displayWarning
     if debug : print ('Flask/afficheMessage: ', txt, couleur)
-    sse.publish( {'txt':txt, 'color':couleur, 'messageClass':"alert-warning" ,'message': txt},
-                 type='message', channel = str(cId))
+    sse.publish( {'color':couleur, 'messageClass':"alert-warning" ,'message': txt},
+                 type='displayMessage', channel = str(cId))
 
 def afficheAlerte2(cId, eId, titre, message, couleur):          #TODO: RENAME TO ... displayDanger
     if debug : print ('Flask/afficheAlerte: ', titre, message) #TODO: titre & message VS txt ?
-    sse.publish( {'txt':titre, 'color':couleur, 'messageClass':"alert-danger", 'message': "Hello from afficheAlerte!"},
-                 type='error', channel = str(cId))
+    sse.publish( {'color':couleur, 'messageClass':"alert-danger", 'message': titre+message},
+                 type='displayMessage', channel = str(cId))
 
 
 
@@ -145,6 +145,7 @@ def afficheAlerte2(cId, eId, titre, message, couleur):          #TODO: RENAME TO
 
 @app.route("/updateSimp", methods=['POST'])
 def updateSimp():
+    debug = True
     # Validate the request body contains JSON
     if request.is_json:
         # Parse the JSON into a Python dictionary
@@ -156,24 +157,32 @@ def updateSimp():
         # id, value = req.values()       # Dangereux correspondance implicite
         value             = str(value)   # L'utilisateur peut écrire la valeur Pi
 
-         # On attendant que l externalEditorId soit dans le tree
-        (eficasEditor, codeErreur, message) = eficasAppli.getWebEditorById(session['canalId'],eId)
-        if codeErreur : 
-           print ('il faut faire qqchose')
+        (eficasEditor, errorCode, errorMsg, infoMsg) = eficasAppli.getWebEditorById(session['canalId'],eId)
+        if errorCode : 
+            msgLevel = "alert-danger"
+            message = errorMsg + infoMsg
+            return make_response(json.dumps( {'errorCode' : errorCode, 'message': message,'msgLevel':msgLevel} ))
 
-        # TODO (rId, codeErreur, message) = eficasEditor.changeValeur(cId, id,value)
-        (rId, message, changeDone) = eficasEditor.changeValeur(session['canalId'], eId, id,value);
-        assert(rId==id)
+        #(rId, errorCode, errorMsg, infoMsg) = eficasEditor.changeValue(session['canalId'], eId, id,value);
+        #assert(rId==id)
 
         #changeDone        = True
-        if debug : print ("Flask/updateSimp changeDone : ",changeDone)
+        # if debug : print ("Flask/updateSimp changeDone : ",changeDone)
         # Ne pas recuperer et ne pas renvoyer le noeud dans le cas du SIMP
         #  (le changeDone et l''ancienne valeur ds la WebApp suffit 
-        node              = eficasEditor.getDicoForFancy(eficasEditor.getNodeById(id))
-        if debug : print("Flask/updateSimp node : ",node)
+        #(node, errorCode, errorMsg, errorLevel)  = eficasEditor.getDicoForFancy(eficasEditor.getNodeById(id))
         # return jsonify([myTreeDico])
         
-        return make_response(json.dumps( {'source':node, 'changeIsAccepted' : changeDone, 'message': message} ))
+        (node, errorCode, errorMsg, infoMsg) = eficasEditor.changeValue(session['canalId'], eId, id,value);
+        if debug : print("Flask/updateSimp node : ",node)
+        if errorCode : 
+            msgLevel = "alert-danger"
+            message = errorMsg + infoMsg
+            return make_response(json.dumps( {'errorCode' : errorCode, 'message': message,'msgLevel':msgLevel} ))
+        if infoMsg != "" : msgLevel = 'alert-success'
+        else : msgLevel = "alert-info"
+        return make_response(json.dumps( {'source':node, 'errorCode' : errorCode, 'message': infoMsg,'msgLevel':msgLevel} ))
+
         # Return a string along with an HTTP status code
         # return "JSON received!", 200
     else:
@@ -193,20 +202,21 @@ def updateSDName():
         eId=req['eId'];id=req['id'];sdnom=req['sdnom']
         sdnom              = str(sdnom)   #On peut écrire Pi
          # On attendant que l externalEditorId soit dans le tree
-        (eficasEditor, codeErreur, message) = eficasAppli.getWebEditorById(session['canalId'],eId)
-        if codeErreur : 
-           print ('il faut faire qqchose')
+        (eficasEditor, errorCode, errorMsg, infoMsg) = eficasAppli.getWebEditorById(session['canalId'],eId)
+        if errorCode : 
+            msgLevel = "alert-danger"
+            message = errorMsg + infoMsg
+            return make_response(json.dumps( {'changeIsAccepted' : False, 'errorCode' : errorCode, 'message': message,'msgLevel':msgLevel} )) #TODO : Suprimer ChangeIsAccepted
 
-        (codeErreur, changeDone) = eficasEditor.updateSDName(session['canalId'],eId,id,sdnom);
-        #changeDone,message = eficasEditor.updateSDName(id,sdnom);
-        #changeDone        = True
-        if not codeErreur : changeDone = True
-        if debug : print ("Flask/updateSDName changeDone : ",changeDone)
-        
-        #return make_response(json.dumps( {'id':id , 'changeIsAccepted' : changeDone, 'message': message} ))
-        return make_response(json.dumps( {'changeIsAccepted' : changeDone, 'message': message} ))
-        # Return a string along with an HTTP status code
-        # return "JSON received!", 200
+        (errorCode, errorMsg, infoMsg) = eficasEditor.updateSDName(session['canalId'],eId,id,sdnom);
+        if errorCode : 
+            msgLevel = "alert-danger"
+            message = errorMsg + infoMsg
+            changeIsAccepted = False; #TODO: à Supprimer
+        else :
+            msgLevel = "alert-success"
+            changeIsAccepted = True;  #TODO: à Supprimer
+        return make_response(json.dumps( {'changeIsAccepted':changeIsAccepted, 'errorCode' : errorCode, 'message': message,'msgLevel':msgLevel} )) #TODO : Suprimer ChangeIsAccepted
     else:
         # The request body wasn't JSON so return a 400 HTTP status code
         return "Request was not JSON", 400
@@ -223,13 +233,24 @@ def removeNode():
         if debug : print("Flask/removeNode ",req);print("/removeNode ",req['eId'],req['id']);
         eId = req['eId'];
         id  = req['id'];
-        (eficasEditor, codeErreur, message) = eficasAppli.getWebEditorById(session['canalId'],eId)
-        if codeErreur : 
-           print ('il faut faire qqchose')
-        ret,message = eficasEditor.removeNode(session['canalId'],session['externEditorId'],id);
-        if debug : print ("Flask/removeNode : ret : ",ret," message : ",message)
-        
-        return make_response(json.dumps( {'ret':ret, 'message':message} ))
+        (eficasEditor, errorCode, errorMsg, infoMsg) = eficasAppli.getWebEditorById(session['canalId'],eId)
+        if errorCode : 
+            msgLevel = "alert-danger"
+            message = errorMsg + infoMsg
+            return make_response(json.dumps( {'errorCode' : errorCode, 'message': message,'msgLevel':msgLevel} ))
+
+        (errorCode, errorMsg, infoMsg) = eficasEditor.removeNode(session['canalId'],session['externEditorId'],id);
+        if debug : print ("Flask/removeNode : errorCode : ",errorCode," errorMsg, : ",errorMsg, "infoMsg", infoMsg)
+        if errorCode : 
+            msgLevel = "alert-danger"
+            message = errorMsg + infoMsg
+            ret = False #TODO: à Supprimer
+        else :
+            msgLevel = "alert-success"
+            message = infoMsg
+            ret = True #TODO: à Supprimer 
+
+        return make_response(json.dumps( {'ret':ret, 'errorCode' : errorCode, 'message': message,'msgLevel':msgLevel} ))
     else:
         # The request body wasn't JSON so return a 400 HTTP status code
         return "Request was not JSON", 400
@@ -249,13 +270,21 @@ def appendChild():
         eId = req['eId'];id=req['id'];name=req['name'];pos=req['pos'];
         # id, value = req.values() # Dangereux correspondance implicite
         #rId,message,changeDone  = eficasEditor.appendChild(id,name,pos);
-        (eficasEditor, codeErreur, message) = eficasAppli.getWebEditorById(session['canalId'],eId)
-        if codeErreur : 
-           print ('il faut faire qqchose')
-        (newId, codeErreur, message) = eficasEditor.appendChild(session['canalId'],eId,id,name,pos);
+        (eficasEditor, errorCode, errorMsg, infoMsg) = eficasAppli.getWebEditorById(session['canalId'],eId)
+        if errorCode : 
+            msgLevel = "alert-danger"
+            message = errorMsg + infoMsg
+            return make_response(json.dumps( {'errorCode' : errorCode, 'message': message,'msgLevel':msgLevel} ))
+        (newId, errorCode, errorMsg,infoMsg) = eficasEditor.appendChild(session['canalId'],eId,id,name,pos);
         if debug : print (__file__+"Flask/appendChild : newId : ",newId);
-        
-        return make_response(json.dumps( {'id':newId} )) #TODO: Code Erreur
+        if errorCode : 
+            msgLevel = "alert-danger"
+            message = errorMsg + infoMsg
+        else :
+            msgLevel = "alert-success"
+            message  = ""
+
+        return make_response(json.dumps( {'id':newId, 'errorCode' : errorCode, 'message': message,'msgLevel':msgLevel} )) #TODO: Code Erreur
         # return make_response(json.dumps( {'source':node, 'changeIsAccepted' : changeDone, 'message': message} ))
         # Return a string along with an HTTP status code
         # return "JSON received!", 200
@@ -283,35 +312,36 @@ def newDataset():
         return "Request was not JSON", 400
         #return make_response(jsonify({"message": "Request body must be JSON"}), 400)
 
+    # TODO: EN D'ABSENCE DE session['canalId'] AVERTIR QUE LA SESSION S'EST TERMINEE !
+    # A VOIR : Si le serveur Flask se relance, on perd la session mais efficas est tjrs présent ds l'état précédent
+    #          cela semble normal notamment pour les fichiers en collaboratif
     cId=session['canalId'];
     (editorId, errorCode, errorMessage, messageInfo) = eficasAppli.getWebEditor(cId, cataFile, dataSetFile)
     debug = 1
     if debug :
         print ('apres getWebEditor : canalId, : ', cId,  ' editorId, : ', editorId,
                ' code Erreur : ', errorCode,'message : ', errorMessage, 'messageInfo ', messageInfo)
-
+    if len(messageInfo): afficheAlerte2(cId, editorId, '', messageInfo, 'macouleur'); #Suprimer editorId de cette API
+    if errorCode : 
+        msgLevel = "alert-danger"
+        message = errorMessage
+        return make_response(json.dumps( {'errorCode' : errorCode, 'message': message,'msgLevel':msgLevel} ))
         
-    if not errorCode :
-        if debug : 
-            print ('_______________________________________________')
-            print ('canalId', session['canalId'])
-            print ('editorId', editorId)
-            print ('_______________________________________________')
-        #La session est ouvert par le service /index session['canalId']  = canalId
-        session['externEditorId'] = editorId;
-    else :
-        # Il faudrait gerer les erreurs
-        afficheMessage2(cId, editorId, errorMessage,'macouleur');
-        return make_response(jsonify({"message": errorMessage, "code": errorCode}), 400)
+    #Inutile : session['externEditorId'] = editorId;
     
-    if debug :   print ('idEditor = ', session['externEditorId'])
-    (eficasEditor, errorCode, errorMessage)  = eficasAppli.getWebEditorById(session['canalId'],editorId)
-    if errorCode:
-         return make_response(jsonify({"message": errorMessage, "code": errorCode}), 400)
-
+    # if debug :   print ('idEditor = ', session['externEditorId'])
+    (eficasEditor, errorCode, errorMessage,messageInfo)  = eficasAppli.getWebEditorById(session['canalId'],editorId)
+    if len(messageInfo):
+        print('J\'appelle afficheAlerte2')
+        afficheAlerte2(cId, editorId, '', messageInfo, 'macouleur'); #Suprimer editorId de cette API
+    if errorCode : 
+        msgLevel = "alert-danger"
+        message = errorMessage
+        return make_response(json.dumps( {'errorCode' : errorCode, 'message': message,'msgLevel':msgLevel} ))
+         #return make_response(jsonify({"message": errorMessage, "code": errorCode}), 400)
     
     fancyTreeDict=eficasEditor.getDicoForFancy(eficasEditor.tree.racine) #TODO: changer le nom Dico en Dict
-    #fancyTreeJS=json.dumps([fancyTreeDict],indent=4)                #TODO : remove indent if not DEBUG
+    #fancyTreeJS=json.dumps([fancyTreeDict],indent=4)                    #TODO : remove indent if not DEBUG
     fancyTreeDict['eId']=editorId;
     #print("---- myFancyTreeDico ----")
     pprint(fancyTreeDict)
@@ -337,9 +367,9 @@ def index():
    # ]
    # """.replace('\n','')
 
-    print ('_______________________________________________')
-    cataFile    = os.path.abspath('../Codes/WebTest/cata_essai.py')
-    dataSetFile = os.path.abspath('../Codes/WebTest/web_tres_simple_avec_2Fact.comm')
+    #print ('_______________________________________________')
+    #cataFile    = os.path.abspath('../Codes/WebTest/cata_essai.py')
+    #dataSetFile = os.path.abspath('../Codes/WebTest/web_tres_simple_avec_2Fact.comm')
     
     # En attendant la génération d'un n° de canal unique
     # notion de plage
@@ -353,49 +383,57 @@ def index():
     #if _no == 3:
     #    dataSetFile = os.path.abspath('../Codes/WebTest/web_tres_simple_incomplet.comm')
 
-    #(canalId, eficasEditor, codeErreur, message) = eficasAppli.getWebEditor(cataFile, dataSetFile)
-    (externEditorId, codeErreur, messageErreur, messageInfo) = eficasAppli.getWebEditor(canalId, cataFile, dataSetFile)
-    debug = 0
-    if debug : print ('apres getWebEditor : canalId, : ', canalId,  ' externEditorId, : ', externEditorId, ' code Erreur : ', codeErreur,'message : ', messageErreur, 'messageInfo ', messageInfo)
-    if not codeErreur :
-        if debug : 
-            print ('_______________________________________________')
-            print ('canalId', canalId)
-            print ('externEditorId', externEditorId)
-            print ('_______________________________________________')
-        session['externEditorId'] = externEditorId
-    else :
-        # Il faudrait gerer les erreurs
-        return render_template('commandes_2.html',
-            titre= messageErreur,
-            listeCommandes = [],
-            tree= None
-        )
+    #(canalId, eficasEditor, errorCode, message) = eficasAppli.getWebEditor(cataFile, dataSetFile)
+    #(externEditorId, errorCode, errorMsg, messageInfo) = eficasAppli.getWebEditor(canalId, cataFile, dataSetFile)
+    #debug = 0
+    #if debug : print ('apres getWebEditor : canalId, : ', canalId,  ' externEditorId, : ', externEditorId, ' code Erreur : ', errorCode,'message : ', errorMsg, 'messageInfo ', messageInfo)
+    #if not errorCode :
+    #    if debug : 
+    #        print ('_______________________________________________')
+    #        print ('canalId', canalId)
+    #        print ('externEditorId', externEditorId)
+    #        print ('_______________________________________________')
+    #    session['externEditorId'] = externEditorId
+    #else :
+    #    # Il faudrait gerer les erreurs
+    #    return render_template('commandes_2.html',
+    #        titre= errorMsg,
+    #        listeCommandes = [],
+    #        tree= None
+    #    )
     
-    if debug :   print ('idEditor = ', session['externEditorId'])
-    (eficasEditor, codeErreur, message)  = eficasAppli.getWebEditorById(canalId,externEditorId) 
-    if codeErreur:
-          return render_template('commandes_2.html',
-            titre= messageErreur,
-            listeCommandes = [],
-            tree= None
-        )
+    #if debug :   print ('idEditor = ', session['externEditorId'])
+    #(eficasEditor, errorCode, message)  = eficasAppli.getWebEditorById(canalId,externEditorId) 
+    #if errorCode:
+    #      return render_template('commandes_2.html',
+    #        titre= errorMsg,
+    #        listeCommandes = [],
+    #        tree= None
+    #    )
 
     
-    myFancyTreeDico=eficasEditor.getDicoForFancy(eficasEditor.tree.racine)
-    if debug : pprint (myFancyTreeDico)
-    myFancyTreeJS=json.dumps([myFancyTreeDico],indent=4)  #TODO : remove indent if not DEBUG
+    #myFancyTreeDico=eficasEditor.getDicoForFancy(eficasEditor.tree.racine)
+    #if debug : pprint (myFancyTreeDico)
+    #myFancyTreeJS=json.dumps([myFancyTreeDico],indent=4)  #TODO : remove indent if not DEBUG
     
     #print("---- myFancyTreeDico ----")
     #pprint(myFancyTreeDico)
     #print("---- myFancyTreeJS ----")
     #pprint( myFancyTreeJS)
 
-    if debug : print ( 'liste des commandes',  eficasEditor.getListeCommandes())
+    #if debug : print ( 'liste des commandes',  eficasEditor.getListeCommandes())
+    #return render_template('commandes_2.html',
+    #  titre=code,
+    #  efi_update_channel = str(canalId),
+    #  listeCommandes =  eficasEditor.getListeCommandes(),
+    #  tree=myFancyTreeJS,
+      # tree=tree4Fancy,
+    #)
+    myFancyTreeJS=json.dumps([{}],indent=4)  #TODO : remove indent if not DEBUG
     return render_template('commandes_2.html',
       titre=code,
       efi_update_channel = str(canalId),
-      listeCommandes = eficasEditor.getListeCommandes(),
+      listeCommandes = [],
       tree=myFancyTreeJS,
       # tree=tree4Fancy,
     )
