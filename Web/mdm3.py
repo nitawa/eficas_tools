@@ -155,7 +155,7 @@ def updateSimp():
         if debug : print("Flask/updateSimp request['id'] : ",req['id'])
         eId = req['eId'];id=req['id'];value=req['value']
         # id, value = req.values()       # Dangereux correspondance implicite
-        value             = str(value)   # L'utilisateur peut écrire la valeur Pi
+        value             = str(value)       # L'utilisateur peut écrire la valeur Pi
 
         (eficasEditor, errorCode, errorMsg, infoMsg) = eficasAppli.getWebEditorById(session['canalId'],eId)
         if errorCode : 
@@ -178,7 +178,8 @@ def updateSimp():
         if errorCode : 
             msgLevel = "alert-danger"
             message = errorMsg + infoMsg
-            return make_response(json.dumps( {'errorCode' : errorCode, 'message': message,'msgLevel':msgLevel} ))
+            #Ds le cas d'un SIMP il faut renvoyer le node
+            return make_response(json.dumps( {'source':node, 'errorCode' : errorCode, 'message': message,'msgLevel':msgLevel} ))
         if infoMsg != "" : msgLevel = 'alert-success'
         else : msgLevel = "alert-info"
         return make_response(json.dumps( {'source':node, 'errorCode' : errorCode, 'message': infoMsg,'msgLevel':msgLevel} ))
@@ -239,18 +240,19 @@ def removeNode():
             message = errorMsg + infoMsg
             return make_response(json.dumps( {'errorCode' : errorCode, 'message': message,'msgLevel':msgLevel} ))
 
-        (errorCode, errorMsg, infoMsg) = eficasEditor.removeNode(session['canalId'],session['externEditorId'],id);
+        (errorCode, errorMsg, infoMsg) = eficasEditor.removeNode(session['canalId'],eId,id);
         if debug : print ("Flask/removeNode : errorCode : ",errorCode," errorMsg, : ",errorMsg, "infoMsg", infoMsg)
         if errorCode : 
             msgLevel = "alert-danger"
             message = errorMsg + infoMsg
-            ret = False #TODO: à Supprimer
+            #ret = False #TODO: à Supprimer
         else :
             msgLevel = "alert-success"
             message = infoMsg
-            ret = True #TODO: à Supprimer 
+            #ret = True #TODO: à Supprimer 
 
-        return make_response(json.dumps( {'ret':ret, 'errorCode' : errorCode, 'message': message,'msgLevel':msgLevel} ))
+        return make_response(json.dumps( { 'errorCode' : errorCode, 'message': message,'msgLevel':msgLevel} ))
+        #return make_response(json.dumps( {'ret':ret, 'errorCode' : errorCode, 'message': message,'msgLevel':msgLevel} ))
     else:
         # The request body wasn't JSON so return a 400 HTTP status code
         return "Request was not JSON", 400
@@ -284,6 +286,7 @@ def appendChild():
             msgLevel = "alert-success"
             message  = ""
 
+        #TODO PN: Je n'utilise pas le newId, est-ce normal ?
         return make_response(json.dumps( {'id':newId, 'errorCode' : errorCode, 'message': message,'msgLevel':msgLevel} )) #TODO: Code Erreur
         # return make_response(json.dumps( {'source':node, 'changeIsAccepted' : changeDone, 'message': message} ))
         # Return a string along with an HTTP status code
