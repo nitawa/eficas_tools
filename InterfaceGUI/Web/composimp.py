@@ -36,7 +36,7 @@ class Node(browser.JDCNode,typeNode.PopUpMenuNodeMinimal):
         else  : self.politique = PolitiquePlusieurs(self, self.editor)
         if self.item.definition.validators != None :
             if self.item.definition.validators.verifItem(valeur) !=1 :
-                commentaire=self.node.item.definition.validators.infoErreurItem()
+                commentaire=self.item.definition.validators.infoErreurItem()
                 return (self.item.idUnique, False ,commentaire)
         nouvelleValeurFormat=self.politique.getValeurTexte(valeur)
         validite,commentaire=self.politique.recordValeur(nouvelleValeurFormat)
