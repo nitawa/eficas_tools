@@ -60,6 +60,14 @@ class EditorManager(object):
         print ('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
         return None
 
+    # ---------------------------------------------------------------------------------------------------------
+    def getEditorForXSDGeneration(self, cataFile=None, dataSetFile=None, formatIn ='python', formatOut = 'xml'):
+    # ---------------------------------------------------------------------------------------------------------
+        from Editeur.editor import Editor
+        editor = Editor(self.appliEficas, cataFile=cataFile, dataSetFile=dataSetFile, formatIn=formatIn, formatOut=formatOut)
+        return editor
+
+
     # ---------------------------------------------------------------------------------------------------------------------------------
     def getTUIEditor(self,cId = None, cataFile = None, dataSetFile=None, jdc=None, include=0, formatIn ='python', formatOut = 'python'):
     # ----------------------------------------------------------------------------------------------------------------------------------

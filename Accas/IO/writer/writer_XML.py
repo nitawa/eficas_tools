@@ -55,8 +55,10 @@ class XMLGenerator(PythonGenerator):
         self, obj, format="brut", config=None, appliEficas=None, uniteAsAttribut=False
     ):
         # try :
+        print ('Attention changement try en if')
         if 1:
             self.texteXML = obj.toXml()
+            print (obj.toXml)
         # except :
         #    self.texteXML='Erreur a la generation du fichier XML'
         # print (self.texteXML)

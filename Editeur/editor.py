@@ -94,9 +94,9 @@ class Editor:
         if "xml" in writer.plugins.keys():
             self.XMLWriter = writer.plugins["xml"]()
         else : self.XMLWriter = None
-        if "python" in writer.plugins.keys():
-            self.XMLWriter = writer.plugins["python"]()
-        else : self.XMLWriter = None
+        #if "python" in writer.plugins.keys():
+        #    self.XMLWriter = writer.plugins["python"]()
+        #else : self.XMLWriter = None
         if self.formatFichierOut in writer.plugins.keys():
             self.myWriter = writer.plugins[self.formatFichierOut]()
 

@@ -352,7 +352,7 @@ class X_compoFactoriseAmbigu(X_definition):
         self.entites = {}
         self.mcXSD = []
         self.typesXSDDejaDumpes = []
-        self.ordre_mc = []
+        self.ordreMC = []
         self.lesConditions = "Possible Conditions : "
         if debug:
             print("___________________________________________________________________")
@@ -365,14 +365,14 @@ class X_compoFactoriseAmbigu(X_definition):
         if hasattr(pere, "listeDesCompoAmbigus"):
             pere.listeDesCompoAmbigus.append(self)
         else:
-            pere.listeDesCompoAmbigus = (self,)
+            pere.listeDesCompoAmbigus = [self,]
         doitReecrireLesTypes = False
         for mc in listeDeCreation:
             if hasattr(mc, "condition"):
                 self.lesConditions += "\n\t\t\t\t\t\t" + mc.condition
             doitReecrireLesTypes += mc.possedeDejaUnMCFactorise
             self.mcXSD.append(mc)
-            self.ordre_mc.append(mc.nom)
+            self.ordreMC.append(mc.nom)
         # if self.nom == 'B1_B2' : debug = True
         if debug and doitReecrireLesTypes:
             print("je dois reecrire pour", self.nom)
@@ -381,7 +381,7 @@ class X_compoFactoriseAmbigu(X_definition):
         if debug:
             print("self.mcXSD", self.mcXSD)
         if debug:
-            print("self.ordre_mc", self.ordre_mc)
+            print("self.ordreMC", self.ordreMC)
         self.construitEntites(self.mcXSD, debug=debug)
         if debug:
             print("apres  de self.construitEntites")
@@ -1191,7 +1191,7 @@ class X_definitionComposee(X_definition):
     def creeTexteComplexeVenantDesFils(self, dansFactorisation=False, debug=False):
         texteComplexeVenantDesFils = ""
         blocsDejaDumpes = set()
-        # for nom in self.ordre_mc:
+        # for nom in self.ordreMC:
         #  mcFils = self.entites[nom]
         if debug:
             print("___________________ creeTexteComplexeVenantDesFils", self.nom)
@@ -1367,7 +1367,7 @@ class X_definitionComposee(X_definition):
         self.inUnion = False
         self.tousLesFils = []
         self.mcXSD = []
-        for nomMC in self.ordre_mc:
+        for nomMC in self.ordreMC:
             mc = self.entites[nomMC]
             self.mcXSD.append(mc)
             mc.prepareDumpXSD()
@@ -1381,7 +1381,7 @@ class X_definitionComposee(X_definition):
 
     def chercheListesDeBlocsNonDisjoints(self):
         self.listeDesBlocsNonDisjoints = []
-        for nomChild in self.ordre_mc:
+        for nomChild in self.ordreMC:
             child = self.entites[nomChild]
             if child.label != "BLOC":
                 continue
@@ -1473,7 +1473,7 @@ class X_definitionComposee(X_definition):
             print("___________ fin fin factorise", nom)
 
     def construitTousLesFils(self):
-        for nomChild in self.ordre_mc:
+        for nomChild in self.ordreMC:
             if nomChild == "Consigne" or nomChild == "blocConsigne":
                 continue
             child = self.entites[nomChild]
@@ -2277,18 +2277,19 @@ class X_SIMP(X_definition):
 
 # -----------------
 class X_JDC_CATA:
-    # -----------------
+# -----------------
 
     def dumpXsd(self, avecEltAbstrait, avecSubstitution=True, debug=False):
+        CONTEXT.unsetCurrentCata()
+        CONTEXT.setCurrentCata(self)
         cata = CONTEXT.getCurrentCata()
+        #PN : on essaye de s affranchir du contexte
+        cata=self
         # cata.unitAsAttribute = unitAsAttribute
         cata.unitAsAttribute = True
-        if debug:
-            print("avecEltAbstrait   -------------------", avecEltAbstrait)
-        if debug:
-            print("self.importedBy -------------------", self.importedBy)
-        if debug:
-            print("self.code       -------------------", self.code)
+        if debug: print("avecEltAbstrait   -------------------", avecEltAbstrait)
+        if debug: print("self.importedBy -------------------", self.importedBy)
+        if debug: print("self.code       -------------------", self.code)
 
         self.texteSimple = ""
         self.texteComplexe = ""
@@ -2306,12 +2307,9 @@ class X_JDC_CATA:
             self.implement, self.nomDuXsdPere = self.implement.split(":")
             self.nomDuCodeDumpe = self.implement
 
-        if debug:
-            print("self.implement       -------------------", self.implement)
-        if debug:
-            print("self.nomDuCodeDumpe   -------------------", self.nomDuCodeDumpe)
-        if debug:
-            print("self.nomDuXsdPere  -------------------", self.nomDuXsdPere)
+        if debug: print("self.implement       -------------------", self.implement)
+        if debug: print("self.nomDuCodeDumpe   -------------------", self.nomDuCodeDumpe)
+        if debug: print("self.nomDuXsdPere  -------------------", self.nomDuXsdPere)
 
         self.nomDuTypePyxb = "T_" + self.nomDuCodeDumpe
         if hasattr(self.cata, "dElementsRecursifs"):

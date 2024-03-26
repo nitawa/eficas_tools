@@ -157,19 +157,19 @@ class EficasAppli:
         texte = p.convert("execnoparseur")
         return texte
 
-    #------------------------------------------------------
-    def getEditor(self, fichier=None, jdc=None, include=0):
-    #------------------------------------------------------
-        #PN reflechir a ce que cela veut dire d avoir plusieurs editeurs
-        # en TUI
+    #----------------------------------------------------------------------------------------------------------
+    def getEditorForXSDGeneration(self, cataFile=None, datasetFile=None, formatIn='python', formatOut='python'):
+    #-----------------------------------------------------------------------------------------------------------
         if (hasattr(self, "editor")) and self.editor != None:
             print("un seul editeur par application eficas_appli sans Ihm ? ")
-        #     sys.exit()
-        self.editor = self.editorManager.getEditor(fichier, jdc, include)
+            sys.exit()
+        self.editor = self.editorManager.getEditorForXSDGeneration(cataFile, datasetFile, formatIn, formatOut)
         return self.editor
 
     #-------------------------------------------------------------------------------------------------------------------
     def getWebEditor(self, cId, cataFile = None, datasetFile=None, jdc=None, include=0, formatIn='python', formatOut='python'):
+    # TO DO : separer proprement TUI et WEB. bien reflechir au ligne 
+    # avant : refaire l API qu on veut en TUI
     #-------------------------------------------------------------------------------------------------------------------
         debug = 0
         if debug : 

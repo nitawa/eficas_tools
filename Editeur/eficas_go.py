@@ -102,7 +102,7 @@ def genereXSD(code=None):
 
     monEficas = getEficas(code=options.code)
     monEficas.genereXSD = True
-    monEditor = monEficas.getEditor()
+    monEditor = monEficas.getEditorForXSDGeneration(cataFile= options.cataFile)
     texteXSD = monEditor.dumpXsd(avecEltAbstrait=options.avecEltAbstrait)
 
     cataFileTrunc = os.path.splitext(os.path.basename(options.cataFile))[0]
@@ -132,21 +132,23 @@ def genereXML(code=None):
         print("comm file is needed")
         return
 
-    monEficas = getEficas(code=options.code, forceXML=True)
-
-    from .editorSsIhm import JDCEditorSsIhm
-
-    monEditeur = JDCEditorSsIhm(monEficasSsIhm, fichier)
+    monEficas = getEficas(code=options.code)
+    monEficas.genereXSD=False
+    monEficas.withXSD=True
+    monEditor = monEficas.getEditorForXSDGeneration(cataFile= options.cataFile,datasetFile=fichier,formatOut = 'xml')
     if options.fichierXMLOut == None:
         fichierXMLOut = fichier[: fichier.rfind(".")] + ".xml"
     else:
         fichierXMLOut = options.fichierXMLOut
-    if not (monEditeur.jdc.isValid()):
+    print (monEditor)
+    print (monEditor.jdc)
+    if not (monEditor.jdc.isValid()):
         print("Fichier comm is not valid")
         return
     # print ('Fichier comm is not valid')
-    monEditeur.XMLgenerator.gener(monEditeur.jdc)
-    monEditeur.XMLgenerator.writeDefault(fichierXMLOut)
+    monEditor.XMLWriter.gener(monEditor.jdc)
+    print (monEditor.XMLWriter)
+    monEditor.XMLWriter.writeDefault(fichierXMLOut)
 
 
 def genereStructure(code=None):

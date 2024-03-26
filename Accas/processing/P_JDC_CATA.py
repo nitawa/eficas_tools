@@ -75,6 +75,10 @@ class JDC_CATA(P_ENTITE.ENTITE):
         # courant à None
         CONTEXT.unsetCurrentCata()
         CONTEXT.setCurrentCata(self)
+        #PN to do verifier pourquoi on y passe 2 fois
+        #print ('jjjjjjjjjjjjjjjjjjjjjjjjjjjjjuuuuuuuuuuuuuuuuuuuuuuuuuuuuuj', self)
+        #import traceback
+        #traceback.print_stack()
         self.fenetreIhm = None
         self.definitUserASSD = False
         self.definitUserASSDMultiple = False
