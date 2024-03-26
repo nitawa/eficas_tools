@@ -65,7 +65,7 @@ def lanceQtEficas(code=None, versionCode = None, multi=False, langue="en",  GUIP
 def getEficas( code=None, ssCode = None, versionCode = None , multi=False, langue="en", appWeb = None, cataFile = None):
 # --------------------------------------------------------------------------------------------------------------------------
     """
-    instancie l'appli EFICAS sans Ihm
+    instancie l'appli EFICAS sans lancer QT
     """
 
     from Editeur import session

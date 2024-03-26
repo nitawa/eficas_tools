@@ -110,14 +110,11 @@ class SaisieValeur(object):
         try:    valeur = eval(valeurBrute, {})
         except: valeur = valeurBrute
 
+
         # pour traiter 11.0 - 30.0 pour le CIST
         # if (valeurTraitee and (type(valeurTraitee) in types.StringTypes) and (self.node.item.waitTxm())) :
-        if (
-            valeurTraitee
-            and isinstance(valeurTraitee, str)
-            and (self.node.item.waitTxm())
-        ):
-            valeur = str(valeurTraitee)
+        if ( valeurSaisie and isinstance(valeurSaisie, str) and (self.node.item.waitTxm())):
+            valeur = str(valeurSaisie)
 
         if type(valeur) in (list, tuple):
             if self.node.item.waitComplex():
