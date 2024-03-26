@@ -78,7 +78,10 @@ class MCSIMP(A_OBJECT.OBJECT):
         monDico["validite"] = self.getValid()
         if monDico["validite"] == None:
             monDico["validite"] = self.isValid()
+        #PN TODO:  Corriger pour gérer correctement le inf ds javascript
         monDico["max"] = self.definition.max
+        if self.definition.max == float('inf'): 
+            monDico["max"] = 10000
         monDico["min"] = self.definition.min
         monDico["into"] = self.definition.into
         if self.definition.into != None and self.waitReel() :

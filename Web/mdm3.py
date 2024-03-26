@@ -3,6 +3,7 @@
 import sys, os
 
 _no = 1
+_datasetId=0
 
 code='Essai'
 #code=None
@@ -315,6 +316,12 @@ def newDataset():
         return "Request was not JSON", 400
         #return make_response(jsonify({"message": "Request body must be JSON"}), 400)
 
+        
+    if dataSetFile ==  "NewDataset.comm":
+        global _datasetId
+        _datasetId = _datasetId + 1
+        dataSetFile =  dataSetFile+str(datasetId)
+        
     # TODO: EN D'ABSENCE DE session['canalId'] AVERTIR QUE LA SESSION S'EST TERMINEE !
     # A VOIR : Si le serveur Flask se relance, on perd la session mais efficas est tjrs présent ds l'état précédent
     #          cela semble normal notamment pour les fichiers en collaboratif
@@ -432,12 +439,12 @@ def index():
     #  tree=myFancyTreeJS,
       # tree=tree4Fancy,
     #)
-    myFancyTreeJS=json.dumps([{}],indent=4)  #TODO : remove indent if not DEBUG
+    #myFancyTreeJS=json.dumps([{}],indent=4)  #TODO : remove indent if not DEBUG
     return render_template('commandes_2.html',
-      titre=code,
       efi_update_channel = str(canalId),
-      listeCommandes = [],
-      tree=myFancyTreeJS,
+      #titre=code,
+      #listeCommandes = [],
+      #tree=myFancyTreeJS,
       # tree=tree4Fancy,
     )
     # etape  = str(escape(request.args.get("etape", "")))

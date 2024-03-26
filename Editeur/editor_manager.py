@@ -110,9 +110,11 @@ class EditorManager(object):
         if dataSetFile == None :
             self.appliEficas.afficheMessage(dictErreurs[1000] , 'nom de dataSet obligatoire pour obtenir un editor')
             return (None, 1000 , dictErreurs[1000] + ' : nom de dataset obligatoire pour obtenir un editor', None)
-        if not os.path.isfile(dataSetFile):
-            self.appliEficas.afficheMessage(dictErreurs[4000] + dictErreurs[10], 'fichier dataSet {} non trouve'.format(cataFile))
-            return (None, 4000 + 10  , dictErreurs[4000] + dictErreurs[10].format(cataFile), None)
+        # A réactiver si l'on crée un service Save
+        # Pas d'accès concurrents au fichier tant qu'il n'est pas enregistré
+        # if not os.path.isfile(dataSetFile):
+        #     self.appliEficas.afficheMessage(dictErreurs[4000] + dictErreurs[10], 'fichier dataSet {} non trouve'.format(cataFile))
+        #     return (None, 4000 + 10  , dictErreurs[4000] + dictErreurs[10].format(cataFile), None)
         if debug :   print ('dictEditors', self.dictEditors)
         with self.lock :
             for editor in self.dictEditors.values():
@@ -126,7 +128,7 @@ class EditorManager(object):
                 codeError = 3000 + 30
                 message = dictErreurs[3000] + ' ' + dictErreurs[30] + ' '
                 message += 'impossible d allouer l editor : {}'.format(editor.pbLectureCata)
-                return (None, codeError , message, messageInfo)
+                return (None, codeError , message, '')
 
             messageInfo = editor.messageInfo 
             if editor.jdc:  # le fichier est bien un jdc

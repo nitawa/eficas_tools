@@ -114,7 +114,7 @@
 					    '<button class="btn btn-primary navbar-btn" for=\''+cmd+'\'>'+cmd+'</button></div></li> ';
 					  }
 				).join('');
-      console.log(cmdList);
+      //console.log(cmdList);
 
       $("#efi-nav-tabs").prepend(function(treeId){
 	  // let efiNavTab='<li class="active"><a data-toggle="tab" href="#@treeId@Tab">'+catalogName+'/'+datasetName+'</a></li>';
@@ -386,13 +386,13 @@ function sendAppendChild(treeCssSelStr, msgCssSelStr, key, name, pos) {
 	const rMessage   = data.message;
 
 	if ( errorCode != undefined && errorCode != 0 ) {
-    	    let message = "Unsuccessfull AppendChild processing for key " + _key + ". Service AppendChild has returned an error ("+rMessage+")";
+    	    let message = "Unsuccessfull AppendChild processing for key " + key + ". Service AppendChild has returned an error ("+rMessage+")";
 	    treeMessage(msgCssSelStr,"alert-warning",message);
 	    treeMessage(msgCssSelStr,msgLevel,rMessage);
 	    return;
 	};
 
-	let message = "Successfull AppendChild processing for key " + _key + ". Service removeRef has returned  ("+rMessage+")";
+	let message = "Successfull AppendChild processing for key " + key + ". Service removeRef has returned  ("+rMessage+")";
 	treeMessage(msgCssSelStr,msgLevel,message) ;
     };
     return callService(msgCssSelStr, 'appendChild', {eId:_eId, id: key, name:name, pos:pos } ).done( (data)=>checkCallBack(data) );
@@ -848,10 +848,10 @@ function createNewSetOfEvents(treeCssSelStr, msgCssSelStr) {
 };
 
     
-function getTree() {
-    // Some logic to retrieve, or generate tree structure
-    return  {{ tree|tojson }};
-};
+// function getTree() {
+//     // Some logic to retrieve, or generate tree structure
+//     return  {#{ tree|tojson }#};
+// };
 
 // $(function(){
 //     'use strict';

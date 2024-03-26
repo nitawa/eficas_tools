@@ -120,7 +120,7 @@ class Editor:
            self.jdc = jdc
            return
         self.pbLectureDataSet = None
-        self.messageInfo = None
+        self.messageInfo = ""
         if self.readercata.cata == None: 
            if self.dataSetFile is not None: 
               print ('dataSetFile comm mais pas de cata')

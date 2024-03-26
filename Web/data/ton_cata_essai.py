@@ -5,16 +5,16 @@ from Accas import *
 class MYOPER(ASSD) : pass
 
 JdC   = JDC_CATA(code='Test1',)
-MonOper=OPER(nom="MonOper", sd_prod=MYOPER,
+TonOper=OPER(nom="TonOper", sd_prod=MYOPER,
     param1 = SIMP(statut='o',typ='R'),
 )
-MonProc = PROC(nom='MonProc',
+TonProc = PROC(nom='TonProc',
     param1 = SIMP(statut='o',typ='R'),
 )
-MonProc2 = PROC(nom='MonProc2',
+TonProc2 = PROC(nom='TonProc2',
     param1 = SIMP(statut='o',typ='R'),
     param11 = SIMP(statut='f',typ='R'),
-    param12= SIMP(statut='o',typ='R',into=[1,2,3,4,9],),
+    param12= SIMP(statut='o',typ='R',into=[1.0,2.0,3.0,4.0,9.0],),
     b1     = BLOC (condition = 'param1 == 2',
         param1_inBloc = SIMP(statut='o',typ='R', defaut = 2),
         B11 = BLOC (condition = 'param1_inBloc == 2',

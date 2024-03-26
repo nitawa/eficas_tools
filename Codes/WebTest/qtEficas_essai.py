@@ -28,6 +28,7 @@ name='prefs_'+prefs.code
 #__import__(name)
 
 import os, sys
+sys.path.append(os.path.join(os.path.abspath(os.path.dirname(__file__)),'..'))
 sys.path.append(os.path.join(os.path.abspath(os.path.dirname(__file__)),'..','..'))
 
 from Editeur import eficas_go
