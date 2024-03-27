@@ -206,12 +206,14 @@ class X_MCSIMP(X_OBJECT):
             print("objPyxbDeConstruction", self.objPyxbDeConstruction)
         # PNPN Attention les unties ne sont pas forcement projetes comme attribut
         # TODO : a revoir selon le catalogue et faire passer l info dans le XSD
-        if self.definition.unite != None:
-            typeAvecUnite = True
-            nomAttributUnite = "unite_T_" + self.nom
-            valeurAttributUnite = str(self.definition.unite)
-        else:
-            typeAvecUnite = False
+        #if self.definition.unite != None:
+        #    typeAvecUnite = True
+        #    nomAttributUnite = "unite_T_" + self.nom
+        #    valeurAttributUnite = str(self.definition.unite)
+        #else:
+        #    typeAvecUnite = False
+
+        typeAvecUnite = False
 
         if self.objPyxbDeConstruction != None:
             self.objPyxb = self.objPyxbDeConstruction

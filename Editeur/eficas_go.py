@@ -136,19 +136,16 @@ def genereXML(code=None):
     monEficas.genereXSD=False
     monEficas.withXSD=True
     monEditor = monEficas.getEditorForXSDGeneration(cataFile= options.cataFile,datasetFile=fichier,formatOut = 'xml')
-    if options.fichierXMLOut == None:
-        fichierXMLOut = fichier[: fichier.rfind(".")] + ".xml"
+    if options.fichierOut == None:
+        fichierOut = fichier[: fichier.rfind(".")] + ".xml"
     else:
-        fichierXMLOut = options.fichierXMLOut
-    print (monEditor)
-    print (monEditor.jdc)
+        fichierOut = options.fichierOut
     if not (monEditor.jdc.isValid()):
         print("Fichier comm is not valid")
         return
     # print ('Fichier comm is not valid')
     monEditor.XMLWriter.gener(monEditor.jdc)
-    print (monEditor.XMLWriter)
-    monEditor.XMLWriter.writeDefault(fichierXMLOut)
+    monEditor.XMLWriter.writeDefault(fichierOut)
 
 
 def genereStructure(code=None):
@@ -162,8 +159,9 @@ def genereStructure(code=None):
         print("Use -c cata_name.py")
         return
 
-    monEficas = getEficas(code=options.code, genereXSD=True)
-    monEditor = monEficas.getEditor()
+    monEficas = getEficas(code=options.code)
+    monEficas.genereXSD=True
+    monEditor = monEficas.getEditorForXSDGeneration(cataFile= options.cataFile,datasetFile=fichier,formatOut = 'xml')
     texteStructure = monEditor.dumpStructure()
 
     cataFileTrunc = os.path.splitext(os.path.basename(options.cataFile))[0]
@@ -187,15 +185,42 @@ def validateDataSet(code=None):
     if fichier == None:
         print("comm file is needed")
         return
-    from .editorSsIhm import JDCEditorSsIhm
 
     monEficas = getEficas(code=options.code)
-    monEditeur = JDCEditorSsIhm(monEficasSsIhm, fichier)
-    if not (monEditeur.jdc.isValid()):
-        print(monEditeur.getJdcRapport())
+    monEficas.genereXSD=True
+    monEditor = monEficas.getEditorForXSDGeneration(cataFile= options.cataFile,datasetFile=fichier,formatOut = 'xml')
+    if not (monEditor.jdc.isValid()):
+        print(monEditor.getJdcRapport())
     else:
         print("Jdc is valid")
-    return monEditeur.jdc.isValid()
+    return monEditor.jdc.isValid()
+
+def genereComm(code=None):
+#-----------------------
+    from Editeur  import session
+    options=session.parse(sys.argv)
+    if code != None : options.code = code
+    if options.cataFile == None :
+        print ('Use -c cata_name.py')
+        return 0
+    try    : fichier=options.comm[0]
+    except : fichier=None
+    if fichier==None :
+        print ('xml file is needed')
+        return 0
+
+    monEficas = getEficas(code=options.code)
+    monEditor = monEficas.getEditorForXSDGeneration(cataFile= options.cataFile,datasetFile=fichier, formatIn ='xml',formatOut = 'python')
+    if options.fichierOut == None : fichierCommOut=fichier[:fichier.rfind(".")]+'.comm'
+    else : fichierCommOut = options.fichierOut
+
+    if not(monEditor.readercata.cata) : return 0
+    if not(monEditor.jdc) : return 0
+    # on ne sait lire que des xml valides
+    #PNPN
+    monEditor.myWriter.gener(monEditor.jdc,format = 'beautifie')
+    monEditor.myWriter.writeFile(fichierCommOut)
+    return 1
 
 
 # Les deux fonctions ci-après ne sont pas utilisees mais 

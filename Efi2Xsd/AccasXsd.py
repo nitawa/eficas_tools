@@ -2287,6 +2287,7 @@ class X_JDC_CATA:
         cata=self
         # cata.unitAsAttribute = unitAsAttribute
         cata.unitAsAttribute = True
+        cata.unitAsAttribute = False
         if debug: print("avecEltAbstrait   -------------------", avecEltAbstrait)
         if debug: print("self.importedBy -------------------", self.importedBy)
         if debug: print("self.code       -------------------", self.code)

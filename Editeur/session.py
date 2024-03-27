@@ -316,10 +316,10 @@ def createparser():
 
     parser.add_option(
         "-o",
-        "--fichierXMLOut",
+        "--fichierOut",
         action="store",
         type="string",
-        dest="fichierXMLOut",
+        dest="fichierOut",
         help=tr("nom du fichier xml genere"),
     )
 
@@ -393,8 +393,8 @@ def parse(args):
         options.cataFile = None
     if not hasattr(options, "versionCode"):
         options.versionCode = None
-    if not hasattr(options, "fichierXMLOut"):
-        options.fichierXMLOut = None
+    if not hasattr(options, "fichierOut"):
+        options.fichierOut = None
     if options.withXSD:
         try:
             import pyxb
