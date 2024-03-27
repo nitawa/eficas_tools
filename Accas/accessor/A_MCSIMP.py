@@ -71,7 +71,12 @@ class MCSIMP(A_OBJECT.OBJECT):
         monDico["title"] = self.nom
         monDico["key"] = self.idUnique
         if self.valeur != None:
-            monDico["wValue"] = str(self.valeur)
+            if self.waitUserAssd() or self.waitAssd() or self.waitUserAssdMultiple():
+                if isinstance(self.valeur, list) or isinstance(self.valeur,tuple) :
+                   monDico["wValue"] = []
+                   for v in self.valeur : monDico["wValue"].append(v.getName())
+                else : monDico["wValue"] = self.valeur.getName()
+            else : monDico["wValue"] = str(self.valeur)
         else:
             monDico["wValue"] = ""
         monDico["classeAccas"] = self.nature
@@ -91,7 +96,15 @@ class MCSIMP(A_OBJECT.OBJECT):
                if not chaineR.find('.') : chaineR = chaineR + '.'
                monDico["into"].append(chaineR)
            if not monDico["wValue"].find('.') : monDico["wValue"]+'.'
-               
+        if self.waitAssd():
+           if self.waitUserAssdOrAssdMultipleEnCreation() : 
+               monDico["into"] = None 
+           else :
+               if self.waitUserAssdMultiple(): dict = self.getUserAssdPossible()
+               else : dict = self.etape.parent.getSdAvantDuBonType(self.etape,self.definition.type)
+               if self.waitUserAssd() : dict +=self.jdc.getSdCreeParObjet(self.definition.type)
+               monDico["into"] =[]
+               for r in dict :  monDico["into"]. append(r.getName())
         monDico["statut"] = self.definition.statut
         # a priori jamais vrai sauf si on a change un nom de userassd
         if monDico["validite"] == 0 and monDico["statut"] == "f":

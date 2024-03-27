@@ -31,7 +31,10 @@ from InterfaceGUI.Common.simp_treeItem_commun import SIMPTreeItemCommun
 
 class Node(browser.JDCNode,typeNode.PopUpMenuNodeMinimal):
 
-    def traiteValeurSaisie(self,  valeur): 
+    def traiteValeurSaisie(self, valeur): 
+        if self.item.waitUserAssdOrAssdMultipleEnCreation() :
+           validite,commentaire=self.creeUserASSD(valeur)
+           return (self.item.idUnique, validite, commentaire)
         if self.item.get_definition().max==1 : self.politique = PolitiqueUnique (self, self.editor)
         else  : self.politique = PolitiquePlusieurs(self, self.editor)
         if self.item.definition.validators != None :
@@ -40,9 +43,19 @@ class Node(browser.JDCNode,typeNode.PopUpMenuNodeMinimal):
                 return (self.item.idUnique, False ,commentaire)
         nouvelleValeurFormat=self.politique.getValeurTexte(valeur)
         validite,commentaire=self.politique.recordValeur(nouvelleValeurFormat)
-        if not validite : 
-            return (self.item.idUnique, False, commentaire)
-        return (self.item.idUnique, True, commentaire)
+        return (self.item.idUnique, validite, commentaire)
+
+   
+    def creeUserASSD(self, valeur): 
+        if self.item.valeur == None : enCreation = True
+        else : enCreation = False
+        if enCreation : validite,commentaire=self.item.creeUserASSDetSetValeur(valeur)
+        else          : validite,commentaire=self.item.renommeSdCree(valeur)
+        if not enCreation : self.node.updateNodeTexte()
+        #PNPN TODFO 
+        #PNPNPN -- signal update sur les fils ou ?
+        #self.parentQt.propageChange(self.objSimp.definition.type[0],self)
+        return (validite, commentaire)
         
 class SIMPTreeItem(SIMPTreeItemCommun):
     itemNode = Node
