@@ -79,7 +79,7 @@
        <h2>Hello, world!</h2>
        <p class="text-center">Here is the Eficas/MdM WebApp prototype.</p>
        <p class="text-center">Try Menu/File/NewDataset to open/create a dataset.</p>
-       <p class="text-center"><a class="btn btn-primary btn-lg" href="#" role="button">Learn more about Eficas/MdM</a></p>
+       <p class="text-center"><a class="btn btn-primary btn-lg" href="" role="button">Learn more about Eficas/MdM</a></p>
     </div>
     <div class="tab-content" id="efi-tab-content"></div>
   </div>
@@ -270,7 +270,7 @@ function callService(msgCssSelStr, serviceName, obj) {
         treeMessage(msgCssSelStr,"alert-success",message) ;
     };
 
-    const url    = "{{ url_for('appendChild') }}";          //WARN : jinja url_for évalué dynamiquement
+    const url    = "{{ url_for('appendChild') }}";                       //WARN : jinja url_for évalué dynamiquement
     const newurl = url.replace("appendChild", serviceName); //TODO : Trouver une meilleure solution !
     return $.ajax({
         type		: "POST",
@@ -682,15 +682,15 @@ function createNewSetOfEvents(treeCssSelStr, msgCssSelStr) {
 	let _msgCssSelStr   = msgCssSelStr;  //inutile
 	// var  _tree          = $.ui.fancytree.getTree(_treeCssSelStr);
 	source.addEventListener('propageValide', function(event) {
-            const data      = JSON.parse(event.data);
-            const id        = data.id;
-            const eId       = data.eId;
-            const valid     = data.valid;
+            const data           = JSON.parse(event.data);
+            const id               = data.id;
+            const eId             = data.eId;
+            const valid          = data.valid;
             const message   = "The server says " + data.message +" , id: "+id;
             const msgerror  = "Event propageValid : can't find node with key :"+id;
-	    const tree      = $.ui.fancytree.getTree(_treeCssSelStr);
+	    const tree           = $.ui.fancytree.getTree(_treeCssSelStr);
             const _rootNode = tree.rootNode.children[0];
-            const _eId      = _rootNode.data.eId;
+            const _eId           = _rootNode.data.eId;
             
 	    if ( eId != _eId ) return;
             treeMessage(_msgCssSelStr,"alert-info",message);
@@ -700,10 +700,10 @@ function createNewSetOfEvents(treeCssSelStr, msgCssSelStr) {
 		treeMessage(_msgCssSelStr,"alert-danger",msgerror);
 		return;
 	    };
-            node.data.validite=valid;  //TODO : ?? Pas encore réussi à tester ... ??
+            node.data.validite=valid;       //TODO : ?? Pas encore réussi à tester ... ??
 	    //alert("propageValid");
             node.render(true,false);       //force rendering the node (not parents nor descendants)
-            //node.renderStatus();     //CSS element updates only
+            //node.renderStatus();          //CSS element updates only
 	}, false);
     })(treeCssSelStr,'#tree1-messages');
 
@@ -769,14 +769,14 @@ function createNewSetOfEvents(treeCssSelStr, msgCssSelStr) {
     // --- appendChildren ---
     (function (treeCssSelStr, msgCssSelStr) {
 	'use strict';
-	const _treeCssSelStr  = treeCssSelStr; //inutile
-	const _msgCssSelStr   = msgCssSelStr;  //inutile
-	const _tree           = $.ui.fancytree.getTree(_treeCssSelStr);
+	const _treeCssSelStr = treeCssSelStr;  //inutile
+	const _msgCssSelStr = msgCssSelStr;  //inutile
+	const _tree                = $.ui.fancytree.getTree(_treeCssSelStr);
 	source.addEventListener('appendChildren', function(event) {
             const data      = JSON.parse(event.data);
-            const id        = data.id;
-            const eId       = data.eId;
-            const source    = data.fcyTreeSrc;
+            const id          = data.id;
+            const eId        = data.eId;
+            const source  = data.fcyTreeSrc;
             const pos       = data.pos;
             //var   message = data.message;
             const message   = "The server says " + data.message +" , id: "+id;

@@ -14,5 +14,9 @@ mdm.pyxb.GlobalValidationConfig._setInvalidElementInContent(mdm.pyxb.GlobalValid
 mdm.pyxb.GlobalValidationConfig._setOrphanElementInContent(mdm.pyxb.GlobalValidationConfig.RAISE_EXCEPTION)
 
 o1 = mdm.CreateFromDocument(open('@file@').read())
-print(o1.toDOM().toprettyxml())
+
+filename='@file@'+'.rewrite'
+with open(filename, "w") as fp:
+    fp.write(o1.toDOM().toprettyxml())
+    print("File ",'@file@', " has been loaded and rewrite into ",filename)
 

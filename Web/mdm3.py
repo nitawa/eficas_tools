@@ -307,7 +307,7 @@ def newDataset():
         # Print the dictionary
         print(__file__+"/newDataset : ",req);
         #cataFile   =os.path.abspath("../Codes/WebTest/"+req['catalogName']);
-        cataFile   =os.path.abspath("./data/"+req['catalogName']);
+        cataFile      =os.path.abspath("./data/"+req['catalogName']);
         dataSetFile =os.path.abspath("./data/"+req['datasetName']);
         #cataFile    = os.path.abspath('../Codes/WebTest/cata_essai.py')
         #dataSetFile = os.path.abspath('../Codes/WebTest/web_tres_simple_avec_2Fact.comm')

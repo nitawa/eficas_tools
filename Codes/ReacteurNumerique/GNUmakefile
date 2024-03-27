@@ -90,7 +90,7 @@ define test_xml_rule =
 	@[[ -f $$(*).py ]] || (echo "Le fichier catalogue $$(*).py est introuvable" && false)
 	@[[ -f $$(*)_driver.py ]] || (echo "Le fichier driver $$(*)_driver.py est introuvable" && false)
 	python3 $(tooldir)/validateDataSet.py -c $$(abspath $$(*).py) $$< 
-	python3 $(tooldir)/generateXML.py -c $$(abspath $$(*).py) $$<
+	./exec.sh python3 $(tooldir)/generateXML.py -c $$(abspath $$(*).py) $$<
 endef
 
 
@@ -109,7 +109,8 @@ define test_comm_rule =
 	@echo -e "\n\n------ Generate modified.comm file $$(@) ------\n"
 	@[[ -f $$(*).py ]] || (echo "Le fichier catalogue $$(*).py est introuvable" && false)
 	@[[ -f $$(*)_driver.py ]] || (echo "Le fichier driver $$(*)_driver.py est introuvable" && false)
-	python3 $(tooldir)/generateUQComm.py -x -c $$(abspath $$(*).py) -o  $$(@)  $$<
+#	python3 $(tooldir)/generateUQComm.py -x -c $$(abspath $$(*).py) -o  $$(@)  $$<
+	./exec.sh python3 $(tooldir)/generateComm.py -x -c $$(abspath $$(*).py) -o  $$(@)  $$<
 	diff -w  -I '^#' -I '^ #' $$(@:%_modified.comm=%.comm) $$(@)
 endef
 
@@ -147,8 +148,8 @@ testAll: exec.sh driverAll $(new_test_driver_py) $(new_test_driver_xml) $(new_te
 clean:
 	rm -f *.pyc *~ qtEficas.sh exec.sh environ.sh
 	rm -rf raw  binding.py __pycache__
-	rm -f $(xsd_files) $(driver_files)  *test_driver_?.py *test_driver_?.xml *test_driver_?_modified.comm
+	rm -f $(xsd_files) $(driver_files)  *test_driver_?.py *test_driver_?.xml *test_driver_?.xml.rewrite *test_driver_?_modified.comm
 
 cleantest:
-	rm -f  *test_driver_?.py *test_driver_?.xml *test_driver_?_modified.comm
+	rm -f  *test_driver_?.py *test_driver_?.xml *test_driver_?.xml.rewrite *test_driver_?_modified.comm 
 
