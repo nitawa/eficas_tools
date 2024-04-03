@@ -217,6 +217,7 @@ def updateSDName():
             changeIsAccepted = False; #TODO: à Supprimer
         else :
             msgLevel = "alert-success"
+            #message = ""
             changeIsAccepted = True;  #TODO: à Supprimer
         return make_response(json.dumps( {'changeIsAccepted':changeIsAccepted, 'errorCode' : errorCode, 'message': message,'msgLevel':msgLevel} )) #TODO : Suprimer ChangeIsAccepted
     else:

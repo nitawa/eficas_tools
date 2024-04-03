@@ -66,43 +66,44 @@
 
  <!-- TODO : Créer une feuille de style-->
 <div class="row" id="row-navtabs-and-main-and-optionals">
-  
+
+  <!-- NavTab -->
   <div class="panel-heading" style="padding-bottom: 0px;padding-left: 0px;padding-right: 0px;">
     <ul class="nav nav-tabs" id="efi-nav-tabs"></ul>
   </div>
-
+  
+  <!-- tab-content-->
   <div class="row" style="margin-left: 0px;margin-right: 0px;">
-    <!-- tab-content-->
-    <!-- efi-tab-content -->
-    <!-- <div class="tab-content" id="efi-tab-content"></div> -->
     <div class="jumbotron" id="Welcome">
        <h2>Hello, world!</h2>
        <p class="text-center">Here is the Eficas/MdM WebApp prototype.</p>
        <p class="text-center">Try Menu/File/NewDataset to open/create a dataset.</p>
        <p class="text-center"><a class="btn btn-primary btn-lg" href="" role="button">Learn more about Eficas/MdM</a></p>
     </div>
+    <!-- efi-tab-content -->
     <div class="tab-content" id="efi-tab-content"></div>
   </div>
 
-</div> <!-- row-main-and-optionals -->
+</div> <!-- row-navtabs-and-main-and-optionals -->
 
 <!-- <div id='handsontable_test1'/> -->
     
-<div class="row" data-spy="affix" id="row-tree1-messages">
-
-    <nav class="navbar" >
+<div class="row row-tree-messages-style" data-spy="affix" id="row-tree0-messages">
+    <nav class="navbar" id="WelcomeNavBar">
       <!-- <span id="tree1-messages" class="nav navbar-nav col-sm-12 navbar-right alert alert-success"  >....</span> -->
       <!-- <footer class="footer alert alert-success" id="tree1-messages" >No message.</footer> -->
-      <div id="tree1-messages" >
+      <div id="tree0-messages" class="tree-messages-style">
 	<nav class="nav-bar alert alert-success">No message.</nav>
       </div>
     </nav>
-
-</div> <!-- row -->
+</div> <!-- row-tree0-messages -->
 
 <script>
   'use strict';
 
+  //$("#navbar-optionals").affix({offset: {top: $("#row-commands_menu").outerHeight(true)} }); 
+  //$("#col-optional_tree").affix({offset: {top: $("#row-commands_menu").outerHeight(true)} }).css('right',0);
+ 
   let efiNewTab=function(catalogName,datasetName,commands,treeId) {
       let _treeId = treeId;
       if (treeId === undefined  || treeId ==  "") {
@@ -173,6 +174,16 @@
         	</div> <!-- panel-body -->
               </nav>
             </div>  <!-- col-optional_tree -->
+
+            <div class="row row-tree-messages-style" data-spy="affix" id="row-@treeId@-messages">
+                <nav class="navbar" >
+                  <!-- <span id="tree1-messages" class="nav navbar-nav col-sm-12 navbar-right alert alert-success"  >....</span> -->
+                  <!-- <footer class="footer alert alert-success" id="tree1-messages" >No message.</footer> -->
+                  <div id="@treeId@-messages" class="tree-messages-style">
+                     <nav class="nav-bar alert alert-success">No message.</nav>
+                  </div>
+                </nav>
+            </div> <!-- row-@treeId@-messages -->
         
           </div> <!-- row @treeId@Tab-->`;
 
@@ -212,9 +223,6 @@ const handsontable_data1 = [
     <!-- 	licenseKey: 'non-commercial-and-evaluation' -->
     <!-- }); -->
 
-  //$("#navbar-optionals").affix({offset: {top: $("#row-commands_menu").outerHeight(true)} }); 
-  $("#col-optional_tree").affix({offset: {top: $("#row-commands_menu").outerHeight(true)} }).css('right',0);
-  $("#col-optional_tree").affix({offset: {top: $("#row-commands_menu").outerHeight(true)} }).css('right',0); 
 
 // $(function () {
 //     'use strict';
@@ -243,7 +251,7 @@ let treeMessage=function(msgCssSelStr,messageClass,message) {
 	
 	if ( messageClass == "alert-danger" ) {
 	    $.ui.fancytree.error(message);    // debugLevel >= 1
-	    // alert(message); // Activer lorsque la mise au point sera achevée.
+	    // alert(message); // TODO: Activer lorsque la mise au point sera achevée.
 	} else if ( messageClass == "alert-warning" ) {
 	    $.ui.fancytree.warn(message);     // debugLevel >= 2
 	} else if ( messageClass == "alert-info" ) {
@@ -266,20 +274,26 @@ function callService(msgCssSelStr, serviceName, obj) {
     'use strict';
 
     const  success = function(data, status) {
-        let message="Successfull call for "+serviceName+" with status : " + status;
+        let message="Successfull call to "+serviceName+" with status : " + status;
         treeMessage(msgCssSelStr,"alert-success",message) ;
     };
 
-    const url    = "{{ url_for('appendChild') }}";                       //WARN : jinja url_for évalué dynamiquement
-    const newurl = url.replace("appendChild", serviceName); //TODO : Trouver une meilleure solution !
+    const  error = function(xhr,status,error) {
+        let message="Unsuccessfull call to "+serviceName+" with status : " + status;
+	alert(error);
+        treeMessage(msgCssSelStr,"alert-danger",message) ;
+    };
+
+    const url        = "{{ url_for('appendChild') }}";                       //WARN : jinja url_for évalué dynamiquement
+    const newurl = url.replace("appendChild", serviceName);     //TODO : Trouver une meilleure solution !
     return $.ajax({
-        type		: "POST",
-        url		: newurl,
+        type		        : "POST",
+        url		        : newurl,
         data		: JSON.stringify(obj),
         contentType	: "application/json; charset=utf-8",
-        dataType	: "json", 
+        dataType	        : "json", 
         success		: success,
-        failure		: function(errMsg) { alert(errMsg); }
+        error		: error,
     });
 };
 
@@ -292,7 +306,7 @@ function clickOnRemove(treeCssSelStr, msgCssSelStr, key ) {
     if ( tree ==  null) {
 	let message = "Unsuccessfull removeNode tree selection ("+treeCssSelStr+") returned (null)";
         treeMessage(msgCssSelStr,"alert-danger",message) ;
-	alert(message) ; // A supprimer lorsque ce sera activé ds treeMssage
+	alert(message) ; // TODO: A supprimer lorsque ce sera activé ds treeMssage
 	return;
     };
     const _rootNode = tree.rootNode.children[0];
@@ -392,7 +406,7 @@ function sendAppendChild(treeCssSelStr, msgCssSelStr, key, name, pos) {
 	    return;
 	};
 
-	let message = "Successfull AppendChild processing for key " + key + ". Service removeRef has returned  ("+rMessage+")";
+	let message = "Successfull AppendChild processing for key " + key + ". Service AppendChild has returned  ("+rMessage+")";
 	treeMessage(msgCssSelStr,msgLevel,message) ;
     };
     return callService(msgCssSelStr, 'appendChild', {eId:_eId, id: key, name:name, pos:pos } ).done( (data)=>checkCallBack(data) );
@@ -458,7 +472,7 @@ function clickOnCommand(treeCssSelStr, msgCssSelStr, cmdName, key ) {
 	//$(tree.activeNode).scrollTop(20)
 	//tree.activeNode.tr.offsetTop
 	$(document).scrollTop(tree.activeNode.tr.offsetTop); //Repostionning of the active node in order to see the newly added command
-                                                             //WARN: sendAppendChild must be completed/done
+                                                                                              //WARN: sendAppendChild must be completed/done
     });
 
 };  
@@ -466,8 +480,8 @@ function clickOnCommand(treeCssSelStr, msgCssSelStr, cmdName, key ) {
 //key plutôt que node pour les chaînes javascript evenementielles
 function clickOnSelect(treeCssSelStr, msgCssSelStr, key, eltNameWithValue ) {
     'use strict';
-    const tree        = $.ui.fancytree.getTree(treeCssSelStr); //TODO : Une fonction pour récupérer le tree en paramètre soit par css ou objet
-    var   node = null;
+    const tree  = $.ui.fancytree.getTree(treeCssSelStr); //TODO : Une fonction pour récupérer le tree en paramètre soit par css ou objet
+    var   node  = null;
     if ( tree ==  null) {
 	let message = "Unsuccessfull clickOnSelect tree selection ("+treeCssSelStr+") returned (null)";
 	alert(message);
@@ -566,14 +580,14 @@ function sendUpdateSimp(treeCssSelStr, msgCssSelStr, node, eltNameWithValue) {
 
 function sendNewDataset(catalogName, datasetName) {
     'use strict';
-    
-    const _msgCssSelStr  = '#tree1-messages'; //TODO: Réfléchir à la poule et l'oeuf ;)
-    // const _treeCssSelStr = '#tree1';
-    // const tree           = $.ui.fancytree.getTree(_treeCssSelStr); //TODO : Une fonction pour récupérer le tree en paramètre soit par css ou objet
 
-    // let $input=$(node.tr).find('input');
-    // let $input=$(node.tr).find(eltNameWithValue);
-    // let value=$input.val();
+    let      _msgCssSelStr;
+    const $currentTabAnchor    = $('#efi-nav-tabs > li[class~="active"] > a');
+    if ( $currentTabAnchor.length != 0 ) {
+        _msgCssSelStr = '#'+$currentTabAnchor.attr('id').replace("Nav","")+'-messages';
+    } else {
+	_msgCssSelStr  = '#tree0-messages'; 
+    };
 
     let checkCallBack = function(data) {
 	// Tester data == NULL !
@@ -609,12 +623,45 @@ function sendNewDataset(catalogName, datasetName) {
 	_treeCssSelStr = '#'+_treeId;
 	_treeCssIdTab  = _treeCssSelStr+'Tab';
 	_treeCssIdNav  = _treeCssSelStr+'Nav';
+	_msgCssSelStr = _treeCssSelStr+'-messages'; 
 	
 	$("#Welcome").hide()
+	$("#row-tree0-messages").hide()
+	// $(_msgCssSelStr).affix({offset: {bottom: 0px} }).css({
+        //      "width"            : "100%",
+        //      "height"           : "50px",
+        //      "z-index"          : "8000",
+        //      "bottom"          : "0px",
+        //      "position"         : "sticky",
+        //      "overflow-y"     : "scroll"
+        //     }); 
+
+	 $("#col-optional_tree").affix({offset: {top: $("#row-commands_menu").outerHeight(true)} }).css('right',0); 
+
+	//$(_msgCssSelStr).affix({offset: {bottom: "0px"} });
+	// $(_msgCssSelStr).css({
+        //      "width"            : "100%",
+        //      "height"           : "50px",
+        //      "z-index"          : "8000",
+        //      "bottom"          : "0px",
+        //      "position"         : "sticky",
+        //      "overflow-y"     : "scroll"
+        //     });
 	
-	$(_treeCssSelStr).fancytree(efiFancytreeOptions(_treeCssSelStr,source));
+        $(".row-tree-messages-style").affix({offset: {bottom: "0px"} });
+	// $(_msgCssSelStr).affix({offset: {bottom: "0px"} }); // SURTOUT PAS CA EMPECHE LE DEFILEMENT
+	// $(_msgCssSelStr).css({
+        //      "width"            : "100%",
+        //      "height"           : "50px",
+        //      "z-index"          : "8000",
+        //      "bottom"          : "0px",
+        //      "position"         : "sticky",
+        //      "overflow-y"     : "scroll"
+        //     }); 
+
+	$(_treeCssSelStr).fancytree(efiFancytreeOptions(_treeCssSelStr,source,_msgCssSelStr));
 	
-	createNewSetOfEvents(_treeCssSelStr,'#tree1-messages');
+	createNewSetOfEvents(_treeCssSelStr,_msgCssSelStr);
 
 	// console.log($(_treeCssIdNav));
 	$('.nav-tabs a[href="'+_treeCssIdTab+'"]').tab('show')
@@ -705,7 +752,7 @@ function createNewSetOfEvents(treeCssSelStr, msgCssSelStr) {
             node.render(true,false);       //force rendering the node (not parents nor descendants)
             //node.renderStatus();          //CSS element updates only
 	}, false);
-    })(treeCssSelStr,'#tree1-messages');
+    })(treeCssSelStr,msgCssSelStr);
 
     // // --- displayMessage ---
     // (function (treeCssSelStr, msgCssSelStr) {
@@ -727,7 +774,7 @@ function createNewSetOfEvents(treeCssSelStr, msgCssSelStr) {
     //         treeMessage(_msgCssSelStr,messageClass,_message);
     //         treeMessage(_msgCssSelStr,messageClass,txt);
     // 	}, false);
-    // })(treeCssSelStr,'#tree1-messages');
+    // })(treeCssSelStr,msgCssSelStr);
 
     // --- updateNodeInfo ---
     (function (treeCssSelStr, msgCssSelStr) {
@@ -764,7 +811,7 @@ function createNewSetOfEvents(treeCssSelStr, msgCssSelStr) {
             node.render(true,false);       //force rendering the node (not parents nor descendants)
             //node.renderStatus();         //CSS element updates only	    
 	}, false);
-    })(treeCssSelStr,'#tree1-messages');
+    })(treeCssSelStr,msgCssSelStr);
 
     // --- appendChildren ---
     (function (treeCssSelStr, msgCssSelStr) {
@@ -806,7 +853,7 @@ function createNewSetOfEvents(treeCssSelStr, msgCssSelStr) {
 					<!--   icon: "customdoc1.gif" -->
 					<!-- }); -->
 	}, false);
-    })(treeCssSelStr,'#tree1-messages');
+    })(treeCssSelStr,msgCssSelStr);
 
     // --- deleteChildren ---    
     (function (treeCssSelStr, msgCssSelStr) {
@@ -844,7 +891,7 @@ function createNewSetOfEvents(treeCssSelStr, msgCssSelStr) {
 	    //  icon: "customdoc1.gif"
 	    //});
 	}, false);
-    })(treeCssSelStr,'#tree1-messages');
+    })(treeCssSelStr,msgCssSelStr);
 };
 
     
@@ -891,7 +938,7 @@ function efiIconRendering(event, data) {
 
 
 //créer une fonction pour changer l'appel à getTree
-let efiFancytreeOptions=function(treeCssSelStr,source){
+  let efiFancytreeOptions=function(treeCssSelStr,source,msgCssSelStr){
     'use strict';
     return {
 	//focusOnSelect:true,
@@ -1052,7 +1099,8 @@ let efiFancytreeOptions=function(treeCssSelStr,source){
 		} else { //WITH INTO
 		    //TODO : GERER LA NAVIGATION CLAVIER
 		    // alert("SELECT ENTER");
-		    let selectFunction = "clickOnSelect(\""+treeCssSelStr+"\", \"#tree1-messages\", \""+key+"\", \"select\")";
+		    let selectFunction = "clickOnSelect(\""+treeCssSelStr+"\",\""+msgCssSelStr+ "\", \""+key+"\", \"select\")";
+		    //let selectFunction = "clickOnSelect(\""+treeCssSelStr+"\", \"#tree1-messages\", \""+key+"\", \"select\")";
 		    //let selectFunction = "alert(\"SELECT EVENT\");setTimeout(clickOnSelect(\"#tree1\", \"#tree1-messages\", \""+key+"\", \"select\"),50000)";
 		    // console.log("----AVANT html :------"+$tdList.eq(3).html());
 		    // console.log($tdList.eq(3).find("select").length);
@@ -1073,7 +1121,7 @@ let efiFancytreeOptions=function(treeCssSelStr,source){
 		    $select.html(selectInto)
 			.val(wValue)
 			.css('color','black')
-			.change( ()=>clickOnSelect(treeCssSelStr, "#tree1-messages", key, "select") );
+			.change( ()=>clickOnSelect(treeCssSelStr, msgCssSelStr, key, "select") );
 		    //			.find("select").val(wValue).css('color','black'); //TODO : A placer ds le CSS
 		    //  console.log("----APRES------"+$tdList.eq(3).html());
 
@@ -1128,7 +1176,8 @@ let efiFancytreeOptions=function(treeCssSelStr,source){
 	    let actionListIndex = 0;
 	    let plusFunction  = undefined;
 	    //trashFunction = "alert(\"glyphicon-trash : "+key+"\")";
-	    let trashFunction = "clickOnRemove( \""+treeCssSelStr+"\", \"#tree1-messages\", \""+key+"\" )";
+	    let trashFunction = "clickOnRemove( \""+treeCssSelStr+"\", \""+ msgCssSelStr +"\", \""+key+"\" )";
+	    //let trashFunction = "clickOnRemove( \""+treeCssSelStr+"\", \"#tree1-messages\", \""+key+"\" )";
 	    
 	    if ( classeAccas ==  "MCSIMP" || classeAccas ==  "OPERATEUR" ) {
 		actionListIndex = 4;              //TODO : Le paramétrer, dépend du colspan
@@ -1140,10 +1189,10 @@ let efiFancytreeOptions=function(treeCssSelStr,source){
 
 	    // Define plusFunction
 	    if ( classeAccas ==  "PROCEDURE" || classeAccas ==  "OPERATEUR" ) {
-		plusFunction  = "clickOnCommand( \""+treeCssSelStr+"\", \"#tree1-messages\", \""+name+"\", \""+key+"\" )";
+		plusFunction  = "clickOnCommand( \""+treeCssSelStr+"\", \""+ msgCssSelStr+"\", \""+name+"\", \""+key+"\" )";
 	    } else if ( classeAccas ==  "MCFACT" ) {
 		if (repeatable) {
-		    plusFunction = "sendAppendChild(\""+treeCssSelStr+"\", \"#tree1-messages\", \""+parentKey+"\", \""+cmdName+"\",null)";
+		    plusFunction = "sendAppendChild(\""+treeCssSelStr+"\", \""+msgCssSelStr+"\", \""+parentKey+"\", \""+cmdName+"\",null)";
 		};
 	    };
 
@@ -1178,7 +1227,7 @@ let efiFancytreeOptions=function(treeCssSelStr,source){
 
 	    $(node.tr).mouseenter(function(){
 		let optTreeSrc=buildOptionalTreeSrc(node);
-		let optFunction = "sendAppendChild(\""+treeCssSelStr+"\", \"#tree1-messages\", \""+key+"\", \""+cmdName+"\",null)";
+		let optFunction = "sendAppendChild(\""+treeCssSelStr+"\", \""+msgCssSelStr+"\", \""+key+"\", \""+cmdName+"\",null)";
 		let optTreeOptions = {
 		    glyph: glyph_opts,
 		    icon: function(event, data) { return efiIconRendering(event, data); },
@@ -1202,7 +1251,7 @@ let efiFancytreeOptions=function(treeCssSelStr,source){
 			    // 	    addedNode.setExpanded();
 			    // 	};
 			    // };
-			    sendAppendChild(treeCssSelStr, "#tree1-messages", parentKey, title, null); //TODO : retun node and apply expanded
+			    sendAppendChild(treeCssSelStr, msgCssSelStr, parentKey, title, null); //TODO : retun node and apply expanded
 			    //sendAppendChild( parentKey, title, null).done( (data)=>checkCallBack(data) );
 			    // tree.visit(function(node){
 			    // 	node.setExpanded(true);
@@ -1288,7 +1337,7 @@ let efiFancytreeOptions=function(treeCssSelStr,source){
 	// },
 	
 	//defaultGridAction: efiDefaultGridAction,
-	defaultGridAction: (event, data) => { return efiDefaultGridAction(treeCssSelStr, "#tree1-messages",event, data); },
+	defaultGridAction: (event, data) => { return efiDefaultGridAction(treeCssSelStr, msgCssSelStr, event, data); },
 	lazyLoad: function(event, data) {
             var node = data.node;
             console.log("event.type, data :"+event.type+" , "+data);
@@ -1416,7 +1465,7 @@ function efiDefaultGridAction(treeCssSelStr, msgCssSelStr, event, data) { //(use
 
     if (node.data.classeAccas == "OPERATEUR") {
 	
-	let checkCallBack = function(data) {
+	let checkCallBack = function(data) { //TODO: L'implémentation de ce callback diverge de celui plus haut.
 	    // Tester data == NULL !
             var   changeIsAccepted = data.changeIsAccepted
 	    const rMessage         = data.message
