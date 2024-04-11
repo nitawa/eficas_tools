@@ -21,23 +21,23 @@
 import  locale
 
 # Modules Eficas
-from PyQt5.QtWidgets import QLineEdit, QRadioButton
-from PyQt5.QtCore import Qt
+from PyQt6.QtWidgets import QLineEdit, QRadioButton
+from PyQt6.QtCore import Qt
 
 
 from Accas.extensions.eficas_translation import tr
 
-from InterfaceGUI.QT5.feuille import Feuille
-from UiQT5.desWidgetSimpComplexe import Ui_WidgetSimpComplexe
+from InterfaceGUI.QT6.feuille import Feuille
+from UiQT6.desWidgetSimpComplexe import Ui_WidgetSimpComplexe
 from InterfaceGUI.Common.politiquesValidation import PolitiqueUnique
-from InterfaceGUI.QT5.traiteSaisie import SaisieValeur
+from InterfaceGUI.QT6.traiteSaisie import SaisieValeur
 
 
 class MonWidgetSimpComplexe(Ui_WidgetSimpComplexe, Feuille):
     def __init__(self, node, monSimpDef, nom, objSimp, parentQt, commande):
         Feuille.__init__(self, node, monSimpDef, nom, objSimp, parentQt, commande)
         self.parentQt.commandesLayout.insertWidget(-1, self)
-        self.setFocusPolicy(Qt.StrongFocus)
+        self.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
         self.LEImag.returnPressed.connect(self.LEImagRPressed)
         self.LEReel.returnPressed.connect(self.LEReelRPressed)
         self.RBRI.clicked.connect(self.valeurPressed)
@@ -50,17 +50,20 @@ class MonWidgetSimpComplexe(Ui_WidgetSimpComplexe, Feuille):
     def setValeurs(self):
         self.politique = PolitiqueUnique(self.node, self.editor)
         valeur = self.node.item.getValeur()
-        if valeur == None or valeur == "": return
+        if valeur == None or valeur == "":
+            return
         if type(valeur) not in (list, tuple):
             self.LEComp.setText(str(valeur))
             commentaire = tr("complexe form deprecated, od value : ", valeur)
-            self.editor.afficheMessageQt(commentaire, Qt.red)
+            self.editor.afficheMessageQt(commentaire, Qt.GlobalColor.red)
         else:
-            typCplx, x1, x2 = valeur
+            typ_cplx, x1, x2 = valeur
             self.LEReel.setText(str(x1))
             self.LEImag.setText(str(x2))
-            if typCplx == "RI": self.RBRI.setChecked(1)
-            else: self.RBMP.setChecked(1)
+            if typ_cplx == "RI":
+                self.RBRI.setChecked(1)
+            else:
+                self.RBMP.setChecked(1)
 
     # def LECompRPressed(self) :
     #    self.LEReel.clear()
@@ -73,7 +76,7 @@ class MonWidgetSimpComplexe(Ui_WidgetSimpComplexe, Feuille):
     #        v=eval(valeur,d)
     #    except :
     #        commentaire=tr("expression invalide")
-    #        self.editor.afficheMessageQt(commentaire,Qt.red)
+    #        self.editor.afficheMessageQt(commentaire,Qt.GlobalColor.red)
     #        return
     #    try :
     #        i=v.imag
@@ -81,7 +84,7 @@ class MonWidgetSimpComplexe(Ui_WidgetSimpComplexe, Feuille):
     #        self.valeurPressed()
     #    except :
     #        commentaire=tr("l expression n est pas de la forme a+bj")
-    #        self.editor.afficheMessageQt(commentaire,Qt.red)
+    #        self.editor.afficheMessageQt(commentaire,Qt.GlobalColor.red)
 
     def LEReelRPressed(self):
         # self.LEComp.clear()
@@ -92,7 +95,7 @@ class MonWidgetSimpComplexe(Ui_WidgetSimpComplexe, Feuille):
             self.editor.afficheMessageQt(commentaire)
         except:
             commentaire = tr("expression invalide")
-            self.editor.afficheMessageQt(commentaire, Qt.red)
+            self.editor.afficheMessageQt(commentaire, Qt.GlobalColor.red)
         if self.LEImag.text() != "":
             self.valeurPressed()
         else:
@@ -106,7 +109,7 @@ class MonWidgetSimpComplexe(Ui_WidgetSimpComplexe, Feuille):
             self.editor.afficheMessageQt(commentaire)
         except:
             commentaire = tr("expression invalide")
-            self.editor.afficheMessageQt(commentaire, Qt.red)
+            self.editor.afficheMessageQt(commentaire, Qt.GlobalColor.red)
         if self.LEReel.text() != "":
             self.valeurPressed()
         else:
@@ -116,17 +119,34 @@ class MonWidgetSimpComplexe(Ui_WidgetSimpComplexe, Feuille):
         commentaire = "valeur de type complexe"
         return commentaire
 
+    # def getValeurComp(self):
+    #    commentaire=tr("expression valide")
+    #    valeur = str(self.LEComp.text())
+    #    d={}
+    #    try :
+    #        v=eval(valeur,d)
+    #    except :
+    #        commentaire=tr("expression invalide")
+    #        self.editor.afficheMessageQt(commentaire,Qt.GlobalColor.red)
+    #        return None
+    #     try :
+    #        i=v.imag
+    #    except :
+    #        commentaire=tr("expression n est pas de la forme a+bj")
+    #        self.editor.afficheMessageQt(commentaire,Qt.GlobalColor.red)
+    #        return None
+    #    return v
+
     def valeurPressed(self):
         if self.LEReel.text() == "" and self.LEImag.text() == "":
+            self.LEReel.setFocus(True)
+        if self.LEReel.text() == "" and self.LEImag.text() != "":
             self.LEReel.setFocus(True)
         if self.LEReel.text() != "" and self.LEImag.text() == "":
             self.LEImag.setFocus(True)
         valeur = self.getValeurRI()
-        if not valeur : return
-        (ok, commentaire) = self.politique.recordValeur(valeur)
-        if not ok : 
-          self.editor.afficheMessageQt(commentaire)
-          self.reaffiche()
+        self.politique.recordValeur(valeur)
+        self.reaffiche()
         self.parentQt.donneFocus()
 
     def getValeurRI(self):
@@ -134,15 +154,17 @@ class MonWidgetSimpComplexe(Ui_WidgetSimpComplexe, Feuille):
         Retourne le complexe saisi par l'utilisateur
         """
         l = []
-        if self.RBMP.isChecked() == 1: l.append("MP")
-        elif self.RBRI.isChecked() == 1: l.append("RI")
-        else : return None
-        if self.LEReel.text() == "" : return None
-        if self.LEImag.text() == "" : return None
-        try :
+        if self.RBMP.isChecked() == 1:
+            l.append("MP")
+        elif self.RBRI.isChecked() == 1:
+            l.append("RI")
+        else:
+            self.editor.afficheMessageQt(commentaire, Qt.GlobalColor.red)
+            self.RBMP.setFocus(True)
+            return None
+        try:
             l.append(locale.atof(str(self.LEReel.text())))
             l.append(locale.atof(str(self.LEImag.text())))
-        except : 
-            self.editor.afficheMessageQt('Valeurs saisies non conformes', Qt.red)
+        except:
             return None
         return repr(tuple(l))

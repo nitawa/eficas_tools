@@ -24,9 +24,9 @@ import types, os, re, sys
 import traceback
 import inspect
 
-from PyQt5.QtWidgets import QMessageBox, QFileDialog, QMenu, QPushButton, QTreeView, QListView, QAbstractItemView
-from PyQt5.QtGui import QIcon
-from PyQt5.QtCore import QFileInfo, Qt, QSize, QVariant
+from PyQt6.QtWidgets import QMessageBox, QFileDialog, QMenu, QPushButton, QTreeView, QListView, QAbstractItemView
+from PyQt6.QtGui import QIcon
+from PyQt6.QtCore import QFileInfo, Qt, QSize, QVariant
 
 
 from Accas.extensions.eficas_translation import tr
@@ -53,7 +53,7 @@ class FacultatifOuOptionnel(object):
         icon = QIcon(self.repIcon + "/point-interrogation30.png")
         self.RBInfo.setIcon(icon)
 
-        from InterfaceGUI.QT5.monWidgetCommande import MonWidgetCommande
+        from InterfaceGUI.QT6.monWidgetCommande import MonWidgetCommande
         if isinstance(self, MonWidgetCommande) and self.editor.code == "MAP":
             self.cle_doc = self.chercheDocMAP()
         else:
@@ -249,7 +249,7 @@ class ContientIcones(object):
         fichier = self.lineEditVal.text()
         if fichier == None or str(fichier) == "":
             return
-        from InterfaceGUI.QT5.monViewTexte import ViewText
+        from InterfaceGUI.QT6.monViewTexte import ViewText
 
         try:
             if sys.platform[0:5] == "linux":
@@ -343,9 +343,9 @@ class ContientIcones(object):
     def BFichierOuRepertoirePressed(self):
         self.fileName = ""
         self.file_dialog = QFileDialog()
-        self.file_dialog.setFileMode(QFileDialog.Directory)
-        self.file_dialog.setFileMode(QFileDialog.Directory | QFileDialog.ExistingFiles)
-        self.file_dialog.setOption(QFileDialog.DontUseNativeDialog, True)
+        self.file_dialog.setFileMode(QFileDialog.FileMode.Directory)
+        self.file_dialog.setFileMode(QFileDialog.FileMode.Directory | QFileDialog.FileMode.ExistingFiles)
+        self.file_dialog.setOption(QFileDialog.Option.DontUseNativeDialog, True)
         self.file_dialog.setWindowTitle("Choose File or Directory")
         self.explore(self.file_dialog)
         self.file_dialog.exec_()
@@ -385,7 +385,7 @@ class ContientIcones(object):
         directory = QFileDialog.getExistingDirectory(
             self.appliEficas,
             directory=self.appliEficas.maConfiguration.saveDir,
-            options=QFileDialog.ShowDirsOnly,
+            options=QFileDialog.Option.ShowDirsOnly,
         )
 
         if not (directory == ""):
@@ -395,7 +395,7 @@ class ContientIcones(object):
             self.LEvaleurPressed()
 
     def BSelectInFilePressed(self):
-        from InterfaceGUI.QT5.monSelectImage import MonSelectImage
+        from InterfaceGUI.QT6.monSelectImage import MonSelectImage
         MonSelectImage(file=self.image, parent=self).show()
 
     def BSalomePressed(self):
@@ -472,9 +472,9 @@ class ContientIcones(object):
         if valeur:
             ok, msgError = self.appliEficas.displayShape(valeur)
             if not ok:
-                self.editor.afficheMessageQt(msgError, Qt.red)
+                self.editor.afficheMessageQt(msgError, Qt.GlobalColor.red)
 
     def BParametresPressed(self):
         liste = self.node.item.getListeParamPossible()
-        from InterfaceGUI.QT5.monListeParamPanel import MonListeParamPanel
+        from InterfaceGUI.QT6.monListeParamPanel import MonListeParamPanel
         MonListeParamPanel(liste=liste, parent=self).show()
