@@ -277,7 +277,7 @@ class QtEditor(Editor, Ui_baseWidget, QWidget):
         if couleur == "red": couleur = Qt.GlobalColor.red
         if self.sb:
             mapalette = self.sb.palette()
-            mapalette.setColor(QPalette.WindowText, couleur)
+            mapalette.setColor(QPalette.ColorRole.WindowText, couleur)
             self.sb.setPalette(mapalette)
             self.sb.showMessage(message, 4000)
             self.couleur = couleur

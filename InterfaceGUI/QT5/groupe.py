@@ -58,10 +58,8 @@ class Groupe(QWidget, FacultatifOuOptionnel):
         self.afficheMots()
         self.listeMCAAjouter = []
         self.dictMCVenantDesBlocs = {}
-        if hasattr(self, "RBDeplie"):
-            self.RBDeplie.clicked.connect(self.setDeplie)
-        if hasattr(self, "RBPlie"):
-            self.RBPlie.clicked.connect(self.setPlie)
+        if hasattr(self, "RBDeplie"): self.RBDeplie.clicked.connect(self.setDeplie)
+        if hasattr(self, "RBPlie"): self.RBPlie.clicked.connect(self.setPlie)
 
         self.setAcceptDrops(True)
         # if hasattr (self, 'commandesLayout'):
@@ -152,7 +150,9 @@ class Groupe(QWidget, FacultatifOuOptionnel):
         return (liste, liste_rouge)
 
     def reaffiche(self, nodeAVoir=None):
-        # print "dans reaffiche de groupe.py", nodeAVoir
+        #print ("dans reaffiche de groupe.py", nodeAVoir)
+        #print (self.parentQt)
+        #print (self)
         self.parentQt.reaffiche(nodeAVoir)
 
     def recalculeListeMC(self, listeMC):
@@ -189,8 +189,7 @@ class Groupe(QWidget, FacultatifOuOptionnel):
                 self.editor.initModif()
                 widget = self.dictMCVenantDesBlocs[nom]
                 nouveau = widget.node.appendChild(nom)
-            if firstNode == None:
-                firstNode = nouveau
+            if firstNode == None: firstNode = nouveau
             if nouveau == None or nouveau == 0:
                 self.editor.afficheMessageQt(
                     tr("insertion impossible a cet endroit pour " + nom), Qt.red
@@ -203,12 +202,12 @@ class Groupe(QWidget, FacultatifOuOptionnel):
             pass
 
     def setPlie(self):
+        print ('je passe ds setPlie de groupe', self.obj.nom)
         self.node.setPlie()
         self.reaffiche(self.node)
 
     def setDeplie(self):
-        # print ('je passe ds setDeplie de groupe', self.obj.nom)
-        self.node.firstDeplie = False
+        #print ('je passe ds setDeplie de groupe', self.obj.nom)
         self.node.setDeplie()
         self.reaffiche(self.node)
 

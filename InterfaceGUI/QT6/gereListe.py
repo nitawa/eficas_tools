@@ -195,12 +195,9 @@ class GereListe(object):
 
     def basPushed(self):
         # print ('hautPushed')
-        if self.numLineEditEnCours == 0:
-            return
-        if self.numLineEditEnCours == self.indexDernierLabel:
-            return
-        else:
-            numEchange = self.numLineEditEnCours + 1
+        if self.numLineEditEnCours == 0: return
+        if self.numLineEditEnCours == self.indexDernierLabel: return
+        else: numEchange = self.numLineEditEnCours + 1
         self.echange(self.numLineEditEnCours, numEchange)
         self.lineEditEnCours.setFocus(True)
         self.scrollArea.ensureWidgetVisible(self.lineEditEnCours)
@@ -229,10 +226,8 @@ class GereListe(object):
     def moinsPushed(self):
         # on supprime le dernier
         # print ('moinsPushed')
-        if self.numLineEditEnCours == 0:
-            return
-        if self.indexDernierLabel == 0:
-            return
+        if self.numLineEditEnCours == 0: return
+        if self.indexDernierLabel == 0: return
         if self.numLineEditEnCours == self.indexDernierLabel:
             nomLineEdit = self.nomLine + str(self.indexDernierLabel)
             courant = getattr(self, nomLineEdit)
@@ -258,13 +253,10 @@ class GereListe(object):
     def plusPushed(self):
         # print ('plusPushed gereliste')
         if self.indexDernierLabel == self.monSimpDef.max:
-            if len(self.listeValeursCourantes) < self.monSimpDef.max:
-                self.chercheLigneVide()
+            if len(self.listeValeursCourantes) < self.monSimpDef.max: self.chercheLigneVide()
             else:
                 self.editor.afficheMessageQt(
-                    "nb max de valeurs : " + str(self.monSimpDef.max) + " atteint",
-                    Qt.GlobalColor.red,
-                )
+                    "nb max de valeurs : " + str(self.monSimpDef.max) + " atteint",Qt.GlobalColor.red,)
             return
         self.ajoutLineEdit()
         self.descendLesLignes()
@@ -283,8 +275,7 @@ class GereListe(object):
 
     def descendLesLignes(self):
         # print ('descendLesLignes')
-        if self.numLineEditEnCours == self.indexDernierLabel:
-            return
+        if self.numLineEditEnCours == self.indexDernierLabel: return
         nomLineEdit = self.nomLine + str(self.numLineEditEnCours + 1)
         courant = getattr(self, nomLineEdit)
         valeurADescendre = courant.getValeur()
@@ -294,6 +285,7 @@ class GereListe(object):
             nomLineEdit = self.nomLine + str(aDescendre)
             courant = getattr(self, nomLineEdit)
             valeurAGarder = courant.getValeur()
+            if valeurADescendre == None : valeurADescendre =""
             courant.setValeur(valeurADescendre)
             valeurADescendre = valeurAGarder
         self.changeValeur(changeDePlace=False)

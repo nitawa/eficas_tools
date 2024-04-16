@@ -30,10 +30,10 @@ from InterfaceGUI.QT5 import browser
 from InterfaceGUI.QT5 import typeNode
 from Accas import SalomeEntry
 
-class NodeCommun:
+class Node(browser.JDCNode, typeNode.PopUpMenuNodeMinimal):
+    def createPopUpMenu(self):
+        typeNode.PopUpMenuNodeMinimal.createPopUpMenu(self)
 
-    def getPanel():
-        return self.getPanelGroupe(parentQt, maCommande)
 
     def getPanelGroupe(self, parentQt, maCommande):
         # Attention l ordre des if est important
@@ -250,9 +250,6 @@ class NodeCommun:
         return widget
 
 
-class Node(NodeCommun, browser.JDCNode, typeNode.PopUpMenuNodeMinimal):
-    def createPopUpMenu(self):
-        typeNode.PopUpMenuNodeMinimal.createPopUpMenu(self)
 
 
 class SIMPTreeItem(SIMPTreeItemCommun):

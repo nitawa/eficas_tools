@@ -27,6 +27,7 @@ import traceback
 
 
 class Node(browser.JDCNode, typeNode.PopUpMenuNodePartiel):
+
     def getPanelGroupe(self, parentQt, commande):
     # ----------------------------------------
         maDefinition = self.item.get_definition()

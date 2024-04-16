@@ -43,12 +43,9 @@ class MonWidgetFactCommun(Groupe):
             self.RBPlus.clicked.connect(self.ajouteMCParPB)
         if max < 2 and hasattr(self, "RBPlus"):
             self.RBPlus.close()
-        if (
-            max > 2
-            and obj.alt_parent.nature == "MCList"
+        if ( max > 2 and obj.alt_parent.nature == "MCList"
             and len(obj.alt_parent) >= max
-            and hasattr(self, "RBPlus")
-        ):
+            and hasattr(self, "RBPlus")):
             self.RBPlus.close()
 
         if max > 2 and definition.statut == "cache" and hasattr(self, "RBPlus"):

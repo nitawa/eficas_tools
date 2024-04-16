@@ -132,10 +132,7 @@ class MonWidgetPlusieursBase(Ui_WidgetPlusieursBase, Feuille, GereListe, GerePli
         # self.adjustSize()
         # self.vScrollBar.triggerAction(QScrollBar.SliderToMinimum)
 
-    def ajoutLineEdit(
-        self,
-        valeur=None,
-    ):
+    def ajoutLineEdit( self, valeur=None,):
         # print ('ajoutLineEdit plusieursBase')
         # print ('self.indexDernierLabel', self.indexDernierLabel)
         self.indexDernierLabel = self.indexDernierLabel + 1
@@ -146,10 +143,8 @@ class MonWidgetPlusieursBase(Ui_WidgetPlusieursBase, Feuille, GereListe, GerePli
         nouveauLE = LECustom(self.scrollArea, self, self.indexDernierLabel)
         self.verticalLayoutLE.insertWidget(self.indexDernierLabel - 1, nouveauLE)
         nouveauLE.setText("")
-        if self.indexDernierLabel % 2 == 1:
-            nouveauLE.setStyleSheet("background:rgb(210,210,210)")
-        else:
-            nouveauLE.setStyleSheet("background:rgb(235,235,235)")
+        if self.indexDernierLabel % 2 == 1: nouveauLE.setStyleSheet("background:rgb(210,210,210)")
+        else: nouveauLE.setStyleSheet("background:rgb(235,235,235)")
         nouveauLE.setFrame(False)
         nouveauLE.returnPressed.connect(self.changeValeur)
 
@@ -163,16 +158,13 @@ class MonWidgetPlusieursBase(Ui_WidgetPlusieursBase, Feuille, GereListe, GerePli
             self.dictLE[self.indexDernierLabel] = None
         # deux lignes pour que le ensureVisible fonctionne
         self.estVisible = nouveauLE
-        if self.inInit == False:
-            QTimer.singleShot(1, self.rendVisibleLigne)
+        if self.inInit == False: QTimer.singleShot(1, self.rendVisibleLigne)
 
     def etablitOrdre(self):
         i = 0
         while i + 1 < len(self.listeAffichageWidget):
             self.listeAffichageWidget[i].setFocusPolicy(Qt.FocusPolicy.StrongFocus)
-            self.setTabOrder(
-                self.listeAffichageWidget[i], self.listeAffichageWidget[i + 1]
-            )
+            self.setTabOrder(self.listeAffichageWidget[i], self.listeAffichageWidget[i + 1])
             i = i + 1
         # si on boucle on perd l'ordre
 

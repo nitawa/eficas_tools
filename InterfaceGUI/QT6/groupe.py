@@ -58,10 +58,8 @@ class Groupe(QWidget, FacultatifOuOptionnel):
         self.afficheMots()
         self.listeMCAAjouter = []
         self.dictMCVenantDesBlocs = {}
-        if hasattr(self, "RBDeplie"):
-            self.RBDeplie.clicked.connect(self.setDeplie)
-        if hasattr(self, "RBPlie"):
-            self.RBPlie.clicked.connect(self.setPlie)
+        if hasattr(self, "RBDeplie"): self.RBDeplie.clicked.connect(self.setDeplie)
+        if hasattr(self, "RBPlie"): self.RBPlie.clicked.connect(self.setPlie)
 
         self.setAcceptDrops(True)
         # if hasattr (self, 'commandesLayout'):

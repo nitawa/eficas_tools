@@ -54,14 +54,10 @@ class FacultatifOuOptionnel(object):
         self.RBInfo.setIcon(icon)
 
         from InterfaceGUI.QT5.monWidgetCommande import MonWidgetCommande
-        if isinstance(self, MonWidgetCommande) and self.editor.code == "MAP":
-            self.cle_doc = self.chercheDocMAP()
-        else:
-            self.cle_doc = self.node.item.getDocu()
-        if self.cle_doc == None:
-            self.RBInfo.close()
-        else:
-            self.RBInfo.clicked.connect(self.viewDoc)
+        if isinstance(self, MonWidgetCommande) and self.editor.code == "MAP": self.cle_doc = self.chercheDocMAP()
+        else: self.cle_doc = self.node.item.getDocu()
+        if self.cle_doc == None: self.RBInfo.close()
+        else: self.RBInfo.clicked.connect(self.viewDoc)
 
     def chercheDocMAP(self):
         try:

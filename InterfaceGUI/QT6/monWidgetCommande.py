@@ -261,13 +261,9 @@ class MonWidgetCommande(Ui_WidgetCommande, Groupe):
         self.afficheOptionnel()
 
     def reaffiche(self, nodeAVoir=None):
-        # Attention delicat. les appels de fonctions ne semblent pas pouvoir etre supprimes!
-        self.avantH = (
-            self.editor.fenetreCentraleAffichee.scrollAreaCommandes.horizontalScrollBar().sliderPosition()
-        )
-        self.avantV = (
-            self.editor.fenetreCentraleAffichee.scrollAreaCommandes.verticalScrollBar().sliderPosition()
-        )
+        # Attention delicat. 
+        self.avantH = ( self.editor.fenetreCentraleAffichee.scrollAreaCommandes.horizontalScrollBar().sliderPosition())
+        self.avantV = ( self.editor.fenetreCentraleAffichee.scrollAreaCommandes.verticalScrollBar().sliderPosition())
         self.inhibeExpand = True
         # Attention : lorsqu'on reconstruit l arbre au milieu par une fonction siValide (exemple dans UQ)
         # alors self.node.item.node est different de self.node
@@ -275,17 +271,16 @@ class MonWidgetCommande(Ui_WidgetCommande, Groupe):
         self.node.item.node.affichePanneau()
         # QTimer.singleShot(1, self.recentre)
         if nodeAVoir != None and nodeAVoir != 0:
-            self.f = nodeAVoir.fenetre
-            if self.f == None:
-                newNode = nodeAVoir.treeParent.chercheNoeudCorrespondant(
-                    nodeAVoir.item.object
-                )
-                self.f = newNode.fenetre
-            if self.f != None and self.f.isVisible():
+            fenetre = nodeAVoir.fenetre
+            if fenetre == None:
+                newNode = nodeAVoir.treeParent.chercheNoeudCorrespondant( nodeAVoir.item.object) 
+                fenetre = newNode.fenetre
+            if fenetre != None and fenetre.isVisible():
                 self.inhibeExpand = False
                 return
-            if self.f != None:
-                self.rendVisible()
+            if fenetre != None:
+                #print (fenetre)
+                self.rendVisible(fenetre)
             else:
                 self.recentre()
         else:
@@ -298,12 +293,11 @@ class MonWidgetCommande(Ui_WidgetCommande, Groupe):
         s.horizontalScrollBar().setSliderPosition(self.avantH)
         s.verticalScrollBar().setSliderPosition(self.avantV)
 
-    def rendVisible(self):
+    def rendVisible(self, fenetre):
+        #print ('je passe dans rendVisible')
         QApplication.processEvents()
-        self.f.setFocus()
-        self.editor.fenetreCentraleAffichee.scrollAreaCommandes.ensureWidgetVisible(
-            self.f
-        )
+        #fenetre.setFocus(7)
+        self.editor.fenetreCentraleAffichee.scrollAreaCommandes.ensureWidgetVisible(fenetre)
 
     def afficheCatalogue(self):
         if self.editor.widgetOptionnel != None:
