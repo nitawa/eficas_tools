@@ -20,20 +20,20 @@
 # Modules Python
 
 import types, os
-from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QApplication, QMessageBox, QScrollArea
-from PyQt5.QtCore import QTimer, QSize, Qt
+from PyQt6.QtGui import QIcon
+from PyQt6.QtWidgets import QApplication, QMessageBox, QScrollArea
+from PyQt6.QtCore import QTimer, QSize, Qt
 
 # Modules Eficas
 from Accas.extensions.eficas_translation import tr
 
-from InterfaceGUI.QT5.feuille import Feuille
-from UiQT5.desWidgetPlusieursBase import Ui_WidgetPlusieursBase
+from InterfaceGUI.QT6.feuille import Feuille
+from UiQT6.desWidgetPlusieursBase import Ui_WidgetPlusieursBase
 from InterfaceGUI.Common.politiquesValidation import PolitiquePlusieurs
-from InterfaceGUI.QT5.traiteSaisie import SaisieValeur
-from InterfaceGUI.QT5.gereListe import GereListe
-from InterfaceGUI.QT5.gereListe import GerePlie
-from InterfaceGUI.QT5.gereListe import LECustom
+from InterfaceGUI.QT6.traiteSaisie import SaisieValeur
+from InterfaceGUI.QT6.gereListe import GereListe
+from InterfaceGUI.QT6.gereListe import GerePlie
+from InterfaceGUI.QT6.gereListe import LECustom
 
 dicoLongueur = {2: 95, 3: 125, 4: 154, 5: 183, 6: 210, float("inf"): 210}
 hauteurMax = 253
@@ -133,14 +133,13 @@ class MonWidgetPlusieursBase(Ui_WidgetPlusieursBase, Feuille, GereListe, GerePli
         # self.vScrollBar.triggerAction(QScrollBar.SliderToMinimum)
 
     def ajoutLineEdit( self, valeur=None,):
-        #print ('ajoutLineEdit plusieursBase')
+        # print ('ajoutLineEdit plusieursBase')
         # print ('self.indexDernierLabel', self.indexDernierLabel)
         self.indexDernierLabel = self.indexDernierLabel + 1
         nomLineEdit = "lineEditVal" + str(self.indexDernierLabel)
         if hasattr(self, nomLineEdit):
             self.indexDernierLabel = self.indexDernierLabel - 1
             return
-
         nouveauLE = LECustom(self.scrollArea, self, self.indexDernierLabel)
         self.verticalLayoutLE.insertWidget(self.indexDernierLabel - 1, nouveauLE)
         nouveauLE.setText("")
@@ -148,23 +147,24 @@ class MonWidgetPlusieursBase(Ui_WidgetPlusieursBase, Feuille, GereListe, GerePli
         else: nouveauLE.setStyleSheet("background:rgb(235,235,235)")
         nouveauLE.setFrame(False)
         nouveauLE.returnPressed.connect(self.changeValeur)
+
         setattr(self, nomLineEdit, nouveauLE)
         self.listeAffichageWidget.append(nouveauLE)
         self.etablitOrdre()
-
-        if valeur != None: 
+        if valeur != None:
             nouveauLE.setText(str(valeur))
             self.dictLE[self.indexDernierLabel] = valeur
         else:
             self.dictLE[self.indexDernierLabel] = None
+        # deux lignes pour que le ensureVisible fonctionne
         self.estVisible = nouveauLE
         if self.inInit == False: QTimer.singleShot(1, self.rendVisibleLigne)
 
     def etablitOrdre(self):
         i = 0
         while i + 1 < len(self.listeAffichageWidget):
-            self.listeAffichageWidget[i].setFocusPolicy(Qt.StrongFocus)
-            self.setTabOrder( self.listeAffichageWidget[i], self.listeAffichageWidget[i + 1])
+            self.listeAffichageWidget[i].setFocusPolicy(Qt.FocusPolicy.StrongFocus)
+            self.setTabOrder(self.listeAffichageWidget[i], self.listeAffichageWidget[i + 1])
             i = i + 1
         # si on boucle on perd l'ordre
 
@@ -223,12 +223,12 @@ class MonWidgetPlusieursBase(Ui_WidgetPlusieursBase, Feuille, GereListe, GerePli
 
         if len(listeComplete) > max:
             texte = tr("Nombre maximum de valeurs ") + str(max) + tr(" atteint")
-            self.editor.afficheMessageQt(texte, Qt.red)
+            self.editor.afficheMessageQt(texte, Qt.GlobalColor.red)
             return
 
         validite, comm, comm2, listeRetour = self.politique.ajoutNTuple(listeComplete)
         if not validite:
-            self.editor.affiche_infos(texte, Qt.red)
+            self.editor.affiche_infos(texte, Qt.GlobalColor.red)
             return
 
         # on calcule le dernier lineedit rempli avant de changer la valeur
@@ -298,7 +298,7 @@ class MonWidgetPlusieursBase(Ui_WidgetPlusieursBase, Feuille, GereListe, GerePli
             if valeur != None and valeur != "":
                 commentaire = self.ajout1Valeur(valeur)
                 if commentaire != None:
-                    self.editor.afficheMessageQt(commentaire, Qt.red)
+                    self.editor.afficheMessageQt(commentaire, Qt.GlobalColor.red)
                     courant.setText("")
                     donneFocus = courant
                     self.reaffiche()

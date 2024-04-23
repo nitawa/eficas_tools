@@ -21,20 +21,20 @@
 
 import types
 
-from UiQT5.desWidgetCommande import Ui_WidgetCommande
-from InterfaceGUI.QT5.groupe import Groupe
-from InterfaceGUI.QT5.gereIcones import FacultatifOuOptionnel
+from UiQT6.desWidgetCommande import Ui_WidgetCommande
+from InterfaceGUI.QT6.groupe import Groupe
+from InterfaceGUI.QT6.gereIcones import FacultatifOuOptionnel
 
-from PyQt5.QtWidgets import (
+from PyQt6.QtWidgets import (
     QApplication,
     QWidget,
     QSpacerItem,
     QSizePolicy,
     QRadioButton,
 )
-from PyQt5.QtGui import QFont, QIcon
-from PyQt5.QtCore import QTimer
-from PyQt5.QtCore import Qt
+from PyQt6.QtGui import QFont, QIcon
+from PyQt6.QtCore import QTimer
+from PyQt6.QtCore import Qt
 
 
 from Accas.extensions.eficas_translation import tr
@@ -54,7 +54,7 @@ class MonWidgetCommande(Ui_WidgetCommande, Groupe):
         self.ensure = 0
         editor.inhibeSplitter = 1
         Groupe.__init__(self, node, editor, None, etape.definition, etape, 1, self)
-        spacerItem = QSpacerItem(21, 500, QSizePolicy.Expanding, QSizePolicy.Expanding)
+        spacerItem = QSpacerItem(21, 500, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         self.verticalLayoutCommande.addItem(spacerItem)
         editor.inhibeSplitter = 0
 
@@ -120,7 +120,7 @@ class MonWidgetCommande(Ui_WidgetCommande, Groupe):
         if self.editor.maConfiguration.pasDeMCOptionnels:
             return  # Pas de MC Optionnels pour Carmel
 
-        from InterfaceGUI.QT5.monWidgetOptionnel import MonWidgetOptionnel
+        from InterfaceGUI.QT6.monWidgetOptionnel import MonWidgetOptionnel
 
         if self.editor.widgetOptionnel != None:
             self.monOptionnel = self.editor.widgetOptionnel
@@ -145,7 +145,7 @@ class MonWidgetCommande(Ui_WidgetCommande, Groupe):
         # print "dans donnePremier"
         QApplication.processEvents()
         if self.listeAffichageWidget != []:
-            self.listeAffichageWidget[0].setFocus(7)
+            self.listeAffichageWidget[0].setFocus()
         QApplication.processEvents()
         # print self.focusWidget()
 
@@ -170,7 +170,7 @@ class MonWidgetCommande(Ui_WidgetCommande, Groupe):
             i = self.listeAffichageWidget.index(f)
         if (i == len(self.listeAffichageWidget) - 1) and next and not self.inhibe:
             try:
-                self.listeAffichageWidget[1].setFocus(7)
+                self.listeAffichageWidget[1].setFocus()
                 w = self.focusWidget()
                 self.inhibe = 1
                 w.focusPreviousChild()
@@ -185,14 +185,14 @@ class MonWidgetCommande(Ui_WidgetCommande, Groupe):
                 self.editor.fenetreCentraleAffichee.scrollArea.ensureWidgetVisible(
                     self.listeAffichageWidget[-1]
                 )
-            self.listeAffichageWidget[-2].setFocus(7)
+            self.listeAffichageWidget[-2].setFocus()
             self.inhibe = 1
             w = self.focusWidget()
             w.focusNextChild()
             self.inhibe = 0
             return True
         if i == 0 and next == True and not self.inhibe:
-            self.listeAffichageWidget[0].setFocus(7)
+            self.listeAffichageWidget[0].setFocus()
             self.inhibe = 1
             w = self.focusWidget()
             w.focusNextChild()
@@ -200,7 +200,7 @@ class MonWidgetCommande(Ui_WidgetCommande, Groupe):
             return True
         if i > 0 and next == False and not self.inhibe:
             if isinstance(self.listeAffichageWidget[i - 1], QRadioButton):
-                self.listeAffichageWidget[i - 1].setFocus(7)
+                self.listeAffichageWidget[i - 1].setFocus()
                 return True
         return QWidget.focusNextPrevChild(self, next)
 
@@ -223,8 +223,9 @@ class MonWidgetCommande(Ui_WidgetCommande, Groupe):
         if next == len(self.listeAffichageWidget):
             next = 0
         # self.f=next
+        # QTimer.singleShot(1, self.rendVisible)
         try:
-            self.listeAffichageWidget[next].setFocus(7)
+            self.listeAffichageWidget[next].setFocus()
         except:
             pass
 
@@ -264,11 +265,11 @@ class MonWidgetCommande(Ui_WidgetCommande, Groupe):
         self.avantH = ( self.editor.fenetreCentraleAffichee.scrollAreaCommandes.horizontalScrollBar().sliderPosition())
         self.avantV = ( self.editor.fenetreCentraleAffichee.scrollAreaCommandes.verticalScrollBar().sliderPosition())
         self.inhibeExpand = True
-
         # Attention : lorsqu'on reconstruit l arbre au milieu par une fonction siValide (exemple dans UQ)
         # alors self.node.item.node est different de self.node
         # il faut regarder si la Widget utililse self.node a d autres endroits
         self.node.item.node.affichePanneau()
+        # QTimer.singleShot(1, self.recentre)
         if nodeAVoir != None and nodeAVoir != 0:
             fenetre = nodeAVoir.fenetre
             if fenetre == None:

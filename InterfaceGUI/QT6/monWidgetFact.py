@@ -17,11 +17,11 @@
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
 
-from PyQt5.QtCore import Qt, QTimer
-from PyQt5.QtWidgets import QWidget
+from PyQt6.QtCore import Qt, QTimer
+from PyQt6.QtWidgets import QWidget
 
-from InterfaceGUI.QT5.groupe import Groupe
-from UiQT5.desWidgetFact import Ui_WidgetFact
+from InterfaceGUI.QT6.groupe import Groupe
+from UiQT6.desWidgetFact import Ui_WidgetFact
 from Accas.extensions.eficas_translation import tr
 
 # Import des panels
@@ -36,7 +36,6 @@ class MonWidgetFactCommun(Groupe):
         Groupe.__init__(self, node, editor, parentQt, definition, obj, niveau, commande)
         labeltext, fonte, couleur = self.node.item.getLabelText()
         self.GroupBox.setText(tr(labeltext))
-        # self.GroupBox.setTextInteractionFlags(Qt.TextSelectableByMouse)
         self.parentQt.commandesLayout.insertWidget(-1, self)
         self.doitAfficherOptionnel = True
         min, max = obj.getMinMax()
@@ -71,7 +70,7 @@ class MonWidgetFactCommun(Groupe):
     def ajouteMCParPB(self):
         texteListeNom = "+" + self.obj.nom
         parentOuAjouter = self.parentQt
-        from InterfaceGUI.QT5.monWidgetBloc import MonWidgetBloc
+        from InterfaceGUI.QT6.monWidgetBloc import MonWidgetBloc
 
         while parentOuAjouter and isinstance(parentOuAjouter, MonWidgetBloc):
             parentOuAjouter = parentOuAjouter.parentQt

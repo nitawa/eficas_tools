@@ -18,8 +18,8 @@
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
 
-from InterfaceGUI.QT5 import browser
-from InterfaceGUI.QT5 import typeNode
+from InterfaceGUI.QT6 import browser
+from InterfaceGUI.QT6 import typeNode
 from Accas.extensions.eficas_translation import tr
 
 from InterfaceGUI.Common import objecttreeitem
@@ -27,7 +27,6 @@ import traceback
 
 
 class Node(browser.JDCNode, typeNode.PopUpMenuNodePartiel):
-
     def getPanelGroupe(self, parentQt, commande):
     # ----------------------------------------
         maDefinition = self.item.get_definition()
@@ -39,7 +38,7 @@ class Node(browser.JDCNode, typeNode.PopUpMenuNodePartiel):
         else:
             self.niveau = 1
         if hasattr(self, "plie") and self.plie == True:
-            from InterfaceGUI.QT5.monWidgetFactPlie import MonWidgetFactPlie
+            from InterfaceGUI.QT6.monWidgetFactPlie import MonWidgetFactPlie
 
             widget = MonWidgetFactPlie(
                 self,
@@ -53,7 +52,7 @@ class Node(browser.JDCNode, typeNode.PopUpMenuNodePartiel):
         elif self.editor.maConfiguration.afficheFirstPlies and self.firstAffiche:
             self.firstAffiche = False
             self.setPlie()
-            from InterfaceGUI.QT5.monWidgetFactPlie import MonWidgetFactPlie
+            from InterfaceGUI.QT6.monWidgetFactPlie import MonWidgetFactPlie
 
             widget = MonWidgetFactPlie(
                 self,
@@ -65,7 +64,7 @@ class Node(browser.JDCNode, typeNode.PopUpMenuNodePartiel):
                 maCommande,
             )
         else:
-            from InterfaceGUI.QT5.monWidgetFact import MonWidgetFact
+            from InterfaceGUI.QT6.monWidgetFact import MonWidgetFact
 
             widget = MonWidgetFact(
                 self,

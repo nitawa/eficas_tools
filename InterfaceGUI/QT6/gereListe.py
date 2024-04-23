@@ -22,12 +22,12 @@ import types, os
 import traceback
 
 
-from PyQt5.QtWidgets import QLineEdit, QLabel, QFileDialog, QMessageBox
-from PyQt5.QtCore import QEvent, Qt, QTimer
-from PyQt5.QtGui import QIcon, QPalette
+from PyQt6.QtWidgets import QLineEdit, QLabel, QFileDialog, QMessageBox
+from PyQt6.QtCore import QEvent, Qt, QTimer
+from PyQt6.QtGui import QIcon, QPalette
 
 from Accas.extensions.eficas_translation import tr
-from InterfaceGUI.QT5.monViewTexte import ViewText
+from InterfaceGUI.QT6.monViewTexte import ViewText
 
 
 # ---------------------- #
@@ -123,7 +123,7 @@ class MonLabelListeClic(QLabel):
         self.parent = parent
 
     def event(self, event):
-        if event.type() == QEvent.MouseButtonRelease:
+        if event.type() == QEvent.Type.MouseButtonRelease:
             self.texte = self.text()
             self.parent.traiteClicSurLabelListe(self.texte)
         return QLabel.event(self, event)
@@ -256,7 +256,7 @@ class GereListe(object):
             if len(self.listeValeursCourantes) < self.monSimpDef.max: self.chercheLigneVide()
             else:
                 self.editor.afficheMessageQt(
-                    "nb max de valeurs : " + str(self.monSimpDef.max) + " atteint", Qt.red,)
+                    "nb max de valeurs : " + str(self.monSimpDef.max) + " atteint",Qt.GlobalColor.red,)
             return
         self.ajoutLineEdit()
         self.descendLesLignes()
@@ -318,15 +318,15 @@ class GereListe(object):
         ulfile = os.path.abspath(fn)
         self.editor.maConfiguration.saveDir = os.path.split(ulfile)[0]
 
-        from InterfaceGUI.QT5.monSelectVal import MonSelectVal
+        from InterfaceGUI.QT6.monSelectVal import MonSelectVal
 
         MonSelectVal(file=fn, parent=self).show()
 
     def noircirResultatFiltre(self):
         filtre = str(self.LEFiltre.text())
         for cb in self.listeCbRouge:
-            palette = QPalette(Qt.red)
-            palette.setColor(QPalette.WindowText, Qt.black)
+            palette = QPalette(Qt.GlobalColor.red)
+            palette.setColor(QPalette.WindowText, Qt.GlobalColor.black)
             cb.setPalette(palette)
             t = cb.text()
             cb.setText(t)

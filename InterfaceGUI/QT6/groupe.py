@@ -19,12 +19,12 @@
 # Modules Python
 # Modules Eficas
 
-from PyQt5.QtWidgets import QWidget, QSpacerItem, QSizePolicy
-from PyQt5.QtCore import Qt
+from PyQt6.QtWidgets import QWidget, QSpacerItem, QSizePolicy
+from PyQt6.QtCore import Qt
 
 from Accas.extensions.eficas_translation import tr
 
-from InterfaceGUI.QT5.gereIcones import FacultatifOuOptionnel
+from InterfaceGUI.QT6.gereIcones import FacultatifOuOptionnel
 import traceback
 
 
@@ -64,7 +64,7 @@ class Groupe(QWidget, FacultatifOuOptionnel):
         self.setAcceptDrops(True)
         # if hasattr (self, 'commandesLayout'):
         #   print (' j ajoute un spacer dans ', self.node.item.nom)
-        #   spacerItem = QSpacerItem(20, 5, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        #   spacerItem = QSpacerItem(20, 5, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
         #   self.commandesLayout.addItem(spacerItem)
 
     def donneFocus(self):
@@ -130,7 +130,7 @@ class Groupe(QWidget, FacultatifOuOptionnel):
         # ce cas est le cas machine tournant sr le plie
         try:
             while i < self.commandesLayout.count():
-                from InterfaceGUI.QT5.monWidgetBloc import MonWidgetBloc
+                from InterfaceGUI.QT6.monWidgetBloc import MonWidgetBloc
 
                 widget = self.commandesLayout.itemAt(i).widget()
                 i = i + 1
@@ -150,9 +150,7 @@ class Groupe(QWidget, FacultatifOuOptionnel):
         return (liste, liste_rouge)
 
     def reaffiche(self, nodeAVoir=None):
-        #print ("dans reaffiche de groupe.py", nodeAVoir)
-        #print (self.parentQt)
-        #print (self)
+        # print "dans reaffiche de groupe.py", nodeAVoir
         self.parentQt.reaffiche(nodeAVoir)
 
     def recalculeListeMC(self, listeMC):
@@ -189,10 +187,11 @@ class Groupe(QWidget, FacultatifOuOptionnel):
                 self.editor.initModif()
                 widget = self.dictMCVenantDesBlocs[nom]
                 nouveau = widget.node.appendChild(nom)
-            if firstNode == None: firstNode = nouveau
+            if firstNode == None:
+                firstNode = nouveau
             if nouveau == None or nouveau == 0:
                 self.editor.afficheMessageQt(
-                    tr("insertion impossible a cet endroit pour " + nom), Qt.red
+                    tr("insertion impossible a cet endroit pour " + nom), Qt.GlobalColor.red
                 )
         try:
             self.reaffiche(firstNode)
@@ -202,12 +201,11 @@ class Groupe(QWidget, FacultatifOuOptionnel):
             pass
 
     def setPlie(self):
-        print ('je passe ds setPlie de groupe', self.obj.nom)
         self.node.setPlie()
         self.reaffiche(self.node)
 
     def setDeplie(self):
-        #print ('je passe ds setDeplie de groupe', self.obj.nom)
+        # print ('je passe ds setDeplie de groupe', self.obj.nom)
         self.node.setDeplie()
         self.reaffiche(self.node)
 

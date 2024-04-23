@@ -40,24 +40,25 @@ debug = False
 from Editeur.editor import Editor
 
 
-# -------------------- #
-class WebEditor(Editor):
-# -------------------- #
+# -------------------------------- #
+class WebEditorExtension(Editor):
+# -------------------------------- #
     """
-       Editeur de jdc
+       Extension de l'Editeur de jdc pour la Web
     """
 
-    #---------------------------------------------------------------------------------------------
-    def __init__ (self,appliEficas,cataFile = None, dataSetFile = None, jdc = None, include = None ):
-    #-------------------------------------------------------------------------------------------
-        
-        self.editorManager=appliEficas.editorManager
+    #-------------------------------
+    def __init__ (self, editorPere):
+    #-------------------------------
+        self.editorPere = editorPere
+        self.appliEficas = self.editorPere.appliEficas
+        self.jdc = self.editorPere.jdc
+        self.editorId = self.editorPere.editorId
         self.dicoIdNode={}
-        Editor.__init__(self,appliEficas, cataFile, dataSetFile, jdc, include)
         comploader.chargerComposants('Web')
         self.tree=None
         if self.jdc:
-            self.jdc_item=objecttreeitem.makeObjecttreeitem( appliEficas, "nom", self.jdc )
+            self.jdc_item=objecttreeitem.makeObjecttreeitem( self.appliEficas, "nom", self.jdc )
             if self.jdc_item :
                self.tree = browser.JDCTree( self.jdc_item,  self )
 
@@ -78,7 +79,7 @@ class WebEditor(Editor):
         if nodeId in self.dicoIdNode : 
            node=self.dicoIdNode[nodeId]
            if node.object  == self.jdc : 
-               return 'monEficasConnecteur.monEditeur.tree.racine.item.idUnique'
+               return 'monEditeur.webEditorExtension.tree.racine.item.idUnique'
            chaine="['key']"
            templateChaine='["children"][{}]'
            aTraiter=node.object
@@ -96,12 +97,6 @@ class WebEditor(Editor):
     #-----------------------------
         if self.tree == None : return {}
         return obj.getDicoForFancy()
-
-    #---------------------------
-    @fonctionLoguee
-    def getListeCommandes(self):
-    #---------------------------
-        return (self.jdc.getListeCmd())
 
     #-----------------------------------------------------
     @fonctionLoguee
@@ -127,9 +122,9 @@ class WebEditor(Editor):
          if ret : return (0, "", commentaire)
          else : return ( 8000, commentaire, "")
 
-    #-------------------------------------------------------------
+    #------------------------------------------------------------
     @fonctionLoguee
-    def appendChild(self,cid, externEditorId, nodeId,name,pos=None):
+    def appendChild(self,cid, externEditorId, nodeId, name, pos):
     #-------------------------------------------------------------
          """
          Methode pour ajouter un objet fils name a l objet associe au noeud id.
