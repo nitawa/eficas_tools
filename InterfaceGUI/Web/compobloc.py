@@ -32,7 +32,8 @@ class Node(browser.JDCNode,typeNode.PopUpMenuNodeMinimal):
 
     def onAdd(self,ajout):
     #----------------------
-        debug=0
+        debug=1
+        print ('jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj')
         if debug : print ('on add de mcbloc', '________ ajout', ajout, ' dans ', self.item.nom)
         if debug : print ('nature de  l item', self.item.nature)
         self.buildChildren()

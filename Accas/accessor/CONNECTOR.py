@@ -160,36 +160,97 @@ Disconnect = _the_connector.Disconnect
 if __name__ == "__main__":
 
     class A:
-        pass
+       def lanceValid(self, appelant=None):
+         Emit(self, "valid",(appelant,))
 
     class B:
+        def __init__(self, nom) :
+           self.param=0 
+           self.nom=nom 
+
         def add(self, a):
-            print(("--------------------------------add ", self, a))
+            self.param += 1 
+            print("appel de add ", self.nom, 'argument', a , 'valeur de param', self.param)
 
         def __del__(self):
+            print (' del self.param vaut', self.param, ' pour l objet ', self.nom) 
             print(("__del__", self))
 
-    def f(a):
-        print((f, a))
+    class C(B):
+        def __init__(self, nom, numero, objetA) :
+           self.param=0 
+           self.nom=nom 
+           self.monNum = numero
+           self.objetA = objetA
 
+        def lanceValid(self):
+           self.objetA.lanceValid(self.monNum)
+
+        def onValid(self, appelant):
+           print ('je suis dans onValid pour', self.nom,  ' l appelant est' , appelant)
+
+        def onValidSansArgument(self) :
+           # genere une erreur
+           pass
+            
+
+    def propage(a):
+        print ('param de la fonction', propage, a)
+
+    print ('------------------- init ---------------')
     a = A()
-    b = B()
-    c = B()
+    b = B('b')
+    c = B('c')
+    d = C('d',42,a)
+    e = C('e',44,a)
 
+    print ('on connecte b 2 fois)')
     Connect(a, "add", b.add, ())
     Connect(a, "add", b.add, ())
     Connect(a, "add", c.add, ())
-    Connect(a, "add", f, ())
+    Connect(a, "add", d.add, ())
+    Connect(a, "add", propage, ())
+    Connect(a,"valid",d.onValid,())
+    Connect(a,"valid",e.onValid,())
+    Connect(a,"valid",d.onValidSansArgument,())
 
+    print ('------------ 1er Emit')
     Emit(a, "add", 1)
+    print ('apres 1 Emit, le param de b vaut : ', b.param)
+    print ('apres 1 Emit, le param de c vaut : ', c.param)
+    print ('apres 1 Emit, le param de d vaut : ', d.param)
 
-    print("del b")
-    del b
-
+    print ('\n\n\n------------ 2nd Emit')
+    print ('on deconnecte b (1 fois)')
+    Disconnect(a, "add", b.add, ())
     Emit(a, "add", 1)
-    print("del f")
-    del f
+    print ('apres 2 Emit, le param de b vaut : ', b.param)
+    print ('apres 2 Emit, le param de c vaut : ', c.param)
+    print ('apres 2 Emit, le param de d vaut : ', d.param)
+    print ('b est deconnecte')
 
+    print ('\n\n\n------------ 3nd Emit')
+    print ('on detruit propage')
+    del propage
     Emit(a, "add", 1)
+    print ('apres 3 Emit, le param de b vaut : ', b.param)
+    print ('apres 3 Emit, le param de c vaut : ', c.param)
+    print ('apres 3 Emit, le param de d vaut : ', d.param)
+
+    print ('\n\n\n------------ 4nd Emit')
+    print ('on deconnecte c')
     Disconnect(a, "add", c.add, ())
     Emit(a, "add", 1)
+
+    print ('apres 4 Emit, le param de b vaut : ', b.param)
+    print ('apres 4 Emit, le param de c vaut : ', c.param)
+    print ('apres 4 Emit, le param de d vaut : ', d.param)
+
+
+    print ('\n\n\n ------------ passage de parametre dans la fonction')
+    d.lanceValid()
+
+
+    print ('\n\n\n------------ Exit')
+
+   

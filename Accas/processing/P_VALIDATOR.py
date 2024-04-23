@@ -103,8 +103,10 @@ class ListProtocol(Protocol):
     """Verificateur de protocole liste : convertit un objet quelconque en liste pour Accas.validation ultérieure"""
 
     def default(self, obj):
-        from Accas import Tuple
-        if type(obj) is Tuple:
+        # 
+        #from accas.class import C_TUPLE
+        #if type(obj) is C_TUPLE.Tuple:
+        if type(obj) is tuple:
             if len(obj) > 0 and obj[0] in ("RI", "MP"):
                 # il s'agit d'un complexe ancienne mode. La cardinalite vaut 1
                 return (obj,)
@@ -145,7 +147,8 @@ class TypeProtocol(PProtocol):
 
     def default(self, obj, typ):
         err = ""
-        from Accas import Tuple
+        #from Accas import A_TUPLE
+        from Accas.classes import C_TUPLE
         for type_permis in typ:
             if type_permis == "createObject": continue
             if type_permis == "R":
@@ -206,7 +209,7 @@ class TypeProtocol(PProtocol):
                     if self.isObjectFrom(obj, type_permis): return obj
                 except Exception as err:
                     pass
-            elif isinstance(type_permis, Tuple):
+            elif isinstance(type_permis, C_TUPLE.Tuple):
                 try:
                     if type_permis.__convert__(obj): return obj
                 except Exception as err:
@@ -227,12 +230,12 @@ class TypeProtocol(PProtocol):
 
     def isComplexe(self, valeur):
         """Retourne 1 si valeur est un complexe, 0 sinon"""
-        from Accas import Tuple
+        #from Accas import Tuple
         if isNumber(valeur):
             # Pour permettre l'utilisation de complexes Python (accepte les
             # entiers et réels)
             return 1
-        elif type(valeur) != Tuple:
+        elif not isinstance(valeur, tuple):
             # On n'autorise pas les listes pour les complexes
             return 0
         elif len(valeur) != 3:
@@ -1636,7 +1639,7 @@ class VerifTypeTuple(ListVal):
                 tr("%s devrait etre de type  %s ") % (valeur, self.typeDesTuples)
             )
         for i in range(len(valeur)):
-            ok = self.verifType(valeur[i], self.typeDesTuples[i])
+            ok, commentaire = self.verifType(valeur[i], self.typeDesTuples[i])
             if ok != 1:
                 raise ValError(
                     tr("%s devrait etre de type  %s ") % (valeur, self.typeDesTuples)
@@ -1648,7 +1651,7 @@ class VerifTypeTuple(ListVal):
             if len(valeur) != len(self.typeDesTuples):
                 return 0
             for i in range(len(valeur)):
-                ok = self.verifType(valeur[i], self.typeDesTuples[i])
+                ok, commentaire = self.verifType(valeur[i], self.typeDesTuples[i])
                 if ok != 1:
                     return 0
         except:
@@ -1658,19 +1661,19 @@ class VerifTypeTuple(ListVal):
     def verifType(self, valeur, type_permis):
         if type_permis == "R":
             if type(valeur) in (int, float, int):
-                return 1
+                return (1, "")
         elif type_permis == "I":
             if type(valeur) in (int, int):
-                return 1
+                return (1, "")
         elif type_permis == "C":
             if self.isComplexe(valeur):
-                return 1
+                return (1, "")
         elif type_permis == "TXM":
             if type(valeur) == bytes or type(valeur) == str:
-                return 1
+                return (1, "")
         elif isinstance(valeur, type_permis):
-            return 1
-        return 0
+            return (1, "")
+        return (0, 'la valeur n a pas le type demande')
 
     def verif(self, valeur):
         if type(valeur) in (list, tuple):

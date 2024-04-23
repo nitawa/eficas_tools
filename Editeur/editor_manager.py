@@ -129,8 +129,10 @@ class EditorManager(object):
                 if self.samePath(dataSetFile, editor.getDataSetFileName()) and self.samePath(cataFile, editor.getCataFileName()):
                     break
             else:
-                from InterfaceGUI.Web.web_editor import WebEditor
-                editor = WebEditor(self.appliEficas, cataFile, dataSetFile)
+                #from InterfaceGUI.Web.web_editor import WebEditor
+                #editor = WebEditor(self.appliEficas, cataFile, dataSetFile)
+                from Editeur.editor import Editor
+                editor = Editor(self.appliEficas, cataFile, dataSetFile, useFor='Web')
 
             if not editor.readercata :
                 codeError = 3000 + 30

@@ -71,6 +71,8 @@ class EficasAppli:
         self.dictEditorIdChannelIdExternEid = {}
         self.dictExternalEidEditor = {}
         self.dictChannelType = {} # contient le type de la session ( QT, WEB pour rediriger les messages)
+        self.webEditor = None
+        self.qtEditors = []
 
         version = getEficasVersion()
         self.versionEficas = "Eficas Salome " + version

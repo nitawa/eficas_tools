@@ -201,20 +201,20 @@ class FORM_ETAPE(MACRO_ETAPE):
         """
         if not formule:
             formule = (None, None, None, None)
-        test_nom, erreur_nom = self.verifNom(formule[0])
-        test_type, erreur_type = self.verifType(formule[1])
+        testNom, erreurNom = self.verifNom(formule[0])
+        testType, erreurType = self.verifType(formule[1])
         if formule[2]:
             args = "(" + formule[2] + ")"
         else:
             args = None
-        test_arguments, erreur_arguments = self.verifArguments(args)
-        test_corps, erreur_corps = self.verifCorps(corps=formule[3], arguments=args)
+        testArguments, erreurArguments = self.verifArguments(args)
+        testCorps, erreurCorps = self.verifCorps(corps=formule[3], arguments=args)
         # test global = produit des tests partiels
-        test = test_nom * test_type * test_arguments * test_corps
+        test = testNom * testType * testArguments * testCorps
         # message d'erreurs global = concatenation des messages partiels
         erreur = ""
         if not test:
-            for mess in (erreur_nom, erreur_type, erreur_arguments, erreur_corps):
+            for mess in (erreurNom, erreurType, erreurArguments, erreurCorps):
                 erreur = erreur + (len(mess) > 0) * "\n" + mess
         return test, erreur
 

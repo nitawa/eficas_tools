@@ -29,6 +29,7 @@ import Accas.IO.writer as writer
 from uuid import uuid1
 from Accas.extensions.eficas_exception import EficasException
 from Accas.extensions.eficas_translation import tr
+from Accas.extensions.codeErreur import dictErreurs
 
 Dictextensions = {"MAP": ".map", "TELEMAC": ".cas"}
 debug = False
@@ -42,8 +43,8 @@ class Editor:
     """
 
 
-    def __init__(self, appliEficas, cataFile = None, dataSetFile = None,  jdc=None, include=0, formatIn ='python', formatOut = 'python'):
-    # ---------------------------------------------------------------------------------------------------------------------------------#
+    def __init__(self, appliEficas, cataFile = None, dataSetFile = None,  jdc=None, include=0, formatIn ='python', formatOut = 'python', useFor = None):
+    # -------------------------------------------------------------------------------------------------------------------------------------------------#
         if debug: print("dans le init de Editor")
         if debug : print (self, appliEficas, cataFile, dataSetFile,  jdc, include)
         self.appliEficas = appliEficas
@@ -66,6 +67,7 @@ class Editor:
         self.include = include
         self.formatFichierOut = formatOut
         self.formatFichierIn = formatIn
+        self.editorManager=appliEficas.editorManager
 
 
         # ces attributs sont mis a jour par definitCode appelee par newEditor
@@ -94,9 +96,9 @@ class Editor:
         if "xml" in writer.plugins.keys():
             self.XMLWriter = writer.plugins["xml"]()
         else : self.XMLWriter = None
-        #if "python" in writer.plugins.keys():
-        #    self.XMLWriter = writer.plugins["python"]()
-        #else : self.XMLWriter = None
+        if "python" in writer.plugins.keys():
+            self.pythonWriter = writer.plugins["python"]()
+        else : self.pythonWriter = None
         if self.formatFichierOut in writer.plugins.keys():
             self.myWriter = writer.plugins[self.formatFichierOut]()
 
@@ -108,14 +110,17 @@ class Editor:
 
         self.readCata()
         if self.readercata  : self.construitJdC(jdc)
-
+        if useFor == 'Web' :
+           if not hasattr(self,'webExtension') : 
+              from InterfaceGUI.Web.web_editor_extension import WebEditorExtension
+              self.webExtension = WebEditorExtension(self)
      
     def construitJdC(self,jdc):
     #-------------------------
     # construction du jdc 
     # Est-il encore necessaire de passer en paramtre un jdc a l init ?
     # je ne vois plus quel est le cas d usage
-    # je garde . 11 mars 2024
+    # je garde les 3 lignes . 11 mars 2024
         if jdc : 
            self.jdc = jdc
            return
@@ -320,6 +325,25 @@ class Editor:
         J.analyse()
         return J
 
+    # ---------------------------#
+    def getDicoForFancy(self, obj):
+    # ----------------------------#
+        # Normalement appele que par le Web
+        if not hasattr(self,'webExtension') : 
+           return (None, 110, dictErreur[110], "")
+        return (self.webExtension.getDicoForFancy(obj), 0, "","")
+
+   
+    #---------------------------
+    def getListeCommandes(self):
+    #---------------------------
+        if self.readercata == None : 
+           return (None, 3000, dictErreur[3000], "")
+        if self.readercata.cata.JdC == None : 
+           return (None, 3000, dictErreur[3000], "")
+        return (self.readercata.cata.JdC.getListeCmd(), 0, "", "")
+
+
     # -----------------------#
     def getSource(self, file):
     # -----------------------#
@@ -365,7 +389,7 @@ class Editor:
 
     # --------------------------------#
     def generDicoPourWeb(self, obj=None):
-        # --------------------------------#
+    # --------------------------------#
         if obj == None:
             obj = self.jdc
         if "dico" in writer.plugins:
@@ -579,20 +603,6 @@ class Editor:
         listeMA, listeNO = self.getTextJDC("GroupMA")
         return listeMA, listeNO
 
-    # -------------------#
-    def chercheDico(self):
-    # -------------------#
-        dicoCourant = {}
-        format = self.appliEficas.formatFichierOut
-        if format in writer.plugins:
-            # Le generateur existe on l'utilise
-            self.myWriter = writer.plugins[format]()
-            jdc_formate = self.myWriter.gener(
-                self.jdc, format="beautifie", config=self.appliEficas.maConfiguration
-            )
-            dicoCourant = self.myWriter.dico
-        return dicoCourant
-
     # --------------------------------------#
     def saveFileLegerAs(self, fileName=None):
     # --------------------------------------#
@@ -700,7 +710,7 @@ class Editor:
         print("prevenir la maintenance du besoin")
 
     # ------------------------------------------------#
-    def afficheMessage(self, titre, txt, couleur=None):
+    def afficheMessage(self, titre, txt, couleur='red'):
     # ------------------------------------------------#
         # methode differenre avec et sans ihm
         if couleur == 'red': print("!!!!!!!!!!!!!!!!!!!!!!!!!!!")
@@ -756,266 +766,20 @@ class Editor:
         self.modified = 1
         return self.saveFile(formatLigne="Ligne")
 
-    # -----------------------------------#
-    def updateJdc(self, itemApres, texte):
-    # ------------------------------------#
-        # ajoute une etape  de JdC a partir d un texte
-        monItem = itemApres
-        etape = monItem.item.object
-        CONTEXT.setCurrentStep(etape)
-        etape.buildIncludeInclude(texte)
-        self.tree.racine.buildChildren()
-
     # ----------------------------------------#
     def updateJdcEtape(self, itemApres, texte):
     # ----------------------------------------#
         # ajoute une etape  de JdC a partir d un texte
+        # garder pour l exemple d utilisation de build_includeEtape
         monItem = itemApres
         etape = monItem.item.object
         CONTEXT.set_current_step(etape)
-        try:
-            ok = etape.build_includeEtape(texte)
-        except:
-            ok = 0
+        try: ok = etape.build_includeEtape(texte)
+        except: ok = 0
         if not ok:
-            QMessageBox.information(
-                self, tr("Import texte"), tr("Impossible d importer le texte")
-            )
+            QMessageBox.information( self, tr("Import texte"), tr("Impossible d importer le texte"))
         self.tree.racine.build_children()
         return ok
-
-    # --------------------------#
-    def deleteEtape(self, etape):
-    # --------------------------#
-        # dans le JDC
-        self.jdc.suppentite(etape)
-
-    # ----------------------------------------------#
-    def deleteMC(self, etape, MCFils, listeAvant=()):
-    # ----------------------------------------------#
-        # dans le JDC
-        ouChercher = etape
-        for mot in listeAvant:
-            ouChercher = ouChercher.getChild(mot, restreint="oui")
-        monMC = ouChercher.getChild(MCFils, restreint="oui")
-        if monMC != None:
-            ouChercher.suppentite(monMC)
-        ouChercher.state = "changed"
-        ouChercher.isvalid()
-
-    # --------------------------------------------------------#
-    def ajoutMC(self, etape, MCFils, valeurs, listeAvant=()):
-    # --------------------------------------------------------#
-        # dans le JDC
-        debug = False
-        if debug:
-            print("ajoutMC", etape, MCFils, valeurs, listeAvant)
-        ouChercher = etape
-        if debug:
-            print(ouChercher)
-        for mot in listeAvant:
-            ouChercher = ouChercher.getChild(mot, restreint="oui")
-        monMC = ouChercher.getChild(MCFils, restreint="oui")
-        if monMC == None:
-            monMC = ouChercher.addEntite(MCFils)
-        monMC.valeur = valeurs
-        monMC.val = valeurs
-        monMC.state = "changed"
-        monMC.isvalid()
-        return 1
-
-    # --------------------------------------------------------------------#
-    def ajoutMCinMCFactUnique(self, etape, MCFils, valeurs, listeAvant=()):
-        # Attention si +sieursMCFACT
-    # --------------------------------------------------------------------#
-        # dans le JDC
-        debug = False
-        if debug:
-            print("ajoutMC", etape, MCFils, valeurs, listeAvant)
-        ouChercher = etape
-        if debug:
-            print(ouChercher)
-        for mot in listeAvant:
-            ouChercher = ouChercher.getChild(mot, restreint="oui")
-        # Attention si +sieursMCFACT
-        ouChercher = ouChercher[0]
-        if debug:
-            print(ouChercher)
-        monMC = ouChercher.getChild(MCFils, restreint="oui")
-        if monMC == None:
-            monMC = ouChercher.addEntite(MCFils)
-        monMC.valeur = valeurs
-        monMC.val = valeurs
-        monMC.state = "changed"
-        monMC.isValid()
-        return 1
-
-    # -------------------------------------------------#
-    def ajoutMCFact(self, etape, MCFils, listeAvant=()):
-    # -------------------------------------------------#
-        # dans le JDC
-        ouChercher = etape
-        for mot in listeAvant:
-            ouChercher = ouChercher.getChild(mot, restreint="oui")
-        monMC = etape.getChild(ouChercher, restreint="oui")
-        if monMC == None:
-            monMC = ouChercher.addEntite(MCFils)
-        monMC.isvalid()
-
-    # ---------------------------------------------------------#
-    def setValeurMCSimpInEtape(self, etape, listeAvant, valeur):
-    # ---------------------------------------------------------#
-        # pour VP
-        monObj = etape
-        for mot in listeAvant:
-            monObj = monObj.getChild(mot, restreint="oui")
-            if monObj == None:
-                return False
-        if monObj == None:
-            return False
-        if monObj.valeur != valeur:
-            # PNPN le setValeur fait des bugs --> pourquoi
-            # monObj.setValeur(valeur)
-            monObj.valeur = valeur
-            monObj.isValid()
-        return True
-
-    # -------------------------------------------------#
-    def getValeur(self, nomEtape, MCFils, listeAvant=()):
-    # -------------------------------------------------#
-        # dans le JDC
-
-        debug = 0
-        ouChercher = None
-        for e in self.jdc.etapes:
-            if e.nom == nomEtape:
-                ouChercher = e
-                break
-        if debug:
-            print("etape trouvee", ouChercher)
-        if ouChercher == None:
-            return None
-        for mot in listeAvant:
-            ouChercher = ouChercher.getChild(mot, restreint="oui")
-            if debug:
-                print(mot, ouChercher)
-            if ouChercher == None:
-                return None
-        monMC = ouChercher.getChild(MCFils, restreint="oui")
-        if debug:
-            print("monMC", monMC)
-        if monMC == None:
-            return None
-        return monMC.valeur
-
-    # -------------------------------------------------#
-    def getMCDsEtape(self, etape, MCFils, listeAvant=()):
-    # -------------------------------------------------#
-        # dans le JDC
-
-        if etape == None:
-            return None
-        ouChercher = etape
-        debug = 0
-        for mot in listeAvant:
-            ouChercher = ouChercher.getChild(mot, restreint="oui")
-            if debug:
-                print(mot, ouChercher)
-            if ouChercher == None:
-                return None
-        monMC = ouChercher.getChild(MCFils, restreint="oui")
-        if debug:
-            print("monMC", monMC)
-        return monMC
-
-    # -----------------------------------------------------------#
-    def setValeur(self, nomEtape, MCFils, valeur, listeAvant=()):
-    # --------------------------------------------------------#
-        # dans le JDC
-
-        ouChercher = None
-        for e in self.jdc.etapes:
-            if e.nom == nomEtape:
-                ouChercher = e
-                break
-        if ouChercher == None:
-            return None
-        for mot in listeAvant:
-            ouChercher = ouChercher.getChild(mot, restreint="oui")
-            # print (mot, ouChercher)
-            if ouChercher == None:
-                return None
-        monMC = ouChercher.getChild(MCFils, restreint="oui")
-        monMC.set_valeur(valeur)
-        monMC.isvalid()
-
-    # -----------------------------------------------------------#
-    def changeIntoMC(self, etape, MCFils, valeurs, listeAvant=()):
-    # -----------------------------------------------------------#
-        # dans le JDC
-        ouChercher = etape
-        if isinstance(etape, str):
-            ouChercher = None
-            for e in self.jdc.etapes:
-                if e.nom == etape:
-                    ouChercher = e
-                    break
-        if ouChercher == None:
-            return
-
-        for mot in listeAvant:
-            ouChercher = ouChercher.getChild(mot, restreint="oui")
-            if ouChercher == None:
-                return
-        monMC = ouChercher.getChild(MCFils, restreint="oui")
-        if monMC == None:
-            monMC = ouChercher.addEntite(MCFils)
-
-        monMC.definition.into = valeurs
-        from Accas.processing.P_VALIDATOR import IntoProtocol
-
-        monMC.definition.intoProto = IntoProtocol(
-            "into",
-            into=monMC.definition.into,
-            val_min=monMC.definition.val_min,
-            val_max=monMC.definition.val_max,
-        )
-        monMC.state = "changed"
-        monMC.isvalid()
-
-    # -------------------------------------------------------------------------#
-    def reCalculeValiditeMCApresChgtInto(self, nomEtape, MCFils, listeAvant=()):
-    # -------------------------------------------------------------------------#
-        # dans le JDC
-        for e in self.jdc.etapes:
-            if e.nom == nomEtape:
-                ouChercher = e
-                break
-
-        for mot in listeAvant:
-            try:
-                ouChercher = ouChercher.getChild(mot, restreint="oui")
-            # Le mot clef n est pas la
-            except:
-                return 0
-        try:
-            monMC = ouChercher.getChild(MCFils, restreint="oui")
-        # Le mot clef n est pas la
-        except:
-            return 0
-        if monMC == None:
-            return 0
-
-        if hasattr(monMC.definition, "into"):
-            if type(monMC.definition.into) == types.FunctionType:
-                maListeDeValeur = monMC.definition.into()
-            else:
-                maListeDeValeur = monMC.definition.into
-        else:
-            return 0
-
-        monMC.state = "changed"
-        return 1
 
     # --------------------------------------#
     def dumpXsd(self, avecEltAbstrait=False):
@@ -1036,186 +800,6 @@ class Editor:
     # ----------------------------#
         texteGitStringFormat = self.readercata.cata.JdC.dumpGitStringFormat()
         return texteGitStringFormat
-
-    # -----------------------------------------------------#
-    def changeDefautDefMC(self, nomEtape, listeMC, valeurs):
-    # -----------------------------------------------------#
-        # dans le MDD
-
-        # if isinstance (etape, str):
-        #  for e in self.jdc.etapes:
-        #    if e.nom == etape : etape=e; break
-        # if etape == None : return
-        definitionEtape = getattr(self.jdc.cata, nomEtape)
-        # definitionEtape=getattr(self.jdc.cata[0],nomEtape)
-        ouChercher = definitionEtape
-        if len(listeMC) > 1:
-            for mc in listeMC[0:-1]:
-                mcfact = ouChercher.entites[mc]
-                ouChercher = mcfact
-
-        mcAccas = ouChercher.entites[listeMC[-1]]
-        mcAccas.defaut = valeurs
-        return 1
-
-    # ------------------------------------------------------------------------#
-    def changeIntoDefMC(self, etape, listeMC, valeurs, rechercheParNom=False):
-    # ------------------------------------------------------------------------#
-        # dans le MDD
-        # definitionEtape=getattr(self.jdc.cata[0],nomEtape)
-        # definitionEtape=getattr(self.jdc.cata,nomEtape)
-        print("changeIntoDefMC ", etape, listeMC, valeurs)
-        # ouChercher = getattr(self.jdc.cata, etape.nom)
-        if rechercheParNom:
-            ouChercher = getattr(self.jdc.cata, etape)
-        else:
-            ouChercher = getattr(self.jdc.cata, etape.nom)
-
-        # if len(listeMC) > 1 :
-        #   for mc in listeMC[0:-1]:
-        #     mcfact=ouChercher.entites[mc]
-        #     ouChercher=mcfact
-        # mcAccas=ouChercher.entites[listeMC[-1]]
-
-        for mc in listeMC:
-            mcAccas = ouChercher.entites[mc]
-            ouChercher = mcAccas
-            if ouChercher == None:
-                return 0
-
-        if hasattr(mcAccas, "into"):
-            oldValeurs = mcAccas.into
-        else:
-            oldValeurs = None
-
-        if oldValeurs == valeurs:
-            return 1
-        mcAccas.into = valeurs
-        from Accas.processing.P_VALIDATOR import IntoProtocol
-
-        mcAccas.intoProto = IntoProtocol(
-            "into", into=valeurs, val_min=mcAccas.val_min, val_max=mcAccas.val_max
-        )
-        return 1
-
-    # ------------------------------------------------------#
-    def deleteDefinitionMC(self, etape, listeAvant, nomDuMC):
-    # ------------------------------------------------------#
-        # dans le MDD
-        # print 'in deleteDefinitionMC', etape,listeAvant,nomDuMC
-        if isinstance(etape, str):
-            for e in self.jdc.etapes:
-                if e.nom == etape:
-                    etape = e
-                    break
-        if etape == None:
-            return
-        # definitionEtape=getattr(self.jdc.cata[0],etape)
-        definitionEtape = getattr(self.jdc.cata, etape)
-        ouChercher = definitionEtape
-        for k in listeAvant:
-            ouChercher = ouChercher.entites[k]
-        MCADetruire = ouChercher.entites[nomDuMC]
-        ouChercher.ordreMC.remove(nomDuMC)
-        print("remove de ", nomDuMC)
-        del ouChercher.entites[nomDuMC]
-        del self.dicoNouveauxMC[nomDuMC]
-
-    # ---------------------------------------------------------------------#
-    def ajoutDefinitionMC(self, nomEtape, listeAvant, nomDuMC, typ, **args):
-    # ---------------------------------------------------------------------#
-        # dans le MDD
-        # definitionEtape=getattr(self.jdc.cata[0],nomEtape)
-        definitionEtape = getattr(self.jdc.cata, nomEtape)
-        ouChercher = definitionEtape
-        for k in listeAvant:
-            ouChercher = ouChercher.entites[k]
-        from Accas import A_SIMP
-
-        Nouveau = A_SIMP.SIMP(typ, **args)
-        Nouveau.pere = ouChercher
-        Nouveau.nom = nomDuMC
-        # Nouveau.ordreMC=[]
-        ouChercher.entites[nomDuMC] = Nouveau
-        ouChercher.ordreMC.append(nomDuMC)
-        # print ('ajout de ', nomDuMC)
-        # traceback.print_stack()
-        # ajout CIST sauvegarde
-        if nomDuMC in self.dicoNouveauxMC:
-            del self.dicoNouveauxMC[nomDuMC]
-        self.dicoNouveauxMC[nomDuMC] = (
-            "ajoutDefinitionMC", nomEtape, listeAvant, nomDuMC, typ, args,)
-
-    # -----------------------------------------------------------------------------#
-    def ajoutDefinitionMCFact(self, nomEtape, listeAvant, nomDuMC, listeMC, **args):
-    # -----------------------------------------------------------------------------#
-        # dans le MDD
-        print("ajoutDefinitionMCFact", nomDuMC)
-        # definitionEtape=getattr(self.jdc.cata[0],nomEtape)
-        definitionEtape = getattr(self.jdc.cata, nomEtape)
-        ouChercher = definitionEtape
-        for k in listeAvant:
-            ouChercher = ouChercher.entites[k]
-        from Accas import A_SIMP
-
-        for mc in listeMC:
-            nomMC = mc[0]
-            typMC = mc[1]
-            argsMC = mc[2]
-            nouveauMC = A_SIMP.SIMP(typMC, **argsMC)
-            nouveauMC.nom = nomMC
-            args[nomMC] = nouveauMC
-        from Accas import A_FACT
-
-        nouveauFact = A_FACT.FACT(**args)
-        nouveauFact.pere = ouChercher
-        nouveauFact.nom = nomDuMC
-        from Accas.catalog.analyse_ordre_catalogue import traiteEntite
-
-        traiteEntite(nouveauFact, [])
-        ouChercher.entites[nomDuMC] = nouveauFact
-        ouChercher.ordreMC.append(nomDuMC)
-        self.dicoNouveauxFact[nomDuMC] = (
-            "ajoutDefinitionMC",
-            nomEtape,
-            listeAvant,
-            nomDuMC,
-            listeMC,
-            args,
-        )
-        # print self.dicoNouveauxMC
-
-
-    # ---------------------------------------------------------#
-    def changeIntoMCandSet(self, etape, listeMC, into, valeurs):
-    # ---------------------------------------------------------#
-        # dans le MDD et le JDC
-
-        self.changeIntoDefMC(etape, listeMC, into)
-
-        if isinstance(etape, str):
-            for e in self.jdc.etapes:
-                if e.nom == etape:
-                    etape = e
-                    break
-        if etape == None:
-            return
-
-        ouChercher = etape
-        for mot in listeMC[:-1]:
-            ouChercher = ouChercher.getChild(mot, restreint="oui")
-            if ouChercher == None:
-                return
-        MCFils = listeMC[-1]
-        monMC = ouChercher.getChild(MCFils, restreint="oui")
-        if monMC == None:
-            monMC = etape.addEntite(MCFils)
-
-        monMC.definition.into = into
-        monMC.valeur = valeurs
-        monMC.val = valeurs
-        monMC.state = "changed"
-        monMC.isvalid()
 
     # ------------------------------------#
     def ajoutVersionCataDsJDC(self, texte):
@@ -1286,6 +870,37 @@ class Editor:
     # -----------------------------#
         if not self.jdc : return (1, 'pas de jdc')
         return self.jdc.getEtapesByName(name)
+
+    # --------------------------------------------------------#
+    def updateSDName(self, cId, externEditorId, nodeId, sdnom) :
+    # --------------------------------------------------------#
+        if self.appliEficas.dictChannelType[cId] ==  'Web':
+           return self.webExtension.updateSDName(cId, externEditorId, nodeId, sdnom)
+
+    # --------------------------------------------------------#
+    def changeValue(self, cId, externEditorId, nodeId, value) :
+    # --------------------------------------------------------#
+        if self.appliEficas.dictChannelType[cId] ==  'Web':
+           return self.webExtension.changeValue(cId, externEditorId, nodeId, value)
+
+    # --------------------------------------------------------#
+    def changeValue(self, cId, externEditorId, nodeId, value) :
+    # --------------------------------------------------------#
+        if self.appliEficas.dictChannelType[cId] ==  'Web':
+           return self.webExtension.changeValue(cId, externEditorId, nodeId, value)
+
+    # -------------------------------------------------#
+    def removeNode (self, cId, externEditorId, nodeId) :
+    # -------------------------------------------------#
+        if self.appliEficas.dictChannelType[cId] ==  'Web':
+           return self.webExtension.removeNode(cId, externEditorId, nodeId)
+
+    # ---------------------------------------------------------------#
+    def appendChild(self,cId, externEditorId, nodeId, name, pos=None):
+    #----------------------------------------------------------------#
+        if self.appliEficas.dictChannelType[cId] ==  'Web':
+           return self.webExtension.appendChild(cId, externEditorId, nodeId, name, pos)
+
 
 if __name__ == "__main__":
     print("a faire")

@@ -36,10 +36,13 @@ def lanceQtEficas(code=None, versionCode = None, multi=False, langue="en",  GUIP
     try:
         from PyQt5.QtWidgets import QApplication
     except:
-        print("Please, set qt environment")
-        return
+        try:
+            from PyQt6.QtWidgets import QApplication
+        except:
+            print("Please, set qt environment")
+            return
 
-    if not GUIPath in ('QT5','cinqC') :
+    if not GUIPath in ('QT5','cinqC', 'QT6') :
        print ('Attention, lancement de Eficas pour QT avec GUIPath = {}'.format(GUIPath))
 
     from Editeur import session
@@ -58,7 +61,8 @@ def lanceQtEficas(code=None, versionCode = None, multi=False, langue="en",  GUIP
 
     Eficas.show()
 
-    res = app.exec_()
+    #res = app.exec_()
+    res = app.exec()
     sys.exit(res)
 
 
