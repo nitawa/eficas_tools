@@ -68,7 +68,7 @@
 <div class="row" id="row-navtabs-and-main-and-optionals">
 
   <!-- NavTab -->
-  <div class="panel-heading" style="padding-bottom: 0px;padding-left: 0px;padding-right: 0px;">
+  <div class="panel-heading" style="padding-top: 0px; padding-bottom: 0px; padding-left: 0px;padding-right: 0px;">
     <ul class="nav nav-tabs" id="efi-nav-tabs"></ul>
   </div>
   
@@ -112,7 +112,7 @@
       
       let cmdList = commands.map((cmd) => { return '<li class="nav-item"><div class="btn-group nav-link" data-toggle="buttons"'+
 					           'onclick="clickOnCommand(\'#'+_treeId+'\',\'#'+_treeId+'-messages\',\''+cmd+'\', \'\')">'+
-					    '<button class="btn btn-primary navbar-btn" for=\''+cmd+'\'>'+cmd+'</button></div></li> ';
+					    '<button class="btn btn-primary navbar-btn efi-cmds" for=\''+cmd+'\'>'+cmd+'</button></div></li> ';
 					  }
 				).join('');
       //console.log(cmdList);
@@ -129,7 +129,7 @@
 
             <!-- Row Commandes du Dataset -->
             <div class="row affix" id="row-commands_menu"> <!-- data-spy="affix" -->
-              <nav class="navbar flex-column flex-md-row">  <!-- data-spy="affix" -->
+              <nav class="navbar flex-column flex-md-row" style="margin-bottom:0px">  <!-- data-spy="affix" -->
         	<ul class="nav navbar-nav">
                     @cmdList@
         	</ul>
@@ -648,7 +648,7 @@ function sendNewDataset(catalogName, datasetName) {
         //      "overflow-y"     : "scroll"
         //     });
 	
-        $(".row-tree-messages-style").affix({offset: {bottom: "0px"} });
+        $(".row-tree-messages-style").affix({offset: {bottom: "0px"} }); //BUG: Ne se met pas à jour tant que l'on est ds la fenêtre modale NewDataSet
 	// $(_msgCssSelStr).affix({offset: {bottom: "0px"} }); // SURTOUT PAS CA EMPECHE LE DEFILEMENT
 	// $(_msgCssSelStr).css({
         //      "width"            : "100%",
@@ -662,10 +662,18 @@ function sendNewDataset(catalogName, datasetName) {
 	$(_treeCssSelStr).fancytree(efiFancytreeOptions(_treeCssSelStr,source,_msgCssSelStr));
 	
 	createNewSetOfEvents(_treeCssSelStr,_msgCssSelStr);
-
+		
 	// console.log($(_treeCssIdNav));
-	$('.nav-tabs a[href="'+_treeCssIdTab+'"]').tab('show')
+        //$("#efi-nav-tabs").css('margin-top',$("#row-commands_menu").height()); //Il faut en fait le recalculer sur redimensionement des commandes...
+	//WARN: Délai d'affichage par rapport à l'activation de l'onglet nécessite un event
+	$('.nav-tabs a[href="'+_treeCssIdTab+'"]').on('shown.bs.tab', function (event) {
+	    // Action to execute once the collapsible area is expanded
+	    $("#efi-nav-tabs").css('margin-top',$(_treeCssIdTab+" > #row-commands_menu").height()); //#row-commands_menu est temporairement vide à la coumutation d'onglets 
+	});                                                                                                                      //En fait il n'a pas été activé par l'onglet ?
 	
+	$('.nav-tabs a[href="'+_treeCssIdTab+'"]').tab('show');
+
+
 	//$(_treeCssIdNav).tab('show');
 	// if ( tree ==  null) {
 	//     let message = "Unsuccessfull sendNewDataset processing. Tree ("+_treeCssSelStr+") returned (null)" ;
