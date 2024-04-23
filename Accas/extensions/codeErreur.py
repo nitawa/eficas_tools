@@ -16,6 +16,7 @@ dictErreurs = {
 
 # Messages specifiques 
  100  : 'Numero de Session deja allouée pour autre chose que de Web',
+ 110  : 'Editeur Web non initialise',
 }
 
 dictGravite = {

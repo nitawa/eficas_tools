@@ -351,14 +351,23 @@ def newDataset():
         return make_response(json.dumps( {'errorCode' : errorCode, 'message': message,'msgLevel':msgLevel} ))
          #return make_response(jsonify({"message": errorMessage, "code": errorCode}), 400)
     
-    fancyTreeDict=eficasEditor.getDicoForFancy(eficasEditor.tree.racine) #TODO: changer le nom Dico en Dict
+    (fancyTreeDict, errorCode, errorMessage,messageInfo)=eficasEditor.getDicoForFancy(eficasEditor.webExtension.tree.racine) #TODO: changer le nom Dico en Dict
+    # TODO faire un getTreeDicoForFancy ?
+    if errorCode : 
+        msgLevel = "alert-danger"
+        message = errorMessage
+        return make_response(json.dumps( {'errorCode' : errorCode, 'message': message,'msgLevel':msgLevel} ))
     #fancyTreeJS=json.dumps([fancyTreeDict],indent=4)                    #TODO : remove indent if not DEBUG
     fancyTreeDict['eId']=editorId;
     #print("---- myFancyTreeDico ----")
     pprint(fancyTreeDict)
     #print("---- myFancyTreeJS ----")
     #pprint( myFancyTreeJS)
-    commands = eficasEditor.getListeCommandes(); #TODO: Renommer la fonction
+    (commands, errorCode, errorMessage, messageInfo) = eficasEditor.getListeCommandes(); #TODO: Renommer la fonction
+    if errorCode : 
+        msgLevel = "alert-danger"
+        message = errorMessage
+        return make_response(json.dumps( {'errorCode' : errorCode, 'message': message,'msgLevel':msgLevel} ))
 
     title = os.path.basename(cataFile)+'/'+os.path.basename(dataSetFile)
     if debug : print('liste des commandes',  eficasEditor.getListeCommandes())
