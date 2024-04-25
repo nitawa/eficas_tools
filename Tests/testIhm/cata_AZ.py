@@ -1,4 +1,3 @@
-# coding: utf-8
 import types
 from Accas import *
 
@@ -39,40 +38,67 @@ JdC = JDC_CATA(code='PATTERNS',
                 )
 
 
-EXAMPLE = PROC (nom = 'EXAMPLE',
-    op=None,
-
-    TITRE =  SIMP(statut ='o', typ = 'TXM', defaut = 'Mon Etude',),
-    TITRE2 =  SIMP(statut ='f', typ = 'TXM', ),
+MAISON = PROC (nom = 'MAISON',
+    POUTRE =  FACT( max='**', 
+       Hauteur =  SIMP(statut ='o', typ = 'R', val_min=0, unite='m'),
+       Largeur =  SIMP(statut ='o', typ = 'R', val_min=0,),
+       Epaisseur =  SIMP(statut ='o', typ = 'R', val_min=0,),
+       Trouee = SIMP(statut ='o', typ = bool, defaut= False),
+       BTrouee = BLOC ( condition = 'Trouee == True',
+           FormeDuTrou = SIMP(statut ='o', typ ='TXM', into = ['rond', 'carré', 'indefinie'],),
+           Brond = BLOC ( condition = 'FormeDuTrou == "rond"',
+               Rayon = SIMP(statut ='o', typ = 'R')
+               ),
+           ),
+      ),
 )
-CREEOBJET = OPER (nom="CREEOBJET",
+
+TousLesWidgets = PROC(nom="TousLesWidgets",
     op=None,
-    sd_prod=ObjetUtilisateur,
     UIinfo={"groupes":("Group1",)},
 
-    TITLE     = SIMP(statut ='o', typ = 'TXM', defaut = '',),
-    RB1       = SIMP(statut ='o', typ = 'I', into = [1,2,3],),
-    RB2       = SIMP(statut ='o', typ = 'I', into = [1,2,3,4,5,6,],),
-    CB        = SIMP(statut ='o', typ = 'I', into = [1,2,3,4,5,6,7,8,9],),
-    MBool     = SIMP(statut ='o', typ = bool,),
-    MFile     = SIMP(statut ='o', typ = ('Fichier','All Files (*)')),
-    MDir      = SIMP(statut ='o', typ = 'Repertoire'),
-    Reel1     = SIMP(statut ='o', typ = 'R'),
-    Compl     = SIMP(statut ='o', typ = 'C'),
-    Tuple2    = SIMP(statut ='o', typ = Tuple(2), validators=VerifTypeTuple(('R','R'))),
-    Tuple3    = SIMP(statut ='o', typ = Tuple(3), validators=VerifTypeTuple(('R','R','R'))),
-    #InSalome  = SIMP(statut ='o', typ = SalomeEntry),
+    # When a single value is attended, LineEdit is used if type of the parameter is text, int or float
+    # a default value can be specified  
+    # suggested values can also be specified, but some other value is also valid  
+    EnterOneValue   = FACT ( statut = 'o',
+       AnInt    = SIMP(statut ='f', typ = 'I'),
+       AFloat   = SIMP(statut ='o', typ = 'R', defaut = 1.,),
+       ABoolean = SIMP(statut ='o', typ = bool,),
+       AText    = SIMP(statut ='o', typ = 'TXM',),
+       AComplex = SIMP(statut ='f', typ = 'C'),
+       AFile    = SIMP(statut ='o', typ = ('Fichier','All Files (*)')),
+       ADirectory  = SIMP(statut ='o', typ = 'Repertoire'),
+       AnExistingFile    = SIMP(statut ='f', typ = ('FichierNoAbs','All Files (*)')),
+       AFilePyExtension  = SIMP(statut ='f', typ = ('Fichier','Python Files (*.py);;All Files (*)')),
+       AFileOrADirectory = SIMP(statut ='o', typ = 'FichierOuRepertoire'),
+       #AnEntryInSalome  = SIMP(statut ='o', typ = SalomeEntry),
+    ),
 
-    LTITLE    = SIMP(statut ='o', typ = 'TXM', max='**', defaut = '',),
-    LRB2      = SIMP(statut ='o', typ = 'I', max = '**', into = [1,2,3,4,5,6,],),
-    LCB       = SIMP(statut ='o', typ = 'I', max = '**', homo="SansOrdreNiDoublon", into = [1,2,3,4,5,6,7,8,9],),
-    LReel1    = SIMP(statut ='o', typ = 'R', max = "**"),
-    LCompl    = SIMP(statut ='o', typ = 'C', max = "**"),
-    LTuple2   = SIMP(statut ='o', typ = Tuple(2), validators=VerifTypeTuple(('R','R')), max = "**"),
-    LTuple3   = SIMP(statut ='o', typ = Tuple(3), validators=VerifTypeTuple(('R','R','R')), max = "**"),
-    LInSalome = SIMP(statut ='o', typ = SalomeEntry, max="**"),
+    # Eficas chooses an adapted widget  depending on number of possible values : n>3 or 6 or < 7
+    # if fenetreIhm is set to menuDeroulant, combobox widget is used regarless of the length of the values list
+    ChooseOneValueInASet   = FACT ( statut = 'o',
+       Of3PossibleValues         = SIMP(statut ='o', typ = 'I', into = [1,2,3],),
+       Of6PossibleValues         = SIMP(statut ='f', typ = 'I', into = [1,2,3,4,5,6,],),
+       BetweenMoreThan3Values    = SIMP(statut ='o', typ = 'I', into = [1,2,3,4,5,6,7,8,9],),
+       InAComboBox               = SIMP(statut ='f', typ = 'I', into = [1,2,3],fenetreIhm = "menuDeroulant"),
+       WithNoRestrictiveChoices  = SIMP(statut ='o', typ = 'TXM', intoSug = ('Suggestion', 'Suggestion2'),)
+    ),
+    
+    EnterATupleOrMatrix = FACT ( statut = 'o',
+        Tuple2    = SIMP(statut ='o', typ = Tuple(2), validators=VerifTypeTuple(('R','R'))),
+        Tuple3    = SIMP(statut ='o', typ = Tuple(3), validators=VerifTypeTuple(('R','R','R'))),
+    ),
 
-    LREEL    = SIMP(statut ='f', typ = 'R', max='**', defaut = '',),
+    EnterList = FACT ( statut = 'o',
+       LREEL    = SIMP(statut ='f', typ = 'R', max='**', defaut = '',),
+       LRB2      = SIMP(statut ='o', typ = 'I', max = '**', into = [1,2,3,4,5,6,],),
+       LCB       = SIMP(statut ='o', typ = 'I', max = '**', homo="SansOrdreNiDoublon", into = [1,2,3,4,5,6,7,8,9],),
+       LReel1    = SIMP(statut ='o', typ = 'R', max = "**"),
+       LCompl    = SIMP(statut ='o', typ = 'C', max = "**"),
+       LTuple2   = SIMP(statut ='o', typ = Tuple(2), validators=VerifTypeTuple(('R','R')), max = "**"),
+       LTuple3   = SIMP(statut ='o', typ = Tuple(3), validators=VerifTypeTuple(('R','R','R')), max = "**"),
+       #LInSalome = SIMP(statut ='o', typ = SalomeEntry, max="**"),
+    ),
 )
 
 UTILISEOBJET = PROC (nom="UTILISEOBJET",

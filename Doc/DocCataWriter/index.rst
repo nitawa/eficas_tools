@@ -17,6 +17,7 @@ Contents:
 
    eficas_presentation.rst
    start.rst
+   treesources.rst
    first_notions.rst
    simp.rst
    fact.rst

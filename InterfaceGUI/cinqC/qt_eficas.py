@@ -20,7 +20,7 @@
 #
 
 from UiQT5.myMain5C import Ui_Eficas5C
-from InterfaceGUI.QT5.qtEficas import QtEficasAppli
+from InterfaceGUI.QT5.qt_eficas import QtEficasAppli
 from PyQt5.QtWidgets import  QAction, QMessageBox
 from Accas.extensions.eficas_translation import tr
 

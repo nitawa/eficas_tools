@@ -24,7 +24,7 @@ import traceback
 from Accas.extensions.eficas_translation import tr
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QDialog
-from desWidgetLabels import Ui_WidgetLabels
+from UiQT5.desWidgetLabels import Ui_WidgetLabels
 
 # ---------------------------------------------- #
 class MonWidgetSpecifique(Ui_WidgetLabels,QDialog):

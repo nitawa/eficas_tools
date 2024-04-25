@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
 # Copyright (C) 2007-2021   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
@@ -18,18 +16,7 @@
 #
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
-"""
-"""
-# Modules Python
-
-# Modules Eficas
-import prefs
-name='prefs_'+prefs.code
-__import__(name)
-
-#import sys
-#reload(sys)
-#sys.setdefaultencoding('latin1')
-
-from Editeur import eficas_go
-eficas_go.lanceQtEficas(code=prefs.code)
+code="AZ" 
+import sys, os
+if os.path.dirname(os.path.abspath(__file__)) not in sys.path :
+   sys.path.insert(0,os.path.dirname(os.path.abspath(__file__)))

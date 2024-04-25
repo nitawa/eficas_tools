@@ -22,10 +22,8 @@ import types, os
 
 from copy import copy, deepcopy
 import traceback
-try :
-    from InterfaceGUI.QT5 import typeNode
-except : 
-    from InterfaceGUI.QT6 import typeNode
+try :    from InterfaceGUI.QT5 import typeNode
+except : from InterfaceGUI.QT6 import typeNode
 
 # Modules Eficas
 from InterfaceGUI.Common import objecttreeitem

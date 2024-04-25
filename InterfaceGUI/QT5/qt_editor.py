@@ -52,7 +52,7 @@ class QtEditor(Editor, Ui_baseWidget, QWidget):
     Editeur de jdc
     """
 
-    def __init__( self, appliEficas, cataFile = None, fichier=None, formatIn = 'python', formatOut = 'python', jdc=None, QWParent=None, include=0):
+    def __init__( self, appliEficas, cataFile = None, dataSetFile=None, formatIn = 'python', formatOut = 'python', jdc=None, QWParent=None, include=0):
     # ---------------------------------------------------------------------------------------------------------------------------------------------
 
         QWidget.__init__(self, None)
@@ -69,7 +69,7 @@ class QtEditor(Editor, Ui_baseWidget, QWidget):
             self.sb = None
         self.QWParent = QWParent
 
-        Editor.__init__(self, appliEficas=appliEficas, cataFile = cataFile , dataSetFile = fichier , jdc = jdc, include = include, formatIn = formatIn , formatOut = formatOut)
+        Editor.__init__(self, appliEficas=appliEficas, cataFile = cataFile , dataSetFile = dataSetFile , jdc = jdc, include = include, formatIn = formatIn , formatOut = formatOut)
 
         # on enleve la gestion du dicEditor necessaire dans les autres cas
         # mais ici l index est le numero de page et non l editorId
@@ -1112,10 +1112,6 @@ class QtEditor(Editor, Ui_baseWidget, QWidget):
         self.tree.racine.buildChildren()
         return ok
 
-    # -------------------------#
-    def deleteEtape(self, etape):
-    # --------------------------#
-        self.jdc.suppEntite(etape)
 
     # -------------------------------------#
     def initSplitterSizes(self, nbWidget=3):

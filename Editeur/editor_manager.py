@@ -49,7 +49,7 @@ class EditorManager(object):
 
 
     # -----------------------------------------------------
-    def getEditor(self, fichier=None, jdc=None, include=0):
+    def getEditor(self, dataSetFile=None, jdc=None, include=0):
     # ------------------------------------------------------
         """
           Retourne un nouvel editeur ou None si doublon 

@@ -19,17 +19,18 @@
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
 """
+   Ce module sert a lancer EFICAS configure pour MAP 
 """
 # Modules Python
-
 # Modules Eficas
 import prefs
 name='prefs_'+prefs.code
-__import__(name)
+#__import__(name)
 
-#import sys
-#reload(sys)
-#sys.setdefaultencoding('latin1')
+import os, sys
+sys.path.append(os.path.join(os.path.abspath(os.path.dirname(__file__)),'..'))
+sys.path.append(os.path.join(os.path.abspath(os.path.dirname(__file__)),'..','..'))
 
 from Editeur import eficas_go
-eficas_go.lanceQtEficas(code=prefs.code)
+print (prefs.code)
+eficas_go.lanceQtEficas(code=prefs.code, GUIPath='QT5')

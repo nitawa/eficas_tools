@@ -72,6 +72,7 @@ from Accas.classes.C_A_CLASSER import A_CLASSER
 from Accas.classes.C_AVANT import AVANT
 
 from Accas.classes.C_ASSD import ASSD, assd, UserASSD, UserASSDMultiple
+from Accas.classes.C_ASSD import ASSD as A_ASSD # pour Efi2Xsd/MCAccasXML.py
 from Accas.classes.C_ASSD import CO
 from Accas.classes.C_ASSD import GEOM, geom
 

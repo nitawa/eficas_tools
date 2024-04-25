@@ -27,8 +27,8 @@ from Accas.extensions.eficas_translation import tr
 from PyQt5.QtWidgets           import QWidget
 from Editeur.editor            import Editor
 from UiQT5.editor5C            import Ui_editor5C
-from InterfaceGui.common       import comploader
-from InterfaceGui.common       import objecttreeitem
+from InterfaceGUI.Common       import comploader
+from InterfaceGUI.Common       import objecttreeitem
 from InterfaceGUI.cinqC        import browser
 from InterfaceGUI.cinqC.connectDB import connectDB
 import Accas.IO.writer as generator
@@ -41,15 +41,16 @@ class QtEditor(Ui_editor5C, Editor, QWidget):
        Editeur de jdc 5C
     """
 
-    def __init__ (self,appliEficas,cataFile = None, fichier = None, jdc=None, QWParent=None, include=0):
-    #------------------------------------------------------------------------------------------------
+    def __init__(self, appliEficas, cataFile=None, dataSetFile=None, formatIn='python', formatOut='python', QWParent=None, jdc=None  , include = None):
+    #----------------------------------------------------------------------------------------------------------------------------
 
         debug = 0
-        if debug : print ('__init__ de QtEditor5C :', appliEficas,fichier, jdc, QWParent)
+        if debug : print ('__init__ de QtEditor5C :', appliEficas,dataSetFile, jdc, QWParent)
 
         QWidget.__init__(self,None)
         self.setupUi(self)
-        Editor.__init__(self,appliEficas, cataFile=None, fichier=fichier, jdc=jdc, QWParent=QWParent, include=include) 
+        Editor.__init__( self, appliEficas=appliEficas, cataFile=cataFile, dataSetFile=dataSetFile, 
+                         formatIn = formatIn , formatOut=formatOut , jdc=jdc, include = include)
         comploader.chargerComposants(self.appliEficas.GUIPath)
         self.initQTSignals()
         self.inhibeSplitter=0
@@ -70,13 +71,14 @@ class QtEditor(Ui_editor5C, Editor, QWidget):
         # a envisager si on garde une selection ?
         self.initSelection()
 
-        self.formatFichierOut =  self.appliEficas.formatFichierOut
-        self.formatFichierIn =  self.appliEficas.formatFichierOut
+        #self.formatFichierOut =  self.appliEficas.formatFichierOut
+        #self.formatFichierIn =  self.appliEficas.formatFichierOut
+        self.formatFichierOut = formatOut 
+        self.formatFichierIn =  formatIn
         self.node_selected = []
         self.message=''
 
-        #self.commandesOrdreCatalogue =self.readercata.commandesOrdreCatalogue
-        nomFichierTranslation='translatorFile'+'_'+str(self.appliEficas.readercata.versionCode)
+        nomFichierTranslation='translatorFile'+'_'+str(self.readercata.versionCode)
         if hasattr(self.appliEficas.maConfiguration,nomFichierTranslation) :
             translatorFile=getattr(self.appliEficas.maConfiguration,nomFichierTranslation)
             from Accas.extensions import localisation
@@ -90,7 +92,7 @@ class QtEditor(Ui_editor5C, Editor, QWidget):
     #------------------------
         debug=0
         if debug : print ('initSelection')
-        defSelection = self.appliEficas.readercata.cata.identifiantSelection
+        defSelection = self.readercata.cata.identifiantSelection
         texte = defSelection.nom +'()'
         if debug : print ('texte newJDC' , texte)
         # PNPN : on peut peut-etre sauvagarder et relire des selections anterieures?
@@ -137,7 +139,7 @@ class QtEditor(Ui_editor5C, Editor, QWidget):
         if debug : print (' 1ere Requete in chercheLesLabesl : ',  maRequete)
         self.lesIds = self.appelleExecutionRequete(maRequete)
         if debug : print (' lesIds in chercheLesLabesl : ',  self.lesIds)
-        if len(self.lesIds) == 0 :
+        if len(self.lesIds) == 0 : 
            self.afficheMessage('Bad Selection', 'unable to find a job with these criteria', False)
            return  
         if len(self.lesIds) == 1 :
@@ -226,11 +228,10 @@ class QtEditor(Ui_editor5C, Editor, QWidget):
         # Attention aux differences de niveaux entre Cata5CChapeau et CataJobProfile
         # on s appuie sur le 1er element et non le jdc
         self.jdcResultats = jdcResultat
-        if self.appliEficas.ssIhm==False :
-             if self.widgetResultats : self.editor5CLayout.removeWidget(self.widgetResultats)
-             from InterfaceGUI.cinqC.monWidgetProfile import MonWidgetProfile
-             self.widgetResultats=MonWidgetProfile(self,jdcResultat, listeId,listeLabels)
-             self.editor5CLayout.insertWidget(1,self.widgetResultats)
+        if self.widgetResultats : self.editor5CLayout.removeWidget(self.widgetResultats)
+        from InterfaceGUI.cinqC.monWidgetProfile import MonWidgetProfile
+        self.widgetResultats=MonWidgetProfile(self,jdcResultat, listeId,listeLabels)
+        self.editor5CLayout.insertWidget(1,self.widgetResultats)
 
 
     def getValuesOfAllMC(self,obj,McPath):

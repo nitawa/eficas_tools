@@ -33,7 +33,7 @@
     <number>0</number>
    </property>
    <item>
-    <layout class="QVBoxLayout" name="verticalLayout_2">
+    <layout class="QVBoxLayout" name="verticalCadre1">
      <property name="spacing">
       <number>0</number>
      </property>
@@ -136,7 +136,7 @@
     </layout>
    </item>
    <item>
-    <layout class="QVBoxLayout" name="verticalLayout_4">
+    <layout class="QVBoxLayout" name="verticalLayout2">
      <item>
       <widget class="MonLabelClic" name="label">
        <property name="sizePolicy">
@@ -362,7 +362,7 @@
           <x>0</x>
           <y>0</y>
           <width>300</width>
-          <height>143</height>
+          <height>133</height>
          </rect>
         </property>
         <property name="sizePolicy">

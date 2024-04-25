@@ -22,6 +22,8 @@ from InterfaceGUI.Common import objecttreeitem
 from InterfaceGUI.cinqC import browser
 from Accas.extensions.eficas_translation import tr
 
+print ('hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh 5c')
+
 
 class Node(browser.JDCNode):
 

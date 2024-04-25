@@ -4,7 +4,7 @@ import os,sys
 # repIni sert a localiser le fichier editeur.ini
 
 repIni=os.path.dirname(os.path.abspath(__file__))
-INSTALLDIR=os.path.join(repIni,'..')
+INSTALLDIR=os.path.join(repIni,'../..')
 sys.path[:0]=[INSTALLDIR]
 
 

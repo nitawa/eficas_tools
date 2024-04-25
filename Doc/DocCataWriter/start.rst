@@ -4,35 +4,11 @@ Getting Started with Eficas
 Installation
 _____________
 
-       - clone 
-       - make dans UiQt5
+       - clone  https://git.forge.pleiade.edf.fr/git/eficas.git
+       - cd UiQT5; make
+       or
+       - cd UiQT6; make
 
-Introduction
-_____________
-
-Eficas includes :
-
- - A core that provides classes to manage both models and data instances.
-   This is made of Accas (defining englobing parent classes and inheritance), Noyau (the main issue), Validation (for complete validation) and Ihm (containing functions that allows to build data - incomplete data are often unvalid)
-
- - convert
-
- - Editeur
-
- - Efi2Xsd
-
- - Extensions
-
- - generator
-
- - InterfaceGUI
-
- - Tools
-
- - Traducteur 
-
- - UiQT5
- 
 
 Using Eficas GUI
 ________________
@@ -44,7 +20,7 @@ You can test the GUI part
 
 ..  code-block:: python
 
-      $EFICAS_ROOT_DIR/Tools/qtEficasGui.py -c $Home/EficasFilesForMyCode/CodeCatalog.py
+    $EFICAS_ROOT_DIR/Tools/qtEficasGui.py -c $Home/EficasFilesForMyCode/CodeCatalog.py
 
 
 Appropriate sections explain in detail each catalogue concept. 

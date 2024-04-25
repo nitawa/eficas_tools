@@ -32,6 +32,7 @@ class JDCTree:
         self.tree = self
         self.appliEficas = self.editor.appliEficas
         self.childrenComplete = []
+        self.plie = False
         print (self.item.__class__)
         print (self.item.itemNode.__class__)
         self.racine = self.item.itemNode(self, self.item)

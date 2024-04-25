@@ -1114,11 +1114,6 @@ class QtEditor(Editor, Ui_baseWidget, QWidget):
         self.tree.racine.buildChildren()
         return ok
 
-    # -------------------------#
-    def deleteEtape(self, etape):
-    # --------------------------#
-        self.jdc.suppEntite(etape)
-
     # -------------------------------------#
     def initSplitterSizes(self, nbWidget=3):
     # -------------------------------------#

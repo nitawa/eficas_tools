@@ -271,6 +271,7 @@ def createObjetPythonFromDocumentAccas(cataFile=None, fichier=None, code=None):
 # activeSurcharge permet de surcharger [ pour
 # acceder aux objets Accas comme en python
 # Attention peu testé et uniquement en lecture
+# obsolete
     if fichier == None:
         print("file is needed")
         return None

@@ -378,7 +378,7 @@ class QtEditorManager(EditorManager):
 
 
     #------------------------------------------------------------------
-    def getEditor(self, fichier=None, jdc=None, include=0):
+    def getEditor(self, dataSetFile=None, jdc=None, include=0):
     #------------------------------------------------------------------
         if self.appliEficas.multi == True:
             self.appliEficas.definitCode(None, None)
@@ -388,7 +388,7 @@ class QtEditorManager(EditorManager):
         double = None
         for indexEditor in self.dictEditors:
             editor = self.dictEditors[indexEditor]
-            if self.samePath(fichier, editor.getDataSetFileName()):
+            if self.samePath(dataSetFile, editor.getDataSetFileName()):
                 msgBox = QMessageBox()
                 msgBox.setWindowTitle(tr("Fichier"))
                 msgBox.setText(tr("Le fichier <b>%s</b> est deja ouvert", str(fichier)))
@@ -400,14 +400,14 @@ class QtEditorManager(EditorManager):
                 double = editor
         else:
             from qt_editor import QtEditor
-            editor = QtEditor(self.appliEficas, cataFile=None, fichier=fichier, jdc=jdc, QWParent=self.myQtab, include=include)
+            editor = QtEditor(self.appliEficas, dataSetFile=dataSetFile, jdc=jdc, QWParent=self.myQtab, include=include)
         if double != None: self.doubles[editor] = double
         if editor.jdc:  # le fichier est bien un jdc
              self.editors.append(editor)
              newWin = 1
         else:
              editor.closeIt()
-        if newWin: self.addView(editor, fichier)
+        if newWin: self.addView(editor, dataSetFile)
         elif editor.jdc: self.myQtab.setCurrentIndex(indexEditor)
 
         index = self.myQtab.currentIndex()

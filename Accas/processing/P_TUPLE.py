@@ -39,8 +39,7 @@ class P_Matrice:
         self.jdc = None
         self.coloree = coloree
         self.defaut = defaut
-        if self.coloree:
-            self.activeCouleur()
+        if self.coloree: self.activeCouleur()
 
     def __convert__(self, valeur):
         # Attention ne verifie pas grand chose
