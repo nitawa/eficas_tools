@@ -190,26 +190,26 @@ class BaseConfiguration(object):
                self.appliEficas.afficheMessage(titre, texte)
                return
         elif clef in os.environ.keys() : 
-           fic = os.environ[clef]
-        fichierPrefsIntegrateur = os.path.abspath(fic)
-        if not os.path.isfile(fichierPrefsIntegrateur): 
-            print("impossible de trouver le fichier {}".format(fichierPrefsIntegrateur))
-            return
-        try : 
-            with open(fichierPrefsIntegrateur) as fd: txt = fd.read()
-        except:
-            titre = tr("Import du fichier de Configuration")
-            texte = "Erreur a la lecture du fichier de configuration {} ".format(str(fichierPrefsIntegrateur))
-            self.appliEficas.afficheMessage(titre, texte)
-            return
-        d = {}
-        try:
-            exec(txt, d)
-        except:
-            titre = tr("Import du fichier de Configuration")
-            texte = "Erreur a la l execution du fichier de configuration {} ".format(str(fichierPrefsIntegrateur))
-            self.appliEficas.afficheMessage(titre, texte)
-               return
+            fic = os.environ[clef]
+            fichierPrefsIntegrateur = os.path.abspath(fic)
+            if not os.path.isfile(fichierPrefsIntegrateur): 
+                print("impossible de trouver le fichier {}".format(fichierPrefsIntegrateur))
+                return
+            try : 
+                with open(fichierPrefsIntegrateur) as fd: txt = fd.read()
+            except:
+                titre = tr("Import du fichier de Configuration")
+                texte = "Erreur a la lecture du fichier de configuration {} ".format(str(fichierPrefsIntegrateur))
+                self.appliEficas.afficheMessage(titre, texte)
+                return
+            d = {}
+            try:
+                exec(txt, d)
+            except:
+                titre = tr("Import du fichier de Configuration")
+                texte = "Erreur a la l execution du fichier de configuration {} ".format(str(fichierPrefsIntegrateur))
+                self.appliEficas.afficheMessage(titre, texte)
+                return
         else : 
             print("pas de fichier defini pour les preferences integrateur")
             return
