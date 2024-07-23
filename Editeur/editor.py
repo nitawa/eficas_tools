@@ -77,10 +77,11 @@ class Editor:
        
         if self.maConfiguration.writerModule :
             try:
-                _module = __import__(self.maConfiguration.writermodule)
+                _module = __import__(self.maConfiguration.writerModule)
                 info = _module.entryPoint()
                 writer.plugins.addEntryPoint(info)
             except:
+                print ('unable to load writerModule')
                 pass
 
         if self.maConfiguration.readerModule :
@@ -90,6 +91,7 @@ class Editor:
                 info = _module.entryPoint()
                 reader.plugins.addEntryPoint(info)
             except:
+                print ('unable to load raderModule')
                 pass
 
         self.mesWriters = writer
@@ -612,7 +614,7 @@ class Editor:
     # -----------------------------------------------------------------#
         fn = fichier
         self.myWriter = writer.plugins[self.format]()
-        print(self.myWriter)
+        #print(self.myWriter)
         if hasattr(self.myWriter, "writeComplet"):
             self.myWriter.writeComplet(
                 fichier,

@@ -52,7 +52,6 @@ def lanceQtEficas(code=None, versionCode = None, multi=False, langue="en",  GUIP
     if options.versionCode != None:
         versionCode = options.versionCode
 
-
     pathAbso=os.path.abspath(os.path.join(os.path.dirname(__file__),'..','InterfaceGUI',GUIPath))
     if pathAbso not in sys.path : sys.path.insert(0,pathAbso)
     from qt_eficas import QtEficasAppli

@@ -43,17 +43,18 @@ class QtEficasAppli(EficasAppli, Ui_Eficas, QMainWindow):
     """
 
     #----------------------------------------------------------------------------------------------------------------------------------------------
-    def __init__(self, code=None, versionCode=None, salome=1, multi=False, langue="fr", ssCode=None, cataFile=None, GUIPath="InterfaceGUI.QT5", appWeb = None):
+    def __init__(self, code=None, versionCode=None, salome=1, multi=False, langue="fr", ssCode=None, cataFile=None, GUIPath="QT5", appWeb = None, parent = None):
     #----------------------------------------------------------------------------------------------------------------------------------------------
         """
         Constructor
         """
-        QMainWindow.__init__(self)
+        QMainWindow.__init__(self,parent)
         Ui_Eficas.__init__(self)
         self.setupUi(self)
         EficasAppli.__init__( self, code, versionCode, salome, multi, langue,  ssCode, cataFile, GUIPath, appWeb)
         
         self.editorManager = QtEditorManager(self)
+        self.viewmanager=self.editorManager
 
         self.GUIPath = GUIPath
         self.suiteTelemac = self.maConfiguration.suiteTelemac

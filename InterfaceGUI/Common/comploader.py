@@ -45,7 +45,7 @@ def chargerComposants(GUIPath):
     """
     debug = 0
     ici=os.path.dirname(os.path.abspath(__file__))
-    if debug : print ('GUIPath')
+    if debug : print ('GUIPath ', GUIPath)
     repertoire = os.path.join(ici,"../..", "InterfaceGUI",GUIPath)
     if debug : print ('repertoire', repertoire)
     package = 'InterfaceGUI.'+GUIPath

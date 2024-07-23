@@ -379,7 +379,7 @@ class JDCNode(QTreeWidgetItem, GereRegles):
 
     def affichePanneau(self):
     # -------------------------
-        print ('_________________ds affichePanneau pour', self.item.nom)
+        #print ('_________________ds affichePanneau pour', self.item.nom)
         # le statut inactif est pour les commandes ASTER apres fin
         # plus utilise mais 
         if not (self.item.isActif()):

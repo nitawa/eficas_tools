@@ -21,7 +21,7 @@
 Ce module contient le generateur XML pour Openturns
 """
 import sys
-print sys.path
+#print sys.path
 from Accas.extensions.eficas_translation import tr
 import openturns
 

@@ -52,7 +52,7 @@ class ValidationSaisie(object):
         if not testtype:
             return valeur, 0, commentaire
 
-        print (testtype, commentaire)
+        #print (testtype, commentaire)
         valide = self.node.item.valideItem(valeur)
         if type(valide) == tuple:
             validite, commentaire = valide
@@ -60,10 +60,10 @@ class ValidationSaisie(object):
             validite = valide
             commentaire = " "
 
-        print (validite, commentaire)
+        #print (validite, commentaire)
         if not validite and commentaire is None:
             commentaire = "impossible d'evaluer : %s " % repr(valeurentree)
-        print ('ds testeUneValeur', valeur, validite, commentaire)
+        #print ('ds testeUneValeur', valeur, validite, commentaire)
         return valeur, validite, commentaire
 
     # ----------------------------------------------------------------------------------------
@@ -196,7 +196,7 @@ class PolitiqueUnique(ValidationSaisie):
                 cr = self.node.item.getCr()
                 commentaire = tr("Valeur du mot-cle non autorisee ") + cr.getMessFatal()
                 self.node.item.setValeur(ancienneVal)
-        print (validite, commentaire)
+        #print (validite, commentaire)
         return validite, commentaire
 
 

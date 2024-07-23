@@ -178,10 +178,19 @@ class BaseConfiguration(object):
         # Verifie l'existence du fichier "standard"
         # appelle la lecture de ce fichier
         clef = "PREFS_CATA_" + self.code
-        if clef in os.environ.keys(): fic = os.environ[clef]
-        else : 
-            print("pas de fichier defini pour les preferences integrateur")
+        # utilise par ADA0 dans Salome
+        if hasattr(self.appliEficas, clef) : 
+           fichierPrefsIntegrateur = getattr(self.appliEficas,clef)
+           try : 
+               m = __import__(fichierPrefsIntegrateur)
+               d = m.__dict__
+           except :
+               titre = tr("Import du fichier de Configuration")
+               texte = "Erreur a la lecture du fichier de configuration {} ".format(str(fichierPrefsIntegrateur))
+               self.appliEficas.afficheMessage(titre, texte)
             return
+        elif clef in os.environ.keys() : 
+           fic = os.environ[clef]
         fichierPrefsIntegrateur = os.path.abspath(fic)
         if not os.path.isfile(fichierPrefsIntegrateur): 
             print("impossible de trouver le fichier {}".format(fichierPrefsIntegrateur))
@@ -200,6 +209,9 @@ class BaseConfiguration(object):
             titre = tr("Import du fichier de Configuration")
             texte = "Erreur a la l execution du fichier de configuration {} ".format(str(fichierPrefsIntegrateur))
             self.appliEficas.afficheMessage(titre, texte)
+               return
+        else : 
+            print("pas de fichier defini pour les preferences integrateur")
             return
 
         for k in d:

@@ -61,6 +61,8 @@ class EficasAppli:
             langue des messages
             ssCode (utilise pour MAP permet de distinguer un patron specifique, un catalogue specifique...)
             fichier catalogue utilise
+            preference pour le GUI (QT5, 6 ou Web)
+            appWeb si necessaire
         """
         self.code = code
         self.ssCode = ssCode
