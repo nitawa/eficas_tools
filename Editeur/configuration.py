@@ -188,7 +188,7 @@ class BaseConfiguration(object):
                titre = tr("Import du fichier de Configuration")
                texte = "Erreur a la lecture du fichier de configuration {} ".format(str(fichierPrefsIntegrateur))
                self.appliEficas.afficheMessage(titre, texte)
-            return
+               return
         elif clef in os.environ.keys() : 
            fic = os.environ[clef]
         fichierPrefsIntegrateur = os.path.abspath(fic)
