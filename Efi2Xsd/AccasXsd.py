@@ -1231,7 +1231,7 @@ class X_definitionComposee(X_definition):
         multiple=False,
         first=True,
         debug=False,
-        avecEltAbstrait=True,
+        withAbstractElt=True,
     ):
         # PNPN
         if debug:
@@ -1272,7 +1272,7 @@ class X_definitionComposee(X_definition):
                 self.texteComplexe = debutTypeCompo.format(self.nomDuTypePyxb)
             if (
                 isinstance(self, X_OPER) or isinstance(self, X_PROC)
-            ) and avecEltAbstrait:
+            ) and withAbstractElt:
                 self.texteComplexe += debutTypeCompoEtape.format(self.code)
             self.texteComplexe += debutTypeCompoSeq
             texteComplexeVenantDesFils = self.creeTexteComplexeVenantDesFils(
@@ -1286,7 +1286,7 @@ class X_definitionComposee(X_definition):
             # la fin de l oper est traitee dans le dumpXSD de X_OPER
             if not isinstance(self, X_OPER):
                 self.texteComplexe += finTypeCompoSeq
-            if isinstance(self, X_PROC) and avecEltAbstrait:
+            if isinstance(self, X_PROC) and withAbstractElt:
                 self.texteComplexe += finTypeCompoEtape
             if not isinstance(self, X_OPER) and not dansFactorisationDeFusion:
                 self.texteComplexe += finTypeCompo
@@ -1529,16 +1529,16 @@ class X_FACT(X_definitionComposee):
 class X_OPER(X_definitionComposee):
     # ---------------------------------
     def dumpXsd(
-        self, dansFactorisation=False, multiple=False, first=False, avecEltAbstrait=True
+        self, dansFactorisation=False, multiple=False, first=False, withAbstractElt=True
     ):
         X_definitionComposee.dumpXsd(
-            self, dansFactorisation, avecEltAbstrait=avecEltAbstrait
+            self, dansFactorisation, withAbstractElt=withAbstractElt
         )
         self.texteComplexe += finTypeCompoSeq
         self.texteComplexe += attributeNameName
         self.texteComplexe += attributeTypeForASSD
         self.texteComplexe += attributeTypeUtilisateurName.format(self.sd_prod.__name__)
-        if avecEltAbstrait:
+        if withAbstractElt:
             self.texteComplexe += finTypeCompoEtape
         self.texteComplexe += finTypeCompo
 
@@ -2279,16 +2279,16 @@ class X_SIMP(X_definition):
 class X_JDC_CATA:
 # -----------------
 
-    def dumpXsd(self, avecEltAbstrait, avecSubstitution=True, debug=False):
+    def dumpXsd(self, withAbstractElt, withUnitAsAttribute , avecSubstitution=True, debug=False):
         CONTEXT.unsetCurrentCata()
         CONTEXT.setCurrentCata(self)
         cata = CONTEXT.getCurrentCata()
         #PN : on essaye de s affranchir du contexte
         cata=self
-        # cata.unitAsAttribute = unitAsAttribute
-        cata.unitAsAttribute = True
+        cata.unitAsAttribute = withUnitAsAttribute
+        #cata.unitAsAttribute = True
         #cata.unitAsAttribute = False
-        if debug: print("avecEltAbstrait   -------------------", avecEltAbstrait)
+        if debug: print("withAbstractElt   -------------------", withAbstractElt)
         if debug: print("self.importedBy -------------------", self.importedBy)
         if debug: print("self.code       -------------------", self.code)
 
@@ -2318,12 +2318,12 @@ class X_JDC_CATA:
         else:
             self.listeElementsRecursifs = ()
 
-        if avecEltAbstrait:
-            self.dumpAvecEltAbstraitDesCommandes()
+        if withAbstractElt:
+            self.dumpWithAbstractElt()
         else:
             self.dumpSimpleDesCommandes()
 
-        if avecEltAbstrait:
+        if withAbstractElt:
             if self.implement == self.code:
                 self.texteCata += eltAbstraitCataPPal.format(self.code)
                 self.texteCata += eltCataPPal.format(self.code, self.code, self.code)
@@ -2506,7 +2506,7 @@ class X_JDC_CATA:
         self.texteXSD += texteFin
         return self.texteXSD
 
-    def dumpAvecEltAbstraitDesCommandes(self):
+    def dumpWithAbstractElt(self):
         cata = CONTEXT.getCurrentCata()
         cataFileSourceExt = os.path.basename(cata.cata.__file__)
         cataFileSource, extension = os.path.splitext(cataFileSourceExt)
@@ -2577,7 +2577,7 @@ class X_JDC_CATA:
                 continue
             c.nomDuCodeDumpe = self.nomDuCodeDumpe
             c.code = self.implement
-            c.dumpXsd(avecEltAbstrait=True)
+            c.dumpXsd(withAbstractElt=True)
 
             self.texteSimple += c.texteSimple
             self.texteComplexe += c.texteComplexe
@@ -2605,7 +2605,7 @@ class X_JDC_CATA:
                 print("commande ", c, c.nom)
             c.nomDuCodeDumpe = self.nomDuCodeDumpe
             c.code = self.implement
-            c.dumpXsd(avecEltAbstrait=False)
+            c.dumpXsd(withAbstractElt=False)
             self.texteSimple += c.texteSimple
             self.texteSimple += c.texteComplexe
             if c.ang != "":

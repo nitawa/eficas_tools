@@ -22,7 +22,8 @@ Ce module centralise les informations issues de la ligne de commande.
 
 """
 
-#Version Obsolete pour Aster mais qui explique l utilisation de poursuite et include
+# Version qui explique l utilisation de poursuite et include
+# Obsolete mais pourrait etre un jour utile
 #La ligne de commande est parsee avec l'aide du module python optparse.
 #Les options possibles sont : -l, -j, -p, -d, -i, -f comme definies ci-dessous.
 #
@@ -265,7 +266,7 @@ def printDEnv():
         printPours(study, dec="++")
 
 
-def createparser():
+def createParser():
     # creation du parser des options de la ligne de commande
     # import prefs
     parser = optparse.OptionParser(
@@ -311,6 +312,7 @@ def createparser():
         action="store",
         type="string",
         dest="cataFile",
+        default=None,
         help=tr("catalogue a utiliser"),
     )
 
@@ -320,6 +322,7 @@ def createparser():
         action="store",
         type="string",
         dest="fichierOut",
+        default=None,
         help=tr("nom du fichier xml genere"),
     )
 
@@ -329,6 +332,7 @@ def createparser():
         action="store",
         type="string",
         dest="versionCode",
+        default=None,
         help=tr("version de catalogue a utiliser"),
     )
 
@@ -361,13 +365,21 @@ def createparser():
 
     parser.add_option(
         "-a",
-        "--withEltAbstrait",
+        "--withAbstractElt",
         action="store_true",
-        dest="avecEltAbstrait",
+        dest="withAbstractElt",
         default=False,
         help=tr("construit des elements abstraits dans le XSD pour gerer le cascading"),
     )
 
+    parser.add_option(
+        "-u",
+        "--withUnitAsAttribute",
+        action="store_true",
+        dest="withUnitAsAttribute",
+        default=False,
+        help=tr("les unites deviennent des attibuts dans le XSD "),
+    )
     parser.add_option(
         "-s",
         "--schema",
@@ -384,27 +396,30 @@ def createparser():
 
 
 def parse(args):
-    parser = createparser()
+    parser = createParser()
+    code=args[0]
     (options, args) = parser.parse_args(args[1:])
     if not hasattr(options, "studies"):
         options.studies = []
         options.comm = []
-    if not hasattr(options, "cataFile"):
-        options.cataFile = None
-    if not hasattr(options, "versionCode"):
-        options.versionCode = None
-    if not hasattr(options, "fichierOut"):
-        options.fichierOut = None
     if options.withXSD:
         try:
             import pyxb
         except:
             print("Please, source pyxb environment")
             exit()
-    try:
-        del parser.values.current
-    except:
-        pass
+    if 'generateXSD' not in code:
+       if options.withUnitAsAttribute :
+            print("withUnitAsAtttibute option is only valid for XSD generation")
+            exit()
+       if options.withAbstractElt :
+            print("withEltAbstrait option is only valid for XSD generation")
+            exit()
+    #try:
+    #    del parser.values.current
+    #except:
+    #    pass
+
     for file in args:
         if os.path.isfile(file):
             options.comm.append(file)

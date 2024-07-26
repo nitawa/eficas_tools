@@ -106,7 +106,7 @@ def genereXSD(code=None):
     monEficas = getEficas(code=options.code)
     monEficas.genereXSD = True
     monEditor = monEficas.getEditorForXSDGeneration(cataFile= options.cataFile)
-    texteXSD = monEditor.dumpXsd(avecEltAbstrait=options.avecEltAbstrait)
+    texteXSD = monEditor.dumpXsd(withAbstractElt=options.withAbstractElt, withUnitAsAttribute = options.withUnitAsAttribute )
 
     cataFileTrunc = os.path.splitext(os.path.basename(options.cataFile))[0]
     # if cataFileTrunc[0:4] in ('cata','Cata'): cataFileTrunc=cataFileTrunc[4:]

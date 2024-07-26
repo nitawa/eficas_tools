@@ -779,12 +779,12 @@ class Editor:
         self.tree.racine.build_children()
         return ok
 
-    # --------------------------------------#
-    def dumpXsd(self, avecEltAbstrait=False):
-    # --------------------------------------#
+    # -------------------------------------------------------#
+    def dumpXsd(self, withAbstractElt, withUnitAsAttribute):
+    # -------------------------------------------------------#
         if not self.readercata.cata:
             return
-        texteXSD = self.readercata.cata.JdC.dumpXsd(avecEltAbstrait)
+        texteXSD = self.readercata.cata.JdC.dumpXsd(withAbstractElt, withUnitAsAttribute)
         return texteXSD
 
     # ---------------------#

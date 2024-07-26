@@ -271,10 +271,10 @@ class EficasAppli:
         print("ok ", ok)
 
     #-----------------------------------------
-    def dumpXsd(self, avecEltAbstrait=False):
+    def dumpXsd(self, withAbstractElt=False):
     #-----------------------------------------
         currentCata = CONTEXT.getCurrentCata()
-        texteXSD = currentCata.dumpXsd(avecEltAbstrait)
+        texteXSD = currentCata.dumpXsd(withAbstractElt)
         return texteXSD
 
 
