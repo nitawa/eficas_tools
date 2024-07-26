@@ -84,7 +84,7 @@ class Feuille(QWidget, ContientIcones, SaisieValeur, FacultatifOuOptionnel):
     def setUnite(self):
         if self.monSimpDef.unite == None:
             if hasattr(self, "lineEditUnite"):
-                self.lineEditUnite.setText(" ")
+                self.lineEditUnite.close()
         else:
             if hasattr(self, "lineEditUnite"):
                 self.lineEditUnite.setText(self.monSimpDef.unite)

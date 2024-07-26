@@ -30,8 +30,8 @@ class JDC_CATA_SINGLETON(Singleton, JDC_CATA):
     """
 
     def __init__(self, *pos, **kw):
-        if hasattr(self, "initialised"):
-            return
+        # on ne rappelle pas les init pour ne pas changer le nom du code
+        if hasattr(self, "initialised"): return
         self.initialised = True
         JDC_CATA.__init__(self, *pos, **kw)
 

@@ -237,6 +237,7 @@ class ReaderCata(ReaderCataCommun):
 
         self.cata = self.importCata(self.cataFile)
         if self.code == "NonConnu": self.code = self.cata.JdC.code
+        #if self.code == "NonConnu": self.code = 'aaaaa'
         modeleMetier = None
         dicoEltDif = {}
         if not(self.appliEficas.genereXSD) and self.appliEficas.withXSD:
@@ -287,7 +288,7 @@ class ReaderCata(ReaderCataCommun):
                     # print ('dans readerCata _________', dicoEltDif)
 
                 except Exception as e :
-                    self.appliEficas.afficheMessage( "XSD driver", "unable to load xsd driver" + str(e), critique=False)
+                    self.appliEficas.afficheMessage( "XSD driver", "unable to load xsd driver" + str(e))
                     modeleMetier = None
 
         self.cata.DicoNomTypeDifferentNomElt = dicoEltDif
@@ -370,11 +371,12 @@ class ReaderCata(ReaderCataCommun):
         Realise l'import du catalogue dont le chemin d'acces est donne par cata
         """
          
+        debug=0
         if debug : print ('importCata cataFile', cataFile)
         nomCata = os.path.splitext(os.path.basename(cataFile))[0]
         repCata = os.path.abspath(os.path.dirname(cataFile))
         if debug : print ('importCata nomCata', cataFile)
-        if debug : print ('importCata repCata', cataFile)
+        if debug : print ('importCata repCata', repCata)
         sys.path[:0] = [repCata]
         self.appliEficas.listePathAEnlever.append(repCata)
 
@@ -397,10 +399,16 @@ class ReaderCata(ReaderCataCommun):
         try:
         #if 1 :
             #import importlib.util
-            from importlib import util
-            cataSpec = util.spec_from_file_location(nomCata, cataFile)
-            leCata = util.module_from_spec(cataSpec)
-            cataSpec.loader.exec_module(leCata)
+            #from importlib import util
+            #cataSpec = util.spec_from_file_location(nomCata, cataFile)
+            #leCata = util.module_from_spec(cataSpec)
+            #print ('--------------1',leCata)
+            #cataSpec.loader.exec_module(leCata)
+            #print ('--------------2',leCata)
+            # les lignes precedentes ne sont pas equivalentes a l __import__
+            # le exec module execute le catalogue mais sans lui on n a pas acces a cata.JdC
+            # a creuser
+            leCata =__import__(nomCata)
             return leCata
         except Exception as e:
         #else :

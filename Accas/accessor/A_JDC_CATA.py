@@ -20,8 +20,10 @@
 from Accas.processing import P_JDC_CATA
 
 
+debug = 0
 class JDC_CATA:
     def __init__(self):
+        if debug : print ('!!!!!!!!!!!!!!!!! in init', self)
         self.l_noms_entites = []
 
     def getListeCmd(self):
@@ -31,10 +33,12 @@ class JDC_CATA:
     def getDocu(self):
         return
 
-    # ATTENTION SURCHARGE: cette methode doit etre synchronisee avec celle  de processing
     def enregistre(self, commande):
         """
-        Cette methode surcharge la methode de la classe de processing
+        Cette methode complete la methode de la classe de processing
+        l_nom_entite pour le coeur d eficas et commandes pour les affichages IHM
+        l ordre des listes peut etre different
         """
+        if debug : print ('enregistre de A_JDC_CATA', commande)
         P_JDC_CATA.JDC_CATA.enregistre(self, commande)
         self.l_noms_entites.append(commande.nom)

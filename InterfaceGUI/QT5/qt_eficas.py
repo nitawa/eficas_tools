@@ -54,6 +54,7 @@ class QtEficasAppli(EficasAppli, Ui_Eficas, QMainWindow):
         EficasAppli.__init__( self, code, versionCode, salome, multi, langue,  ssCode, cataFile, GUIPath, appWeb)
         
         self.editorManager = QtEditorManager(self)
+        #TODO --> a virer apres accord JPA
         self.viewmanager=self.editorManager
 
         self.GUIPath = GUIPath

@@ -83,22 +83,8 @@ class PROC(P_ENTITE.ENTITE):
     class_instance = P_PROC_ETAPE.PROC_ETAPE
     label = "PROC"
 
-    def __init__(
-        self,
-        nom,
-        op=None,
-        reentrant="n",
-        repetable="o",
-        fr="",
-        ang="",
-        fenetreIhm=None,
-        docu="",
-        regles=(),
-        op_init=None,
-        niveau=None,
-        UIinfo=None,
-        **args
-    ):
+    def __init__( self, nom, op=None, reentrant="n", repetable="o", fr="", ang="", fenetreIhm=None, docu="",
+        regles=(), op_init=None, niveau=None, UIinfo=None, **args):
         """
         Méthode d'initialisation de l'objet PROC. Les arguments sont utilisés pour initialiser
         les attributs de meme nom

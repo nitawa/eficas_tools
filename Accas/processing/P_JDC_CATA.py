@@ -108,7 +108,12 @@ class JDC_CATA(P_ENTITE.ENTITE):
         """
         Methode qui permet aux definitions de commandes de s'enregistrer aupres
         d'un JDC_CATA
+        separee en 2 entre Accessor et Processing 
+        car a priori commandes n est utilise que pour l ihm mais
+        est-ce obsolete ?
         """
+        debug = 0 
+        if debug : print ('enregistre processing', commande)
         self.commandes.append(commande)
 
     def verifCata(self):
