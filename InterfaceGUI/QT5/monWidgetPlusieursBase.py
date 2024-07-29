@@ -63,7 +63,7 @@ class MonWidgetPlusieursBase(Ui_WidgetPlusieursBase, Feuille, GereListe, GerePli
         icon2 = QIcon(fichier2)
         self.RBBas.setIcon(icon2)
         fichier3 = os.path.join(repIcon, "file-explorer.png")
-        icon3 = QIcon(fichier2)
+        icon3 = QIcon(fichier3)
         self.BSelectFichier.setIcon(icon3)
         self.BSelectFichier.setIconSize(QSize(32, 32))
         icon = QIcon(self.repIcon + "/MoinsBleu.png")

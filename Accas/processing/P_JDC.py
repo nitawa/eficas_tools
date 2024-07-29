@@ -24,7 +24,6 @@
 from builtins import str
 from builtins import range
 import os
-import traceback
 import types
 import sys
 import linecache
@@ -122,12 +121,10 @@ NONE = None
         compte-rendu self.cr
         """
         try:
-            # Python 2.7 compile function does not accept unicode filename, so we encode it
-            # with the current locale encoding in order to have a correct
-            # traceback
             encoded_filename = self.nom.encode(getEncoding())
             self.proc_compile = compile(self.procedure, encoded_filename, "exec")
         except SyntaxError as e:
+            import traceback
             if CONTEXT.debug:
                 traceback.print_exc()
             l = traceback.format_exception_only(SyntaxError, e)
@@ -139,6 +136,7 @@ Causes possibles :
    Solution : liste = (valeurs, ..., )
               MOT_CLE = *liste,
 """
+            import traceback
             l = traceback.format_exception_only(SystemError, e)
             l.append(erreurs_connues)
             self.cr.exception("Compilation impossible : " + "".join(l))
@@ -163,6 +161,7 @@ Causes possibles :
         # Dans le cas d'une chaine de caractères il faut acceder
         # aux commandes qui sont dans la chaine
         import linecache
+        import traceback
 
         linecache.cache[self.nom] = 0, 0, self.procedure.split("\n"), self.nom
         try:
@@ -247,8 +246,6 @@ Causes possibles :
             if CONTEXT.debug:
                 traceback.print_exc()
 
-            traceback.print_exc()
-
             exc_typ, exc_val, exc_fr = sys.exc_info()
             l = traceback.format_exception(exc_typ, exc_val, exc_fr)
             self.cr.exception(
@@ -329,12 +326,6 @@ Causes possibles :
         pas etre fabrique mais l'etape doit simplement utiliser
         un concept preexistant.
 
-        Deux cas possibles :
-                - Cas 1 : etape.reuse != None : le concept est reutilise
-                - Cas 2 : l'etape appartient a une macro qui a declare un
-                        concept de sortie qui doit etre produit par cette
-                        etape.
-        Dans le cas du JDC, le deuxième cas ne peut pas se produire.
         """
         sd = etape.getSdProd()
         if sd != None and (etape.definition.reentrant == "n" or etape.reuse is None):

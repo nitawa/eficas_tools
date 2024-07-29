@@ -240,6 +240,7 @@ class ReaderCata(ReaderCataCommun):
         #if self.code == "NonConnu": self.code = 'aaaaa'
         modeleMetier = None
         dicoEltDif = {}
+        listeTypeWithUnit = ()
         if not(self.appliEficas.genereXSD) and self.appliEficas.withXSD:
                 try:
                     import pyxb
@@ -285,13 +286,25 @@ class ReaderCata(ReaderCataCommun):
                         texte = "dicoEltDif = " + texte
                         exec(texte, globals(), l)
                         dicoEltDif = l["dicoEltDif"]
-                    # print ('dans readerCata _________', dicoEltDif)
+                    try:
+                        monObjetAnnotation = getattr(modeleMetier, "listeTypeWithUnit")
+                        texte = monObjetAnnotation.__doc__
+                    except:
+                        texte = None
+                    if texte != None and texte != "":
+                        l = {}
+                        texte = "listeTypeWithUnit = " + texte
+                        exec(texte, globals(), l)
+                        listeTypeWithUnit = l["listeTypeWithUnit"]
 
                 except Exception as e :
                     self.appliEficas.afficheMessage( "XSD driver", "unable to load xsd driver" + str(e))
                     modeleMetier = None
 
         self.cata.DicoNomTypeDifferentNomElt = dicoEltDif
+        self.cata.listeEltWithUnit = listeTypeWithUnit
+        if self.cata.listeEltWithUnit != () : self.cata.unitAsAttribut = True
+        else : self.cata.unitAsAttribut = False
 
         if hasattr(self.cata, "implement"):
             self.cata.JdC.implement = self.cata.implement

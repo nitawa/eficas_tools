@@ -1976,6 +1976,7 @@ class X_SIMP(X_definition):
                     self.nomDuTypePyxb,
                     self.unite,
                 )
+                cata.listeTypeWithUnit.append(self.nomDuTypePyxb)
                 self.texteSimple = nouveauTexte
                 if debug:
                     print(self.texteSimple)
@@ -2280,14 +2281,13 @@ class X_JDC_CATA:
 # -----------------
 
     def dumpXsd(self, withAbstractElt, withUnitAsAttribute , avecSubstitution=True, debug=False):
+        # PN reflechir plus aux lignes suivantes
         CONTEXT.unsetCurrentCata()
         CONTEXT.setCurrentCata(self)
         cata = CONTEXT.getCurrentCata()
-        #PN : on essaye de s affranchir du contexte
         cata=self
         cata.unitAsAttribute = withUnitAsAttribute
-        #cata.unitAsAttribute = True
-        #cata.unitAsAttribute = False
+        cata.listeTypeWithUnit = [] 
         if debug: print("withAbstractElt   -------------------", withAbstractElt)
         if debug: print("self.importedBy -------------------", self.importedBy)
         if debug: print("self.code       -------------------", self.code)
@@ -2494,9 +2494,13 @@ class X_JDC_CATA:
 
         # pprint.pprint(dico)
         # PN reflechir a ce *** de nom
-        # if dico != {} : self.texteXSD += texteAnnotation.format(self.nomDuCodeDumpe,str(dico))
-        if dico != {}:
-            self.texteXSD += texteAnnotation.format(str(dico))
+        if dico != {} :
+            self.texteXSD += texteDicoNomEltNomTypeDifferent.format(str(dico))
+        # PN attention, les doublons ne sont pas geres ( 1 elt meme nom avec ou sans unit ou unite differente)
+        # cependant, cette liste ne sert que d indication de projection comme des unites comme attributs
+        # a changer si necessaire
+        if cata.listeTypeWithUnit != () :  
+            self.texteXSD += texteListeTypeWithUnit.format(str(cata.listeTypeWithUnit))
 
         # import pprint
         # if (not PourTraduction) and  (dico != {}) : pprint.pprint(dico)
@@ -2512,48 +2516,30 @@ class X_JDC_CATA:
         cataFileSource, extension = os.path.splitext(cataFileSourceExt)
         importCataSource = __import__(cataFileSource, {}, {})
 
+        # a reprendre avec la nouvelle tructure et le JDC-CATA et JDC-SINGLETION
         texte = ""
         for m in sys.modules:
             monModule = sys.modules[m]
             try:
-                if m in ("os", "sys", "inspect", "six", "pickle", "codecs"):
-                    continue
-                if m in ("cPickle", "pprint", "dis", "_sre", "encodings.aliases"):
-                    continue
-                if m in ("numbers", "optparse", "binascii", "posixpath"):
-                    continue
-                if m in ("_locale", "_sysconfigdata_nd", "gc", "functools"):
-                    continue
-                if m in ("posixpath", "types", "posix", "prefs"):
-                    continue
-                if m in ("warnings", "types", "posix", "prefs"):
-                    continue
-                if monModule.__name__[0:15] == "_sysconfigdata_":
-                    continue
-                if monModule.__name__ == "__future__":
-                    continue
-                if monModule.__name__[0:3] == "Ihm":
-                    continue
-                if monModule.__name__[0:5] == "numpy":
-                    continue
-                if monModule.__name__[0:5] == "processing":
-                    continue
-                if monModule.__name__[0:5] == "Accas":
-                    continue
-                if monModule.__name__[0:7] == "convert":
-                    continue
-                if monModule.__name__[0:7] == "Efi2Xsd":
-                    continue
-                if monModule.__name__[0:7] == "Editeur":
-                    continue
-                if monModule.__name__[0:9] == "generator":
-                    continue
-                if monModule.__name__[0:10] == "Validation":
-                    continue
-                if monModule.__name__[0:10] == "extensions":
-                    continue
-                if monModule.__name__[0:12] == "InterfaceQT":
-                    continue
+                if m in ("os", "sys", "inspect", "six", "pickle", "codecs"): continue
+                if m in ("cPickle", "pprint", "dis", "_sre", "encodings.aliases"): continue
+                if m in ("numbers", "optparse", "binascii", "posixpath"): continue
+                if m in ("_locale", "_sysconfigdata_nd", "gc", "functools"): continue
+                if m in ("posixpath", "types", "posix", "prefs"): continue
+                if m in ("warnings", "types", "posix", "prefs"): continue
+                if monModule.__name__[0:15] == "_sysconfigdata_": continue
+                if monModule.__name__ == "__future__": continue
+                if monModule.__name__[0:3] == "Ihm": continue
+                if monModule.__name__[0:5] == "numpy": continue
+                if monModule.__name__[0:5] == "processing": continue
+                if monModule.__name__[0:5] == "Accas": continue
+                if monModule.__name__[0:7] == "convert": continue
+                if monModule.__name__[0:7] == "Efi2Xsd": continue
+                if monModule.__name__[0:7] == "Editeur": continue
+                if monModule.__name__[0:9] == "generator": continue
+                if monModule.__name__[0:10] == "Validation": continue
+                if monModule.__name__[0:10] == "extensions": continue
+                if monModule.__name__[0:12] == "InterfaceQT": continue
                 if monModule.__name__ == cataFileSource:
                     continue
                 texte = texte + "try : import " + monModule.__name__ + " \n"

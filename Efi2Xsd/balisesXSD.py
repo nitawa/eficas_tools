@@ -5,8 +5,9 @@ texteFin = "</xs:schema>"
 #texteDebut = '<?xml version="1.0" encoding="UTF-8"?>\n<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"\nxmlns="odyssee/cocagne/{}"\nxmlns:{}="odyssee/cocagne/{}"\ntargetNamespace="odyssee/cocagne/{}"\nelementFormDefault="qualified" attributeFormDefault="unqualified" version="0">\n'
 
 
-# texteAnnotation= '\t<xs:simpleType name="PNEFdico_{}">\n\t\t<xs:annotation>\n\t\t<xs:documentation>{}\n\t\t</xs:documentation>\n\t\t</xs:annotation>\n\t<xs:restriction base="xs:string"></xs:restriction>\n\t</xs:simpleType>\n'
-texteAnnotation = '\t<xs:simpleType name="PNEFdico">\n\t\t<xs:annotation>\n\t\t<xs:documentation>{}\n\t\t</xs:documentation>\n\t\t</xs:annotation>\n\t<xs:restriction base="xs:string"></xs:restriction>\n\t</xs:simpleType>\n'
+texteDicoNomEltNomTypeDifferent = '\t<xs:simpleType name="PNEFdico">\n\t\t<xs:annotation>\n\t\t<xs:documentation>{}\n\t\t</xs:documentation>\n\t\t</xs:annotation>\n\t<xs:restriction base="xs:string"></xs:restriction>\n\t</xs:simpleType>\n'
+texteListeTypeWithUnit = '\t<xs:simpleType name="listeTypeWithUnit">\n\t\t<xs:annotation>\n\t\t<xs:documentation>{}\n\t\t</xs:documentation>\n\t\t</xs:annotation>\n\t<xs:restriction base="xs:string"></xs:restriction>\n\t</xs:simpleType>\n'
+
 
 # SIMP
 debutSimpleType = '\t<xs:simpleType name="{}">\n'

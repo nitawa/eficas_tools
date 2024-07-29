@@ -189,15 +189,12 @@ class X_OBJECT:
 
 
 class X_MCSIMP(X_OBJECT):
-    # -----------------------
+# -----------------------
 
     def buildObjPyxb(self, debug=False):
-        if not self.cata or not self.cata.modeleMetier:
-            return
-        if self.nom == "Consigne":
-            return None
-        if debug:
-            print(self.definition.nomComplet())
+        if not self.cata or not self.cata.modeleMetier: return
+        if self.nom == "Consigne": return None
+        if debug: print(self.definition.nomComplet())
         if debug:
             print("_______________ X_MCSIMP buildObjPyxb", self.nom, self, self.valeur)
         if debug and self.objPyxbDeConstruction == None:
@@ -206,14 +203,15 @@ class X_MCSIMP(X_OBJECT):
             print("objPyxbDeConstruction", self.objPyxbDeConstruction)
         # PNPN Attention les unties ne sont pas forcement projetes comme attribut
         # TODO : a revoir selon le catalogue et faire passer l info dans le XSD
-        #if self.definition.unite != None:
-        #    typeAvecUnite = True
-        #    nomAttributUnite = "unite_T_" + self.nom
-        #    valeurAttributUnite = str(self.definition.unite)
-        #else:
-        #    typeAvecUnite = False
+        if self.definition.unite != None and self.cata.unitAsAttribut == True:
+            typeAvecUnite = True
+            nomAttributUnite = "unite_T_" + self.nom
+            valeurAttributUnite = str(self.definition.unite)
+            if debug : print ('nomAttributUnite', nomAttributUnite)
+            if debug : print ('valeurAttributUnitei')
+        else:
+            typeAvecUnite = False
 
-        typeAvecUnite = False
 
         if self.objPyxbDeConstruction != None:
             self.objPyxb = self.objPyxbDeConstruction
@@ -422,20 +420,10 @@ class X_MCSIMP(X_OBJECT):
             setattr(self.objPyxb, nomAttributUnite, valeurAttributUnite)
             valeurAttributUnite = str(self.definition.unite)
         if debug:
-            print(
-                "X_MCSIMP",
-                self.nom,
-                self.objPyxb,
-            )
+            print( "X_MCSIMP", self.nom, self.objPyxb,)
         if debug:
             print(
-                "__________ fin X_MCSIMP",
-                self.objPyxb,
-                self.nom,
-                self,
-                self.maClasseModeleMetier,
-                self.valeur,
-            )
+                "__________ fin X_MCSIMP", self.objPyxb, self.nom, self, self.maClasseModeleMetier, self.valeur,)
 
     def setValeurObjPyxb(self, newVal, debug=False):
         # if self.nom=='MCPath' : debug = True
@@ -1038,26 +1026,22 @@ class X_JDC(X_MCCOMPO):
         # if debug : print ('debut pour_____________________________ ',objAAnalyser, objAAnalyser.__class__.__name__)
         dictArgs = {}
         # traitement SIMP
-    # ---------------
+        # ---------------
         # a revoir pour les matrices
         # et les tuples
         # if isinstance(objAAnalyser, pyxb.binding.basis.simpleTypeDefinition) or (self._ContentTypeTag == self._CT_SIMPLE) :
         if debug:
-            print(
-                "simpleTypeDefinition :",
-                isinstance(objAAnalyser, pyxb.binding.basis.simpleTypeDefinition),
-            )
+            print( "simpleTypeDefinition :", isinstance(objAAnalyser, pyxb.binding.basis.simpleTypeDefinition),)
         forcesimpleTypeDefinition = False
-        if objAAnalyser._AttributeMap != {}:
+        if objAAnalyser._AttributeMap != {} :
             # PNPN pour trouver comment differencier les types complexes extensions avec un attibut
             # pour l instant on ne fait rien des attributs dans eficas
-            # et pas traite pour les listes
+            # on ne se sert pas de self.cata.unitAsAttribut)
             try:
                 c = objAAnalyser.orderedContent()
             except:
                 forcesimpleTypeDefinition = True
-        if (
-            isinstance(objAAnalyser, pyxb.binding.basis.simpleTypeDefinition)
+        if ( isinstance(objAAnalyser, pyxb.binding.basis.simpleTypeDefinition)
             or forcesimpleTypeDefinition
         ):
             if debug:
