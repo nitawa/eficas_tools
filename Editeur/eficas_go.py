@@ -109,8 +109,6 @@ def genereXSD(code=None):
     texteXSD = monEditor.dumpXsd(withAbstractElt=options.withAbstractElt, withUnitAsAttribute = options.withUnitAsAttribute )
 
     cataFileTrunc = os.path.splitext(os.path.basename(options.cataFile))[0]
-    # if cataFileTrunc[0:4] in ('cata','Cata'): cataFileTrunc=cataFileTrunc[4:]
-    # if cataFileTrunc[0] in ('_','-') : cataFileTrunc=cataFileTrunc[1:]
     fileXSD = cataFileTrunc + ".xsd"
 
     f = open(str(fileXSD), "w")
@@ -163,8 +161,7 @@ def genereStructure(code=None):
         return
 
     monEficas = getEficas(code=options.code)
-    monEficas.genereXSD=True
-    monEditor = monEficas.getEditorForXSDGeneration(cataFile= options.cataFile,datasetFile=fichier,formatOut = 'xml')
+    monEditor = monEficas.getEditorForGeneration(cataFile = options.cataFile)
     texteStructure = monEditor.dumpStructure()
 
     cataFileTrunc = os.path.splitext(os.path.basename(options.cataFile))[0]
@@ -172,6 +169,59 @@ def genereStructure(code=None):
     f = open(str(fileStructure), "w")
     f.write(str(texteStructure))
     f.close()
+
+def genereGitStringFormat (code=None):
+#---------------------------------------
+    from Editeur  import session
+    options=session.parse(sys.argv)
+    if code != None : options.code = code
+    if options.cataFile == None :
+        print ('Use -c cata_name.py')
+        return
+    monEficas = getEficas(code=options.code)
+    monEditor = monEficas.getEditorForGeneration(cataFile = options.cataFile)
+    texteGitStringFormat = monEditor.dumpGitStringFormat()
+    return texteGitStringFormat
+ 
+
+def genereStringDataBase (code=None):
+#------------------------------------
+    from Editeur  import session
+    options=session.parse(sys.argv)
+    if code != None : options.code = code
+    if options.cataFile == None :
+        print ('Use -c cata_name.py')
+        return
+
+    if options.databaseName == None :
+        print ('Use -n nameOfDatabase')
+        return
+    monEficas = getEficas(code=options.code)
+    monEditor = monEficas.getEditorForGeneration(cataFile = options.cataFile)
+    texteStringDataBase=monEditor.dumpStringDataBase(options.databaseName)
+    return texteStringDataBase
+
+def insertInDB (code=None):
+#------------------------------
+    from Editeur  import session
+    options=session.parse(sys.argv)
+    if code != None : options.code = code
+    if options.cataFile == None :
+        print ('Use -c cata_name.py')
+        return 0
+    try    : fichier=options.comm[0]
+    except : fichier=None
+    if fichier==None :
+        print ('xml file is needed')
+        return 0
+
+    monEficasSsIhm = getEficasSsIhm(code=options.code, forceXML=True)
+    from .editorSsIhm import JDCEditorSsIhm
+    monEditeur=JDCEditorSsIhm(monEficasSsIhm,fichier)
+    if not(monEditeur.readercata.cata) : return 0
+    if not(monEditeur.jdc) : return 0
+    return monEditeur.insertInDB()
+   
 
 
 def validateDataSet(code=None):
@@ -224,6 +274,67 @@ def genereComm(code=None):
     monEditor.myWriter.gener(monEditor.jdc,format = 'beautifie')
     monEditor.myWriter.writeFile(fichierCommOut)
     return 1
+
+def genereUQ(code=None):
+#-----------------------
+    from Editeur  import session
+    options=session.parse(sys.argv)
+    if code != None : options.code = code
+    if options.cataFile == None :
+        print ('Use -c cata_name.py')
+        return 0
+    try    : fichier=options.comm[0]
+    except : fichier=None
+    if fichier==None :
+        print ('comm file is needed')
+        return 0
+
+    monEficas = getEficas(code=options.code)
+    monEditor = monEficas.getEditorForXSDGeneration(cataFile= options.cataFile,datasetFile=fichier, formatIn ='xml',formatOut = 'python')
+    if not(monEditor.readercata.cata) : return 0
+    if monEditor.jdc and not(monEditor.jdc.isValid()):
+        print ('Fichier comm is not valid')
+        return 0
+    return monEditeur.saveUQFile(fichier)
+
+def genereUQComm(code=None):
+#-----------------------------
+    from Editeur  import session
+    options=session.parse(sys.argv)
+    if code != None : options.code = code
+    if options.cataFile == None :
+        print ('Use -c cata_name.py')
+        return 0
+    try    : fichier=options.comm[0]
+    except : fichier=None
+    if fichier==None :
+        print ('xml file is needed')
+        return 0
+    if options.fichierOut == None : fichierCommOut=fichier[:fichier.rfind(".")]+'.comm'
+    else : fichierCommOut = options.fichierOut
+
+    monEficas = getEficas(code=options.code)
+    monEditor = monEficas.getEditorForXSDGeneration(cataFile= options.cataFile,datasetFile=fichier, formatIn ='xml',formatOut = 'python')
+    if not(monEditor.readercata.cata) : return 0
+    if not(monEditor.jdc) : return 0
+    # on ne sait lire que des xml valides
+    #PNPN
+    return monEditor.saveUQFile(fichierCommOut)
+
+def genereGitStringFormat (code=None):
+#------------------------------
+    from Editeur  import session
+    options=session.parse(sys.argv)
+    if code != None : options.code = code
+    if options.cataFile == None :
+        print ('Use -c cata_name.py')
+        return
+
+    monEficas = getEficas(code=options.code)
+    monEditor = monEficas.getEditorForGeneration(cataFile = options.cataFile)
+    texteGitStringFormat=monEditor.dumpGitStringFormat()
+    print (texteGitStringFormat)
+
 
 
 # Les deux fonctions ci-après ne sont pas utilisees mais 

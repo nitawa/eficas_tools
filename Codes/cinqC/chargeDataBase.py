@@ -98,9 +98,9 @@ class connectDBCharge(connectDB):
         # -------------------------------------------#
         """
         appelle les fonctions qui
-           1) lise le fichier XML passe en argument
-           2) prepare le insert
-           3) execute le insert grace a connectDB
+           1) lisent le fichier XML passe en argument
+           2) preparent le insert
+           3) executent le insert grace a connectDB
            4) commit
         """
         self.litXMLFile(fileName)

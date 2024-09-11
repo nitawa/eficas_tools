@@ -161,14 +161,27 @@ class EficasAppli:
         texte = p.convert("execnoparseur")
         return texte
 
-    #----------------------------------------------------------------------------------------------------------
-    def getEditorForXSDGeneration(self, cataFile=None, datasetFile=None, formatIn='python', formatOut='python'):
-    #-----------------------------------------------------------------------------------------------------------
+    #-------------------------------------------------------------------------------------------------------
+    def getEditorForXSDGeneration(self, cataFile=None, datasetFile=None, formatIn='python', formatOut='xml'):
+    #--------------------------------------------------------------------------------------------------------
         if (hasattr(self, "editor")) and self.editor != None:
-            print("un seul editeur par application eficas_appli sans Ihm ? ")
+            print("un seul editeur par application eficas_appli pour generer un XSD ")
             sys.exit()
         self.editor = self.editorManager.getEditorForXSDGeneration(cataFile, datasetFile, formatIn, formatOut)
         return self.editor
+
+    # -------------------------------------------------------------------------------------------------
+    def getEditorForGeneration(self, cataFile,datasetFile=None, formatIn='python', formatOut='python'):
+    # -------------------------------------------------------------------------------------------------
+        if (hasattr(self, "editor")) and self.editor != None:
+            print("un seul editeur par application eficas_appli pour generer des autres formats ")
+            sys.exit()
+        self.editor = self.editorManager.getEditorForXSDGeneration(cataFile, datasetFile, formatIn, formatOut)
+        return self.editor
+
+        from Editeur.editor import Editor
+        editor = Editor(self.appliEficas, cataFile=cataFile, dataSetFile=None, formatIn=None, formatOut=None)
+
 
     #-------------------------------------------------------------------------------------------------------------------
     def getWebEditor(self, cId, cataFile = None, datasetFile=None, jdc=None, include=0, formatIn='python', formatOut='python'):

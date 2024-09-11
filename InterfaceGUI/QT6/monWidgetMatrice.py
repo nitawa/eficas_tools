@@ -65,7 +65,7 @@ class MonWidgetMatrice(Ui_desWidgetMatrice, Feuille):
             return
         boolOk, commentaire = self.monType.verifItem(texte, self.node.item.object)
         if not boolOk:
-            self.editor.afficheMessageQt(tr(commentaire), Qt.GlobalColor.red)
+            self.editor.afficheMessageQt(tr(commentaire),'red')
             monItem.setText("")
             return
         if self.monType.coloree:
@@ -77,7 +77,6 @@ class MonWidgetMatrice(Ui_desWidgetMatrice, Feuille):
         else:
             i = self.monType.indiceCouleur % 20
             newCouleur = QColor(*self.monType.listeCouleurs[i])
-            # monItem.setBackground(Qt.GlobalColor.red)
             monItem.setBackground(newCouleur)
             self.monType.dictCouleurs[texte] = newCouleur
             self.monType.indiceCouleur += 1

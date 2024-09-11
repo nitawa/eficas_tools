@@ -82,8 +82,7 @@ class MonWidgetPlusieursIntoOrdonne(
         self.listeRouge = []
 
     def prepareListeResultat(self):
-        for i in self.listeLE:
-            i.close()
+        for i in self.listeLE: i.close()
         self.listeLE = []
         self.vScrollBar = self.scrollArea.verticalScrollBar()
         self.listeValeursCourantes = self.node.item.getListeValeurs()
@@ -99,9 +98,7 @@ class MonWidgetPlusieursIntoOrdonne(
             else:
                 self.listeAAfficher = self.node.item.getListePossible([])
         else:
-            self.listeAAfficher = self.node.item.getListePossible(
-                self.listeValeursCourantes
-            )
+            self.listeAAfficher = self.node.item.getListePossible(self.listeValeursCourantes)
 
         if self.listeAAfficher == []:
             self.ajoutLE(0)
@@ -176,8 +173,7 @@ class MonWidgetPlusieursIntoOrdonne(
 
         self.listeRouge = []
         filtre = str(self.LEFiltre.text())
-        if filtre == "":
-            return
+        if filtre == "": return
         for i in range(len(self.listeAAfficher)):
             nomLE = "lineEditVal" + str(i + 1)
             courant = getattr(self, nomLE)
@@ -191,8 +187,16 @@ class MonWidgetPlusieursIntoOrdonne(
 
     def cleanListeResultatFiltre(self):
         self.LEFiltre.setText("")
+        self.filtre=""
         self.prepareListeResultatFiltre()
 
+    def cataPushed(self):
+        self.cleanListeResultatFiltre()
+        GereListe.cataPushed(self)
+
+    def alphaPushed(self):
+        self.cleanListeResultatFiltre()
+        GereListe.alphaPushed(self)
     def ajoutLEResultat(self, index, valeur=None):
         # print ('ajoutLEResultat', index, valeur)
         nomLE = "LEResultat" + str(index)

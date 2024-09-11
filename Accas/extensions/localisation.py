@@ -54,19 +54,19 @@ def localise(application, locale=None, file=None, translatorFile=None, debug=Fal
         return
 
     if file :
-        print("chargement du fichier de traduction : ", file, monPath)
+        print("Essai de chargement du fichier de traduction : ", file, monPath)
         if eficas_translator.load(file, monPath) :
-          if debug : print( file, " loaded")
+          print( file, " loaded")
         else  : 
           print( 'pb au chargement du fichier de traduction :', file)
         QApplication.installTranslator(eficas_translator)
 
     if translatorFile :
-        print("chargement du fichier de traduction specifique : ", translatorFile)
-        if (code_translator.load(translatorFile)) and debug : print(translatorFile, " loaded")
-        elif code_translator.load(translatorFile + "_" + locale) and debug:
+        print("Essai de chargement du fichier de traduction specifique : ", translatorFile)
+        if (code_translator.load(translatorFile)) : print(translatorFile, " loaded")
+        elif code_translator.load(translatorFile + "_" + locale) :
             print(translatorFile + "_" + locale + " loaded")
-        elif debug: print( "Unable to load Code translator! No file or No translation" + translatorFile)
+        else: print( "Unable to load Code translator! No file or No translation" + translatorFile)
         if debug: print(QApplication.installTranslator(code_translator))
         else: QApplication.installTranslator(code_translator)
 

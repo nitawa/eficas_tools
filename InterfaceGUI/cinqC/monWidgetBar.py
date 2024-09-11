@@ -21,10 +21,6 @@
 # Modules Eficas
 
 from desWidgetBar import Ui_Bar5C
-#from PyQt5.QtWidgets import QCheckBox, QWidget, QGraphicsView, QGraphicsEllipseItem
-#from PyQt5.QtCore    import Qt, QSignalMapper, QPoint, QRectF
-#from PyQt5.QtChart   import QLineSeries, QChart, QChartView, QValueAxis, QCategoryAxis, QScatterSeries
-#from PyQt5.QtGui     import QColor, QBrush, QPen, QPainter
 
 from PyQt5.QtWidgets import QDialog
 from PyQt5.QtChart   import QBarSet, QChart, QChartView, QBarSeries, QBarCategoryAxis, QValueAxis

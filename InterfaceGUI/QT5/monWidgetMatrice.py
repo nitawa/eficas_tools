@@ -65,7 +65,7 @@ class MonWidgetMatrice(Ui_desWidgetMatrice, Feuille):
             return
         boolOk, commentaire = self.monType.verifItem(texte, self.node.item.object)
         if not boolOk:
-            self.editor.afficheMessageQt(tr(commentaire), Qt.red)
+            self.editor.afficheMessageQt(tr(commentaire), 'red')
             monItem.setText("")
             return
         if self.monType.coloree:
@@ -77,7 +77,6 @@ class MonWidgetMatrice(Ui_desWidgetMatrice, Feuille):
         else:
             i = self.monType.indiceCouleur % 20
             newCouleur = QColor(*self.monType.listeCouleurs[i])
-            # monItem.setBackground(Qt.red)
             monItem.setBackground(newCouleur)
             self.monType.dictCouleurs[texte] = newCouleur
             self.monType.indiceCouleur += 1
@@ -199,23 +198,19 @@ class MonWidgetMatriceOT(MonWidgetMatrice):
         except:
             ok = False
         if ok == False:
-            self.editor.afficheMessageQt(tr("Entrer un float SVP"), Qt.red)
+            self.editor.afficheMessageQt(tr("Entrer un float SVP"), 'red')
             monItem.setText("")
             return
         if self.monType.valSup != None:
             if val > self.monType.valSup:
                 self.editor.afficheMessageQt(
-                    tr("Entrer un float inferieur a ") + repr(self.monType.valSup),
-                    Qt.red,
-                )
+                    tr("Entrer un float inferieur a ") + repr(self.monType.valSup),'red')
                 monItem.setText("")
                 return
         if self.monType.valMin != None:
             if val < self.monType.valMin:
                 self.editor.afficheMessageQt(
-                    tr("Entrer un float superieur a ") + repr(self.monType.valMin),
-                    Qt.red,
-                )
+                    tr("Entrer un float superieur a ") + repr(self.monType.valMin), 'red',)
                 monItem.setText("")
                 return
         self.editor.afficheMessageQt("")

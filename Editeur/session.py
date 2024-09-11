@@ -388,6 +388,17 @@ def createParser():
         dest="ssCode",
         help=tr("schema"),
     )
+    parser.add_option(
+        "-n",
+        "--databaseName", 
+        action="store", 
+        default=None,
+        type="string",
+        dest="databaseName",
+        help=tr("nom de la dataBase a Creer  lors du dump"),
+    )
+
+
     # To handle locale information
     # parser.add_option("-l", "--locale", action="store", type="string", dest="locale",
     #              help=tr("localisation de l'application, pour la traduction"))

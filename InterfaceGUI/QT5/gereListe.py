@@ -170,8 +170,7 @@ class GereListe(object):
 
     def alphaPushed(self):
         # print "alphaPushed" ,self.alpha
-        if self.alpha == 1:
-            return
+        if self.alpha == 1: return
         self.alpha = 1
         self.prepareListeResultat()
 

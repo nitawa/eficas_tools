@@ -6,10 +6,11 @@ from Accas import  SIMP,  JDC_CATA, PROC, FACT, JDC_CATA_SINGLETON
 JdC = JDC_CATA_SINGLETON(code="JobPerformance")
 VERSION_CATALOGUE = "V_0"
 
-from catafunctionsJobStatistics import defFunction
+from catafunctionsJobStatistics import defCPUByFunction
+from catastepsStatMemory        import defStepsStatMemory
 from cataInterrogeDB            import chercheVersion
 
-MyJobPerformance = PROC( nom = "MyJobPerformance",
+JobPerformance = PROC( nom = "JobPerformance",
      sha1 = SIMP(statut='o', typ='TXM', ),
      testName = SIMP(statut='o', typ='TXM',),
      version = SIMP(statut='o', typ='TXM', into=chercheVersion, intoXML=[]), 
@@ -19,14 +20,15 @@ MyJobPerformance = PROC( nom = "MyJobPerformance",
      procs = SIMP(statut='o', typ='I', min=0),
      host = SIMP(statut='o', typ='TXM',),
      OS = SIMP(statut='o', typ='TXM',),
-     JobStatistics = FACT(statut = 'o',
+     CPUStatistics = FACT(statut = 'f',
        totalCpuTime = SIMP(statut='o', typ='R', min=0, unite='seconds'),
-       functionsJobStatistics = defFunction(0)
+       functionsJobStatistics = defCPUByFunction(10, 'f')
      ),
+     MemoryStatistics = defStepsStatMemory('f'),
 )
 
 dElementsRecursifs = {}
-dElementsRecursifs['functionsJobStatistics'] = defFunction
+dElementsRecursifs['functionsJobStatistics'] = defCPUByFunction
 dPrimaryKey = {}
 dPrimaryKey['JobPerformance'] = 'sha1'
 dPrimaryKey['JobStatistics'] = 'sha1'

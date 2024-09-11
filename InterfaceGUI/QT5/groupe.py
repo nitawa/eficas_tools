@@ -192,8 +192,7 @@ class Groupe(QWidget, FacultatifOuOptionnel):
             if firstNode == None: firstNode = nouveau
             if nouveau == None or nouveau == 0:
                 self.editor.afficheMessageQt(
-                    tr("insertion impossible a cet endroit pour " + nom), Qt.red
-                )
+                    tr("insertion impossible a cet endroit pour " + nom), 'red')
         try:
             self.reaffiche(firstNode)
             if firstNode != None and firstNode != 0 and firstNode.item != None:

@@ -10,16 +10,19 @@ JdC = JDC_CATA_SINGLETON(code="functionsJobStatistics")
 VERSION_CATALOGUE = "V_0"
 
 
-def defFunction(profondeur):
-   if profondeur < 10 :
-      return FACT(statut='f', nomXML='functionsJobStatistics',max='**',
+def defCPUByFunction(profondeur, statut):
+# profondeur de la recursivite
+# statut : obligatoire ou facultatif
+# le statut devient facultatif des le second appel
+   if profondeur > 0 :
+      return FACT(statut=statut, nomXML='functionsJobStatistics',max='**',
         label    = SIMP(statut='o', typ='TXM'),
         cpuTime  = SIMP(statut='o', typ='R', min=0, unite='seconds'),
         fractionOfTotalTime = SIMP(statut='o', typ='R', min=0),
         calls = SIMP(statut='o', typ='I', min=0),
         depth = SIMP(statut='o', typ='I', min=0),
         fractionOfCallerTime = SIMP(statut='o', typ='R', min=0, unite = 'percent'),
-        functionsJobStatistics = defFunction( profondeur+1)
+        CPUByFunction = defCPUByFunction( profondeur-1, 'f')
       )
    else : 
       return FACT(
@@ -28,11 +31,10 @@ def defFunction(profondeur):
 
 if JdC.code in ( 'functionsJobStatistics' ,) :
   dElementsRecursifs = {}
-  dElementsRecursifs['functionsJobStatistics'] = defFunction
+  dElementsRecursifs['functionsJobStatistics'] = defCPUByFunction
 
 
-#if JdC.code in ( 'functionsJobStatistics', 'Gui5C') :
 if JdC.code in ( 'functionsJobStatistics') :
-  functionsJobStatistics = PROC( nom = "functionsJobStatistics",
-     functions = defFunction(0)
+  CPUStatistics = PROC( nom = "CPUStatistics",
+     CPUByFunction = defCPUByFunction(10, 'o')
 )

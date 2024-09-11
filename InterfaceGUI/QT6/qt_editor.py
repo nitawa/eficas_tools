@@ -274,6 +274,7 @@ class QtEditor(Editor, Ui_baseWidget, QWidget):
     #def afficheMessageQt(self, message, couleur=Qt.GlobalColor.black):
     def afficheMessageQt(self, message, couleur=None):
     # ----------------------------------------------#
+    # couleur = couleur Qt ou red ou None
         if couleur == "red": couleur = Qt.GlobalColor.red
         if self.sb:
             mapalette = self.sb.palette()

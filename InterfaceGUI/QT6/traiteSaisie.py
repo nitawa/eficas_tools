@@ -56,7 +56,7 @@ class SaisieValeur(object):
             try:
                 nouvelleValeur = str(self.lineEditVal.text())
             except UnicodeEncodeError as e:
-                self.editor.afficheMessageQt("pb d encoding", Qt.GlobalColor.red)
+                self.editor.afficheMessageQt("pb d encoding", 'red')
                 validite, commentaire = self.politique.recordValeur(None)
                 self.lineEditVal.setText("")
                 self.setValide()
@@ -74,7 +74,7 @@ class SaisieValeur(object):
         if self.node.item.definition.validators != None:
             if self.node.item.definition.validators.verifItem(nouvelleValeur) != 1:
                 commentaire = self.node.item.definition.validators.infoErreurItem()
-                self.editor.afficheMessageQt(commentaire, Qt.GlobalColor.red)
+                self.editor.afficheMessageQt(commentaire, 'red')
                 self.inSaisieValeur = False
                 return
 

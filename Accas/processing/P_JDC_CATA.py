@@ -173,11 +173,11 @@ class JDC_CATA(P_ENTITE.ENTITE):
             texte += c.dumpStructure()
         return texte
 
-    def dumpStringDataBase(self, nomDataBaseACreer):
-        texte = "create database {}; \n".format(nomDataBaseACreer)
-        texte += "create user admin{}; \n".format(nomDataBaseACreer)
+    def dumpStringDataBase(self, databaseName):
+        texte = "create database {}; \n".format(databaseName)
+        texte += "create user admin{}; \n".format(databaseName)
         texte += "grant all privileges on database {} to admin{}; \n".format(
-            nomDataBaseACreer, nomDataBaseACreer
+            databaseName, databaseName
         )
         texte += "********* fin de creation de la database ********* \n"
         dictPrimaryKey = {}

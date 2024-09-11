@@ -8,9 +8,7 @@ VERSION_CATALOGUE = "V_0"
 
 JdC = JDC_CATA_SINGLETON(code="Gui5C")
 
-#from cataGitLog                import CommitGit
 from cataJobPerformance         import MyJobPerformance
-from catafunctionsJobStatistics import defFunction
 from cataJobSelection           import Selection
 from cataJobSelection           import PresentationLabels
 from cataProfileResultat        import MyProfileResultat

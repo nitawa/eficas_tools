@@ -116,7 +116,7 @@ class BaseConfiguration(object):
         self.translatorFile = None
         self.dicoImages = {}
         self.dicoIcones = {}
-        self.afficheCommandesPliees = True
+        self.afficheCommandesPliees = False
         self.afficheFirstPlies = False
         self.simpleClic = False
         self.afficheOptionnelVide = False

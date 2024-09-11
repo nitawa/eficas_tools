@@ -27,7 +27,7 @@
 # Modules Eficas
 import sys
 import os
-sys.path.append(os.path.join(os.path.abspath(os.path.dirname(__file__)),'..'))
+sys.path.append(os.path.join(os.path.abspath(os.path.dirname(__file__)),'../..'))
 
-from InterfaceQT import eficas_go
+from Editeur import eficas_go
 print (eficas_go.genereStringDataBase(code='NonConnu'))
