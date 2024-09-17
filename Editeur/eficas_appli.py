@@ -87,16 +87,16 @@ class EficasAppli:
         self.mesScripts = {}
         self.listePathAEnlever = []
 
-        if cataFile == None: self.cataFile = session.d_env.cataFile
+        if cataFile == None and 'cataFile' in session.d_env: self.cataFile = session.d_env.cataFile
         else: self.cataFile = cataFile
 
         self.versionCode = versionCode
-        if session.d_env.versionCode: self.versionCode = session.d_env.versionCode
+        if 'versionCode' in session.d_env: self.versionCode = session.d_env.versionCode
 
         if self.salome:
             try:
-                from Accas import eficasSalome
-                Accas.SalomeEntry = eficasSalome.SalomeEntry
+                from Accas import SalomeEntry
+                #Accas.SalomeEntry = eficasSalome.SalomeEntry
             except  Exception as e:
                 print ("impossible d importer les salome entry")
                 print (str(e))
@@ -148,7 +148,8 @@ class EficasAppli:
                 translatorFile=self.maConfiguration.translatorFile,)
 
         # Comment faire si Multi ?
-        self.withXSD   = session.d_env.withXSD
+        if 'withXSD' in session.d_env : self.withXSD   = session.d_env.withXSD
+        else : self.withXSD = False
 
     #-------------------------
     def getSource(self, file):
