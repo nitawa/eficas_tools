@@ -318,6 +318,7 @@ class EficasAppli:
         # Ouverture des fichiers de commandes donnes sur la ligne de commande
         cwd = os.getcwd()
         self.dir = cwd
+        if not 'study' in session.d_env : return
         for study in session.d_env.studies:
             os.chdir(cwd)
             d = session.getUnit(study, self)
