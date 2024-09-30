@@ -65,12 +65,12 @@ class BaseConfiguration(object):
            'repIcones', 'differencieSiDefaut', 'typeDeCata', 'closeParenthese', 'closeOptionnel', 
            'afficheFactOptionnel', 'enleverActionStructures', 'enleverPoubellePourCommande', 'enleverParametres',
            'enleverSupprimer', 'ajoutExecution', 'utilParextensions', 'rendVisiblesLesCaches',
-           'readerModule', 'writerModule',
+           'readerModule', 'writerModule', 'lang',
            'pasDeMCOptionnels', 'dumpXSD', 'withXSD', 'afficheIhm', 'catalogues', 'taille' )
 
         self.labelsUser = ('PdfReader', 'saveDir', ' closeArbre', 'demandeLangue','taille' ,
            'nombreDeBoutonParLigne', 'translatorFile', 'afficheCommandesPliees', 'afficheFirstPlies',
-           'simpleClic', 'afficheOptionnelVide', 'afficheListesPliees', 'differencieSiDefaut') 
+           'simpleClic', 'afficheOptionnelVide', 'afficheListesPliees', 'differencieSiDefaut', 'lang') 
 
         self.setValeursParDefaut()
 
@@ -89,6 +89,10 @@ class BaseConfiguration(object):
                self.saveDir = os.path.join( os.path.expanduser("~"), 'Eficas', self.code)
             else :
                self.saveDir = os.path.join('C:/','Eficas',self.code)
+
+        # on ecrase la langue si elle a ete definie dans Salome
+        if self.appliEficas.langue != None :
+           self.lang=self.appliEficas.langue
 
     # ----------------------------
     def setValeursParDefaut(self):
@@ -149,6 +153,7 @@ class BaseConfiguration(object):
 
         # pour garder ce qui existait pour Aster
         self.repMat = None
+        self.lang='fr'
 
     # ---------------------------------
     def lectureFichierIniStandard(self):

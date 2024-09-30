@@ -384,6 +384,9 @@ class ReaderCata(ReaderCataCommun):
         Realise l'import du catalogue dont le chemin d'acces est donne par cata
         """
          
+        if cataFile == None :
+           print ('No catafile')
+           return
         debug=0
         if debug : print ('importCata cataFile', cataFile)
         nomCata = os.path.splitext(os.path.basename(cataFile))[0]

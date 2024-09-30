@@ -48,7 +48,7 @@ class EficasAppli:
     """
 
     #---------------------------------------------------------------------------------------------------------------------------------------------
-    def __init__(self, code=None, versionCode=None, salome=1, multi=False, langue="fr", ssCode=None, cataFile=None, GUIPath=None, appWeb=None):
+    def __init__(self, code=None, versionCode=None, salome=1, multi=False, langue=None, ssCode=None, cataFile=None, GUIPath=None, appWeb=None):
     #---------------------------------------------------------------------------------------------------------------------------------------------
         """
         Constructor d appli eficas. classe mere de appli-qtEficas et de appli-web eficas et utilisee sans IHM pour les
@@ -87,11 +87,10 @@ class EficasAppli:
         self.mesScripts = {}
         self.listePathAEnlever = []
 
-        if cataFile == None and 'cataFile' in session.d_env: self.cataFile = session.d_env.cataFile
+        if session.d_env.cataFile != None : self.cataFile = session.d_env.cataFile
         else: self.cataFile = cataFile
-
-        self.versionCode = versionCode
-        if 'versionCode' in session.d_env: self.versionCode = session.d_env.versionCode
+        if session.d_env.versionCode != None : self.versionCode = session.d_env.versionCode
+        else : self.versionCode = versionCode
 
         if self.salome:
             try:
@@ -101,15 +100,15 @@ class EficasAppli:
                 print ("impossible d importer les salome entry")
                 print (str(e))
 
-        if langue == "fr": self.langue = langue
-        else: self.langue = "ang"
 
+        self.langue = langue 
         if self.multi == False:
             self.definitCode(code, ssCode)
             if code == None: return
         else : 
             from Editeur.configuration import BaseConfiguration
             self.maConfiguration = BaseConfiguration(self)
+            self.langue = self.maConfiguration.lang 
 
         self.withUQ = False
         self.genereXSD = False
@@ -141,14 +140,13 @@ class EficasAppli:
         self.listePathAEnlever = []
         from Editeur.configuration import BaseConfiguration
         self.maConfiguration = BaseConfiguration(self)
+        self.langue = self.maConfiguration.lang 
 
-        if hasattr(self, "maConfiguration") and self.maConfiguration.translatorFile:
-            from Accas.extensions import localisation
-            localisation.localise( None, self.langue,
-                translatorFile=self.maConfiguration.translatorFile,)
+        from Accas.extensions import localisation
+        localisation.localise( self.langue, translatorFile=self.maConfiguration.translatorFile)
 
         # Comment faire si Multi ?
-        if 'withXSD' in session.d_env : self.withXSD   = session.d_env.withXSD
+        if session.d_env.withXSD : self.withXSD = session.d_env.withXSD
         else : self.withXSD = False
 
     #-------------------------
@@ -318,7 +316,7 @@ class EficasAppli:
         # Ouverture des fichiers de commandes donnes sur la ligne de commande
         cwd = os.getcwd()
         self.dir = cwd
-        if not 'study' in session.d_env : return
+        if session.d_env.studies == []  : return
         for study in session.d_env.studies:
             os.chdir(cwd)
             d = session.getUnit(study, self)

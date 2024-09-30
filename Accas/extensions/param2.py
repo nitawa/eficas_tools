@@ -328,15 +328,11 @@ class OriginalMath(object):
     def __init__(self):
         if hasattr(self, "pi"):
             return
-        import math
-        import numpy
-
-        try:
-            self.toSurcharge()
-        except:
-            pass
+        self.toSurcharge()
 
     def toSurcharge(self):
+        import math
+        import numpy
         self.numeric_ncos = numpy.cos
         self.numeric_nsin = numpy.sin
         self.numeric_narray = numpy.array

@@ -24,48 +24,48 @@ try:
     from PyQt5.QtCore import QTranslator
     code_translator = QTranslator()
     eficas_translator = QTranslator()
+    from PyQt5.QtWidgets import QApplication
 except:
     code_translator = None
     eficas_translator = None
     print("pas d import de qt, pas de traduction")
 
 
-def localise(application, locale=None, file=None, translatorFile=None, debug=False):
+def localise( language=None, translatorFile=None, debug=False):
     """ 
-    file contient les traductions eficas
+    eficasTranslatorFile contient les traductions eficas
     translatorFile contient les traductions specifiques au code
     pour l instant ne fonctionne qu avec qt
     """
+    debug=0
     if code_translator == None:
         print("qt not avalaible, no translation")
         return
 
-    from PyQt5.QtCore import QLibraryInfo
-    from PyQt5.QtCore import QLocale
-    from PyQt5.QtWidgets import QApplication
     monPath = os.path.join(os.path.dirname(__file__), "..","..", "UiQT5")
-    sys_locale = QLocale.system().name()
 
-    if locale is None : locale = "fr"
-    if locale == "ang": locale = "en"
+    if language is None : language = "fr"
+    if language == "ang": language = "en"
+    eficasTranslatorFile='eficas_'+language
 
-    if file == None and translatorFile == None 	:
+    if eficasTranslatorFile == None and translatorFile == None 	:
         if debug: print("pas de fichier de traduction a charger")
         return
 
-    if file :
-        print("Essai de chargement du fichier de traduction : ", file, monPath)
-        if eficas_translator.load(file, monPath) :
-          print( file, " loaded")
+    if eficasTranslatorFile :
+        if eficas_translator.load(eficasTranslatorFile, monPath) :
+          if debug : print("fichier de traduction : ",  monPath, '/',eficasTranslatorFile, 'charge')
         else  : 
-          print( 'pb au chargement du fichier de traduction :', file)
-        QApplication.installTranslator(eficas_translator)
+          if debug : print( 'pb au chargement du fichier de traduction :', monPath, '/',eficasTranslatorFile)
+        if debug: print(QApplication.installTranslator(eficas_translator))
+        else: QApplication.installTranslator(eficas_translator)
+    else :
+        if debug : print ('Fichier des traductions eficas {} non présent'.format (eficasTranslatorFile))
 
     if translatorFile :
-        print("Essai de chargement du fichier de traduction specifique : ", translatorFile)
         if (code_translator.load(translatorFile)) : print(translatorFile, " loaded")
-        elif code_translator.load(translatorFile + "_" + locale) :
-            print(translatorFile + "_" + locale + " loaded")
+        elif code_translator.load(translatorFile + "_" + language) :
+            print(translatorFile + "_" + language + " loaded")
         else: print( "Unable to load Code translator! No file or No translation" + translatorFile)
         if debug: print(QApplication.installTranslator(code_translator))
         else: QApplication.installTranslator(code_translator)

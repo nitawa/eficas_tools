@@ -23,7 +23,6 @@ from Accas.extensions.eficas_translation import tr
 # import traceback
 # traceback.print_stack()
 
-from Accas.extensions import localisation
 from Accas.processing import P_CR
 from Accas.IO.reader.reader_UQPython import pythonUQParser
 

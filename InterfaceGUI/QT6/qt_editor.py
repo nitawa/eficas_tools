@@ -52,7 +52,7 @@ class QtEditor(Editor, Ui_baseWidget, QWidget):
     Editeur de jdc
     """
 
-    def __init__( self, appliEficas, cataFile = None, fichier=None, formatIn = 'python', formatOut = 'python', jdc=None, QWParent=None, include=0):
+    def __init__( self, appliEficas, cataFile = None, dataSetFile=None, formatIn = 'python', formatOut = 'python', jdc=None, QWParent=None, include=0):
     # ---------------------------------------------------------------------------------------------------------------------------------------------
 
         QWidget.__init__(self, None)
@@ -69,7 +69,7 @@ class QtEditor(Editor, Ui_baseWidget, QWidget):
             self.sb = None
         self.QWParent = QWParent
 
-        Editor.__init__(self, appliEficas=appliEficas, cataFile = cataFile , dataSetFile = fichier , jdc = jdc, include = include, formatIn = formatIn , formatOut = formatOut)
+        Editor.__init__(self, appliEficas=appliEficas, cataFile = cataFile , dataSetFile = dataSetFile , jdc = jdc, include = include, formatIn = formatIn , formatOut = formatOut)
 
         # on enleve la gestion du dicEditor necessaire dans les autres cas
         # mais ici l index est le numero de page et non l editorId
@@ -106,18 +106,10 @@ class QtEditor(Editor, Ui_baseWidget, QWidget):
 
         # PN. a specifier vraiment pour savoir 
         # ou se trouve le fichier de traduction si demandeCatalogue
+        # cat appel a  t il sa place ici ?
         if self.appliEficas.readercata.demandeCatalogue == True:
-            nomFichierTranslation = (
-                "translatorFile" + "_" + str(self.appliEficas.readercata.versionCode)
-            )
-            if hasattr(self.appliEficas.maConfiguration, nomFichierTranslation):
-                translatorFile = getattr(
-                    self.appliEficas.maConfiguration, nomFichierTranslation
-                )
-                from Accas.extensions import localisation
-                localisation.localise(
-                    None, self.appliEficas.langue, translatorFile=translatorFile
-                )
+            translatorFileSpecalise =  self.appliEficas.maConfiguration.translatorFile
+            localisation.localise(language=self.appliEficas.langue, translatorFile=self.appliEficas.maConfiguration.translatorFile)
 
         self.appliEficas.construitMenu()
         if self.jdc_item : self.tree = browser.JDCTree(self.jdc_item, self)

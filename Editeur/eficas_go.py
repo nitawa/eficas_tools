@@ -28,7 +28,7 @@ if sys.version_info[0] < 3:
     sys.exit()
 
 
-def lanceQtEficas(code=None, versionCode = None, multi=False, langue="en",  GUIPath='QT5', salome=0):
+def lanceQtEficas(code=None, versionCode = None, multi=False, langue=None,  GUIPath='QT5', salome=0):
 # ---------------------------------------------------------------------------------------------------
     """
       Lance l'appli EFICAS avec Ihm QT
@@ -65,7 +65,7 @@ def lanceQtEficas(code=None, versionCode = None, multi=False, langue="en",  GUIP
     sys.exit(res)
 
 
-def getEficas( code=None, ssCode = None, versionCode = None , multi=False, langue="en", appWeb = None, cataFile = None):
+def getEficas( code=None, ssCode = None, versionCode = None , multi=False, langue=None, appWeb = None, cataFile = None):
 # --------------------------------------------------------------------------------------------------------------------------
     """
     instancie l'appli EFICAS sans lancer QT

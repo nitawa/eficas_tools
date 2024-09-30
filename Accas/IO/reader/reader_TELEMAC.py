@@ -76,8 +76,6 @@ pattern_ContientDouble = re.compile(r"^.*''.*$")
 # except :
 #   pass
 
-from Accas.extensions import localisation
-
 
 def entryPoint():
     """

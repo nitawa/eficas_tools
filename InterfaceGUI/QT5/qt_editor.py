@@ -107,17 +107,8 @@ class QtEditor(Editor, Ui_baseWidget, QWidget):
         # PN. a specifier vraiment pour savoir 
         # ou se trouve le fichier de traduction si demandeCatalogue
         if self.appliEficas.readercata.demandeCatalogue == True:
-            nomFichierTranslation = (
-                "translatorFile" + "_" + str(self.appliEficas.readercata.versionCode)
-            )
-            if hasattr(self.appliEficas.maConfiguration, nomFichierTranslation):
-                translatorFile = getattr(
-                    self.appliEficas.maConfiguration, nomFichierTranslation
-                )
-                from Accas.extensions import localisation
-                localisation.localise(
-                    None, self.appliEficas.langue, translatorFile=translatorFile
-                )
+            translatorFileSpecalise =  self.appliEficas.maConfiguration.translatorFile
+            localisation.localise(language=self.appliEficas.langue, translatorFile=self.appliEficas.maConfiguration.translatorFile)
 
         self.appliEficas.construitMenu()
         if self.jdc_item : self.tree = browser.JDCTree(self.jdc_item, self)

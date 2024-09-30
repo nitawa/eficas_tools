@@ -43,15 +43,15 @@ class QtEficasAppli(EficasAppli, Ui_Eficas, QMainWindow):
     """
 
     #----------------------------------------------------------------------------------------------------------------------------------------------
-    def __init__(self, code=None, versionCode=None, salome=1, multi=False, langue="fr", ssCode=None, cataFile=None, GUIPath="QT5", appWeb = None, parent = None):
+    def __init__(self, code=None, versionCode=None, salome=1, multi=False, langue=None, ssCode=None, cataFile=None, GUIPath="QT5", appWeb = None, parent = None):
     #----------------------------------------------------------------------------------------------------------------------------------------------
         """
         Constructor
         """
         QMainWindow.__init__(self,parent)
         Ui_Eficas.__init__(self)
-        self.setupUi(self)
         EficasAppli.__init__( self, code, versionCode, salome, multi, langue,  ssCode, cataFile, GUIPath, appWeb)
+        self.setupUi(self)
         
         self.editorManager = QtEditorManager(self)
         #TODO --> a virer apres accord JPA
@@ -67,7 +67,7 @@ class QtEficasAppli(EficasAppli, Ui_Eficas, QMainWindow):
 
         self.recemmentUtilises = []
         from Accas.extensions import localisation
-        localisation.localise(None, self.langue, translatorFile=self.maConfiguration.translatorFile,)
+        localisation.localise(self.langue, translatorFile=self.maConfiguration.translatorFile,)
         self.repIcon = os.path.join( os.path.dirname(os.path.abspath(__file__)),"..", "..", "Editeur", "icons")
 
         if not self.salome:
@@ -190,14 +190,10 @@ class QtEficasAppli(EficasAppli, Ui_Eficas, QMainWindow):
         # print "je passe la"
         repAide = os.path.dirname(os.path.abspath(__file__))
         fileName = "index.html"
-        self.docPath = repAide + "/../Aide"
-        if hasattr(self, "maConfiguration") and hasattr(
-            self.maConfiguration, "docPath"
-        ):
+        self.docPath = repAide + "../../Aide"
+        if hasattr(self, "maConfiguration") and hasattr( self.maConfiguration, "docPath"):
             self.docPath = self.maConfiguration.docPath
-        if hasattr(self, "maConfiguration") and hasattr(
-            self.maConfiguration, "fileName"
-        ):
+        if hasattr(self, "maConfiguration") and hasattr( self.maConfiguration, "fileName"):
             fileName = self.maConfiguration.fileName
         self.fileDoc = os.path.join(self.docPath, fileName)
         self.actionCode.setText(tr("Aide specifique ") + str(self.code))
