@@ -73,6 +73,7 @@ finTypeSubst = "\t\t</xs:sequence>\n\t</xs:group>\n"
 substDsSequence = '\t\t\t<xs:group ref="{}:{}"  minOccurs="{}" maxOccurs="{}">\n\t\t\t\t<xs:annotation>\n\t\t\t\t\t<xs:documentation>{}</xs:documentation>\n\t\t\t\t</xs:annotation>\n\t\t\t</xs:group>\n'
 # choiceDsBloc     = '\t\t\t<xs:choice minOccurs={}>\n'
 debutChoiceDsBloc = "\t\t<xs:choice>\n"
+debutChoiceMultiple = '\t\t<xs:choice minOccurs="0" maxOccurs="unbounded">\n'
 debutChoiceDsBlocAvecMin = '<xs:choice minOccurs="{}">\n'
 finChoiceDsBloc = "\t\t</xs:choice>\n"
 debSequenceDsBloc = "<xs:sequence>\n"

@@ -51,7 +51,7 @@ from .balisesXSD import *
 
 # -----------------
 class X_definition:
-    # -----------------
+# -----------------
     def adjoint(self, liste1, liste2):
         # print ('adjoint', liste1, liste2)
         l = []
@@ -83,8 +83,7 @@ class X_definition:
         return listeFinale
 
     def fusionne2Listes(self, liste1, liste2, debug=False):
-        if debug:
-            print("fusionne2Liste", liste1, liste2)
+        if debug: print("fusionne2Liste", liste1, liste2)
         listeFinale = []
         for elt1 in liste1:
             for eltListe in liste2:
@@ -144,85 +143,49 @@ class X_definition:
         if (hasattr(self, "nomXML")) and self.nomXML != None:
             nom = "T_" + self.nomXML
         if not (nom in cata.dictTypesXSD.keys()):
-            cata.dictTypesXSD[nom] = [
-                self,
-            ]
+            cata.dictTypesXSD[nom] = [ self, ]
             if debug:
-                print(
-                    "creation de cata.dictTypesXSD ", nom, self.getNomCompletAvecBloc()
-                )
-            # if nom == 'T_MuN' : print ('ligne 136')
+                print( "creation de cata.dictTypesXSD ", nom, self.getNomCompletAvecBloc())
         else:
             if not self in cata.dictTypesXSD[nom]:
                 cata.dictTypesXSD[nom].append(self)
-            if debug:
-                print(
-                    "142 ajout de cata.dictTypesXSD ", nom, self.getNomCompletAvecBloc()
-                )
-            # if nom == 'T_MuN' : print ('ligne 138')
+            if debug: print( " ajout de cata.dictTypesXSD ", nom, self.getNomCompletAvecBloc())
 
     def definitNomDuTypePyxb(self, forceACreer=False, debug=False):
         # if self.nom == 'A' : debug = True
-        if debug:
-            print("***************************************************")
-        if debug:
-            print(
-                " Traitement definitNomDuTypePyxb",
-                self,
-                self.nom,
-                self.nomComplet(),
-                forceACreer,
-            )
-        if debug:
-            print(self.getNomCompletAvecBloc())
-        if debug:
-            print("***************************************************")
+        if debug: 
+            print ("***************************************************")
+            print ( " Traitement definitNomDuTypePyxb", self, self.nom, self.nomComplet(), forceACreer,)
+            print (self.getNomCompletAvecBloc())
+            print ("***************************************************")
         if hasattr(self, "nomDuTypePyxb"):
             self.aCreer = False
             return self.nomDuTypePyxb
         if debug:
-            print("definitNomDuTypePyxb traitement pour ", self.nom)
-        if debug:
-            print(self.getNomCompletAvecBloc())
+            print ("definitNomDuTypePyxb traitement pour ", self.nom)
+            print (self.getNomCompletAvecBloc())
         # if debug : traceback.print_stack()
         self.aCreer = True
         cata = CONTEXT.getCurrentCata()
         nom = "T_" + self.nom
         if (hasattr(self, "nomXML")) and self.nomXML != None:
             nom = "T_" + self.nomXML
-        if debug:
-            print("nom in cata.dictTypesXSD.keys", nom in cata.dictTypesXSD.keys())
+        if debug: print("nom in cata.dictTypesXSD.keys", nom in cata.dictTypesXSD.keys())
         # if debug and  (nom in cata.dictTypesXSD.keys()) : print ( cata.dictTypesXSD[nom])
         if not (nom in cata.dictTypesXSD.keys()) or cata.dictTypesXSD[nom] == []:
             # il faut tenir compte des re céations des types qui appartenaient a un compo ambigu qu on refusionne
             if debug:
-                print(
-                    "definitNomDuTypePyxb encore jamais traite ",
-                    self.nom,
-                    " a pour type",
-                    nom,
-                )
-            cata.dictTypesXSD[nom] = [
-                self,
-            ]
+                print( "definitNomDuTypePyxb encore jamais traite ", self.nom, " a pour type", nom,)
+            cata.dictTypesXSD[nom] = [ self, ]
             self.nomDuTypePyxb = nom
             self.indiceDuTypePyxb = 0
             if debug:
-                print(
-                    "************ indiceDuTypePyxb pour",
-                    self.getNomCompletAvecBloc(),
-                    " mis a ",
-                    0,
-                )
+                print( "************ indiceDuTypePyxb pour", self.getNomCompletAvecBloc(), " mis a ", 0,)
             if debug:
                 print("indice a ", 0, "pour", self.getNomCompletAvecBloc())
             return nom
         if debug:
-            print(
-                " ----------- definitNomDuTypePyxb deja traite ",
-                self.nom,
-                " suite de l algo",
-            )
+            print( " ----------- definitNomDuTypePyxb deja traite ", self.nom, " suite de l algo",)
         if nom == "T_Consigne":
             return nom
 
@@ -240,7 +203,6 @@ class X_definition:
                 # debug=1
                 if debug:
                     print("objAComparer", objAComparer.getNomCompletAvecBloc())
-                if debug:
                     print("obj", self.getNomCompletAvecBloc())
                 # debug=0
                 # on peut ne pas avoir de type pyxb
@@ -249,61 +211,35 @@ class X_definition:
                     continue
                 if objAComparer.indiceDuTypePyxb >= indice:
                     indice = objAComparer.indiceDuTypePyxb + 1
-                    if debug:
-                        print(
-                            "objAComparer.indiceDuTypePyxb",
-                            objAComparer.indiceDuTypePyxb,
-                        )
+                    if debug: print( "objAComparer.indiceDuTypePyxb", objAComparer.indiceDuTypePyxb,)
         if not forceACreer:
             self.aCreer = False
             listePossible = cata.dictTypesXSD[nom]
-            if debug:
-                print("listePossible : ", listePossible, "pour ", nom, self)
+            if debug: print("listePossible : ", listePossible, "pour ", nom, self)
             for objAComparer in listePossible:
-                if debug:
-                    print("comparaison entre ", objAComparer, "et ", self)
+                if debug: print("comparaison entre ", objAComparer, "et ", self)
                 if objAComparer == self:
                     continue
                 # on peut ne pas avoir de type pyxb
                 # si on reconstruit l arbre aprs des fusions de compo ambigus
                 if not (hasattr(objAComparer, "nomDuTypePyxb")):
                     continue
-                if debug:
-                    print(self.compare(objAComparer))
+                if debug: print(self.compare(objAComparer))
                 if self.compare(objAComparer):
                     self.nomDuTypePyxb = objAComparer.nomDuTypePyxb
                     self.indiceDuTypePyxb = objAComparer.indiceDuTypePyxb
                     if debug:
                         print(self, objAComparer)
-                    if debug:
                         print(type(self), type(objAComparer))
-                    if debug:
-                        print(
-                            "definitNomDuTypePyxb",
-                            self.nom,
-                            "type identique",
-                            objAComparer.nomDuTypePyxb,
-                        )
-                    if debug:
-                        print(
-                            "indice a ",
-                            objAComparer.nomDuTypePyxb,
-                            "pour",
-                            self.getNomCompletAvecBloc(),
-                        )
+                        print( "definitNomDuTypePyxb", self.nom, "type identique", objAComparer.nomDuTypePyxb,)
+                        print( "indice a ", objAComparer.nomDuTypePyxb, "pour", self.getNomCompletAvecBloc(),)
                     if self not in cata.dictTypesXSD[nom]:
                         cata.dictTypesXSD[nom].append(self)
                     if debug and self not in cata.dictTypesXSD[nom]:
-                        print(
-                            "ajout ds cata.dictTypesXS",
-                            nom,
-                            self.getNomCompletAvecBloc(),
-                        )
+                        print( "ajout ds cata.dictTypesXS", nom, self.getNomCompletAvecBloc(),)
                     if self.label != "SIMP":
                         if objAComparer not in list(cata.dictTypesXSDJumeaux.keys()):
-                            cata.dictTypesXSDJumeaux[objAComparer] = [
-                                self,
-                            ]
+                            cata.dictTypesXSDJumeaux[objAComparer] = [ self, ]
                         else:
                             cata.dictTypesXSDJumeaux[objAComparer].append(self)
                     return objAComparer.nomDuTypePyxb
@@ -325,12 +261,7 @@ class X_definition:
             nomAlter = "T_" + self.nom
         self.indiceDuTypePyxb = indice
         if debug:
-            print(
-                "************ indiceDuTypePyxb pour",
-                self.getNomCompletAvecBloc(),
-                " mis a ",
-                indice,
-            )
+            print( "************ indiceDuTypePyxb pour", self.getNomCompletAvecBloc(), " mis a ", indice,)
         if (hasattr(self, "nomXML")) and self.nomXML != None:
             nomAlter = "T_" + self.nomXML + "_" + str(indice)
         self.nomDuTypePyxb = nomAlter
@@ -341,10 +272,12 @@ class X_definition:
 
 # ----------------------------------------
 class X_compoFactoriseAmbigu(X_definition):
-    # ----------------------------------------
+# ----------------------------------------
 
-    def __init__(self, nom, listeDeCreation, pere, debug=False):
-        # if pere.nom == 'Test_Ambigu' : debug = False
+    def __init__(self, nom, listeDeCreation, pere, typeXSD = None, debug = False):
+        #if pere.nom == 'AlgorithmParameters' or pere.nom  == "LeProc": 
+        #   debug   = True
+        #   typeXSD = 'Fusion'
         self.label = "BlocAmbigu"
         self.nom = nom
         self.pere = pere
@@ -354,14 +287,17 @@ class X_compoFactoriseAmbigu(X_definition):
         self.typesXSDDejaDumpes = []
         self.ordreMC = []
         self.lesConditions = "Possible Conditions : "
+        self.typeXSD = typeXSD
+        #debug=1
         if debug:
-            print("___________________________________________________________________")
-            print("je suis dans compoFactoriseAmbigu pour", self.pere, self.pere.nom)
+            print ("___________________________________________________________________")
+            print ("je suis dans compoFactoriseAmbigu pour", self.pere, self.pere.nom, "avec typeXSD", typeXSD)
             for i in listeDeCreation:
-                print(i.nom)
-                print(i, type(i))
-                print(i.possedeDejaUnMCFactorise)
-            print("___________________________________________________________________")
+                print (i.nom)
+                print (i, type(i))
+                print (i.possedeDejaUnMCFactorise)
+            print ("___________________________________________________________________")
+        debug=0
         if hasattr(pere, "listeDesCompoAmbigus"):
             pere.listeDesCompoAmbigus.append(self)
         else:
@@ -374,82 +310,58 @@ class X_compoFactoriseAmbigu(X_definition):
             self.mcXSD.append(mc)
             self.ordreMC.append(mc.nom)
         # if self.nom == 'B1_B2' : debug = True
-        if debug and doitReecrireLesTypes:
-            print("je dois reecrire pour", self.nom)
-        if debug:
-            print("doitReecrireLesTypes", doitReecrireLesTypes)
-        if debug:
-            print("self.mcXSD", self.mcXSD)
-        if debug:
-            print("self.ordreMC", self.ordreMC)
+        if debug and doitReecrireLesTypes: print("je dois reecrire pour", self.nom)
+        if debug: print ("doitReecrireLesTypes", doitReecrireLesTypes)
+        if debug: print ("self.mcXSD", self.mcXSD)
+        if debug: print ("self.ordreMC", self.ordreMC)
         self.construitEntites(self.mcXSD, debug=debug)
-        if debug:
-            print("apres  de self.construitEntites")
-        self.constructionArbrePossibles(debug=debug)
+        if debug: print("apres  de self.construitEntites")
+        if self.typeXSD == 'Fusion' : self.fusionneLesBlocs()
+        else : self.constructionArbrePossibles(debug=debug)
         # self.constructionArbrePossibles2(debug=debug)
 
         lesPossibles = deepcopy(self.arbrePossibles)
-        if debug:
-            print("lesPossibles ", lesPossibles)
+        if debug: print("lesPossibles ", lesPossibles)
 
         self.getNomDuCodeDumpe()
         self.nomDuTypePyxb = self.definitNomDuTypePyxb()
-        if debug:
-            print("CompoAmbigu : ", self.nomDuTypePyxb)
+        if debug: print("CompoAmbigu : ", self.nomDuTypePyxb)
         self.texteSimple = ""
         self.texteComplexeVenantDesFils = ""
         self.texteComplexe = debutTypeSubstDsBlocFactorise.format(self.nomDuTypePyxb)
         # on enleve [] des possibles puisque l elt sera optionnel
         lesPossibles.remove([])
         # if self.nom == 'B1_B2' : debug = True
-        if debug:
-            print("________________ init de compoAmbigu", self.nom, lesPossibles)
+        if debug: print("________________ init de compoAmbigu", self.nom, lesPossibles)
         # if debug : print ('self.entites', self.entites)
         cata = CONTEXT.getCurrentCata()
         if doitReecrireLesTypes:
-            if debug:
-                print("cata.dictTypesXSD avant la boucle", cata.dictTypesXSD["T_A"])
+            if debug: print("cata.dictTypesXSD avant la boucle", cata.dictTypesXSD["T_A"])
             # on n enleve pas de cata.dictTypesXSD les blocs ambigus qui ne servent plus
             # il faudrait peut-etre gerer la liste de ces blocs et les nettoyer aussi
             # Oui mais comment faire
             #
-            if debug:
-                print("doit reecrire les textes pour ", self.nom)
+            if debug: print("doit reecrire les textes pour ", self.nom)
             for nom in self.entites.keys():
-                if debug:
-                    print("dans for pour enlever les nomDuTypePyxb", nom)
+                if debug: print("dans for pour enlever les nomDuTypePyxb", nom)
                 for mc in self.entites[nom]:
-                    if debug:
-                        print("traitement de ", nom, "mot clef", mc)
+                    if debug: print("traitement de ", nom, "mot clef", mc)
                     if hasattr(mc, "nomDuTypePyxb"):
                         clef = mc.nomDuTypePyxb
                         # if debug : print ('avec la clef  ', clef)
                         # PN : comprendre pourquoi certains MC sont en double ???
                         try:
-                            if debug:
-                                print(
-                                    "remove ds cata.dictTypesXSD",
-                                    clef,
-                                    mc.getNomCompletAvecBloc(),
-                                )
+                            if debug: print( "remove ds cata.dictTypesXSD", clef, mc.getNomCompletAvecBloc(),)
                             while mc in cata.dictTypesXSD[clef]:
                                 cata.dictTypesXSD[clef].remove(mc)
                         except:
                             print("ds le except pour dicTypeXSD", nom)
-                    if hasattr(mc, "nomDuTypePyxb"):
-                        delattr(mc, "nomDuTypePyxb")
-                    if hasattr(mc, "aDejaEteDumpe"):
-                        delattr(mc, "aDejaEteDumpe")
-                    if hasattr(mc, "entites"):
-                        self.remetSousArbreAVide(mc)
-                    if hasattr(mc, "indiceDuTypePyxb"):
-                        delattr(mc, "indiceDuTypePyxb")
+                    if hasattr(mc, "nomDuTypePyxb"): delattr(mc, "nomDuTypePyxb")
+                    if hasattr(mc, "aDejaEteDumpe"): delattr(mc, "aDejaEteDumpe")
+                    if hasattr(mc, "entites"): self.remetSousArbreAVide(mc)
+                    if hasattr(mc, "indiceDuTypePyxb"): delattr(mc, "indiceDuTypePyxb")
                     if debug:
-                        print(
-                            "************ indiceDuTypePyxb pour",
-                            self.getNomCompletAvecBloc(),
-                            " mis a  0",
-                        )
+                        print( "************ indiceDuTypePyxb pour", self.getNomCompletAvecBloc(), " mis a  0",)
                     # if mc in cata.dictTypesXSDJumeaux.keys() : print (mc.nom, cata.dictTypesXSDJumeaux[mc][0].nom)
 
             if debug:
@@ -467,6 +379,7 @@ class X_compoFactoriseAmbigu(X_definition):
         self.texteComplexe += finTypeSubstDsBlocFactorise
         self.texteComplexe += self.texteComplexeVenantDesFils
         # print ('fin pour prepareDumpXSD pour', self.nom)
+
 
     def compare(self, autreMC):
         if self.label != autreMC.label:
@@ -488,8 +401,7 @@ class X_compoFactoriseAmbigu(X_definition):
                 self.entites[mc.nom] = [
                     mc,
                 ]
-            if debug:
-                print("mc.nom", mc.nom, hasattr(mc, "nomDuTypePyxb"))
+            if debug: print("mc.nom", mc.nom, hasattr(mc, "nomDuTypePyxb"))
             if mc.label == "BLOC" or mc.label == "BlocAmbigu":
                 self.ajouteLesMCFilsAEntite(mc)
                 if debug:
@@ -515,6 +427,20 @@ class X_compoFactoriseAmbigu(X_definition):
                 ):
                     self.ajouteLesMCFilsAEntite(blocMc.entites[mcFilsNom])
 
+    def fusionneLesBlocs(self, debug=False):
+        if debug: print("construction pour FACT ambigu _______________", self.nom)
+        self.arbrePossibles = []
+        self.a = []
+        for child in self.mcXSD:
+            if debug : print( "appel construitTousLesFils pour", child.nom, " à partir de ", self.nom,)
+            child.tousLesFils = []
+            child.construitTousLesFils()
+            for fils in child.tousLesFils :
+                #if fils not in self.arbrePossibles : self.arbrePossibles.append(fils)
+                if fils not in self.a : self.a.append(fils)
+        self.arbrePossibles.append(self.a)
+        self.arbrePossibles.append([])
+
     def constructionArbrePossibles(self, debug=False):
         if debug:
             print("______________________________________")
@@ -523,12 +449,7 @@ class X_compoFactoriseAmbigu(X_definition):
         toutesLesLignes = [[]]
         for child in self.mcXSD:
             if debug and not hasattr(child, "arbrePossibles"):
-                print(
-                    "appel construitArbrePossibles pour",
-                    child.nom,
-                    " à partir de ",
-                    self.nom,
-                )
+                print( "appel construitArbrePossibles pour", child.nom, " à partir de ", self.nom,)
             if not hasattr(child, "arbrePossibles"):
                 child.construitArbrePossibles()
             if debug:
@@ -646,10 +567,9 @@ class X_compoFactoriseAmbigu(X_definition):
         print("dans nomComplet pourquoi ?", self, self.nom)
 
     def factoriseEtCreeDump(self, laListe, indent=2, nomAppel=None, debug=False):
-        # debug=True
-        # if debug : print('______________ debut factoriseetCreeDump',self.nom, laListe, indent, nomAppel)
-        # if debug : print('______________ ', indent, nomAppel)
-        # debug=False
+        if debug : print('______________ debut factoriseetCreeDump',self.nom, laListe, indent, nomAppel)
+        if debug : print('______________ ', indent, nomAppel)
+        debug=False
         maListeRetour = []
         aReduire = {}
 
@@ -676,17 +596,15 @@ class X_compoFactoriseAmbigu(X_definition):
                         ligne[1:],
                     ]
 
-        if debug:
-            print(
-                "la Liste",
-                laListe,
-                "declencheChoiceAvecSeqVid : ",
-                declencheChoiceAvecSeqVid,
-            )
-        if debug:
-            print("aReduire", aReduire, "keys", aReduire.keys())
+        if debug: print( "la Liste", laListe, "declencheChoiceAvecSeqVid : ", declencheChoiceAvecSeqVid,)
+        if debug: print("aReduire", aReduire, "keys", aReduire.keys())
         if len(aReduire.keys()) == 1:
-            if declencheChoiceAvecSeqVid == False:
+            if self.typeXSD == 'Fusion' :
+                creeChoice = False
+                creeSequence = False
+                self.texteComplexe += "\t" * (indent) + debutChoiceMultiple
+                indent = indent + 1
+            elif declencheChoiceAvecSeqVid == False:
                 creeChoice = False
                 creeSequence = True
                 self.texteComplexe += "\t" * (indent) + debSequenceDsBloc
@@ -744,16 +662,13 @@ class X_compoFactoriseAmbigu(X_definition):
             if creeChoice:
                 indent = indent - 1
                 self.texteComplexe += "\t" * (indent) + finSequenceDsBloc
-            if debug:
-                print(
-                    "--------------------------------------------- fin boucle for",
-                    nomMC,
+            if debug: print( "--------------------------------------------- fin boucle for", nomMC,
                 )
 
         if declencheChoiceAvecSeqVid:
             self.texteComplexe += "\t" * indent + debSequenceDsBloc
             self.texteComplexe += "\t" * indent + finSequenceDsBloc
-        if creeChoice:
+        if creeChoice or  self.typeXSD == 'Fusion' :
             indent = indent - 1
             self.texteComplexe += "\t" * indent + finChoiceDsBloc
         if creeSequence:
@@ -1186,7 +1101,7 @@ class X_compoFactoriseAmbigu(X_definition):
 
 # ----------------------------------------
 class X_definitionComposee(X_definition):
-    # ------------------------------------------
+# ------------------------------------------
 
     def creeTexteComplexeVenantDesFils(self, dansFactorisation=False, debug=False):
         texteComplexeVenantDesFils = ""
@@ -1335,12 +1250,11 @@ class X_definitionComposee(X_definition):
     def compare(self, autreMC):
         if self.label != autreMC.label:
             return False
-        if (
-            hasattr(self, "nomXML")
+        #if self.nom == 'ValueTemplate' : return True
+        if ( hasattr(self, "nomXML")
             and hasattr(autreMC, "nomXML")
             and self.nomXML == autreMC.nomXML
-            and self.nomXML != None
-        ):
+            and self.nomXML != None):
             return True
         for attr in ("regles", "fr", "defaut", "min", "max", "position", "docu"):
             try:
@@ -1371,7 +1285,7 @@ class X_definitionComposee(X_definition):
             mc = self.entites[nomMC]
             self.mcXSD.append(mc)
             mc.prepareDumpXSD()
-        self.chercheListesDeBlocsNonDisjoints()
+        self.chercheListesDesBlocsNonDisjoints()
         for l in list(self.listeDesBlocsNonDisjoints):
             if not (self.besoinDeFactoriserTrivial(l)):
                 self.listeDesBlocsNonDisjoints.remove(l)
@@ -1379,12 +1293,11 @@ class X_definitionComposee(X_definition):
                 self.possedeDejaUnMCFactorise = 1
                 self.factorise(l)
 
-    def chercheListesDeBlocsNonDisjoints(self):
+    def chercheListesDesBlocsNonDisjoints(self):
         self.listeDesBlocsNonDisjoints = []
         for nomChild in self.ordreMC:
             child = self.entites[nomChild]
-            if child.label != "BLOC":
-                continue
+            if child.label != "BLOC": continue
             if self.listeDesBlocsNonDisjoints == []:
                 self.listeDesBlocsNonDisjoints.append([child])
                 continue
@@ -1392,10 +1305,8 @@ class X_definitionComposee(X_definition):
             for liste in list(self.listeDesBlocsNonDisjoints):
                 independant = True
                 for bloc in liste:
-                    if bloc.isDisjoint(child):
-                        continue
-                    if bloc.estLeMemeQue(child):
-                        continue
+                    if bloc.isDisjoint(child): continue
+                    if bloc.estLeMemeQue(child): continue
                     independant = False
                     vraimentIndependant = False
                 if not (independant):
@@ -1406,6 +1317,7 @@ class X_definitionComposee(X_definition):
         for l in list(self.listeDesBlocsNonDisjoints):
             if len(l) == 1:
                 self.listeDesBlocsNonDisjoints.remove(l)
+
 
     def estLeMemeQue(self, autreMC):
         if (
@@ -1457,15 +1369,22 @@ class X_definitionComposee(X_definition):
         nomFin = liste[-1].nom
         indexFin = self.mcXSD.index(liste[-1]) + 1
         nom = nomDebut + "_" + nomFin
-        if debug:
-            print("___________ dans factorise", nom)
+        if debug: print("___________ dans factorise", nom)
         listeAFactoriser = []
         for i in range(indexDebut, indexFin):
             listeAFactoriser.append(self.mcXSD[i])
-
         newListe = self.mcXSD[0:indexDebut]
-
-        monEltFacteur = X_compoFactoriseAmbigu(nom, listeAFactoriser, self)
+        if debug : 
+            print ('uuuuuuuuuuuuuuuuuuuuu')
+            print ('new liste ', newListe) 
+            print ('listeAFactoriser',listeAFactoriser) 
+            if len(listeAFactoriser) >=1 : 
+               print ( listeAFactoriser[0].nom)
+               print ( listeAFactoriser[0])
+               print ( listeAFactoriser[0].typeXSD )
+        if len(listeAFactoriser) >=1 : typeXSD = listeAFactoriser[0].typeXSD
+        else : typeXSD = None
+        monEltFacteur = X_compoFactoriseAmbigu(nom, listeAFactoriser, self, typeXSD=typeXSD)
         newListe.append(monEltFacteur)
         newListe = newListe + self.mcXSD[indexFin:]
         self.mcXSD = newListe
@@ -1474,8 +1393,7 @@ class X_definitionComposee(X_definition):
 
     def construitTousLesFils(self):
         for nomChild in self.ordreMC:
-            if nomChild == "Consigne" or nomChild == "blocConsigne":
-                continue
+            if nomChild == "Consigne" or nomChild == "blocConsigne": continue
             child = self.entites[nomChild]
             if child.label != "BLOC":
                 self.tousLesFils.append(child.nom)
@@ -1484,7 +1402,7 @@ class X_definitionComposee(X_definition):
                     child.construitTousLesFils()
                 for nomPetitFils in child.tousLesFils:
                     self.tousLesFils.append(nomPetitFils)
-        # print ('construitArbreEntier pour ', self.nom, self.tousLesFils)
+        #print ('construitTousLesFils pour ', self.nom, self.tousLesFils)
 
     def isDisjoint(self, mc1):
         if self.tousLesFils == []:
@@ -1501,7 +1419,7 @@ class X_definitionComposee(X_definition):
 
 # ---------------------------------
 class X_FACT(X_definitionComposee):
-    # --------- ------------------------
+# --------- ------------------------
     # Un FACT avec max=** doit se projeter en XSD sous forme d'une sequence a cardinalite 1 et
     # l'element qui porte la repetition du FACT
     def traduitMinMax(self, maxOccurs=None):
@@ -1527,7 +1445,7 @@ class X_FACT(X_definitionComposee):
 
 # ---------------------------------
 class X_OPER(X_definitionComposee):
-    # ---------------------------------
+# ---------------------------------
     def dumpXsd(
         self, dansFactorisation=False, multiple=False, first=False, withAbstractElt=True
     ):
@@ -1553,18 +1471,15 @@ class X_OPER(X_definitionComposee):
 
 # ----------------------------------
 class X_PROC(X_definitionComposee):
-    # -----------------------------------
+# -----------------------------------
     pass
 
 
 # -----------------------------------
 class X_BLOC(X_definitionComposee):
-    # -----------------------------------
-    def dumpXsd(
-        self, dansFactorisation=False, multiple=False, first=False, debug=False
-    ):
-        if debug:
-            print("X_BLOC dumpXsd", self.nom)
+# -----------------------------------
+    def dumpXsd( self, dansFactorisation=False, multiple=False, first=False, debug=False):
+        if debug: print("X_BLOC dumpXsd", self.nom)
         self.tousLesFils = []
         if self.nom == "blocConsigne":
             self.texteComplexe = ""
@@ -1572,11 +1487,10 @@ class X_BLOC(X_definitionComposee):
             self.nomDuTypePyxb = "NonTraiteConsigne"
             self.aCreer = False
             self.texteElt = ""
-
             return
         self.getNomDuCodeDumpe()
-        # dans ce cas les blocs successifs sont identiques et on ne dumpe que le 1er
 
+        # dans ce cas les blocs successifs sont identiques et on ne dumpe que le 1er
         self.nomDuTypePyxb = self.definitNomDuTypePyxb()
         self.texteSimple = ""  # on n ajoute pas de type simple
 
@@ -1660,7 +1574,7 @@ class X_BLOC(X_definitionComposee):
 
 # --------------------------------
 class X_SIMP(X_definition):
-    # --------------------------------
+# --------------------------------
     def dumpXsd(
         self, dansFactorisation=False, multiple=False, first=False, debug=False
     ):
