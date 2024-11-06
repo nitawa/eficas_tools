@@ -198,73 +198,62 @@ class FACT(P_ENTITE.ENTITE):
         self.checkValidators()
         self.verifCataRegles()
 
-    def dumpStringDataBase(self, dPrimaryKey, dElementsRecursifs, dictKey, inBloc):
-        # ne fonctionne que
+    def dumpDBSchema(self, dPrimaryKey, dForeignKey, dElementsRecursifs, dUnique, dKeys, inBloc):
         # on admet que si un FACT a une primaryKey, elle existe dans celui-ci
-        # ou que il s agit d un motclef frere/oncle place avant
-        debug = True
-        if debug:
-            print("****** traitement de FACT ", self.nom)
-        if debug:
-            print(
-                "dElementsRecursifs",
-                dElementsRecursifs,
-            )
-        if debug:
-            print(
-                "dPrimaryKey",
-                dPrimaryKey,
-            )
-        if debug:
-            print("dictKey", dictKey)
-        texte = "CREATE TABLE IF NOT EXISTS {} (\n".format(self.nom)
+        # ou que il s agit d un motclef frere/oncle place avant. Elle est dans dictKeys
+        debug = False
+        if debug: print("****** traitement de FACT ", self.nom)
+        if debug: print( "dElementsRecursifs", dElementsRecursifs,)
+        if debug: print( "dPrimaryKey", dPrimaryKey,)
+        if debug: print( "dElementsRecursifs,", dElementsRecursifs)
+        if debug: print( "dUnique,", dUnique)
+        if debug: print( "dKeys,", dKeys)
+        texte = ""
         texteForeignKey = ""
         textePrimaryKey = ""
         texteDesFactTables = ""
-        if self.nom in dElementsRecursifs:
-            return "\t{} XML ,\n".format(self.nom)
-        if self.nom in dPrimaryKey:
-            if debug:
-                print("FACT ", self.nom, " attend une primary key")
-            if dPrimaryKey[self.nom] not in self.entites.values():
-                if dictKey[dPrimaryKey[self.nom]] == None:
-                    texte += "PB SUR LA PRIMARY KEY DE {}\n".format(self.nom)
-                elif dPrimaryKey[self.nom] not in dictKey:
-                    texte += "PB SUR LA PRIMARY KEY DE {}\n".format(self.nom)
-                else:
-                    texte += dictKey[dPrimaryKey[self.nom]][0]
-                    textePrimaryKey = "\tPRIMARY KEY ({}), \n".format(
-                        dPrimaryKey[self.nom]
-                    )
-                    texteForeignKey = (
-                        "\tFOREIGN KEY ({}) REFERENCES {} ({}), \n".format(
-                            dPrimaryKey[self.nom],
-                            dictKey[dPrimaryKey[self.nom]][1],
-                            dPrimaryKey[self.nom],
-                        )
-                    )
+        texteConstraintUnique = ""
+        if self.nom in dElementsRecursifs: return "\t{} XML ,\n".format(self.nom)
+        if self.nom in dPrimaryKey or self.nom in dForeignKey:
+            texte = "CREATE TABLE IF NOT EXISTS {} (\n".format(self.nom)
+            if debug: print("FACT ", self.nom, " est une table")
+            if self.nom in dPrimaryKey:
+               if dPrimaryKey[self.nom]  in self.entites.values() :
+                  texte += "\t{} SERIAL PRIMARY KEY,\n".format(dPrimaryKey[self.nom])
+               elif dPrimaryKey[self.nom] in dKeys :
+                  texte += "\t{} {},\n".format(dPrimaryKey[self.nom], dKeys[dPrimaryKey[self.nom]])
+               else :
+                  # on estime qu on a alors une SERIAL PRIMARY KEY,
+                  texte += "\t{} SERIAL PRIMARY KEY,\n".format(dPrimaryKey[self.nom])
+                  dKeys[dPrimaryKey[self.nom]] = 'INT NOT NULL'
+               textePrimaryKey += "\tPRIMARY KEY ({}), \n".format( dPrimaryKey[self.nom])
+            if self.nom in dForeignKey:
+               texteForeignKey = "\tCONSTRAINT fk_{}_{} FOREIGN KEY ({}) REFERENCES {}({}) ON DELETE CASCADE ,\n".format( 
+                        self.nom, dForeignKey[self.nom][0],
+                        dForeignKey[self.nom][0],
+                        dForeignKey[self.nom][2],
+                        dForeignKey[self.nom][1],
+               )
         for mc in self.entites.values():
             if mc.label == "SIMP":
-                texteMC = mc.dumpStringDataBase(inBloc)
+                texteMC = mc.dumpDBSchema(inBloc)
                 texte += texteMC
-                if mc.nom in dictKey:
-                    dictKey[mc.nom] = (texteMC, self.nom)
             elif mc.label == "FACT":
                 if mc.nom in dElementsRecursifs:
-                    texte += mc.dumpStringDataBase(
-                        dPrimaryKey, dElementsRecursifs, dictKey, inBloc
-                    )
+                    texte += mc.dumpDBSchema(dPrimaryKey, dForeignKey, dElementsRecursifs, dUnique, dKeys, inBloc)
                 else:
-                    texteDesFactTables += mc.dumpStringDataBase(
-                        dPrimaryKey, dElementsRecursifs, dictKey, inBloc
-                    )
+                    if mc.nom in dPrimaryKey or mc.nom in dForeignKey:
+                        texteDesFactTables += mc.dumpDBSchema( dPrimaryKey, dForeignKey, dElementsRecursifs, dUnique, dKeys, inBloc)
+                    else :
+                        texte += mc.dumpDBSchema( dPrimaryKey, dForeignKey, dElementsRecursifs, dUnique ,dKeys, inBloc)
             else:
-                texte += mc.dumpStringDataBase(
-                    dPrimaryKey, dElementsRecursifs, dictKey, inBloc
-                )
+                texte += mc.dumpDBSchema( dPrimaryKey, dForeignKey, dElementsRecursifs, dUnique, dKeys, inBloc)
         texte += textePrimaryKey
         texte += texteForeignKey
-        texte = texte[0:-3]
-        texte += "\n);\n"
+        if self.nom in dUnique: texte += "\tUNIQUE {},\n".format(dUnique[self.nom])
+        if self.nom in dPrimaryKey or self.nom in dForeignKey: 
+           texte = texte[0:-2]
+           texte += "\n);\n"
         texte += texteDesFactTables
+        if debug : print ('retour du Fact : ', texte)
         return texte

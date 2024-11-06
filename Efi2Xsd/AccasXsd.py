@@ -286,8 +286,9 @@ class X_compoFactoriseAmbigu(X_definition):
         self.mcXSD = []
         self.typesXSDDejaDumpes = []
         self.ordreMC = []
-        self.lesConditions = "Possible Conditions : "
+        self.lesConditions = "  Possible Conditions : "
         self.typeXSD = typeXSD
+       
         #debug=1
         if debug:
             print ("___________________________________________________________________")
@@ -305,7 +306,7 @@ class X_compoFactoriseAmbigu(X_definition):
         doitReecrireLesTypes = False
         for mc in listeDeCreation:
             if hasattr(mc, "condition"):
-                self.lesConditions += "\n\t\t\t\t\t\t" + mc.condition
+                self.lesConditions += "\n\t" + mc.condition
             doitReecrireLesTypes += mc.possedeDejaUnMCFactorise
             self.mcXSD.append(mc)
             self.ordreMC.append(mc.nom)
@@ -371,9 +372,7 @@ class X_compoFactoriseAmbigu(X_definition):
                     print(mc.getNomCompletAvecBloc())
             # if debug : print ('cata.dictTypesXSD apres la boucle', cata.dictTypesXSD)
         debug = False
-        self.mcXSD = self.factoriseEtCreeDump(
-            lesPossibles, nomAppel=self.nom, debug=debug
-        )
+        self.mcXSD = self.factoriseEtCreeDump( lesPossibles, nomAppel=self.nom, debug=debug)
         if debug:
             print("self.mcXSD", self.mcXSD)
         self.texteComplexe += finTypeSubstDsBlocFactorise
@@ -559,16 +558,15 @@ class X_compoFactoriseAmbigu(X_definition):
 
     def dumpXsd(self, dansFactorisation=False, multiple=False, first=False):
         # on ne fait rien, tout a ete fait dans le init
-        self.texteElt = substDsSequence.format(
-            self.code, self.nomDuTypePyxb, 0, 1, self.lesConditions
-        )
+        self.lesConditions += '\n'
+        self.texteElt = substDsSequence.format( self.code, self.nomDuTypePyxb, 0, 1, self.lesConditions)
 
     def nomComplet(self):
         print("dans nomComplet pourquoi ?", self, self.nom)
 
-    def factoriseEtCreeDump(self, laListe, indent=2, nomAppel=None, debug=False):
-        if debug : print('______________ debut factoriseetCreeDump',self.nom, laListe, indent, nomAppel)
-        if debug : print('______________ ', indent, nomAppel)
+    def factoriseEtCreeDump(self, laListe,  nomAppel=None, debug=False):
+        if debug : print('______________ debut factoriseetCreeDump',self.nom, laListe,  nomAppel)
+        if debug : print('______________ ',  nomAppel)
         debug=False
         maListeRetour = []
         aReduire = {}
@@ -577,10 +575,8 @@ class X_compoFactoriseAmbigu(X_definition):
             declencheChoiceAvecSeqVid = True
             while [] in laListe:
                 laListe.remove([])
-            # min=0
         else:
             declencheChoiceAvecSeqVid = False
-            # min=1
 
         for ligne in laListe:
             if ligne[0] in aReduire.keys():
@@ -592,9 +588,7 @@ class X_compoFactoriseAmbigu(X_definition):
                 if len(ligne) == 1:
                     aReduire[ligne[0]] = [[]]
                 else:
-                    aReduire[ligne[0]] = [
-                        ligne[1:],
-                    ]
+                    aReduire[ligne[0]] = [ ligne[1:], ]
 
         if debug: print( "la Liste", laListe, "declencheChoiceAvecSeqVid : ", declencheChoiceAvecSeqVid,)
         if debug: print("aReduire", aReduire, "keys", aReduire.keys())
@@ -602,23 +596,19 @@ class X_compoFactoriseAmbigu(X_definition):
             if self.typeXSD == 'Fusion' :
                 creeChoice = False
                 creeSequence = False
-                self.texteComplexe += "\t" * (indent) + debutChoiceMultiple
-                indent = indent + 1
+                self.texteComplexe += debutChoiceMultiple
             elif declencheChoiceAvecSeqVid == False:
                 creeChoice = False
                 creeSequence = True
-                self.texteComplexe += "\t" * (indent) + debSequenceDsBloc
-                indent = indent + 1
+                self.texteComplexe += debSequenceDsBloc
             else:
                 creeChoice = True
                 creeSequence = False
                 # pour regler le souci du 1er Niveau
-                self.texteComplexe += "\t" * indent + debutChoiceDsBloc
-                indent = indent + 1
+                self.texteComplexe +=  debutChoiceDsBloc
         else:
-            # self.texteComplexe += '\t'*indent + debutChoiceDsBlocAvecMin.format(min); indent=indent+1
-            self.texteComplexe += "\t" * indent + debutChoiceDsBloc
-            indent = indent + 1
+            # self.texteComplexe +=  debutChoiceDsBlocAvecMin.format(min); 
+            self.texteComplexe +=  debutChoiceDsBloc
             creeChoice = True
             creeSequence = False
 
@@ -627,18 +617,13 @@ class X_compoFactoriseAmbigu(X_definition):
         # print (aReduire)
         for nomMC in aReduire.keys():
             if debug:
-                print(
-                    "--------------------------------------------- boucle for",
-                    nomMC,
-                    aReduire[nomMC],
-                )
+                print( "--------------------------------------------- boucle for", nomMC, aReduire[nomMC],)
             listeSuivante = aReduire[nomMC]
             if creeChoice and listeSuivante != [[]]:
-                self.texteComplexe += "\t" * (indent) + debSequenceDsBloc
-                indent = indent + 1
+                self.texteComplexe +=  debSequenceDsBloc
             if debug:
                 print("ajouteAuxTextes de ", nomMC)
-            self.ajouteAuxTextes(nomMC, indent)
+            self.ajouteAuxTextes(nomMC)
             if listeSuivante == [[]]:
                 continue  # Est-ce toujours vrai ?
             if debug:
@@ -647,62 +632,47 @@ class X_compoFactoriseAmbigu(X_definition):
             if debug:
                 print("aTraiter", aTraiter)
             if len(listeSuivante) == 1:
-                self.ajouteAuxTextes(listeSuivante[0], indent)
+                self.ajouteAuxTextes(listeSuivante[0])
             else:
-                self.factoriseEtCreeDump(
-                    listeSuivante, indent + int(creeSequence), nomMC
-                )
+                self.factoriseEtCreeDump( listeSuivante, nomMC)
             # if len(aTraiter) == 1 :
-            #     if not(isinstance(aTraiter[0],list)) : self.ajouteAuxTextes(aTraiter[0],indent )
+            #     if not(isinstance(aTraiter[0],list)) : self.ajouteAuxTextes(aTraiter[0])
             #     while len(aTraiter) == 1 and isinstance(aTraiter[0],list):  aTraiter=aTraiter[0]
-            #     for mc in aTraiter : self.ajouteAuxTextes(mc, indent)
+            #     for mc in aTraiter : self.ajouteAuxTextes(mc)
             # else :
-            #    self.factoriseEtCreeDump(aTraiter, indent+int(creeSequence),nomMC)
+            #    self.factoriseEtCreeDump(aTraiter, nomMC)
 
             if creeChoice:
-                indent = indent - 1
-                self.texteComplexe += "\t" * (indent) + finSequenceDsBloc
-            if debug: print( "--------------------------------------------- fin boucle for", nomMC,
-                )
+                self.texteComplexe +=  finSequenceDsBloc
+            if debug: print( "--------------------------------------------- fin boucle for", nomMC,)
 
         if declencheChoiceAvecSeqVid:
-            self.texteComplexe += "\t" * indent + debSequenceDsBloc
-            self.texteComplexe += "\t" * indent + finSequenceDsBloc
+            self.texteComplexe +=  debSequenceDsBloc
+            self.texteComplexe +=  finSequenceDsBloc
         if creeChoice or  self.typeXSD == 'Fusion' :
-            indent = indent - 1
-            self.texteComplexe += "\t" * indent + finChoiceDsBloc
+            self.texteComplexe +=  finChoiceDsBloc
         if creeSequence:
-            indent = indent - 1
-            self.texteComplexe += "\t" * (indent) + finSequenceDsBloc
+            self.texteComplexe +=  finSequenceDsBloc
 
         ##if debug : print (self.texteSimple)
-        if debug:
-            print("______", " self.texteComplexe")
-        if debug:
-            print(self.texteComplexe)
+        if debug: print("______", " self.texteComplexe")
+        if debug: print(self.texteComplexe)
         # if debug : print ('_____', 'self.texteComplexeVenantDesFils')
         # if self.nom=='B1_B2' : print ('___________________')
         # if self.nom=='B1_B2' : print (self.texteComplexeVenantDesFils)
-        if debug:
-            print("ma Liste Retour", maListeRetour)
-        if debug:
-            print("fin pour _______________________________", self.nom)
+        if debug: print("ma Liste Retour", maListeRetour)
+        if debug: print("fin pour _______________________________", self.nom)
         return maListeRetour
 
-    def ajouteAuxTextes(self, nomMC, indent, debug=False):
+    def ajouteAuxTextes(self, nomMC, debug=False):
         # PNPNPN
         # debug = True
         if debug and nomMC != []:
             print("______________________________________________________")
-            print(
-                "ajouteAuxTextes",
-                nomMC,
-                self.nom,
-            )
+            print( "ajouteAuxTextes", nomMC, self.nom,)
         debug = False
 
         #  for i in self.entites.keys() : print (self.entites[i][0].nom)
-        # if (indent  > 3) : indent = indent - 3
 
         # PN change le 17 fevrier . Est-ce normal  d arriver la ?
         # if faut traiter les Blocs exclusifs qui donnent des choices de sequences
@@ -713,48 +683,33 @@ class X_compoFactoriseAmbigu(X_definition):
         # on a un niveau de liste par niveau de bloc imbrique
         # voir cata_UQ
         while isinstance(nomMC, list):
-            if nomMC == []:
-                return
-            if len(nomMC) == 1:
-                nomMC = nomMC[0]
-            elif isinstance(nomMC[0], list):
-                nomMC = nomMC[0]
+            if nomMC == []: return
+            if len(nomMC) == 1: nomMC = nomMC[0]
+            elif isinstance(nomMC[0], list): nomMC = nomMC[0]
             else:
-                for mc in nomMC:
-                    self.ajouteAuxTextes(mc, indent, debug)
+                for mc in nomMC: self.ajouteAuxTextes(mc, debug)
                 return
 
         while isinstance(nomMC, list):
-            if nomMC == []:
-                return  # on garde les [] dans les choix sinon souci sur les sequences/choix
+            if nomMC == []: return  # on garde les [] dans les choix sinon souci sur les sequences/choix
             nomMC = nomMC[0]
 
-        if debug:
-            print("ajouteAuxTextes apresWhile", nomMC)
-        if nomMC == "Consigne" or nomMC == "blocConsigne":
-            return
+        if debug: print("ajouteAuxTextes apresWhile", nomMC)
+        if nomMC == "Consigne" or nomMC == "blocConsigne": return
         # if debug : print (nomMC, 'dans ajoute vraiment aux textes', self.entites )
-        if debug:
-            print(nomMC, "dans ajoute vraiment aux textes")
-        if debug:
-            print("avec pour entites ", self.entites[nomMC])
+        if debug: print(nomMC, "dans ajoute vraiment aux textes")
+        if debug: print("avec pour entites ", self.entites[nomMC])
         if len(self.entites[nomMC]) == 1:
             mc = self.entites[nomMC][0]
             mc.dumpXsd(dansFactorisation=True)
-            self.texteComplexe += "\t" * (indent) + mc.texteElt
-            if debug:
-                print("mc.aCreer ", mc.aCreer)
-            if mc.aCreer:
-                self.texteComplexeVenantDesFils += mc.texteComplexe
-            if mc.aCreer:
-                self.texteSimple += mc.texteSimple
-            if mc.aCreer:
-                mc.aCreer = False
+            self.texteComplexe +=  mc.texteElt
+            if debug: print("mc.aCreer ", mc.aCreer)
+            if mc.aCreer: self.texteComplexeVenantDesFils += mc.texteComplexe
+            if mc.aCreer: self.texteSimple += mc.texteSimple
+            if mc.aCreer: mc.aCreer = False
             if debug:
                 print("self.texteSimple", self.texteSimple)
-                print(
-                    "self.texteComplexeVenantDesFils", self.texteComplexeVenantDesFils
-                )
+                print( "self.texteComplexeVenantDesFils", self.texteComplexeVenantDesFils)
             return
 
         leType = type(self.entites[nomMC][0])
@@ -764,9 +719,7 @@ class X_compoFactoriseAmbigu(X_definition):
                 exit()
 
         # cas des matrices :
-        if (self.entites[nomMC][0].label == "SIMP") and hasattr(
-            self.entites[nomMC][0].type[0], "typElt"
-        ):
+        if (self.entites[nomMC][0].label == "SIMP") and hasattr( self.entites[nomMC][0].type[0], "typElt"):
             typeEltMatrice = self.entites[nomMC][0].type[0].typElt
             memeElt = 1
             nbColsMin = self.entites[nomMC][0].type[0].nbCols
@@ -778,70 +731,76 @@ class X_compoFactoriseAmbigu(X_definition):
                     print("Projection XSD impossible, changez un des ", nomMC)
                     print("melange de matrice et de non matrice")
                     exit()
-                if not (e.type[0].typElt == typeEltMatrice):
-                    memeElt = O
+                if not (e.type[0].typElt == typeEltMatrice): memeElt = O
                 else:
-                    if nbColsMin > e.type[0].nbCols:
-                        nbColsMin = e.type[0].nbCols
-                    if nbColsMax < e.type[0].nbCols:
-                        nbColsMax = e.type[0].nbCols
-                    if nbLigsMin > e.type[0].nbLigs:
-                        nbLigsMin = e.type[0].nbLigs
-                    if nbLigsMax < e.type[0].nbLigs:
-                        nbLigsMax = e.type[0].nbLigs
-            if debug and memeElt:
-                print("memeElt : ", memeElt)
+                    if nbColsMin > e.type[0].nbCols: nbColsMin = e.type[0].nbCols
+                    if nbColsMax < e.type[0].nbCols: nbColsMax = e.type[0].nbCols
+                    if nbLigsMin > e.type[0].nbLigs: nbLigsMin = e.type[0].nbLigs
+                    if nbLigsMax < e.type[0].nbLigs: nbLigsMax = e.type[0].nbLigs
+            if debug and memeElt: print("memeElt : ", memeElt)
             if memeElt:
-                self.fusionneDesMatricesDeMemeType(
-                    nomMC, nbColsMin, nbColsMax, nbLigsMin, nbLigsMax
-                )
+                self.fusionneDesMatricesDeMemeType( nomMC, nbColsMin, nbColsMax, nbLigsMin, nbLigsMax)
             else:
                 self.fusionneDesMatrices(self, nomMC)
-            if debug:
-                print("fin fusion des matrices")
+            if debug: print("fin fusion des matrices")
             return
 
         # cette boucle ne fonctionne que pour des SIMP
-        # if nomMC=='A': debug = False
+        #if nomMC=='StoreSupplementaryCalculations': debug = True
+        #if nomMC=='ValueTemplate': debug = True
         resteATraiter = copy(self.entites[nomMC])
         if debug:
-            print("________ calcul des unions resteATraiter", resteATraiter, self.nom)
-            print(self.entites[nomMC])
+            print("________ calcul des unions resteATraiter", self.nom, '\n', resteATraiter)
+            print (len(self.entites[nomMC]))
+            print (self.entites[nomMC])
             # for i in resteATraiter : print (i.nom)
-        listePourUnion = []
+        listePourFusion = []
         first = 1
+        # On compare les types 1 à 1
+        while resteATraiter != []:
+            nvlListeATraiter = []
+            mc = resteATraiter[0]
+            listePourFusion.append(mc)
+            for autre in resteATraiter[1:]:
+                if not (mc.compare(autre)): nvlListeATraiter.append(autre)
+            resteATraiter = copy(nvlListeATraiter)
+
+        listePourUnion = []
+        # On fusionne ceux dont seuls les into changent
+        # Est-ce que cette boucle n est pas suffisante ?
+        # Si les defaut ne sont pas les memes pas de souci (je crois)
+        # Que faire si min et max ne sont pas les memes
+        # je pense qu il faut avoir le min minimum et le max maximum
+        # sur l arité de l element mais du coup liste ou pas liste ?
+        # A verifier avec Eric
+        # peur d un melange si intoXML
+        resteATraiter = listePourFusion
         while resteATraiter != []:
             nvlListeATraiter = []
             mc = resteATraiter[0]
             listePourUnion.append(mc)
             for autre in resteATraiter[1:]:
-                if not (mc.compare(autre)):
-                    nvlListeATraiter.append(autre)
+                if not (mc.compareEtFusionneInto(autre, debug)): nvlListeATraiter.append(autre)
             resteATraiter = copy(nvlListeATraiter)
 
-        if debug:
-            print("listePourUnion : ", listePourUnion)
+        if debug: 
+            print("listePourUnion apres le While: \n", listePourUnion)
+            print (len(listePourUnion))
         # on ajoute les fact 6/12/2022 dans le cas de len(listePourUnion =1)
         if len(listePourUnion) == 1:
             mc = listePourUnion[0]
-            if debug:
-                print("ajout de ", mc.nom, " pour ", self.nom)
+            if debug: print("ajout de ", mc.nom, " pour ", self.nom)
             mc.dumpXsd(dansFactorisation=True, multiple=False, first=first)
-            if debug:
-                print("mc.aCreer = ", mc.aCreer)
+            if debug: print("mc.aCreer = ", mc.aCreer)
             # if debug : print ('mc.texteSimple = ', mc.texteSimple)
-            if debug:
-                print("mc.texteComplexe = ", mc.texteComplexe)
-            self.texteComplexe += "\t" * (indent) + mc.texteElt
-            if mc.aCreer:
-                self.texteComplexeVenantDesFils += mc.texteComplexe
-            if mc.aCreer:
-                self.texteSimple += mc.texteSimple
+            if debug: print("mc.texteComplexe = ", mc.texteComplexe)
+            self.texteComplexe +=  mc.texteElt
+            if mc.aCreer: self.texteComplexeVenantDesFils += mc.texteComplexe
+            if mc.aCreer: self.texteSimple += mc.texteSimple
             for mcIdent in self.entites[nomMC][1:]:
                 mcIdent.metAJourPyxb(mc.nomDuTypePyxb)
                 mcIdent.indiceDuTypePyxb = mc.indiceDuTypePyxb
-            if mc.aCreer:
-                mc.aCreer = False
+            if mc.aCreer: mc.aCreer = False
             return
 
         # on ajoute le nom de l element
@@ -851,8 +810,7 @@ class X_compoFactoriseAmbigu(X_definition):
             if debug:
                 print("on cherche si ils sont disjoints : ", self.entites[nomMC])
             for mc in self.entites[nomMC]:
-                if debug:
-                    print("compare mc", mc, " avec :")
+                if debug: print("compare mc", mc, " avec :")
                 for mcFrere in self.entites[nomMC][index:]:
                     ok = mc.isDisjoint(mcFrere)
                     if not ok:
@@ -862,38 +820,26 @@ class X_compoFactoriseAmbigu(X_definition):
                     break
                 index += 1
             if not sontTousDisjoint:
-                print(
-                    "2 blocs freres ont le meme nom et ne sont pas disjoints : pas encore traite"
-                )
+                print( "2 blocs freres ont le meme nom et ne sont pas disjoints : pas encore traite")
                 print("Projection XSD impossible, changez un des ", nomMC)
                 exit()
             if debug:
                 print("les 2 blocs sont disjoints")
-            self.fusionneDsUnChoix(nomMC, indent, debug=debug)
-            if debug:
-                print("self.nom", self.nom)
-            if debug:
-                print("self.texteComplexe", self.texteComplexe)
-            if debug:
-                print("self.texteSimple", self.texteSimple)
-            if debug:
-                print("self.texteElt", self.texteElt)
-            if debug:
-                print("________________________")
+            self.fusionneDsUnChoix(nomMC,  debug=debug)
+            if debug: print("self.nom", self.nom)
+            if debug: print("self.texteComplexe", self.texteComplexe)
+            if debug: print("self.texteSimple", self.texteSimple)
+            if debug: print("self.texteElt", self.texteElt)
+            if debug: print("________________________")
             return
 
         if hasattr(self.entites[nomMC][0], "aDejaEteDumpe"):  # on a deja cree le type
-            if debug:
-                print(self.entites[nomMC][0].nomDuTypePyxb, " deja dumpe")
+            if debug: print(self.entites[nomMC][0].nomDuTypePyxb, " deja dumpe")
         else:
-            if debug:
-                print("appel de dumpXsd")
+            if debug: print("appel de dumpXsd")
             self.entites[nomMC][0].aDejaEteDumpe = True
-            self.entites[nomMC][0].dumpXsd(
-                dansFactorisation=True, multiple=True, first=first
-            )
-            if debug:
-                print(self.entites[nomMC][0].nomDuTypePyxb)
+            self.entites[nomMC][0].dumpXsd( dansFactorisation=True, multiple=True, first=first)
+            if debug: print(self.entites[nomMC][0].nomDuTypePyxb)
 
         texteDocUnion = "\n"
         i = 1
@@ -905,35 +851,40 @@ class X_compoFactoriseAmbigu(X_definition):
                 texteDocUnion += str(i) + "- " + mc.fr + " ou \n"
                 i = i + 1
         if texteDocUnion == "\n":
-            self.texteComplexe += "\t" * (indent) + self.entites[nomMC][0].texteElt
+            self.texteComplexe +=  self.entites[nomMC][0].texteElt
         else:
             texteDocUnion = texteDocUnion[0:-4]
             debutTexteEltUnion = self.entites[nomMC][0].texteElt.split("maxOccurs=")[0]
-            self.texteComplexe += "\t" * (indent) + reconstitueUnion.format(
-                debutTexteEltUnion, texteDocUnion
-            )
-        if self.entites[nomMC][0].nomDuTypePyxb in self.typesXSDDejaDumpes:
-            return
+            self.texteComplexe +=  reconstitueUnion.format( debutTexteEltUnion, texteDocUnion)
+        if self.entites[nomMC][0].nomDuTypePyxb in self.typesXSDDejaDumpes: return
         self.typesXSDDejaDumpes.append(self.entites[nomMC][0].nomDuTypePyxb)
+        if self.entites[nomMC][0].nomDuTypePyxb=='T_ValueTemplate': debug = True
         if debug:
-            print(
-                "et la j ajoute les definitions de type",
-                self.entites[nomMC][0].nomDuTypePyxb,
-            )
+            print( "et la j ajoute les definitions de type", self.entites[nomMC][0].nomDuTypePyxb,)
 
         nomTypePyxbUnion = self.entites[nomMC][0].nomDuTypePyxb
+        #print (nomTypePyxbUnion)
         texteSimpleUnion = debutSimpleType.format(nomTypePyxbUnion)
         texteSimpleUnion += debutUnion
-        texteSimpleUnion += "\t" * (indent) + self.entites[nomMC][0].texteSimplePart2
+        texteSimpleUnion += self.entites[nomMC][0].texteSimplePart2
         texteSimplePart1 = self.entites[nomMC][0].texteSimplePart1
+        listeTextesDejaLa=[]
         for e in listePourUnion[1:]:
             e.dumpXsd(dansFactorisation=True, multiple=True, first=False)
             # si on ext un mc simple la ligne suivante est inutile
             # en revanche on ajoute le texte a tous les coups
             # self.texteComplexeVenantDesFils += e.texteComplexe
             e.metAJourPyxb(nomTypePyxbUnion)
-            texteSimpleUnion += "\t" * (indent) + e.texteSimplePart2
-            texteSimplePart1 += e.texteSimplePart1
+            if (e.texteSimplePart1 + e.texteSimplePart2).replace('\t','').replace(' ','') not in listeTextesDejaLa :
+                a=(e.texteSimplePart1 + e.texteSimplePart2).replace('\t','').replace(' ','')
+                if (a  in listeTextesDejaLa)  and self.nom == 'AnalysisPrinter_AnalysisSeriePrinterAndSaver':
+                   print ('uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu')
+                   print (a)
+                   print (listeTextesDejaLa)
+                   print ('uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu')
+                listeTextesDejaLa.append((e.texteSimplePart1 + e.texteSimplePart2).replace('\t','').replace(' ',''))
+                texteSimpleUnion +=  e.texteSimplePart2
+                texteSimplePart1 += e.texteSimplePart1
         texteSimpleUnion += finUnion
         texteSimpleUnion += fermeSimpleType
         self.texteSimple += texteSimplePart1 + texteSimpleUnion
@@ -942,9 +893,9 @@ class X_compoFactoriseAmbigu(X_definition):
         #   print (self.texteSimple)
         #   print ('______________')
 
-    def fusionneDsUnChoix(self, nomMC, indent, debug=False):
+    def fusionneDsUnChoix(self, nomMC,  debug=False):
         if debug:
-            print("______fusionneDsUnChoix ", self.nom, self, nomMC, indent)
+            print("______fusionneDsUnChoix ", self.nom, self, nomMC)
         if debug:
             print(self.texteComplexe)
         texteDocUnion = "\n"
@@ -954,7 +905,7 @@ class X_compoFactoriseAmbigu(X_definition):
         mcRef = self.entites[nomMC][0]
         # max = 1 : a priori les choix sont exclusifs
         if hasattr(mcRef, "aDejaEteDumpe"):
-            self.texteComplexe += "\t" * (indent) + mcRef.texteElt
+            self.texteComplexe +=  mcRef.texteElt
             if debug:
                 print(
                     "je passe la NORMALEMENT car j ai deja ete dumpe, j ajoute juste l elt"
@@ -1257,16 +1208,11 @@ class X_definitionComposee(X_definition):
             and self.nomXML != None):
             return True
         for attr in ("regles", "fr", "defaut", "min", "max", "position", "docu"):
-            try:
-                val1 = getattr(self, attr)
-            except:
-                val1 = None
-            try:
-                val2 = getattr(autreMC, attr)
-            except:
-                val2 = None
-            if val1 != val2:
-                return False
+            try: val1 = getattr(self, attr)
+            except: val1 = None
+            try: val2 = getattr(autreMC, attr)
+            except: val2 = None
+            if val1 != val2: return False
         if len(self.entites) != len(autreMC.entites):
             return False
         for defFille in self.entites.keys():
@@ -1506,17 +1452,13 @@ class X_BLOC(X_definitionComposee):
         else:
             self.texteComplexe = ""
 
-        self.texteElt = substDsSequence.format(
-            self.code, self.nomDuTypePyxb, 0, 1, "condition : " + self.condition
-        )
-
+        texteCondition = "\n  condition : " + self.condition + '\n'
+        self.texteElt = substDsSequence.format(self.code, self.nomDuTypePyxb, 0, 1, texteCondition)
         # print ('------------------------------------------------')
 
     def compare(self, autreMC):
-        if self.label != autreMC.label:
-            return False
-        if self.inUnion == True or autreMC.inUnion == True:
-            return False
+        if self.label != autreMC.label: return False
+        if self.inUnion == True or autreMC.inUnion == True: return False
         if (
             hasattr(self, "nomXML")
             and hasattr(autreMC, "nomXML")
@@ -1524,10 +1466,7 @@ class X_BLOC(X_definitionComposee):
             and self.nomXML != None
         ):
             return True
-        for attr in (
-            "condition",
-            "regles",
-        ):
+        for attr in ( "condition", "regles",):
             val1 = getattr(self, attr)
             val2 = getattr(autreMC, attr)
             if val1 != val2:
@@ -1575,23 +1514,15 @@ class X_BLOC(X_definitionComposee):
 # --------------------------------
 class X_SIMP(X_definition):
 # --------------------------------
-    def dumpXsd(
-        self, dansFactorisation=False, multiple=False, first=False, debug=False
-    ):
+    def dumpXsd( self, dansFactorisation=False, multiple=False, first=False, debug=False):
         # if PourTraduction  : print (self.nom)
         # if self.nom == 'A' : debug = True
         if debug:
-            print(
-                "X_SIMP dumpXsd pour",
-                self.nom,
-                dansFactorisation,
-                "___________________________",
-            )
+            print( "X_SIMP dumpXsd pour", self.nom, dansFactorisation, "___________________________",)
         debug = False
         self.prepareDumpXSD()
         # si inUnion la comparaison est fausse : on cree le nomDuType
-        if multiple:
-            self.inUnion = True
+        if multiple: self.inUnion = True
         # print ('exploreObjet SIMP')
         self.getNomDuCodeDumpe()
         self.aCreer = True
@@ -1603,10 +1534,8 @@ class X_SIMP(X_definition):
 
         #  --> homonymie on peut utiliser genealogie ?
         self.nomDuTypeDeBase = self.traduitType()
-        if debug:
-            print("nomDuTypeDeBase", self.nomDuTypeDeBase)
-        if debug:
-            print("multiple", multiple, "first", first)
+        if debug: print("nomDuTypeDeBase", self.nomDuTypeDeBase)
+        if debug: print("multiple", multiple, "first", first)
         if not multiple:
             self.nomDuTypePyxb = self.definitNomDuTypePyxb()
         else:
@@ -1618,23 +1547,17 @@ class X_SIMP(X_definition):
                 self.nomDuTypePyxb = "NonDetermine"
 
         # if self.nom == 'A' : debug = False
-        if debug:
-            print("nomDuTypePyxb", self.nomDuTypePyxb)
-        if debug:
-            print("---------------------------- aCreer", self.aCreer)
+        if debug: print("nomDuTypePyxb", self.nomDuTypePyxb)
+        if debug: print("---------------------------- aCreer", self.aCreer)
         debug = False
 
         # on se sert des listes ou non pour  la gestion des minOccurs /maxOccurs est > 0
-        if self.statut == "f":
-            minOccurs = 0
-        else:
-            minOccurs = 1
-        if dansFactorisation:
-            minOccurs = 1
+        if self.statut == "f": minOccurs = 0
+        else: minOccurs = 1
+        if dansFactorisation: minOccurs = 1
 
         if self.suisUneMatrice:
-            if dansFactorisation:
-                return
+            if dansFactorisation: return
             self.dumpSpecifiqueMatrice(minOccurs)
             return
 
@@ -1673,8 +1596,7 @@ class X_SIMP(X_definition):
                     )
 
             if self.defaut:
-                if debug:
-                    print("j ai un defaut")
+                if debug: print("j ai un defaut")
                 if self.max > 1 or self.max == "**" or self.max == float("inf"):
                     txtDefaut = ""
                     for val in self.defaut:
@@ -1683,77 +1605,39 @@ class X_SIMP(X_definition):
                     txtDefaut = txtDefaut[0:-1]
                     if not ("TXM" in (self.type)):
                         # a revoir pour les tuples avec defaut
-                        if texteAide != "":
-                            self.texteElt = eltDsSequenceWithDefautAndHelp.format(
-                                self.nom,
-                                self.code,
-                                self.nomDuTypePyxb,
-                                minOccurs,
-                                1,
-                                txtDefaut,
-                                texteAide,
-                            )
+                        if texteAide != "": self.texteElt = eltDsSequenceWithDefautAndHelp.format( self.nom, self.code,
+                                self.nomDuTypePyxb, minOccurs, 1, txtDefaut, texteAide,)
                         else:
-                            self.texteElt = eltDsSequenceWithDefaut.format(
-                                self.nom,
-                                self.code,
-                                self.nomDuTypePyxb,
-                                minOccurs,
-                                1,
-                                txtDefaut,
-                            )
+                            self.texteElt = eltDsSequenceWithDefaut.format( self.nom, self.code, self.nomDuTypePyxb,
+                                minOccurs, 1, txtDefaut,)
                     else:
-                        texteAide += (
-                            texteAide + "\ndefault Value in MDM : \n" + txtDefaut
-                        )
-                        self.texteElt = eltDsSequenceWithHelp.format(
-                            self.nom,
-                            self.code,
-                            self.nomDuTypePyxb,
-                            minOccurs,
-                            1,
-                            texteAide,
-                        )
+                        texteAide += ( texteAide + "\ndefault Value in MDM : \n" + txtDefaut)
+                        self.texteElt = eltDsSequenceWithHelp.format( self.nom, self.code, self.nomDuTypePyxb,
+                            minOccurs, 1, texteAide,) 
                 else:
-                    if str(self.defaut) == "True":
-                        txtDefaut = "true"
-                    elif str(self.defaut) == "False":
-                        txtDefaut = "false"
-                    else:
-                        txtDefaut = str(self.defaut)
+                    if str(self.defaut) == "True": txtDefaut = "true"
+                    elif str(self.defaut) == "False": txtDefaut = "false"
+                    else: txtDefaut = str(self.defaut)
+                    if txtDefaut.find('"') >=0 :
+                       txtDefaut=self.defaut
+                       print ('Attention  :' , txtDefaut, 'chgmt des "')
+                       txtDefaut = txtDefaut.replace('"',"'")
                     if texteAide != "":
-                        self.texteElt = eltDsSequenceWithDefautAndHelp.format(
-                            self.nom,
-                            self.code,
-                            self.nomDuTypePyxb,
-                            minOccurs,
-                            1,
-                            txtDefaut,
-                            texteAide,
-                        )
+                        self.texteElt = eltDsSequenceWithDefautAndHelp.format( self.nom, self.code,
+                            self.nomDuTypePyxb, minOccurs, 1, txtDefaut, texteAide,)
                     else:
-                        self.texteElt = eltDsSequenceWithDefaut.format(
-                            self.nom,
-                            self.code,
-                            self.nomDuTypePyxb,
-                            minOccurs,
-                            1,
-                            txtDefaut,
-                        )
+                        self.texteElt = eltDsSequenceWithDefaut.format( self.nom, self.code,
+                            self.nomDuTypePyxb, minOccurs, 1, txtDefaut,)
             else:
                 if texteAide != "":
                     self.texteElt = eltDsSequenceWithHelp.format(
-                        self.nom, self.code, self.nomDuTypePyxb, minOccurs, 1, texteAide
-                    )
+                        self.nom, self.code, self.nomDuTypePyxb, minOccurs, 1, texteAide)
                 else:
                     self.texteElt = eltDsSequence.format(
-                        self.nom, self.code, self.nomDuTypePyxb, minOccurs, 1
-                    )
+                        self.nom, self.code, self.nomDuTypePyxb, minOccurs, 1)
         elif first:
             # l'aide est geree a la fusion
-            self.texteElt = eltDsSequence.format(
-                self.nom, self.code, self.nomDuTypePyxb, 1, 1
-            )
+            self.texteElt = eltDsSequence.format( self.nom, self.code, self.nomDuTypePyxb, 1, 1)
 
         # self.aCreer est mis a jour ds definitNomDuTypePyxb
         # ou si elt est le 1er d une liste identique
@@ -1781,9 +1665,7 @@ class X_SIMP(X_definition):
             if typeATraduire.__name__ not in cata.listeUserASSDDumpes:
                 cata.listeUserASSDDumpes.add(typeATraduire.__name__)
                 if issubclass(typeATraduire, Accas.UserASSDMultiple):
-                    self.texteSimplePart1 = defUserASSDMultiple.format(
-                        typeATraduire.__name__
-                    )
+                    self.texteSimplePart1 = defUserASSDMultiple.format( typeATraduire.__name__)
                     if cata.definitUserASSDMultiple == False:
                         cata.definitUserASSDMultiple = True
                         cata.texteSimple = cata.texteSimple + defBaseXSDUserASSDMultiple
@@ -1819,20 +1701,14 @@ class X_SIMP(X_definition):
         else:
             self.intoConstant = None
         # On est dans une liste
-        if (
-            self.max > 1
-            or self.max == "**"
-            or self.max == float("inf")
-            or hasattr(self.type[0], "ntuple")
-        ):
+        if ( self.max > 1 or self.max == "**"
+            or self.max == float("inf") or hasattr(self.type[0], "ntuple")):
             self.texteSimple += debutTypeSimpleListe
-            self.texteSimple += "\t\t\t\t" + debutRestrictionBase.format(
-                self.nomDuTypeDeBase
-            )
+            self.texteSimple += debutRestrictionBase.format(self.nomDuTypeDeBase)
             if self.val_min != float("-inf"):
-                self.texteSimple += "\t\t\t\t" + minInclusiveBorne.format(self.val_min)
+                self.texteSimple +=  minInclusiveBorne.format(self.val_min)
             if self.val_max != float("inf") and self.val_max != "**":
-                self.texteSimple += "\t\t\t\t" + maxInclusiveBorne.format(self.val_max)
+                self.texteSimple +=  maxInclusiveBorne.format(self.val_max)
             if self.into != None or self.intoConstant != None:
                 # PN --> traduction des into
                 into = self.into
@@ -1841,7 +1717,7 @@ class X_SIMP(X_definition):
                 if self.intoXML != None:
                     into = self.intoXML
                 for val in into:
-                    self.texteSimple += "\t\t\t\t" + enumeration.format(val)
+                    self.texteSimple +=  enumeration.format(val)
                 if PourTraduction:
                     for val in into:
                         print(str(val))
@@ -1876,6 +1752,7 @@ class X_SIMP(X_definition):
         self.texteSimple += fermeSimpleType
         self.texteSimplePart2 = self.texteSimple
         self.texteSimple = self.texteSimplePart1 + self.texteSimplePart2
+        if debug :  print (self.nomDuTypePyxb, self.unite)
         if self.unite != None:
             cata = CONTEXT.getCurrentCata()
             if cata.unitAsAttribute:
@@ -2020,25 +1897,9 @@ class X_SIMP(X_definition):
         nom = self.nomDuTypePyxb
         nbCols = typeDeMatrice.nbCols
         nbLigs = typeDeMatrice.nbCols
-        self.texteSimple += matriceSimpleType.format(
-            nom,
-            nom,
-            nbCols,
-            nbCols,
-            nom,
-            self.code,
-            nom,
-            nbLigs,
-            nbLigs,
-            nom,
-            self.code,
-            nom,
-            self.min,
-            self.max,
-        )
-        self.texteElt = eltMatrice.format(
-            self.nom, self.code, self.nomDuTypePyxb, minOccurs, 1
-        )
+        self.texteSimple += matriceSimpleType.format( nom, nom, nbCols, nbCols, nom, self.code, nom,
+            nbLigs, nbLigs, nom, self.code, nom, self.min, self.max,)
+        self.texteElt = eltMatrice.format( self.nom, self.code, self.nomDuTypePyxb, minOccurs, 1)
 
     def prepareDumpXSD(self):
         self.inUnion = False
@@ -2053,12 +1914,14 @@ class X_SIMP(X_definition):
         # il faut ajouter les regles
         # il faut gerer les types tuple et fichier
         # on ne paut pas tester le type qui depend du cataloge
+        cata = CONTEXT.getCurrentCata()
         if hasattr(self.type[0], "typElt"):
             if debug:
                 print(self.nom, "est une matrice")
             self.suisUneMatrice = True
             # on presume que le type de l elt est un ASSD si il n est pas un type connu
             if self.type[0].typElt not in dictNomsDesTypes.keys():
+                cata.definitUserASSD = True
                 return "AccasAssd"
             return dictNomsDesTypes[self.type[0].typElt]
         else:
@@ -2076,6 +1939,7 @@ class X_SIMP(X_definition):
                 # a Reprendre
                 typeATraduire = self.validators.typeDesTuples[i]
                 if not (typeATraduire in list(dictNomsDesTypes.keys())):
+                    cata.definitUserASSD = True
                     enRetour.append("AccasAssd")
                 else:
                     enRetour.append(dictNomsDesTypes[self.validators.typeDesTuples[i]])
@@ -2091,9 +1955,7 @@ class X_SIMP(X_definition):
             # if (isinstance(typeATraduire, Accas.ASSD) or issubclass(typeATraduire, Accas.ASSD)) :
             if debug:
                 print(self.nom, "n est pas un type de base")
-            if not (isinstance(typeATraduire, str)) and issubclass(
-                typeATraduire, Accas.ASSD
-            ):
+            if not (isinstance(typeATraduire, str)) and issubclass( typeATraduire, Accas.ASSD):
                 if debug:
                     print(self.nom, "est d un type sous classe de ASSD")
                 # cas d une creation
@@ -2101,34 +1963,27 @@ class X_SIMP(X_definition):
                 # PNPNPN a Revoir pour la creation des keyrefs
                 if len(self.type) == 2 and self.type[1] == "createObject":
                     if typeATraduire.__name__ not in list(
-                        cata.dictTypesASSDorUserASSDCrees
-                    ):
-                        cata.dictTypesASSDorUserASSDCrees[typeATraduire.__name__] = [
-                            self,
-                        ]
+                        cata.dictTypesASSDorUserASSDCrees):
+                        cata.dictTypesASSDorUserASSDCrees[typeATraduire.__name__] = [ self, ]
                     else:
-                        cata.dictTypesASSDorUserASSDCrees[
-                            typeATraduire.__name__
-                        ].append(self)
+                        cata.dictTypesASSDorUserASSDCrees[ typeATraduire.__name__ ].append(self)
                     if issubclass(typeATraduire, Accas.UserASSD):
                         return typeATraduire.__name__ + "_C"
                     if issubclass(typeATraduire, Accas.ASSD):
+                        cata.definitUserASSD = True
                         return "AccasAssd"
                     else:
                         return "xs:string"
 
                 # cas d une consommation
                 if typeATraduire not in list(cata.dictTypesASSDorUserASSDUtilises):
-                    cata.dictTypesASSDorUserASSDUtilises[typeATraduire] = [
-                        self,
-                    ]
+                    cata.dictTypesASSDorUserASSDUtilises[typeATraduire] = [ self, ]
                 else:
-                    cata.dictTypesASSDorUserASSDUtilises[typeATraduire].append(
-                        self,
-                    )
+                    cata.dictTypesASSDorUserASSDUtilises[typeATraduire].append( self,)
                 if issubclass(typeATraduire, Accas.UserASSD):
                     return typeATraduire.__name__ + "_U"
                 if issubclass(typeATraduire, Accas.ASSD):
+                    cata.definitUserASSD = True
                     return "AccasAssd"
                 else:
                     return "xs:string"
@@ -2156,31 +2011,58 @@ class X_SIMP(X_definition):
             return
         # print ('il faut creer une liste ' , self.nom)
 
-    def compare(self, autreMC):
-        if self.label != autreMC.label:
-            return False
-        if self.inUnion == True or autreMC.inUnion == True:
-            return False
-        if (
-            hasattr(self, "nomXML")
+    def compare(self, autreMC, debug = False):
+        if debug : print (' compare SIMP', self.inUnion)
+        if self.label != autreMC.label: return False
+        if self.inUnion == True or autreMC.inUnion == True: return False
+        if ( hasattr(self, "nomXML")
             and hasattr(autreMC, "nomXML")
             and self.nomXML == autreMC.nomXML
-            and self.nomXML != None
-        ):
+            and self.nomXML != None):
             return True
         listeAComparer = ["type", "defaut", "min", "max", "val_min", "val_max"]
-        if self.intoXML != None:
-            listeAComparer.append("intoXML")
-        else:
-            listeAComparer.append("into")
-        if (hasattr(self, "nomXML")) and self.nomXML != None:
-            nomUtil = self.nomXML
+        if self.intoXML != None: listeAComparer.append("intoXML")
+        else: listeAComparer.append("into")
+
         for attr in listeAComparer:
             val1 = getattr(self, attr)
             val2 = getattr(autreMC, attr)
-            if val1 != val2:
-                return False
+            if val1 != val2: return False
         return True
+
+    def compareEtFusionneInto(self, autreMC, debug = False):
+        if debug : print (' compare et Fusion SIMP', self.nom)
+        if self.label != autreMC.label: return False
+        if ( hasattr(self, "nomXML")
+            and hasattr(autreMC, "nomXML")
+            and self.nomXML == autreMC.nomXML
+            and self.nomXML != None):
+            return True
+        listeAComparer = ["type", "val_min", "val_max"]
+        for attr in listeAComparer:
+            if debug : print (attr)
+            if debug : print ('__________________')
+            val1 = getattr(self, attr)
+            val2 = getattr(autreMC, attr)
+            if debug : print (val1)
+            if debug : print (val2)
+            if val1 != val2: return False
+
+        if self.intoXML == None and autreMC.intoXML == None : return True
+        if self.into == None and autreMC.into == None : return True
+
+        # Si l un des deux n a pas de into on ne peut pas fusionner
+        if self.intoXML != None: 
+            if autreMC.intoXML == None : return False
+            for possible in autreMC.intoXML: 
+                if possible not in self.intoXML : self.intoXML.append(possible)
+        elif self.into != None: 
+            if autreMC.into == None : return False
+            for possible in autreMC.into: 
+               if possible not in self.into : self.into.append(possible)
+        if debug : print (self.into)
+        return True
+
 
     def construitArbrePossibles(self):
         if self.statut == "f":
@@ -2301,11 +2183,15 @@ class X_JDC_CATA:
                 self.code, self.code, self.code, self.code, self.code, self.code
             )
 
-        self.texteXSD += defBaseXSDASSD
+        if self.definitUserASSD : self.texteXSD += defBaseXSDASSD
+        self.texteSimple = self.formate(self.texteSimple)
+        self.texteComplexe = self.formate(self.texteComplexe)
         self.texteXSD += self.texteSimple
         self.texteXSD += self.texteComplexe
 
         # if self.texteTypeAbstrait != "" : self.texteXSD += self.texteTypeAbstrait
+        #self.texteCata = self.formate(self.texteCata, debug = True)
+        self.texteCata = self.formate(self.texteCata)
         self.texteXSD += self.texteCata
 
         toutesLesKeys = set()
@@ -2333,7 +2219,7 @@ class X_JDC_CATA:
             if existeunUserASSD:
                 if existeASSD:
                     texteDesFields = (
-                        texteDesFields + texteDesUserASSD[0:-2] + "/>\n\t\t"
+                        texteDesFields + texteDesUserASSD[0:-2] + "/>\n"
                     )
                 else:
                     texteDesFields = texteDesUserASSD[0:-2]
@@ -2413,7 +2299,7 @@ class X_JDC_CATA:
         # PN attention, les doublons ne sont pas geres ( 1 elt meme nom avec ou sans unit ou unite differente)
         # cependant, cette liste ne sert que d indication de projection comme des unites comme attributs
         # a changer si necessaire
-        if cata.listeTypeWithUnit != () :  
+        if cata.listeTypeWithUnit != () and cata.listeTypeWithUnit != []:  
             self.texteXSD += texteListeTypeWithUnit.format(str(cata.listeTypeWithUnit))
 
         # import pprint
@@ -2496,13 +2382,10 @@ class X_JDC_CATA:
             self.texteCata += c.texteElt
 
     def dumpSimpleDesCommandes(self, debug=False):
-        self.texteCata = eltCataSimple.format(
-            self.code, self.code, self.code, self.code
-        )
+        self.texteCata = eltCataSimple.format( self.code, self.code, self.code, self.code)
         # on remplace les extensions par rien
         for c in self.commandes:
-            if debug:
-                print("commande ", c, c.nom)
+            if debug: print("commande ", c, c.nom)
             c.nomDuCodeDumpe = self.nomDuCodeDumpe
             c.code = self.implement
             c.dumpXsd(withAbstractElt=False)
@@ -2522,3 +2405,91 @@ class X_JDC_CATA:
                 )
             self.texteCata += c.texteElt
         self.texteCata += finEltCataSimple
+
+    def formate(self, texte, debug = 0) :
+        newTexte=''
+        indent = 1
+        stop  = 0
+        dansEnumeration = 0
+        dansElement = 0
+        for ligne in texte.split('\n'):
+            #if ligne.find('<xs:minLen') >= 0  : debug = 1
+            #if ligne.find('DATA_FILE') > 0 : debug = True
+            if debug : print ('-------------------------')
+            if debug : print (ligne)
+            if debug : print ('indent debut ', indent)
+            memeIndentation = 0
+            if ligne.find('<xs:enumeration') == 0 : 
+               if debug : print ('dansEnumeration', dansEnumeration)
+               if dansEnumeration : memeIndentation = 1
+               else : memeIndentation = 0
+               dansEnumeration = 1
+            else :
+               if dansEnumeration == 1 : indent = indent -1
+               dansEnumeration = 0
+            if ligne.find('<xs:element') == 0 : 
+               if debug : print ('dansELement', dansEnumeration)
+               if dansElement : memeIndentation = 1
+               else : memeIndentation = 0
+               dansElement = 1
+            else :
+               if dansElement == 1 : indent = indent -1
+               dansElement = 0
+            if ligne.find('</xs:element') == 0 : 
+                indent += 1
+            if debug : print ('memeIndentation', memeIndentation)
+            if not (memeIndentation) and ligne.find('<') >= 0: indent = indent + 1
+            if debug : print ('indent apres les find ', indent)
+
+            if ligne[0:2] == '</' : indent += -1
+            if debug : print (indent , 'apres fermeture')
+
+            newTexte += '  ' * indent + ligne + '\n'
+            if ligne[0:2] == '</' : indent += -1
+            if ligne.find('<xs:minInclusive') == 0  : indent += -1
+            if ligne.find('<xs:maxInclusive') == 0  : indent += -1
+            # PN Attention > 0 car il y a les conditions possibles ou la doc est sur +sieurs lignes
+            if ligne.find('</xs:documentation') > 0  : indent += -1
+            if ligne.find('<xs:minLen') >= 0  : indent += -1
+            if ligne.find('<xs:maxLen') >= 0  : indent += -1
+            if debug : print (indent , 'apres ecriture')
+
+            stop += 1
+            #if stop == 1500 : 
+            #   print(newTexte)
+            #   break
+        return newTexte
+
+    def formateOld(self, texte, debug = 0) :
+        newTexte=''
+        indent = 1
+        for ligne in texte.split('\n'):
+            if debug : 
+                print ('----------------------------')
+                print (ligne)
+                print ('indent et indentAvant', indent)
+            indentAvant=indent
+            doitDecrementer  = ligne.find('<xs:enumeration')
+            doitDecrementer += ligne.find('<xs:element')
+            doitDecrementer += ligne.find('<xs:restriction')
+            doitDecrementer += ligne.find('<xs:minInclusive')
+            doitDecrementer += ligne.find('<xs:maxInclusive')
+            doitDecrementer += ligne.find('<xs:maxLength')
+            doitDecrementer += ligne.find('<xs:minLength')
+            if doitDecrementer == -7: 
+               if ligne[-2:] == '/>': indent += -1
+               if ligne[0:2] == '</' : indent += -1
+            if ligne.find('<'): indent = indentAvant
+            newTexte += '  ' * indent + ligne + '\n'
+            if (ligne.find('<xs:enumeration') + ligne.find('<xs:element')) == -2: 
+                indent += 1
+                if ligne[-2:] == '/>': indent += -1
+                if ligne[0:2]  == '</' : indent += -1
+            if ligne.find('</xs:list') > -1 : indent += -1
+            if ligne.find('</xs:annotation') > -1 : indent += -1
+            if debug : print ('print indent apres', indent)
+            # on est dans de  la donc
+            if ligne.find('<'): indent = indentAvant
+
+        return newTexte
+           

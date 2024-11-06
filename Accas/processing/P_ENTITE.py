@@ -348,63 +348,54 @@ class ENTITE(object):
         etape.MCBuild()
         return etape
 
-    def dumpStringDataBase(self, dPrimaryKey, dElementsRecursifs, dictKey, inBloc):
+    def dumpDBSchema(self, dPrimaryKey, dForeignKey, dElementsRecursifs, dUnique, dKeys, inBloc):
         # ne fonctionne que
         # on admet que si un FACT a une primaryKey, elle existe dans celui-ci
         # ou que il s agit d un motclef frere/oncle place avant
-        # derivee pour P_SIMP et P_FACT
-        debug = True
-        if debug:
-            print("****** traitement de ", self.nom)
-        if debug:
-            print(
-                "dElementsRecursifs",
-                dElementsRecursifs,
-            )
-        if debug:
-            print(
-                "dPrimaryKey",
-                dPrimaryKey,
-            )
+        # dKeys contient les noms des clefs possibles et les types
+        # methode derivee pour P_SIMP et P_FACT
+        debug = False
+        if debug: print("****** traitement de ", self.nom)
+        if debug: print( "dPrimaryKey", dPrimaryKey)
+        if debug: print( "dForeignKey", dForeignKey) 
+        if debug: print( "dElementsRecursifs", dElementsRecursifs)
+        if debug: print( "dUnique", dUnique)
+        if debug: print( "dKeys", dKeys)
         texte = ""
         texteDesFactTables = ""
-        if debug:
-            print("dictKey", dictKey)
         if (self.label == "OPER") or (self.label == "PROC"):
-            for mc in dPrimaryKey.values():
-                dictKey[mc] = None
+            #for mc in dPrimaryKey.values(): dictKey[mc] = None
             texte = "CREATE TABLE IF NOT EXISTS {} (\n".format(self.nom)
+            if self.nom in dPrimaryKey :
+               if dPrimaryKey[self.nom] not in self.entites.values() :
+                  # on estime qu on a alors une SERIAL PRIMARY KEY,
+                  texte += "\t{} SERIAL PRIMARY KEY,\n".format(dPrimaryKey[self.nom])
+                  dKeys[dPrimaryKey[self.nom]] = 'INT NOT NULL'
             for mc in self.entites.values():
                 if mc.label == "SIMP":
-                    texteMC = mc.dumpStringDataBase(inBloc)
+                    texteMC = mc.dumpDBSchema(inBloc)
                     texte += texteMC
-                    if mc.nom in dictKey:
-                        dictKey[mc.nom] = (texteMC, self.nom)
                 elif mc.label == "FACT":
                     if mc.nom in dElementsRecursifs:
-                        texte += mc.dumpStringDataBase(
-                            dPrimaryKey, dElementsRecursifs, dictKey, inBloc
-                        )
+                        texte += mc.dumpDBSchema( dPrimaryKey, dForeignKey, dElementsRecursifs, dKeys, inBloc)
                     else:
-                        texteDesFactTables += mc.dumpStringDataBase(
-                            dPrimaryKey, dElementsRecursifs, dictKey, inBloc
-                        )
+                        if mc.nom in dPrimaryKey or mc.nom in dForeignKey:
+                            texteDesFactTables += mc.dumpDBSchema( dPrimaryKey, dForeignKey, dElementsRecursifs, dUnique, dKeys, inBloc)
+                        else :
+                            texte += mc.dumpDBSchema( dPrimaryKey, dForeignKey, dElementsRecursifs, dUnique, dKeys, inBloc)
                 else:
-                    texte += mc.dumpStringDataBase(
-                        dPrimaryKey, dElementsRecursifs, dictKey, inBloc
-                    )
+                    texte += mc.dumpDBSchema( dPrimaryKey, dForeignKey, dElementsRecursifs, dUnique, dKeys, inBloc)
         if self.label == "BLOC":
             for mc in self.entites.values():
-                texte += m.dumpStringDataBase(
-                    dPrimaryKey, dElementsRecursifs, inBloc, dictKey
-                )
-        # on enleve la derniere ','
-        texte = texte[0:-3]
-        texte += "\n"
+                texte += m.dumpDBSchema( dPrimaryKey, dForeignKey, dElementsRecursifs, dUnique, dKeys, inBloc)
         if (self.label == "OPER") or (self.label == "PROC"):
             if self.nom in dPrimaryKey:
-                texte += "\tPRIMARY KEY ({}), \n".format(dPrimaryKey[self.nom])
-            texte += ");\n"
+                texte += "\tPRIMARY KEY ({}),\n".format(dPrimaryKey[self.nom])
+            if self.nom in dUnique:
+                texte += "\tUNIQUE {},\n".format(dUnique[self.nom])
+            # on enleve la dernier ','
+            texte = texte[0:-2]
+            texte += "\n);\n"
             texte += texteDesFactTables
         return texte
 

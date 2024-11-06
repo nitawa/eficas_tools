@@ -40,13 +40,14 @@ class BaseConfiguration(object):
     Seuls les labels contenus dans labelsUser sont pris en compte dans le fichier prefs.ini de l utilisateur
     Ainsi si le fichier prefs.py contient UneVariableQuelconque = 3, UneVariableQuelconque ne sera pas integree a l objet configuration
     """
-    # -----------------------------
+    # ------------------------------
     def __init__(self, appliEficas):
-    # -----------------------------
+    # ------------------------------
 
         self.appliEficas = appliEficas
         self.code = appliEficas.code
         self.salome = appliEficas.salome
+        self.info = self.appliEficas.info
 
         if self.salome: name = "prefs_eficas_salome.ini"
         else: name = "prefs_eficas.ini"
@@ -169,13 +170,13 @@ class BaseConfiguration(object):
             prefsCode = __import__(name)
         except:
             self.catalogues = []
-            print("pas de fichier de prefs {} dans eficas".format(name))
+            if self.info : print("pas de fichier de prefs {} dans eficas".format(name))
             return
         for k in dir(prefsCode):
             if k in self.labelsStandards:
                 valeur=getattr(prefsCode,k)
                 setattr(self,k,valeur)
-        print("prise en compte du  fichier de prefs {} dans eficas".format(name))
+        if self.info : print("prise en compte du  fichier de prefs {} dans eficas".format(name))
 
     # --------------------------------------
     def lectureFichierIniIntegrateur(self):
@@ -198,7 +199,7 @@ class BaseConfiguration(object):
             fic = os.environ[clef]
             fichierPrefsIntegrateur = os.path.abspath(fic)
             if not os.path.isfile(fichierPrefsIntegrateur): 
-                print("impossible de trouver le fichier {}".format(fichierPrefsIntegrateur))
+                if self.info : print("impossible de trouver le fichier {}".format(fichierPrefsIntegrateur))
                 return
             try : 
                 with open(fichierPrefsIntegrateur) as fd: txt = fd.read()
@@ -216,7 +217,7 @@ class BaseConfiguration(object):
                 self.appliEficas.afficheMessage(titre, texte)
                 return
         else : 
-            print("pas de fichier defini pour les preferences integrateur")
+            if self.info : print("pas de fichier defini pour les preferences integrateur")
             return
 
         for k in d:
@@ -225,14 +226,14 @@ class BaseConfiguration(object):
                     setattr(self, k, d[k])
                 except:
                     pass
-        print("le fichier {} de preferences integateur a ete pris en compte".format(fichierPrefsIntegrateur))
+        if self.info : print("le fichier {} de preferences integateur a ete pris en compte".format(fichierPrefsIntegrateur))
 
     # --------------------------------------
     def lectureFichierIniUtilisateur(self):
     # --------------------------------------
         # Surcharge les parametres standards par les parametres utilisateur s'ils existent
         if not os.path.isfile(self.fichierPrefsUtilisateur): 
-            print("Pas de fichier {} de preference utilisateur".format(self.fichierPrefsUtilisateur))
+            if self.info : print("Pas de fichier {} de preference utilisateur".format(self.fichierPrefsUtilisateur))
             return
         try :
             with open(self.fichierPrefsUtilisateur) as fd: txt = fd.read()
@@ -255,7 +256,7 @@ class BaseConfiguration(object):
                     setattr(self, k, d[k])
                 except:
                     pass
-        print("le fichier {} de preferences utilisateurs a ete pris en compte".format(self.fichierPrefsUtilisateur))
+        if self.info : print("le fichier {} de preferences utilisateurs a ete pris en compte".format(self.fichierPrefsUtilisateur))
 
     # --------------------------------------
     def saveParams(self):

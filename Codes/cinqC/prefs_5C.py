@@ -38,5 +38,5 @@ catalogues=(
     ('DkLibGui','Version Beta',os.path.join(repIni,'cata5CChapeau.py'),'python','python'),
 )
 
-docPath = '/home/A96028/QT5Dev/eficas5C/Aide/Aide5C'
+docPath = '../../Aide/Aide5C'
 fileName = 'index.html'

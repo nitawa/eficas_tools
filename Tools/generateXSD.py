@@ -28,6 +28,8 @@
 import sys
 import os
 sys.path.append(os.path.join(os.path.abspath(os.path.dirname(__file__)),'..'))
+#PN pour les ln a partir des Codes
+sys.path.append(os.path.join(os.path.abspath(os.path.dirname(__file__)),'../..'))
 
 from Editeur import eficas_go
 eficas_go.genereXSD(code='NonConnu')

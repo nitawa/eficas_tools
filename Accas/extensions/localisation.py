@@ -41,6 +41,10 @@ def localise( language=None, translatorFile=None, debug=False):
     if code_translator == None:
         print("qt not avalaible, no translation")
         return
+    if QApplication.instance() == None :
+       if debug : print ('qApplication not instancied')
+       return
+
 
     monPath = os.path.join(os.path.dirname(__file__), "..","..", "UiQT5")
 
@@ -54,9 +58,9 @@ def localise( language=None, translatorFile=None, debug=False):
 
     if eficasTranslatorFile :
         if eficas_translator.load(eficasTranslatorFile, monPath) :
-          if debug : print("fichier de traduction : ",  monPath, '/',eficasTranslatorFile, 'charge')
+            if debug : print("fichier de traduction : ",  monPath, '/',eficasTranslatorFile, 'charge')
         else  : 
-          if debug : print( 'pb au chargement du fichier de traduction :', monPath, '/',eficasTranslatorFile)
+            if debug : print( 'pb au chargement du fichier de traduction :', monPath, '/',eficasTranslatorFile)
         if debug: print(QApplication.installTranslator(eficas_translator))
         else: QApplication.installTranslator(eficas_translator)
     else :

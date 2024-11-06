@@ -60,7 +60,7 @@ class SIMP(P_ENTITE.ENTITE):
         defaut=None, min=1, max=1, homo=1, position="local", filtre=None, val_min=float("-inf"),
         val_max=float("inf"), docu="", validators=None, nomXML=None, sug=None, fenetreIhm=None,
         attribut=False, sortie="n", intoXML=None, metAJour=None, avecBlancs=False, unite=None,
-        typeXSD=None, formatGit=None, affichage=None,):
+        typeXSD=None, formatGit=None, affichage=None, defautXSD = None):
         """
         Un mot-clé simple est caractérisé par les attributs suivants :
         - type : cet attribut est obligatoire et indique le type de valeur attendue
@@ -143,6 +143,7 @@ class SIMP(P_ENTITE.ENTITE):
         self.fenetreIhm = fenetreIhm
         self.attribut = attribut
         self.nomXML = nomXML
+        self.defautXSD = defautXSD
         self.intoXML = intoXML
         self.sortie = sortie
         self.filtre = filtre
@@ -215,7 +216,7 @@ class SIMP(P_ENTITE.ENTITE):
         self.checkPosition()
         self.checkValidators()
 
-    def dumpStringDataBase(self, inBloc):
+    def dumpDBSchema(self, inBloc):
         if self.type[0] in dictPourSql:
             leTypeSql = dictPourSql[self.type[0]]
         else:

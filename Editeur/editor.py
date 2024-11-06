@@ -858,10 +858,10 @@ class Editor:
             print(texte)
 
     # -------------------------------------------------#
-    def dumpStringDataBase(self, nomDataBaseACreer=None):
+    def dumpDBSchema(self, nomDataBaseACreer=None):
     # -------------------------------------------------#
-        texteStringDataBase = self.readercata.cata.JdC.dumpStringDataBase(nomDataBaseACreer)
-        return texteStringDataBase
+        texteDBSchema = self.readercata.cata.JdC.dumpDBSchema(nomDataBaseACreer)
+        return texteDBSchema
 
     # -----------------------------#
     def getEtapesByName(self, name):

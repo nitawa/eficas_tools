@@ -78,11 +78,9 @@ class QtEditor(Ui_editor5C, Editor, QWidget):
         self.node_selected = []
         self.message=''
 
-        nomFichierTranslation='translatorFile'+'_'+str(self.readercata.versionCode)
-        if hasattr(self.appliEficas.maConfiguration,nomFichierTranslation) :
-            translatorFile=getattr(self.appliEficas.maConfiguration,nomFichierTranslation)
-            from Accas.extensions import localisation
-            localisation.localise(None,self.appliEficas.langue,translatorFile=translatorFile)
+        # a remettre au gout du jour si on a besoin d un tr
+        #    from Accas.extensions import localisation
+        #    localisation.localise(self.appliEficas.langue,translatorFile='cinqc')
         self.jdcResultats=self._newJDC(texte='')
         self.jdcResultats.analyseXML()
         self.afficheResultats(self.jdcResultats,[],[])

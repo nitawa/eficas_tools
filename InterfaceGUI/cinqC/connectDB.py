@@ -2,7 +2,6 @@
 # -*- coding:utf-8 -*-
 import sys
 
-import cataJobPerformance_driver as mdm
 import psycopg2
 
 connecteurTexte = "dbname=test user=performance"

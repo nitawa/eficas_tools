@@ -76,7 +76,6 @@ class JDC_CATA(P_ENTITE.ENTITE):
         CONTEXT.unsetCurrentCata()
         CONTEXT.setCurrentCata(self)
         #PN to do verifier pourquoi on y passe 2 fois
-        #print ('jjjjjjjjjjjjjjjjjjjjjjjjjjjjjuuuuuuuuuuuuuuuuuuuuuuuuuuuuuj', self)
         #import traceback
         #traceback.print_stack()
         self.fenetreIhm = None
@@ -164,8 +163,7 @@ class JDC_CATA(P_ENTITE.ENTITE):
     def dumpStructure(self):
         texte = ""
         for c in self.commandes:
-            if not (c.label != "OPER") and not (c.label != "PROC"):
-                continue
+            if not (c.label != "OPER") and not (c.label != "PROC"): continue
             if c.label == "OPER":
                 texte += c.nom + " " + str(c.sd_prod) + "\n"
             if c.label == "PROC":
@@ -173,23 +171,28 @@ class JDC_CATA(P_ENTITE.ENTITE):
             texte += c.dumpStructure()
         return texte
 
-    def dumpStringDataBase(self, databaseName):
+    def dumpDBSchema(self, databaseName):
         texte = "create database {}; \n".format(databaseName)
         texte += "create user admin{}; \n".format(databaseName)
         texte += "grant all privileges on database {} to admin{}; \n".format(
             databaseName, databaseName
         )
         texte += "********* fin de creation de la database ********* \n"
-        dictPrimaryKey = {}
-        dictRecursif = {}
+        dPrimaryKey = {}
+        dRecursif = {}
+        dForeignKey = {}
+        dUnique = {}
         if hasattr(self.cata, "dPrimaryKey"):
             dPrimaryKey = self.cata.dPrimaryKey
         if hasattr(self.cata, "dElementsRecursifs"):
             dElementsRecursifs = self.cata.dElementsRecursifs
+        if hasattr(self.cata, "dForeignKey"):
+            dForeignKey = self.cata.dForeignKey
+        if hasattr(self.cata, "dUnique"):
+            dUnique = self.cata.dUnique
         for c in self.commandes:
-            if not (c.label != "OPER") and not (c.label != "PROC"):
-                continue  # une macro ?
-            texte += c.dumpStringDataBase(dPrimaryKey, dElementsRecursifs, {}, False)
+            if not (c.label != "OPER") and not (c.label != "PROC"): continue  # une macro ?
+            texte += c.dumpDBSchema(dPrimaryKey, dForeignKey, dElementsRecursifs, dUnique, {}, False)
         # print (texte)
         return texte
 

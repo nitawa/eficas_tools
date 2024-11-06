@@ -65,8 +65,8 @@ def lanceQtEficas(code=None, versionCode = None, multi=False, langue=None,  GUIP
     sys.exit(res)
 
 
-def getEficas( code=None, ssCode = None, versionCode = None , multi=False, langue=None, appWeb = None, cataFile = None):
-# --------------------------------------------------------------------------------------------------------------------------
+def getEficas( code=None, ssCode = None, versionCode = None , multi=False, langue=None, appWeb = None, cataFile = None, info = True):
+# ---------------------------------------------------------------------------------------------------------------------------------
     """
     instancie l'appli EFICAS sans lancer QT
     """
@@ -76,20 +76,9 @@ def getEficas( code=None, ssCode = None, versionCode = None , multi=False, langu
     if options.code != None:
         code = options.code
 
-    #if GUIPath in ('QT5',  'cinqC') :
-    #    print ('Attention : Pour lancer l application QT5 utiliser lanceQTEficas')
-    #    return
-        #pathAbso=os.path.abspath(os.path.join(os.path.dirname(__file__),'..','InterfaceGUI',GUIPath))
-        #if pathAbso not in sys.path : sys.path.insert(0,pathAbso)
-        #from qt_eficas import QtEficasAppli as EficasAppli
-    #if GUIPath in ( 'Web') :
-    #    pathAbso=os.path.abspath(os.path.join(os.path.dirname(__file__),'..','InterfaceGUI',GUIPath))
-    #    if pathAbso not in sys.path : sys.path.insert(0,pathAbso)
-    #    from web_eficas import WebEficasAppli as EficasAppli
-    #else :
-    print ('lancement de Eficas sans QT ')
+    if info : print ('lancement de Eficas sans QT ')
     from Editeur.eficas_appli import EficasAppli
-    Eficas = EficasAppli(code=code, multi=multi, langue=langue, ssCode=ssCode, salome = 0 , versionCode=versionCode,  cataFile=cataFile,  appWeb=appWeb)
+    Eficas = EficasAppli(code=code, multi=multi, langue=langue, ssCode=ssCode, salome = 0 , versionCode=versionCode,  cataFile=cataFile,  appWeb=appWeb, info=info)
     return Eficas
 
 
@@ -103,7 +92,7 @@ def genereXSD(code=None):
         print("Use -c cata_name.py")
         return
 
-    monEficas = getEficas(code=options.code)
+    monEficas = getEficas(code=options.code, info = False)
     monEficas.genereXSD = True
     monEditor = monEficas.getEditorForXSDGeneration(cataFile= options.cataFile)
     texteXSD = monEditor.dumpXsd(withAbstractElt=options.withAbstractElt, withUnitAsAttribute = options.withUnitAsAttribute )
@@ -133,7 +122,7 @@ def genereXML(code=None):
         print("comm file is needed")
         return
 
-    monEficas = getEficas(code=options.code)
+    monEficas = getEficas(code=options.code, info = False)
     monEficas.genereXSD=False
     monEficas.withXSD=True
     monEditor = monEficas.getEditorForXSDGeneration(cataFile= options.cataFile,datasetFile=fichier,formatOut = 'xml')
@@ -160,7 +149,7 @@ def genereStructure(code=None):
         print("Use -c cata_name.py")
         return
 
-    monEficas = getEficas(code=options.code)
+    monEficas = getEficas(code=options.code, info = False)
     monEditor = monEficas.getEditorForGeneration(cataFile = options.cataFile)
     texteStructure = monEditor.dumpStructure()
 
@@ -178,13 +167,13 @@ def genereGitStringFormat (code=None):
     if options.cataFile == None :
         print ('Use -c cata_name.py')
         return
-    monEficas = getEficas(code=options.code)
+    monEficas = getEficas(code=options.code, info = False)
     monEditor = monEficas.getEditorForGeneration(cataFile = options.cataFile)
     texteGitStringFormat = monEditor.dumpGitStringFormat()
     return texteGitStringFormat
  
 
-def genereStringDataBase (code=None):
+def genereDBSchema (code=None):
 #------------------------------------
     from Editeur  import session
     options=session.parse(sys.argv)
@@ -196,10 +185,10 @@ def genereStringDataBase (code=None):
     if options.databaseName == None :
         print ('Use -n nameOfDatabase')
         return
-    monEficas = getEficas(code=options.code)
+    monEficas = getEficas(code=options.code, info = False )
     monEditor = monEficas.getEditorForGeneration(cataFile = options.cataFile)
-    texteStringDataBase=monEditor.dumpStringDataBase(options.databaseName)
-    return texteStringDataBase
+    texteDBSchema=monEditor.dumpDBSchema(options.databaseName)
+    return texteDBSchema
 
 def insertInDB (code=None):
 #------------------------------
@@ -215,7 +204,7 @@ def insertInDB (code=None):
         print ('xml file is needed')
         return 0
 
-    monEficasSsIhm = getEficasSsIhm(code=options.code, forceXML=True)
+    monEficasSsIhm = getEficasSsIhm(code=options.code, forceXML=True, info = False)
     from .editorSsIhm import JDCEditorSsIhm
     monEditeur=JDCEditorSsIhm(monEficasSsIhm,fichier)
     if not(monEditeur.readercata.cata) : return 0
