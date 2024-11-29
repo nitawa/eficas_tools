@@ -41,42 +41,29 @@ class PROC(P_ENTITE.ENTITE):
     - class_instance qui indique la classe qui devra etre utilisée
             pour créer l'objet qui servira à controler la conformité d'un
             opérateur avec sa définition
-
     - label qui indique la nature de l'objet de définition (ici, PROC)
 
 
     et les attributs d'instance suivants :
 
     - nom   : son nom
-
     - op   : le numéro d'opérateur
-
     - reentrant : vaut 'n' ou 'o'. Indique si l'opérateur est réentrant ou pas. Un opérateur
                         réentrant peut modifier un concept d'entrée et le produire comme concept de sortie
-
     - repetable : vaut 'n' ou 'o'. Indique si l'opérateur est répetable ou pas. Un opérateur
                         non répétable ne doit apparaitre qu'une fois dans une exécution. C'est du ressort
                         de l'objet gérant le contexte d'exécution de vérifier cette contrainte.
-
     - fr   : commentaire associé en francais
-
     - docu : clé de documentation associée
-
     - regles : liste des règles associées
-
     - op_init : cet attribut vaut None ou une fonction. Si cet attribut ne vaut pas None, cette
                       fonction est exécutée lors des phases d'initialisation de l'étape associée.
-
     - niveau : indique le niveau dans lequel est rangé l'opérateur. Les opérateurs peuvent etre
                      rangés par niveau. Ils apparaissent alors exclusivement dans leur niveau de rangement.
                      Si niveau vaut None, l'opérateur est rangé au niveau global.
-
     - fenetreIhm : specification de la fenetre
-
     - entites : dictionnaire dans lequel sont stockés les sous entités de l'opérateur. Il s'agit
                       des entités de définition pour les mots-clés : FACT, BLOC, SIMP. Cet attribut
-                      est initialisé avec args, c'est à dire les arguments d'appel restants.
-
 
     """
 

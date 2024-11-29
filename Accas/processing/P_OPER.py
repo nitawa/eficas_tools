@@ -44,31 +44,22 @@ class OPER(P_ENTITE.ENTITE):
             opérateur avec sa définition
 
     - label qui indique la nature de l'objet de définition (ici, OPER)
-
     - nommage qui est un module Python qui fournit la fonctionnalité de nommage
 
     et les attributs d'instance suivants :
 
     - nom   : son nom
-
     - op   : le numéro d'opérateur
-
     - sd_prod : le type de concept produit. C'est une classe ou une fonction qui retourne
                       une classe
-
     - reentrant : vaut 'n' ou 'o'. Indique si l'opérateur est réentrant ou pas. Un opérateur
                         réentrant peut modifier un concept d'entrée et le produire comme concept de sortie
-
     - repetable : vaut 'n' ou 'o'. Indique si l'opérateur est répetable ou pas. Un opérateur
                         non répétable ne doit apparaitre qu'une fois dans une exécution. C'est du ressort
                         de l'objet gérant le contexte d'exécution de vérifier cette contrainte.
-
     - fr   : commentaire associé en francais
-
     - docu : clé de documentation associée
-
     - regles : liste des règles associées
-
     - op_init : cet attribut vaut None ou une fonction. Si cet attribut ne vaut pas None, cette
                       fonction est exécutée lors des phases d'initialisation de l'étape associée.
 

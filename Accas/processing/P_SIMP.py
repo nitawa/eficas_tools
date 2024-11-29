@@ -226,6 +226,10 @@ class SIMP(P_ENTITE.ENTITE):
             contraintes = "NOT NULL"
         else:
             contraintes = ""
+        if self.val_min != float("-inf"):
+            contraintes += " CHECK ({} >= {}) ".format(self.nom, self.val_min)
+        if self.val_max != float("inf"):
+            contraintes += " CHECK ({} >= {}) ".format(self.nom, self.val_max)
         texte = "\t{}  {} {} ,\n".format(self.nom, leTypeSql, contraintes)
         return texte
 

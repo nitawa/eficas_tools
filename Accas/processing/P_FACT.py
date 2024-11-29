@@ -53,21 +53,19 @@ class FACT(P_ENTITE.ENTITE):
     label = "FACT"
 
     def __init__( self, fr="", docu="", regles=(), statut="f", defaut=None, ang="",
-        fenetreIhm=None, min=0, max=1, validators=None, nomXML=None,
-        **args
-    ):
+        fenetreIhm=None, min=0, max=1, validators=None, nomXML=None, **args):
         """
         Un mot-clé facteur est caractérisé par les attributs suivants :
 
-          - fr   :
           - statut :
-          - defaut :
-          - regles
-          - min
-          - max
-          - position
-          - docu
-          - fenetreIhm
+          - regles : regles de coherence a l interieur du fact (au_moins 1...)
+          - validators : regles de coherence developpees specifiquement
+          - min : nb max d occurence
+          - max : nb min d occurence
+          - docu : lien sur une documentation extene
+          - fr   : documentation en francais
+          - ang  : documentation en anglais
+          - fenetreIhm : fenetre particuliere de présentation
         """
         P_ENTITE.ENTITE.__init__(self, validators)
         # Initialisation des attributs
@@ -202,29 +200,33 @@ class FACT(P_ENTITE.ENTITE):
         # on admet que si un FACT a une primaryKey, elle existe dans celui-ci
         # ou que il s agit d un motclef frere/oncle place avant. Elle est dans dictKeys
         debug = False
+        #if self.nom == 'time_profile' : debug = True
         if debug: print("****** traitement de FACT ", self.nom)
         if debug: print( "dElementsRecursifs", dElementsRecursifs,)
         if debug: print( "dPrimaryKey", dPrimaryKey,)
         if debug: print( "dElementsRecursifs,", dElementsRecursifs)
         if debug: print( "dUnique,", dUnique)
         if debug: print( "dKeys,", dKeys)
-        texte = ""
         texteForeignKey = ""
         textePrimaryKey = ""
-        texteDesFactTables = ""
+        texteTable = ""
+        texteColonnes = ""
         texteConstraintUnique = ""
+        suisUneTable = False
+        texteDesFactTables = ""
         if self.nom in dElementsRecursifs: return "\t{} XML ,\n".format(self.nom)
         if self.nom in dPrimaryKey or self.nom in dForeignKey:
-            texte = "CREATE TABLE IF NOT EXISTS {} (\n".format(self.nom)
+            suisUneTable = True
+            texteTable = "CREATE TABLE IF NOT EXISTS {} (\n".format(self.nom)
             if debug: print("FACT ", self.nom, " est une table")
             if self.nom in dPrimaryKey:
                if dPrimaryKey[self.nom]  in self.entites.values() :
-                  texte += "\t{} SERIAL PRIMARY KEY,\n".format(dPrimaryKey[self.nom])
+                  texteTable += "\t{} SERIAL PRIMARY KEY,\n".format(dPrimaryKey[self.nom])
                elif dPrimaryKey[self.nom] in dKeys :
-                  texte += "\t{} {},\n".format(dPrimaryKey[self.nom], dKeys[dPrimaryKey[self.nom]])
+                  texteTable += "\t{} {},\n".format(dPrimaryKey[self.nom], dKeys[dPrimaryKey[self.nom]])
                else :
                   # on estime qu on a alors une SERIAL PRIMARY KEY,
-                  texte += "\t{} SERIAL PRIMARY KEY,\n".format(dPrimaryKey[self.nom])
+                  texteTable += "\t{} SERIAL PRIMARY KEY,\n".format(dPrimaryKey[self.nom])
                   dKeys[dPrimaryKey[self.nom]] = 'INT NOT NULL'
                textePrimaryKey += "\tPRIMARY KEY ({}), \n".format( dPrimaryKey[self.nom])
             if self.nom in dForeignKey:
@@ -237,23 +239,25 @@ class FACT(P_ENTITE.ENTITE):
         for mc in self.entites.values():
             if mc.label == "SIMP":
                 texteMC = mc.dumpDBSchema(inBloc)
-                texte += texteMC
-            elif mc.label == "FACT":
-                if mc.nom in dElementsRecursifs:
-                    texte += mc.dumpDBSchema(dPrimaryKey, dForeignKey, dElementsRecursifs, dUnique, dKeys, inBloc)
-                else:
-                    if mc.nom in dPrimaryKey or mc.nom in dForeignKey:
-                        texteDesFactTables += mc.dumpDBSchema( dPrimaryKey, dForeignKey, dElementsRecursifs, dUnique, dKeys, inBloc)
-                    else :
-                        texte += mc.dumpDBSchema( dPrimaryKey, dForeignKey, dElementsRecursifs, dUnique ,dKeys, inBloc)
+                if suisUneTable : texteTable += texteMC
+                else : texteColonnes += texteMC
+                if debug : print ('ds le for du Fact : ', texteMC)
+            elif mc.label == "FACT" and mc.nom in dElementsRecursifs:
+                texteMC = mc.dumpDBSchema(dPrimaryKey, dForeignKey, dElementsRecursifs, dUnique, dKeys, inBloc)
+                if suisUneTable : texteTable += texteMC
+                else : texteColonnes += texteMC
             else:
-                texte += mc.dumpDBSchema( dPrimaryKey, dForeignKey, dElementsRecursifs, dUnique, dKeys, inBloc)
-        texte += textePrimaryKey
-        texte += texteForeignKey
-        if self.nom in dUnique: texte += "\tUNIQUE {},\n".format(dUnique[self.nom])
+                t1, t2 = mc.dumpDBSchema( dPrimaryKey, dForeignKey, dElementsRecursifs, dUnique, dKeys, inBloc)
+                if suisUneTable : texteTable += t1
+                else : texteColonnes += t1
+                texteDesFactTables += t2
+        texteTable += textePrimaryKey
+        texteTable += texteForeignKey
+        if self.nom in dUnique: texteTable += "\tUNIQUE {},\n".format(dUnique[self.nom])
         if self.nom in dPrimaryKey or self.nom in dForeignKey: 
-           texte = texte[0:-2]
-           texte += "\n);\n"
-        texte += texteDesFactTables
-        if debug : print ('retour du Fact : ', texte)
-        return texte
+           texteTable = texteTable[0:-2]
+           texteTable += "\n);\n"
+        if debug : print ('retour du Fact : texteTable', texteTable)
+        if debug : print ('retour du Fact : texteDesFactTables ', texteDesFactTables)
+        if debug : print ('retour du Fact : texteDesFactTables ', texteColonnes)
+        return texteColonnes, texteDesFactTables + texteTable

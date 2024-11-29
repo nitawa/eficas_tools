@@ -49,7 +49,7 @@ class compareAutreMC(Valid):
         self.nomFrere = frere
 
     def set_MCSimp(self, MCSimp):
-        debug = 1
+        debug = 0
         if debug:
             print("je passe la pour ", self, MCSimp.nom)
         self.MCSimp = MCSimp

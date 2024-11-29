@@ -183,6 +183,33 @@ class BLOC(P_ENTITE.ENTITE):
             longueur = longueur + mc.longueurDsArbre()
         return longueur
 
+    def dumpDBSchema(self, dPrimaryKey, dForeignKey, dElementsRecursifs, dUnique, dKeys, inBloc):
+        debug = False
+        if debug: print("****** traitement de BLOC ", self.nom)
+        if debug: print( "dElementsRecursifs", dElementsRecursifs,)
+        if debug: print( "dPrimaryKey", dPrimaryKey,)
+        if debug: print( "dElementsRecursifs,", dElementsRecursifs)
+        if debug: print( "dUnique,", dUnique)
+        if debug: print( "dKeys,", dKeys)
+        texteTable = ""
+        texteColonnes = ""
+        inBloc = 1
+        for mc in self.entites.values():
+            if mc.label == "SIMP":
+                texteMC = mc.dumpDBSchema(inBloc)
+                texteColonnes += texteMC
+                if debug : print ('ds le for du Fact : ', texteMC)
+            elif mc.label == "FACT" and mc.nom in dElementsRecursifs:
+                texteMC += mc.dumpDBSchema(dPrimaryKey, dForeignKey, dElementsRecursifs, dUnique, dKeys, inBloc)
+                texteColonnes += texteMC
+            else:
+                t1, t2 = mc.dumpDBSchema( dPrimaryKey, dForeignKey, dElementsRecursifs, dUnique, dKeys, inBloc)
+                texteColonnes += t1
+                texteDesFactTables += t2
+        if debug : print ('retour du BLOC : ', texteDesFactTables)
+        if debug : print ('retour du BLOC : ', texteColonnes)
+        if debug : print ('retour du Fact : ', texteDesFactTables)
+        return texteColonnes, texteDesFactTables
 
 def blocUtils():
     """Définit un ensemble de fonctions utilisables pour écrire les

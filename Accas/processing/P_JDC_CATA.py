@@ -173,11 +173,12 @@ class JDC_CATA(P_ENTITE.ENTITE):
 
     def dumpDBSchema(self, databaseName):
         texte = "create database {}; \n".format(databaseName)
-        texte += "create user admin{}; \n".format(databaseName)
-        texte += "grant all privileges on database {} to admin{}; \n".format(
-            databaseName, databaseName
-        )
-        texte += "********* fin de creation de la database ********* \n"
+        texte += "create user admin_{}; \n".format(databaseName)
+        texte += "grant all privileges on database {} to admin_{}; \n".format( databaseName, databaseName)
+        texte += "CREATE TABLE IF NOT EXISTS traitement (\n"
+        texte += "traitement_xslt XML NOT NULL,\n"
+        texte += "nom_table_creee TEXT NOT NULL,\n);\n"
+        texte += "********* fin de creation de la database ********* \n\n"
         dPrimaryKey = {}
         dRecursif = {}
         dForeignKey = {}
@@ -193,7 +194,7 @@ class JDC_CATA(P_ENTITE.ENTITE):
         for c in self.commandes:
             if not (c.label != "OPER") and not (c.label != "PROC"): continue  # une macro ?
             texte += c.dumpDBSchema(dPrimaryKey, dForeignKey, dElementsRecursifs, dUnique, {}, False)
-        # print (texte)
+            #print (texte)
         return texte
 
     def dumpGitStringFormat(self):

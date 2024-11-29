@@ -36,6 +36,7 @@ PY_FILES = \
         myMain5C.py editor5C.py \
         desWidgetCBSelection5C.py  \
         desWidgetCB.py  \
+	desWidgetDate5C.py \
         desWidgetSimpSelection5C.py \
         desWidgetDateSelection5C.py \
 	desWidgetProfile.py \

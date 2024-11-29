@@ -125,3 +125,4 @@ class PROC_ETAPE(P_ETAPE.ETAPE):
         """
         if type(self.definition.op_init) == types.FunctionType:
             self.definition.op_init(*(self, d))
+

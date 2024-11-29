@@ -634,9 +634,8 @@ Causes possibles :
         )
 
     def prepareInsertInDB(self):
-        debug = 1
-        if debug:
-            print("prepareInsertInDB traitement de ", self.nom)
+        debug = 0
+        if debug: print("prepareInsertInDB traitement de ", self.nom)
         if hasattr(self, "dPrimaryKey"):
             dPrimaryKey = self.dPrimaryKey
         else:
@@ -646,13 +645,8 @@ Causes possibles :
         else:
             dElementsRecursifs = {}
         dictKey = {}
-        if debug:
-            print("dElementsRecursifs", dElementsRecursifs)
-        if debug:
-            print(
-                "dPrimaryKey",
-                dPrimaryKey,
-            )
+        if debug: print("dElementsRecursifs", dElementsRecursifs)
+        if debug: print( "dPrimaryKey", dPrimaryKey,)
         for mc in dPrimaryKey.values():
             dictKey[mc] = None
         texte = ""
