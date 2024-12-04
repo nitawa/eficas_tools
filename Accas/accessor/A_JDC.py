@@ -623,6 +623,8 @@ class JDC(A_OBJECT.OBJECT):
         # print (self.procedure)
         self.setCurrentContext()
         try:
+        #print ('PNPN : chgt try en if')
+        #if 1 :
             self.analyseFromXML()
         except Exception as e:
             print("Erreur dans analyseXML a la generation du JDC a partir du xml")

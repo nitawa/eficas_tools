@@ -77,15 +77,14 @@ class Groupe(QWidget, FacultatifOuOptionnel):
                 fenetre.show()
 
     def afficheMots(self):
-        # print ("ds afficheMots ",self.node.item.nom,self.node.plie)
+        print ("ds afficheMots ",self.maCommande, self.node.item.nom)
         for node in self.node.children:
             # non return mais  continue car il faut tenir compte des blocs
-            if node.appartientAUnNoeudPlie == True:
-                continue
+            if node.appartientAUnNoeudPlie == True: continue
             widget = node.getPanelGroupe(self, self.maCommande)
             # print ("widget pour ", node.item.nom, widget)
             self.listeFocus.append(node.fenetre)
-        # print "fin pour " , self.node.item.nom
+        #print ("fin pour " , self.node.item.nom)
 
     def calculOptionnel(self):
         self.listeMc = []

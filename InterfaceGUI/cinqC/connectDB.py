@@ -4,7 +4,7 @@ import sys
 
 import psycopg2
 
-connecteurTexte = "dbname=test user=performance"
+connecteurTexte = "dbname=odyssee_test user=admin_odyssee_test"
 
 
 class connectDB:

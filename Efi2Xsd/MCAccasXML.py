@@ -962,12 +962,13 @@ class X_JDC(X_MCCOMPO):
         self.objPyxb = self.cata.modeleMetier.CreateFromDocument(self.procedure)
         if not hasattr(self.cata.modeleMetier, "AccasUserAssd"):
             from Accas import UserASSD
-
             self.cata.modeleMetier.AccasUserAssd = UserASSD
         if not hasattr(self.cata.modeleMetier, "AccasUserAssdMultiple"):
             from Accas import UserASSDMultiple
-
             self.cata.modeleMetier.AccasUserAssdMultiple = UserASSDMultiple
+        if not hasattr(self.cata.modeleMetier, "AccasAssd") :
+            from Accas import ASSD
+            self.cata.modeleMetier.AccasAssd = ASSD
         for contentObjEtape in self.objPyxb.orderedContent():
             # debug=1
             objEtape = contentObjEtape.value
@@ -1062,7 +1063,7 @@ class X_JDC(X_MCCOMPO):
                 ):
                     laClassePyxbUserAssd = type(objAAnalyser)
                     return self.creeUserAssd(objAAnalyser, laClassePyxbUserAssd)
-                if issubclass(objAAnalyser.__class__, self.cata.modeleMetier.AccasAssd):
+                if  issubclass(objAAnalyser.__class__, self.cata.modeleMetier.AccasAssd):
                     return self.g_context[str(objAAnalyser)]
                 if isinstance(objAAnalyser, pyxb.binding.datatypes.boolean):
                     return bool(objAAnalyser)

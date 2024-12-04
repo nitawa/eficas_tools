@@ -45,6 +45,7 @@ class QtEditorManager(EditorManager):
         self.myQtab = self.appliEficas.myQtab
         self.myQtab.currentChanged.connect(self.indexChanged)
         self.myQtab.tabCloseRequested.connect(self.closeTab)
+        self.appliEficas = appliEficas
 
     #----------------------
     def indexChanged(self):
@@ -399,7 +400,9 @@ class QtEditorManager(EditorManager):
                     break
                 double = editor
         else:
-            from InterfaceGUI.QT5.qt_editor import QtEditor
+            #from InterfaceGUI.QT5.qt_editor import QtEditor
+            from qt_editor import QtEditor
+            #print ('hhhhhhhhhhhhh', self)
             editor = QtEditor(self.appliEficas, dataSetFile=dataSetFile, jdc=jdc, QWParent=self.myQtab, include=include)
         if double != None: self.doubles[editor] = double
         if editor.jdc:  # le fichier est bien un jdc

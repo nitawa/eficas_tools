@@ -307,6 +307,10 @@ class X_compoFactoriseAmbigu(X_definition):
         for mc in listeDeCreation:
             if hasattr(mc, "condition"):
                 self.lesConditions += "\n\t" + mc.condition
+            if self.lesConditions.find ('>') > 0: 
+               self.lesConditions=self.lesConditions.replace ('>', 'superieur')
+            if self.lesConditions.find ('<') > 0: 
+               self.lesConditions=self.lesConditions.replace ('<', 'inferieur')
             doitReecrireLesTypes += mc.possedeDejaUnMCFactorise
             self.mcXSD.append(mc)
             self.ordreMC.append(mc.nom)
@@ -557,6 +561,8 @@ class X_compoFactoriseAmbigu(X_definition):
         pass
 
     def dumpXsd(self, dansFactorisation=False, multiple=False, first=False):
+        self.fr=""
+        self.ang=""
         # on ne fait rien, tout a ete fait dans le init
         self.lesConditions += '\n'
         self.texteElt = substDsSequence.format( self.code, self.nomDuTypePyxb, 0, 1, self.lesConditions)
@@ -1099,6 +1105,8 @@ class X_definitionComposee(X_definition):
         debug=False,
         withAbstractElt=True,
     ):
+        self.fr=""
+        self.ang=""
         # PNPN
         if debug:
             print(
@@ -1395,6 +1403,8 @@ class X_OPER(X_definitionComposee):
     def dumpXsd(
         self, dansFactorisation=False, multiple=False, first=False, withAbstractElt=True
     ):
+        self.fr=""
+        self.ang=""
         X_definitionComposee.dumpXsd(
             self, dansFactorisation, withAbstractElt=withAbstractElt
         )
@@ -1425,6 +1435,8 @@ class X_PROC(X_definitionComposee):
 class X_BLOC(X_definitionComposee):
 # -----------------------------------
     def dumpXsd( self, dansFactorisation=False, multiple=False, first=False, debug=False):
+        self.fr=""
+        self.ang=""
         if debug: print("X_BLOC dumpXsd", self.nom)
         self.tousLesFils = []
         if self.nom == "blocConsigne":
@@ -1453,6 +1465,10 @@ class X_BLOC(X_definitionComposee):
             self.texteComplexe = ""
 
         texteCondition = "\n  condition : " + self.condition + '\n'
+        if texteCondition.find ('>') > 0: 
+            texteCondition=texteCondition.replace ('>', 'superieur')
+        if texteCondition.find ('<') > 0: 
+            texteCondition=texteCondition.replace ('<', 'inferieur')
         self.texteElt = substDsSequence.format(self.code, self.nomDuTypePyxb, 0, 1, texteCondition)
         # print ('------------------------------------------------')
 
@@ -1515,6 +1531,8 @@ class X_BLOC(X_definitionComposee):
 class X_SIMP(X_definition):
 # --------------------------------
     def dumpXsd( self, dansFactorisation=False, multiple=False, first=False, debug=False):
+        self.fr=""
+        self.ang=""
         # if PourTraduction  : print (self.nom)
         # if self.nom == 'A' : debug = True
         if debug:
@@ -1773,6 +1791,8 @@ class X_SIMP(X_definition):
                     print(self.texteSimple)
 
     def dumpSpecifiqueTexteAvecBlancs(self, minOccurs, multiple):
+        self.fr=""
+        self.ang=""
         # attention multiple non traite
         # pour l instant on n a pas max =1 et on ne traite pas les into
 
@@ -1828,6 +1848,8 @@ class X_SIMP(X_definition):
                 self.texteSimple += finChaineAvecBlancsInto
 
     def dumpSpecifiqueTuple(self, minOccurs):
+        self.fr=""
+        self.ang=""
         self.nomDuTypeDeBase = self.traduitType()
         tousPareil = True
         # il faut gerer l aide et les defaut
@@ -1883,6 +1905,8 @@ class X_SIMP(X_definition):
         self.texteSimple += complexeTypeTuple
 
     def dumpSpecifiqueMatrice(self, minOccurs):
+        self.fr=""
+        self.ang=""
         # ajouter le AccasAssd
         # if faut traiter le defaut
         typeDeMatrice = self.type[0]
@@ -2077,6 +2101,8 @@ class X_JDC_CATA:
 # -----------------
 
     def dumpXsd(self, withAbstractElt, withUnitAsAttribute , avecSubstitution=True, debug=False):
+        self.fr=""
+        self.ang=""
         # PN reflechir plus aux lignes suivantes
         CONTEXT.unsetCurrentCata()
         CONTEXT.setCurrentCata(self)
@@ -2262,6 +2288,7 @@ class X_JDC_CATA:
                     continue
                 if definition.nomDuTypePyxb != "T_" + definition.nom:
                     different = True
+                    print (definition.nomDuTypePyxb, "T_" + definition.nom)
                 if debug:
                     print("definition.nomDuTypePyxb", definition.nomDuTypePyxb)
                 listeATraiter = [
@@ -2418,6 +2445,10 @@ class X_JDC_CATA:
             if debug : print ('-------------------------')
             if debug : print (ligne)
             if debug : print ('indent debut ', indent)
+            if ligne.find ('\&') > 0: 
+               ligne=ligne.replace ('\&', 'et')
+            if ligne.find ('&') > 0: 
+               ligne=ligne.replace ('&', 'et')
             memeIndentation = 0
             if ligne.find('<xs:enumeration') == 0 : 
                if debug : print ('dansEnumeration', dansEnumeration)
@@ -2448,6 +2479,7 @@ class X_JDC_CATA:
             if ligne[0:2] == '</' : indent += -1
             if ligne.find('<xs:minInclusive') == 0  : indent += -1
             if ligne.find('<xs:maxInclusive') == 0  : indent += -1
+            if ligne.find('<xs:attribute') == 0  : indent += -1
             # PN Attention > 0 car il y a les conditions possibles ou la doc est sur +sieurs lignes
             if ligne.find('</xs:documentation') > 0  : indent += -1
             if ligne.find('<xs:minLen') >= 0  : indent += -1
@@ -2460,36 +2492,4 @@ class X_JDC_CATA:
             #   break
         return newTexte
 
-    def formateOld(self, texte, debug = 0) :
-        newTexte=''
-        indent = 1
-        for ligne in texte.split('\n'):
-            if debug : 
-                print ('----------------------------')
-                print (ligne)
-                print ('indent et indentAvant', indent)
-            indentAvant=indent
-            doitDecrementer  = ligne.find('<xs:enumeration')
-            doitDecrementer += ligne.find('<xs:element')
-            doitDecrementer += ligne.find('<xs:restriction')
-            doitDecrementer += ligne.find('<xs:minInclusive')
-            doitDecrementer += ligne.find('<xs:maxInclusive')
-            doitDecrementer += ligne.find('<xs:maxLength')
-            doitDecrementer += ligne.find('<xs:minLength')
-            if doitDecrementer == -7: 
-               if ligne[-2:] == '/>': indent += -1
-               if ligne[0:2] == '</' : indent += -1
-            if ligne.find('<'): indent = indentAvant
-            newTexte += '  ' * indent + ligne + '\n'
-            if (ligne.find('<xs:enumeration') + ligne.find('<xs:element')) == -2: 
-                indent += 1
-                if ligne[-2:] == '/>': indent += -1
-                if ligne[0:2]  == '</' : indent += -1
-            if ligne.find('</xs:list') > -1 : indent += -1
-            if ligne.find('</xs:annotation') > -1 : indent += -1
-            if debug : print ('print indent apres', indent)
-            # on est dans de  la donc
-            if ligne.find('<'): indent = indentAvant
-
-        return newTexte
            

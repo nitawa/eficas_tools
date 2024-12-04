@@ -395,7 +395,13 @@ class ENTITE(object):
         # on enleve la dernier ','
         texte = texte[0:-2]
         texte += "\n);\n"
-        texte += texteDesFactTables
+        print (texte)
+        print (texteDesFactTables)
+        if self.nom not in dPrimaryKey and self.nom not in dForeignKey: 
+        # alors ce n est pas une table
+           texte = texteDesFactTables
+        else : 
+           texte += texteDesFactTables
         return texte
 
 

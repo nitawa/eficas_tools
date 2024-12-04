@@ -228,7 +228,8 @@ class FACT(P_ENTITE.ENTITE):
                   # on estime qu on a alors une SERIAL PRIMARY KEY,
                   texteTable += "\t{} SERIAL PRIMARY KEY,\n".format(dPrimaryKey[self.nom])
                   dKeys[dPrimaryKey[self.nom]] = 'INT NOT NULL'
-               textePrimaryKey += "\tPRIMARY KEY ({}), \n".format( dPrimaryKey[self.nom])
+               if dPrimaryKey[self.nom]  in self.entites.values() :
+                  textePrimaryKey += "\tPRIMARY KEY ({}), \n".format( dPrimaryKey[self.nom])
             if self.nom in dForeignKey:
                texteForeignKey = "\tCONSTRAINT fk_{}_{} FOREIGN KEY ({}) REFERENCES {}({}) ON DELETE CASCADE ,\n".format( 
                         self.nom, dForeignKey[self.nom][0],

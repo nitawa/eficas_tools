@@ -296,7 +296,7 @@ class QtEditor(Ui_editor5C, Editor, QWidget):
                 exit(1)
             jdcResultatsParId=self._newJDC(texte=outputXML)
             jdcResultatsParId.analyseXML()
-            debug=1
+            debug=0
             if debug :  
                  file='/tmp/result_'+str(id)+'.xml'
                  with open(file, 'wb') as f: f.write(outputXML)
@@ -307,7 +307,7 @@ class QtEditor(Ui_editor5C, Editor, QWidget):
             sha1Id=e.getChild('sha1Id')
             sha1Id.setValeur(str(id))
             jdcResultatsAggreges.register(jdcResultatsParId.etapes[0])
-        debug=1
+        debug=0
         if debug :  
             self.jdc=jdcResultatsAggreges
             texte=self.getTextJDC()

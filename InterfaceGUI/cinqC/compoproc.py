@@ -26,8 +26,7 @@ from InterfaceGUI.cinqC import compooper
 class Node(browser.JDCNode):
 
     def getPanel(self):
-       
-        debug=1
+        debug=0
         if debug : print ('in getPanel compoproc ', self.item.nom )
         maDefinition = self.item.get_definition()
         if maDefinition.fenetreIhm != None :
