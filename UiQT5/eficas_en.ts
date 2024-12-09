@@ -2479,7 +2479,7 @@ p, li { white-space: pre-wrap; }
         <translation></translation>
     </message>
     <message>
-        <location filename="myMain.ui" line="400"/>
+        <location filename="myMain.ui" />
         <source>Chercher Mot-Clef</source>
         <translation> Find Keyword</translation>
     </message>

@@ -24,11 +24,12 @@ import types,os
 # Modules Eficas
 from Accas.extensions.eficas_translation import tr
 
-from UiQT5.desWidgetDateSelection5C import Ui_WidgetDateSelection5C
-from InterfaceGUI.QT5.monWidgetSimpDate  import MonWidgetSimpDate
+from UiQT5.desWidgetSimpSelectionVP import Ui_WidgetSimpSelectionVP
+from InterfaceGUI.QT5.monWidgetSimpBase  import MonWidgetSimpBase
 
 
-class MonWidgetSpecifique (Ui_WidgetDateSelection5C, MonWidgetSimpDate):
+class MonWidgetSpecifique (Ui_WidgetSimpSelectionVP, MonWidgetSimpBase):
+# c est juste la taille des differents widgets de base qui change
 
     def __init__(self,node,monSimpDef,nom,objSimp,parentQt,commande):
-        MonWidgetSimpDate.__init__(self,node,monSimpDef,nom,objSimp,parentQt,commande)
+        MonWidgetSimpBase.__init__(self,node,monSimpDef,nom,objSimp,parentQt,commande)

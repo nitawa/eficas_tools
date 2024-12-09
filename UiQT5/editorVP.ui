@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>editor5C</class>
- <widget class="QWidget" name="editor5C">
+ <class>editorVP</class>
+ <widget class="QWidget" name="editorVP">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -37,7 +37,7 @@
      <property name="widgetResizable">
       <bool>true</bool>
      </property>
-     <widget class="QWidget" name="editor5CContents">
+     <widget class="QWidget" name="editorVPContents">
       <property name="geometry">
        <rect>
         <x>0</x>
@@ -52,7 +52,7 @@
         <verstretch>1</verstretch>
        </sizepolicy>
       </property>
-      <layout class="QVBoxLayout" name="editor5CLayout"/>
+      <layout class="QVBoxLayout" name="editorVPLayout"/>
      </widget>
     </widget>
    </item>

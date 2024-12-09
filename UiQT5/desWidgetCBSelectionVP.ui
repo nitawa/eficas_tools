@@ -1,17 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>WidgetDateSelection5C</class>
- <widget class="QWidget" name="WidgetDateSelection5C">
+ <class>WidgetSelectionVPCB</class>
+ <widget class="QWidget" name="WidgetSelectionVPCB">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>122</width>
-    <height>50</height>
+    <width>316</width>
+    <height>47</height>
    </rect>
   </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>0</width>
+    <height>0</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>1500</width>
+    <height>1500</height>
+   </size>
+  </property>
   <property name="windowTitle">
-   <string>Saisie date et heure</string>
+   <string>Form</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">QComboBox{combobox-popup:0;};</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="spacing">
@@ -39,14 +60,14 @@
      </property>
      <property name="minimumSize">
       <size>
-       <width>50</width>
+       <width>0</width>
        <height>20</height>
       </size>
      </property>
      <property name="maximumSize">
       <size>
-       <width>178</width>
-       <height>16777215</height>
+       <width>1500</width>
+       <height>20</height>
       </size>
      </property>
      <property name="frameShape">
@@ -66,15 +87,60 @@
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <property name="spacing">
-      <number>0</number>
+      <number>4</number>
      </property>
      <item>
-      <widget class="QDateEdit" name="dateEdit">
+      <widget class="QComboBox" name="CBChoix">
        <property name="sizePolicy">
-        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+        <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>270</width>
+         <height>25</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>25</height>
+        </size>
+       </property>
+       <property name="accessibleName">
+        <string/>
+       </property>
+       <property name="accessibleDescription">
+        <string/>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QComboBox {
+ background:rgb(220,220,220);
+ }
+/*QComboBox: on {
+  font : italic
+ }
+background:rgb(235,235,235);
+border:0px;
+
+
+QComboBox:!editable:on, QComboBox::drop-down:editable:on {
+background: black;
+    font : italic 14px
+ }
+QComboBox:on { 
+  font : italic 20px;
+  background: red ;
+}/*
+</string>
+       </property>
+       <property name="maxVisibleItems">
+        <number>100</number>
+       </property>
+       <property name="frame">
+        <bool>false</bool>
        </property>
       </widget>
      </item>
@@ -85,7 +151,7 @@
        </property>
        <property name="sizeHint" stdset="0">
         <size>
-         <width>13</width>
+         <width>40</width>
          <height>20</height>
         </size>
        </property>

@@ -1,38 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>WidgetSimpSelection5C</class>
- <widget class="QWidget" name="WidgetSimpSelection5C">
+ <class>WidgetDateSelectionVP</class>
+ <widget class="QWidget" name="WidgetDateSelectionVP">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>170</width>
-    <height>45</height>
+    <width>122</width>
+    <height>50</height>
    </rect>
   </property>
-  <property name="sizePolicy">
-   <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
-    <horstretch>0</horstretch>
-    <verstretch>0</verstretch>
-   </sizepolicy>
-  </property>
-  <property name="minimumSize">
-   <size>
-    <width>0</width>
-    <height>0</height>
-   </size>
-  </property>
-  <property name="maximumSize">
-   <size>
-    <width>1493</width>
-    <height>95</height>
-   </size>
-  </property>
   <property name="windowTitle">
-   <string>Form</string>
-  </property>
-  <property name="styleSheet">
-   <string notr="true">QComboBox{combobox-popup:0;};</string>
+   <string>Saisie date et heure</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="spacing">
@@ -53,21 +32,21 @@
    <item>
     <widget class="MonLabelClic" name="label">
      <property name="sizePolicy">
-      <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+      <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
      <property name="minimumSize">
       <size>
-       <width>0</width>
+       <width>50</width>
        <height>20</height>
       </size>
      </property>
      <property name="maximumSize">
       <size>
-       <width>16777214</width>
-       <height>20</height>
+       <width>178</width>
+       <height>16777215</height>
       </size>
      </property>
      <property name="frameShape">
@@ -90,28 +69,12 @@
       <number>0</number>
      </property>
      <item>
-      <widget class="QLineEdit" name="lineEditVal">
+      <widget class="QDateEdit" name="dateEdit">
        <property name="sizePolicy">
-        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
-       </property>
-       <property name="minimumSize">
-        <size>
-         <width>0</width>
-         <height>25</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>5000</width>
-         <height>25</height>
-        </size>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">background:rgb(218,218,2)15;
-border:0px;</string>
        </property>
       </widget>
      </item>
@@ -122,8 +85,8 @@ border:0px;</string>
        </property>
        <property name="sizeHint" stdset="0">
         <size>
-         <width>37</width>
-         <height>22</height>
+         <width>13</width>
+         <height>20</height>
         </size>
        </property>
       </spacer>

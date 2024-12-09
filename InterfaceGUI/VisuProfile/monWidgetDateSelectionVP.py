@@ -17,22 +17,18 @@
 #
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
+# Modules Python
 from __future__ import absolute_import
-from InterfaceGUI.Common import objecttreeitem
-from InterfaceGUI.cinqC  import browser
-from InterfaceGUI.cinqC  import compoproc
+import types,os
+
+# Modules Eficas
+from Accas.extensions.eficas_translation import tr
+
+from UiQT5.desWidgetDateSelectionVP import Ui_WidgetDateSelectionVP
+from InterfaceGUI.QT5.monWidgetSimpDate  import MonWidgetSimpDate
 
 
-class Node(browser.JDCNode):
+class MonWidgetSpecifique (Ui_WidgetDateSelectionVP, MonWidgetSimpDate):
 
-    def getPanel(self):
-        from InterfaceGUI.QT5.monWidgetCommande import MonWidgetCommande
-        return MonWidgetCommande(self,self.editor,self.item.object)
-
-
-class SelectionTreeItem(compoproc.ProcEtapeTreeItem):
-    itemNode=Node
-
-currentCata = CONTEXT.getCurrentCata()
-treeitem = SelectionTreeItem
-objet = currentCata.cata.identifiantSelection
+    def __init__(self,node,monSimpDef,nom,objSimp,parentQt,commande):
+        MonWidgetSimpDate.__init__(self,node,monSimpDef,nom,objSimp,parentQt,commande)

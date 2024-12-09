@@ -27,8 +27,6 @@ import imp
 from copy import deepcopy, copy
 import traceback
 
-# CONTEXT est accessible (__init__.py de processing)
-
 # import raw.efficas as efficas
 sys.path.insert(0, os.path.abspath(os.path.join(os.getcwd(), "..")))
 
@@ -140,8 +138,8 @@ class X_definition:
         self.nomDuTypePyxb = nomDuTypePyxb
         cata = CONTEXT.getCurrentCata()
         nom = "T_" + self.nom
-        if (hasattr(self, "nomXML")) and self.nomXML != None:
-            nom = "T_" + self.nomXML
+        if (hasattr(self, "typeXSD")) and self.typeXSD != None:
+            nom = "T_" + self.typeXSD
         if not (nom in cata.dictTypesXSD.keys()):
             cata.dictTypesXSD[nom] = [ self, ]
             if debug:
@@ -152,7 +150,6 @@ class X_definition:
             if debug: print( " ajout de cata.dictTypesXSD ", nom, self.getNomCompletAvecBloc())
 
     def definitNomDuTypePyxb(self, forceACreer=False, debug=False):
-        # if self.nom == 'A' : debug = True
         if debug: 
             print ("***************************************************")
             print ( " Traitement definitNomDuTypePyxb", self, self.nom, self.nomComplet(), forceACreer,)
@@ -168,8 +165,8 @@ class X_definition:
         self.aCreer = True
         cata = CONTEXT.getCurrentCata()
         nom = "T_" + self.nom
-        if (hasattr(self, "nomXML")) and self.nomXML != None:
-            nom = "T_" + self.nomXML
+        if (hasattr(self, "typeXSD")) and self.typeXSD != None:
+            nom = "T_" + self.typeXSD
         if debug: print("nom in cata.dictTypesXSD.keys", nom in cata.dictTypesXSD.keys())
         # if debug and  (nom in cata.dictTypesXSD.keys()) : print ( cata.dictTypesXSD[nom])
         if not (nom in cata.dictTypesXSD.keys()) or cata.dictTypesXSD[nom] == []:
@@ -262,8 +259,8 @@ class X_definition:
         self.indiceDuTypePyxb = indice
         if debug:
             print( "************ indiceDuTypePyxb pour", self.getNomCompletAvecBloc(), " mis a ", indice,)
-        if (hasattr(self, "nomXML")) and self.nomXML != None:
-            nomAlter = "T_" + self.nomXML + "_" + str(indice)
+        if (hasattr(self, "typeXSD")) and self.typeXSD != None:
+            nomAlter = "T_" + self.typeXSD + "_" + str(indice)
         self.nomDuTypePyxb = nomAlter
         if debug:
             print("self.nomDuTypePyxb : ", nomAlter)
@@ -1081,13 +1078,13 @@ class X_definitionComposee(X_definition):
                     texteComplexeVenantDesFils += mcFils.texteComplexe
             else:
                 if (
-                    hasattr(mcFils, "nomXML")
-                    and mcFils.nomXML in blocsDejaDumpes
-                    and mcFils.nomXML != None
+                    hasattr(mcFils, "typeXSD")
+                    and mcFils.typeXSD in blocsDejaDumpes
+                    and mcFils.typeXSD != None
                 ):
                     continue
-                if hasattr(mcFils, "nomXML") and mcFils.nomXML != None:
-                    blocsDejaDumpes.add(mcFils.nomXML)
+                if hasattr(mcFils, "typeXSD") and mcFils.typeXSD != None:
+                    blocsDejaDumpes.add(mcFils.typeXSD)
                 mcFils.dumpXsd(dansFactorisation=False)
                 self.texteComplexe += mcFils.texteElt
                 if mcFils.aCreer:
@@ -1210,10 +1207,10 @@ class X_definitionComposee(X_definition):
         if self.label != autreMC.label:
             return False
         #if self.nom == 'ValueTemplate' : return True
-        if ( hasattr(self, "nomXML")
-            and hasattr(autreMC, "nomXML")
-            and self.nomXML == autreMC.nomXML
-            and self.nomXML != None):
+        if ( hasattr(self, "typeXSD")
+            and hasattr(autreMC, "typeXSD")
+            and self.typeXSD == autreMC.typeXSD
+            and self.typeXSD != None):
             return True
         for attr in ("regles", "fr", "defaut", "min", "max", "position", "docu"):
             try: val1 = getattr(self, attr)
@@ -1275,10 +1272,10 @@ class X_definitionComposee(X_definition):
 
     def estLeMemeQue(self, autreMC):
         if (
-            hasattr(self, "nomXML")
-            and hasattr(autreMC, "nomXML")
-            and self.nomXML == autreMC.nomXML
-            and self.nomXML != None
+            hasattr(self, "typeXSD")
+            and hasattr(autreMC, "typeXSD")
+            and self.typeXSD == autreMC.typeXSD
+            and self.typeXSD != None
         ):
             return True
         return False
@@ -1476,10 +1473,10 @@ class X_BLOC(X_definitionComposee):
         if self.label != autreMC.label: return False
         if self.inUnion == True or autreMC.inUnion == True: return False
         if (
-            hasattr(self, "nomXML")
-            and hasattr(autreMC, "nomXML")
-            and self.nomXML == autreMC.nomXML
-            and self.nomXML != None
+            hasattr(self, "typeXSD")
+            and hasattr(autreMC, "typeXSD")
+            and self.typeXSD == autreMC.typeXSD
+            and self.typeXSD != None
         ):
             return True
         for attr in ( "condition", "regles",):
@@ -2039,10 +2036,10 @@ class X_SIMP(X_definition):
         if debug : print (' compare SIMP', self.inUnion)
         if self.label != autreMC.label: return False
         if self.inUnion == True or autreMC.inUnion == True: return False
-        if ( hasattr(self, "nomXML")
-            and hasattr(autreMC, "nomXML")
-            and self.nomXML == autreMC.nomXML
-            and self.nomXML != None):
+        if ( hasattr(self, "typeXSD")
+            and hasattr(autreMC, "typeXSD")
+            and self.typeXSD == autreMC.typeXSD
+            and self.typeXSD != None):
             return True
         listeAComparer = ["type", "defaut", "min", "max", "val_min", "val_max"]
         if self.intoXML != None: listeAComparer.append("intoXML")
@@ -2057,10 +2054,10 @@ class X_SIMP(X_definition):
     def compareEtFusionneInto(self, autreMC, debug = False):
         if debug : print (' compare et Fusion SIMP', self.nom)
         if self.label != autreMC.label: return False
-        if ( hasattr(self, "nomXML")
-            and hasattr(autreMC, "nomXML")
-            and self.nomXML == autreMC.nomXML
-            and self.nomXML != None):
+        if ( hasattr(self, "typeXSD")
+            and hasattr(autreMC, "typeXSD")
+            and self.typeXSD == autreMC.typeXSD
+            and self.typeXSD != None):
             return True
         listeAComparer = ["type", "val_min", "val_max"]
         for attr in listeAComparer:

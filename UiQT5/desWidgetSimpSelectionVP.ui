@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>WidgetSelection5CCB</class>
- <widget class="QWidget" name="WidgetSelection5CCB">
+ <class>WidgetSimpSelectionVP</class>
+ <widget class="QWidget" name="WidgetSimpSelectionVP">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>316</width>
-    <height>47</height>
+    <width>170</width>
+    <height>45</height>
    </rect>
   </property>
   <property name="sizePolicy">
-   <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+   <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
@@ -24,8 +24,8 @@
   </property>
   <property name="maximumSize">
    <size>
-    <width>1500</width>
-    <height>1500</height>
+    <width>1493</width>
+    <height>95</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -53,7 +53,7 @@
    <item>
     <widget class="MonLabelClic" name="label">
      <property name="sizePolicy">
-      <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
+      <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
@@ -66,7 +66,7 @@
      </property>
      <property name="maximumSize">
       <size>
-       <width>1500</width>
+       <width>16777214</width>
        <height>20</height>
       </size>
      </property>
@@ -87,60 +87,31 @@
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <property name="spacing">
-      <number>4</number>
+      <number>0</number>
      </property>
      <item>
-      <widget class="QComboBox" name="CBChoix">
+      <widget class="QLineEdit" name="lineEditVal">
        <property name="sizePolicy">
-        <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
        <property name="minimumSize">
         <size>
-         <width>270</width>
+         <width>0</width>
          <height>25</height>
         </size>
        </property>
        <property name="maximumSize">
         <size>
-         <width>16777215</width>
+         <width>5000</width>
          <height>25</height>
         </size>
        </property>
-       <property name="accessibleName">
-        <string/>
-       </property>
-       <property name="accessibleDescription">
-        <string/>
-       </property>
        <property name="styleSheet">
-        <string notr="true">QComboBox {
- background:rgb(220,220,220);
- }
-/*QComboBox: on {
-  font : italic
- }
-background:rgb(235,235,235);
-border:0px;
-
-
-QComboBox:!editable:on, QComboBox::drop-down:editable:on {
-background: black;
-    font : italic 14px
- }
-QComboBox:on { 
-  font : italic 20px;
-  background: red ;
-}/*
-</string>
-       </property>
-       <property name="maxVisibleItems">
-        <number>100</number>
-       </property>
-       <property name="frame">
-        <bool>false</bool>
+        <string notr="true">background:rgb(218,218,2)15;
+border:0px;</string>
        </property>
       </widget>
      </item>
@@ -151,8 +122,8 @@ QComboBox:on {
        </property>
        <property name="sizeHint" stdset="0">
         <size>
-         <width>40</width>
-         <height>20</height>
+         <width>37</width>
+         <height>22</height>
         </size>
        </property>
       </spacer>

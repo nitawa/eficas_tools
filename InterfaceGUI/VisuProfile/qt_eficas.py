@@ -19,19 +19,19 @@
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
 
-from UiQT5.myMain5C import Ui_Eficas5C
+from UiQT5.myMainVP import Ui_EficasVP
 from InterfaceGUI.QT5.qt_eficas import QtEficasAppli
 from PyQt5.QtWidgets import  QAction, QMessageBox
 from Accas.extensions.eficas_translation import tr
 
 
 
-class QtEficasAppli(Ui_Eficas5C, QtEficasAppli):
+class QtEficasAppli(Ui_EficasVP, QtEficasAppli):
     """
-    Class implementing the 5C user interface.
+    Class implementing the ProfileVisualisation user interface.
     """
 
-    def __init__(self,code='5C', salome=0, multi = 0, versionCode=None,  langue='en', GUIPath="InterfaceGUI.cinqC",appWeb=None):
+    def __init__(self,code='VP', salome=0, multi = 0, versionCode=None,  langue='en', GUIPath="InterfaceGUI.VisuProfile",appWeb=None):
         super().__init__(code=code, salome=salome, multi=multi, langue=langue, versionCode=versionCode, GUIPath=GUIPath)
         self.withXSD = True
         self.GUIPath = GUIPath
@@ -41,7 +41,7 @@ class QtEficasAppli(Ui_Eficas5C, QtEficasAppli):
     def connecterSignaux(self) :
         # Pour Aide
         self.actionCode = QAction(self)
-        self.actionCode.setText(tr("Aide 5C"))
+        self.actionCode.setText(tr("Aide Visualisation"))
         self.actionCode.triggered.connect(self.aideCode)
         self.actionOuvrir.triggered.connect(self.openFile) 
 

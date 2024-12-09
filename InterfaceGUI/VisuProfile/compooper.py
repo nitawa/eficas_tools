@@ -21,7 +21,7 @@ import os
 import tempfile
 
 from InterfaceGUI.Common import objecttreeitem
-from InterfaceGUI.cinqC import browser
+from InterfaceGUI.VisuProfile import browser
 
 class Node(browser.JDCNode ):
 

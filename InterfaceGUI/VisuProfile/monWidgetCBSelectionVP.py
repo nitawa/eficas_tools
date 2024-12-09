@@ -18,26 +18,19 @@
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
 # Modules Python
-from __future__ import absolute_import
-import types,os
+import types
 
 # Modules Eficas
-from Accas.extensions.eficas_translation import tr
 
-from UiQT5.desWidgetDate5C import Ui_WidgetDate5C
-from InterfaceGUI.QT5.monWidgetSimpDate  import MonWidgetSimpDate
+from UiQT5.desWidgetCBSelectionVP import Ui_WidgetSelectionVPCB
+from InterfaceGUI.QT5.monWidgetCB  import MonWidgetCBCommun
 
 
-class MonWidgetSpecifique (Ui_WidgetDate5C, MonWidgetSimpDate):
+class MonWidgetSpecifique (Ui_WidgetSelectionVPCB,MonWidgetCBCommun):
 
-    def __init__(self,node,monSimpDef,nom,objSimp,parentQt,commande):
-        MonWidgetSimpDate.__init__(self,node,monSimpDef,nom,objSimp,parentQt,commande)
-
-    def dateChanged(self,qDate):
-        value=qDate.toTime_t()
-        validite,commentaire=self.politique.recordValeur(value)
-        if not(validite) :
-           self.setValeurs()
-           print (commentaire)
-        self.setValide()
-
+    def __init__(self,node,maDefinition,nom,objSimp,parentQt,commande):
+        if type(maDefinition.into) ==types.FunctionType :
+           self.maListeDeValeur = maDefinition.into()
+        else :
+           self.maListeDeValeur = maDefinition.into
+        MonWidgetCBCommun. __init__(self,node,maDefinition,nom,objSimp,parentQt,commande)

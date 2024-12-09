@@ -35,7 +35,7 @@ encoding='iso-8859-1'
 
 #
 catalogues=(
-    ('DkLibGui','Version Beta',os.path.join(repIni,'cata5CChapeau.py'),'python','python'),
+    ('DkLibGui','Version Beta',os.path.join(repIni,'cata_chapeau.py'),'python','python'),
 )
 
 docPath = '../../Aide/Aide5C'

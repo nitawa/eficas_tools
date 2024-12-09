@@ -1,5 +1,6 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# Copyright (C) 2007-2024   EDF R&D
+# Copyright (C) 2007-2021   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -17,19 +18,15 @@
 #
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
+"""
+   Ce module sert a lancer EFICAS configure pour MAP 
+"""
 # Modules Python
-from __future__ import absolute_import
-import types,os
-
 # Modules Eficas
-from Accas.extensions.eficas_translation import tr
+import prefs
 
-from UiQT5.desWidgetSimpSelection5C import Ui_WidgetSimpSelection5C
-from InterfaceGUI.QT5.monWidgetSimpBase  import MonWidgetSimpBase
+import os, sys
+sys.path.append(os.path.join(os.path.abspath(os.path.dirname(__file__)),'..','..'))
 
-
-class MonWidgetSpecifique (Ui_WidgetSimpSelection5C, MonWidgetSimpBase):
-# c est juste la taille des differents widgets de base qui change
-
-    def __init__(self,node,monSimpDef,nom,objSimp,parentQt,commande):
-        MonWidgetSimpBase.__init__(self,node,monSimpDef,nom,objSimp,parentQt,commande)
+from Editeur import eficas_go
+eficas_go.lanceQtEficas(code=prefs.code, GUIPath='cinqC')

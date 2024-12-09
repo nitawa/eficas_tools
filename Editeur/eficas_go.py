@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # Copyright (C) 2007-2024   EDF R&D
 #
@@ -42,7 +42,7 @@ def lanceQtEficas(code=None, versionCode = None, multi=False, langue=None,  GUIP
             print("Please, set qt environment")
             return
 
-    if not GUIPath in ('QT5','cinqC', 'QT6') :
+    if not GUIPath in ('QT5','VisuProfile', 'QT6') :
        print ('Attention, lancement de Eficas pour QT avec GUIPath = {}'.format(GUIPath))
 
     from Editeur import session

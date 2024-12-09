@@ -17,20 +17,22 @@
 #
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
-# Modules Python
-import types
-
-# Modules Eficas
-
-from UiQT5.desWidgetCBSelection5C import Ui_WidgetSelection5CCB
-from InterfaceGUI.QT5.monWidgetCB  import MonWidgetCBCommun
+from __future__ import absolute_import
+from InterfaceGUI.Common import objecttreeitem
+from InterfaceGUI.VisuProfile  import browser
+from InterfaceGUI.VisuProfile  import compoproc
 
 
-class MonWidgetSpecifique (Ui_WidgetSelection5CCB,MonWidgetCBCommun):
+class Node(browser.JDCNode):
 
-    def __init__(self,node,maDefinition,nom,objSimp,parentQt,commande):
-        if type(maDefinition.into) ==types.FunctionType :
-           self.maListeDeValeur = maDefinition.into()
-        else :
-           self.maListeDeValeur = maDefinition.into
-        MonWidgetCBCommun. __init__(self,node,maDefinition,nom,objSimp,parentQt,commande)
+    def getPanel(self):
+        from InterfaceGUI.QT5.monWidgetCommande import MonWidgetCommande
+        return MonWidgetCommande(self,self.editor,self.item.object)
+
+
+class SelectionTreeItem(compoproc.ProcEtapeTreeItem):
+    itemNode=Node
+
+currentCata = CONTEXT.getCurrentCata()
+treeitem = SelectionTreeItem
+objet = currentCata.cata.identifiantSelection

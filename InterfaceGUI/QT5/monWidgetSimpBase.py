@@ -37,7 +37,7 @@ class MonWidgetSimpBase(Ui_WidgetSimpBase, Feuille):
         if hasattr(self.parentQt, "commandesLayout"):
             self.parentQt.commandesLayout.insertWidget(-1, self, 1)
         self.setFocusPolicy(Qt.StrongFocus)
-        # selon les heritages (comme 5C), on pourrait ne pas avoir un LineEditVal 
+        # selon les heritages (comme Visualisation Profile), on pourrait ne pas avoir un LineEditVal 
         if hasattr(self, "lineEditVal"):
             if monSimpDef.homo == "constant":
                 self.lineEditVal.setReadOnly(True)

@@ -19,8 +19,8 @@
 #
 from __future__ import absolute_import
 from InterfaceGUI.Common  import objecttreeitem
-from InterfaceGUI.cinqC import browser
-from InterfaceGUI.cinqC import compooper
+from InterfaceGUI.VisuProfile import browser
+from InterfaceGUI.VisuProfile import compooper
 
 
 class Node(browser.JDCNode):

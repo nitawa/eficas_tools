@@ -33,7 +33,7 @@ def entryPoint():
     # factory: La factory pour creer une instance du plugin
     """
     return {
-        "name": "5CRequeteSelection",
+        "name": "VPRequeteSelection",
         "factory": RequeteSelectionGenerator,
     }
 

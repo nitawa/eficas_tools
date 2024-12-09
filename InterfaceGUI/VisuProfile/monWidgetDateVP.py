@@ -17,22 +17,27 @@
 #
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
+# Modules Python
+from __future__ import absolute_import
+import types,os
 
-from InterfaceGUI.Common import objecttreeitem
-from InterfaceGUI.cinqC import browser
-from InterfaceGUI.QT5.compojdc import JDCTreeItem
+# Modules Eficas
+from Accas.extensions.eficas_translation import tr
+
+from UiQT5.desWidgetDateVP import Ui_WidgetDateVP
+from InterfaceGUI.QT5.monWidgetSimpDate  import MonWidgetSimpDate
 
 
-class Node(browser.JDCNode):
+class MonWidgetSpecifique (Ui_WidgetDateVP, MonWidgetSimpDate):
 
-    def getPanel(self):
-       from InterfaceGUI.QT5.monChoixCommande import MonChoixCommande
-       return MonChoixCommande(self,self.item, self.editor)
+    def __init__(self,node,monSimpDef,nom,objSimp,parentQt,commande):
+        MonWidgetSimpDate.__init__(self,node,monSimpDef,nom,objSimp,parentQt,commande)
 
-# Voir avec Eric pour comprendre pourquoi cela change les choses ?
-class cinqCJDCTreeItem(JDCTreeItem) :
-     pass
+    def dateChanged(self,qDate):
+        value=qDate.toTime_t()
+        validite,commentaire=self.politique.recordValeur(value)
+        if not(validite) :
+           self.setValeurs()
+           print (commentaire)
+        self.setValide()
 
-from Accas import JDC
-treeitem = cinqCJDCTreeItem
-objet = JDC

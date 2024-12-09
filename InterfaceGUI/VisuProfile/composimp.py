@@ -31,7 +31,7 @@ from Accas  import SalomeEntry
 from Accas  import ASSD
 from Accas  import UserASSD
 from Accas  import UserASSDMultiple
-from InterfaceGUI.cinqC import browser
+from InterfaceGUI.VisuProfile import browser
 
 #class Node(browser.JDCNode,typeNode.PopUpMenuNodeMinimal):
 class Node(browser.JDCNode):

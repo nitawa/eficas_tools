@@ -24,7 +24,7 @@ from PyQt5.QtWidgets import QWidget
 # Modules Eficas
 
 from InterfaceGUI.QT5.groupe import Groupe
-from UiQT5.selection5C import Ui_Selection
+from UiQT5.selectionVP import Ui_Selection
 from Accas.extensions.eficas_translation import tr
 
 # Import des panels

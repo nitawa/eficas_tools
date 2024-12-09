@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Profile5C</class>
- <widget class="QWidget" name="Profile5C">
+ <class>ProfileVP</class>
+ <widget class="QWidget" name="ProfileVP">
   <property name="geometry">
    <rect>
     <x>0</x>

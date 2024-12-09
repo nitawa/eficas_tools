@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Bar5C</class>
- <widget class="QWidget" name="Bar5C">
+ <class>BarVP</class>
+ <widget class="QWidget" name="BarVP">
   <property name="geometry">
    <rect>
     <x>0</x>

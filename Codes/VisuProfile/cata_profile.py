@@ -2,7 +2,6 @@
 #
 # EFICAS
 from Accas import  SIMP, PROC, FACT, JDC_CATA_SINGLETON
-# Utile pour generer les .comm en fonction des XML
 
 JdC = JDC_CATA_SINGLETON(code="ProfileNS")
 VERSION_CATALOGUE = "V_0"
@@ -41,7 +40,7 @@ def def_run_id(version = 'ProfileNS') :
              OS = SIMP(statut='o', typ='TXM',),
          )
      elif version == 'XSLT' :
-         return FACT(statut='o', max=1, min =1,
+         return FACT(statut='o', max=1, min =1, 
              sha1 = SIMP(statut='o', typ='TXM'),
              code_name = SIMP(statut='o', typ='TXM',),
              test_name = SIMP(statut='o', typ='TXM',),

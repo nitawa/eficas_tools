@@ -78,22 +78,7 @@ class OPER(P_ENTITE.ENTITE):
     label = "OPER"
     nommage = nommage
 
-    def __init__(
-        self,
-        nom,
-        op=None,
-        sd_prod=None,
-        reentrant="n",
-        repetable="o",
-        fr="",
-        ang="",
-        fenetreIhm=None,
-        docu="",
-        regles=(),
-        op_init=None,
-        niveau=None,
-        UIinfo=None,
-        **args
+    def __init__( self, nom, op=None, sd_prod=None, reentrant="n", repetable="o", fr="", ang="", fenetreIhm=None, docu="", regles=(), op_init=None, niveau=None, UIinfo=None, **args
     ):
         """
         Méthode d'initialisation de l'objet OPER. Les arguments sont utilisés pour initialiser
@@ -128,16 +113,17 @@ class OPER(P_ENTITE.ENTITE):
         self.checkDefinition(self.nom)
         self.txtNomComplet = ""
         self.dejaPrepareDump = False
+        self.typeXSD = typeXSD
 
-    def __call__(self, reuse=None, nomXML=None, **args):
+    def __call__(self, reuse=None, typeXSD = None, **args):
         """
         Construit l'objet ETAPE a partir de sa definition (self),
         puis demande la construction de ses sous-objets et du concept produit.
         """
-        if nomXML == None:
+        if typeXSD == None:
             nomsd = self.nommage.getNomConceptResultat(self.nom)
         else:
-            nomsd = nomXML
+            nomsd = typeXSD
         etape = self.class_instance(oper=self, reuse=reuse, args=args)
         etape.MCBuild()
         while etape.doitEtreRecalculee == True:

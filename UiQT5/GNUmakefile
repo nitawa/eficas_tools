@@ -32,13 +32,13 @@ PYXB            ?=pyxbgen
 
 
 PY_FILES = \
-        selection5C.py \
-        myMain5C.py editor5C.py \
-        desWidgetCBSelection5C.py  \
+        selectionVP.py \
+        myMainVP.py editorVP.py \
+        desWidgetCBSelectionVP.py  \
         desWidgetCB.py  \
-	desWidgetDate5C.py \
-        desWidgetSimpSelection5C.py \
-        desWidgetDateSelection5C.py \
+	desWidgetDateVP.py \
+        desWidgetSimpSelectionVP.py \
+        desWidgetDateSelectionVP.py \
 	desWidgetProfile.py \
         desWidgetBar.py \
          myMain.py desBaseWidget.py desChoixCata.py desChoixCode.py desChoixCommandes.py \

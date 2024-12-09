@@ -20,7 +20,7 @@
 # Modules Python
 # Modules Eficas
 
-from desWidgetBar import Ui_Bar5C
+from desWidgetBar import Ui_BarVP
 
 from PyQt5.QtWidgets import QDialog
 from PyQt5.QtChart   import QBarSet, QChart, QChartView, QBarSeries, QBarCategoryAxis, QValueAxis
@@ -31,7 +31,7 @@ from PyQt5.QtGui     import QPainter
 
 # Import des panels
 
-class MonWidgetBar(Ui_Bar5C, QDialog):
+class MonWidgetBar(Ui_BarVP, QDialog):
     """
     """
     def __init__(self, widgetProfile):

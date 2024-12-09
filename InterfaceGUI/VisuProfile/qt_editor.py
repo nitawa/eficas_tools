@@ -26,26 +26,26 @@ from Accas.extensions.eficas_translation import tr
 
 from PyQt5.QtWidgets           import QWidget
 from Editeur.editor            import Editor
-from UiQT5.editor5C            import Ui_editor5C
+from UiQT5.editorVP            import Ui_editorVP
 from InterfaceGUI.Common       import comploader
 from InterfaceGUI.Common       import objecttreeitem
-from InterfaceGUI.cinqC        import browser
-from InterfaceGUI.cinqC.connectDB import connectDB
+from InterfaceGUI.VisuProfile  import browser
+from InterfaceGUI.VisuProfile.connectDB import connectDB
 import Accas.IO.writer as generator
 
 
 
-class QtEditor(Ui_editor5C, Editor, QWidget):
+class QtEditor(Ui_editorVP, Editor, QWidget):
 # ------------------------------------------ #
     """
-       Editeur de jdc 5C
+       Editeur de jdc VisuProfile
     """
 
     def __init__(self, appliEficas, cataFile=None, dataSetFile=None, formatIn='python', formatOut='python', QWParent=None, jdc=None  , include = None):
     #----------------------------------------------------------------------------------------------------------------------------
 
         debug = 0
-        if debug : print ('__init__ de QtEditor5C :', appliEficas,dataSetFile, jdc, QWParent)
+        if debug : print ('__init__ de QtEditorVP :', appliEficas,dataSetFile, jdc, QWParent)
 
         QWidget.__init__(self,None)
         self.setupUi(self)
@@ -80,7 +80,7 @@ class QtEditor(Ui_editor5C, Editor, QWidget):
 
         # a remettre au gout du jour si on a besoin d un tr
         #    from Accas.extensions import localisation
-        #    localisation.localise(self.appliEficas.langue,translatorFile='cinqc')
+        #    localisation.localise(self.appliEficas.langue,translatorFile='VisuProfile')
         self.jdcResultats=self._newJDC(texte='')
         self.jdcResultats.analyseXML()
         self.afficheResultats(self.jdcResultats,[],[])
@@ -102,7 +102,7 @@ class QtEditor(Ui_editor5C, Editor, QWidget):
            self.treeJdcSelection = browser.JDCTree( self.jdcSelectionItem, self )
            if debug : print (self.treeJdcSelection)
            self.widgetSelection = self.treeJdcSelection.racine.children[0].fenetre
-           self.editor5CLayout.insertWidget(0,self.widgetSelection)
+           self.editorVPLayout.insertWidget(0,self.widgetSelection)
 
 
     def initQTSignals(self) :
@@ -177,7 +177,7 @@ class QtEditor(Ui_editor5C, Editor, QWidget):
     def genereRequeteSelectionId(self): 
     #----------------------------------
         debug = 0
-        self.generator = generator.plugins['5CRequeteSelection']()
+        self.generator = generator.plugins['VPRequeteSelection']()
         if debug : print (self.jdcSelection)
         retour, titre, requete  = self.generator.genereRequeteSelection(self.jdcSelection)
         if debug : print ('genereRequeteSelection ', retour, titre, requete)
@@ -223,13 +223,13 @@ class QtEditor(Ui_editor5C, Editor, QWidget):
 
     def afficheResultats(self,jdcResultat, listeId, listeLabels):
     #------------------------------------------------------------
-        # Attention aux differences de niveaux entre Cata5CChapeau et CataJobProfile
+        # Attention aux differences de niveaux entre CataVPChapeau et CataJobProfile
         # on s appuie sur le 1er element et non le jdc
         self.jdcResultats = jdcResultat
-        if self.widgetResultats : self.editor5CLayout.removeWidget(self.widgetResultats)
-        from InterfaceGUI.cinqC.monWidgetProfile import MonWidgetProfile
+        if self.widgetResultats : self.editorVPLayout.removeWidget(self.widgetResultats)
+        from InterfaceGUI.VisuProfile.monWidgetProfile import MonWidgetProfile
         self.widgetResultats=MonWidgetProfile(self,jdcResultat, listeId,listeLabels)
-        self.editor5CLayout.insertWidget(1,self.widgetResultats)
+        self.editorVPLayout.insertWidget(1,self.widgetResultats)
 
 
     def getValuesOfAllMC(self,obj,McPath):
@@ -256,7 +256,7 @@ class QtEditor(Ui_editor5C, Editor, QWidget):
         listeLabelsChoisis = etape.getChild('labels').valeur
         if listeLabelsChoisis == None : return
         ou = os.path.dirname(os.path.abspath(__file__))
-        xsltFile = os.path.join(ou, '..','cinqC','generate_profile.xslt')
+        xsltFile = os.path.join(ou, '..','VisuProfile','generate_profile.xslt')
         jdcResultatsAggreges=self._newJDC(texte='')
         jdcResultatsAggreges.analyse()
         listeId=list(self.dictLabels.keys())

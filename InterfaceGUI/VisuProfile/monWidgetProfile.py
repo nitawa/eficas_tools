@@ -22,7 +22,7 @@
 # Modules Eficas
 
 #from InterfaceQT.groupe import Groupe
-from UiQT5.desWidgetProfile  import Ui_Profile5C
+from UiQT5.desWidgetProfile  import Ui_ProfileVP
 from Accas.extensions.eficas_translation import tr
 # Import des panels
 
@@ -176,7 +176,7 @@ class MaSerie:
         
 
          
-class MonWidgetProfile(QWidget,Ui_Profile5C):
+class MonWidgetProfile(QWidget,Ui_ProfileVP):
 #--------------------------------------------
     def __init__(self, editor, jdc, listeId, listeLabels):
     #---------------------------------------------------
@@ -350,7 +350,7 @@ class MonWidgetProfile(QWidget,Ui_Profile5C):
     #------------------------------
        
        if self.widgetBar == None :
-          from InterfaceGUI.cinqC.monWidgetBar import MonWidgetBar
+          from InterfaceGUI.VisuProfile.monWidgetBar import MonWidgetBar
           self.widgetBar=MonWidgetBar(self)
           self.widgetBar.adjustSize()
           self.widgetBar.show()

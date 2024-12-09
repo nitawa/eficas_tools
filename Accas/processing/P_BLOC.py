@@ -49,7 +49,7 @@ class BLOC(P_ENTITE.ENTITE):
     class_instance = P_MCBLOC.MCBLOC
     label = "BLOC"
 
-    def __init__( self, fr="", docu="", regles=(), statut="f", condition=None, ang="", nomXML=None, exclusif=False, typeXSD = None, **args
+    def __init__( self, fr="", docu="", regles=(), statut="f", condition=None, ang="",  exclusif=False, typeXSD = None, **args
     ):
         """
         Un bloc est caractérisé par les attributs suivants :
@@ -77,7 +77,6 @@ class BLOC(P_ENTITE.ENTITE):
             self.regles = (regles,)
         self.statut = statut
         self.condition = condition
-        self.nomXML = nomXML
         self.typeXSD = typeXSD
         self.entites = args
         self.affecter_parente()
