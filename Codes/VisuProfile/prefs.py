@@ -16,7 +16,7 @@
 #
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
-code="5C" 
+code="VP" 
 import sys, os
 if os.path.dirname(os.path.abspath(__file__)) not in sys.path :
    sys.path.insert(0,os.path.dirname(os.path.abspath(__file__)))
