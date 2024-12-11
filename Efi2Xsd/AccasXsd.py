@@ -138,8 +138,8 @@ class X_definition:
         self.nomDuTypePyxb = nomDuTypePyxb
         cata = CONTEXT.getCurrentCata()
         nom = "T_" + self.nom
-        if (hasattr(self, "typeXSD")) and self.typeXSD != None:
-            nom = "T_" + self.typeXSD
+        if (hasattr(self, "nomXSD")) and self.nomXSD != None:
+            nom = "T_" + self.nomXSD
         if not (nom in cata.dictTypesXSD.keys()):
             cata.dictTypesXSD[nom] = [ self, ]
             if debug:
@@ -165,8 +165,8 @@ class X_definition:
         self.aCreer = True
         cata = CONTEXT.getCurrentCata()
         nom = "T_" + self.nom
-        if (hasattr(self, "typeXSD")) and self.typeXSD != None:
-            nom = "T_" + self.typeXSD
+        if (hasattr(self, "nomXSD")) and self.nomXSD != None:
+            nom = "T_" + self.nomXSD
         if debug: print("nom in cata.dictTypesXSD.keys", nom in cata.dictTypesXSD.keys())
         # if debug and  (nom in cata.dictTypesXSD.keys()) : print ( cata.dictTypesXSD[nom])
         if not (nom in cata.dictTypesXSD.keys()) or cata.dictTypesXSD[nom] == []:
@@ -259,8 +259,8 @@ class X_definition:
         self.indiceDuTypePyxb = indice
         if debug:
             print( "************ indiceDuTypePyxb pour", self.getNomCompletAvecBloc(), " mis a ", indice,)
-        if (hasattr(self, "typeXSD")) and self.typeXSD != None:
-            nomAlter = "T_" + self.typeXSD + "_" + str(indice)
+        if (hasattr(self, "nomXSD")) and self.nomXSD != None:
+            nomAlter = "T_" + self.nomXSD + "_" + str(indice)
         self.nomDuTypePyxb = nomAlter
         if debug:
             print("self.nomDuTypePyxb : ", nomAlter)
@@ -1078,13 +1078,13 @@ class X_definitionComposee(X_definition):
                     texteComplexeVenantDesFils += mcFils.texteComplexe
             else:
                 if (
-                    hasattr(mcFils, "typeXSD")
-                    and mcFils.typeXSD in blocsDejaDumpes
-                    and mcFils.typeXSD != None
+                    hasattr(mcFils, "nomXSD")
+                    and mcFils.nomXSD in blocsDejaDumpes
+                    and mcFils.nomXSD != None
                 ):
                     continue
-                if hasattr(mcFils, "typeXSD") and mcFils.typeXSD != None:
-                    blocsDejaDumpes.add(mcFils.typeXSD)
+                if hasattr(mcFils, "nomXSD") and mcFils.nomXSD != None:
+                    blocsDejaDumpes.add(mcFils.nomXSD)
                 mcFils.dumpXsd(dansFactorisation=False)
                 self.texteComplexe += mcFils.texteElt
                 if mcFils.aCreer:
@@ -1207,10 +1207,10 @@ class X_definitionComposee(X_definition):
         if self.label != autreMC.label:
             return False
         #if self.nom == 'ValueTemplate' : return True
-        if ( hasattr(self, "typeXSD")
-            and hasattr(autreMC, "typeXSD")
-            and self.typeXSD == autreMC.typeXSD
-            and self.typeXSD != None):
+        if ( hasattr(self, "nomXSD")
+            and hasattr(autreMC, "nomXSD")
+            and self.nomXSD == autreMC.nomXSD
+            and self.nomXSD != None):
             return True
         for attr in ("regles", "fr", "defaut", "min", "max", "position", "docu"):
             try: val1 = getattr(self, attr)
@@ -1272,10 +1272,10 @@ class X_definitionComposee(X_definition):
 
     def estLeMemeQue(self, autreMC):
         if (
-            hasattr(self, "typeXSD")
-            and hasattr(autreMC, "typeXSD")
-            and self.typeXSD == autreMC.typeXSD
-            and self.typeXSD != None
+            hasattr(self, "nomXSD")
+            and hasattr(autreMC, "nomXSD")
+            and self.nomXSD == autreMC.nomXSD
+            and self.nomXSD != None
         ):
             return True
         return False
@@ -1473,10 +1473,10 @@ class X_BLOC(X_definitionComposee):
         if self.label != autreMC.label: return False
         if self.inUnion == True or autreMC.inUnion == True: return False
         if (
-            hasattr(self, "typeXSD")
-            and hasattr(autreMC, "typeXSD")
-            and self.typeXSD == autreMC.typeXSD
-            and self.typeXSD != None
+            hasattr(self, "nomXSD")
+            and hasattr(autreMC, "nomXSD")
+            and self.nomXSD == autreMC.nomXSD
+            and self.nomXSD != None
         ):
             return True
         for attr in ( "condition", "regles",):
@@ -1531,10 +1531,10 @@ class X_SIMP(X_definition):
         self.fr=""
         self.ang=""
         # if PourTraduction  : print (self.nom)
-        # if self.nom == 'A' : debug = True
+        if self.nom == 'malloc' : debug = True
         if debug:
             print( "X_SIMP dumpXsd pour", self.nom, dansFactorisation, "___________________________",)
-        debug = False
+        #debug = False
         self.prepareDumpXSD()
         # si inUnion la comparaison est fausse : on cree le nomDuType
         if multiple: self.inUnion = True
@@ -1936,6 +1936,7 @@ class X_SIMP(X_definition):
         # il faut gerer les types tuple et fichier
         # on ne paut pas tester le type qui depend du cataloge
         cata = CONTEXT.getCurrentCata()
+        #if self.nom == 'malloc' : debug = True
         if hasattr(self.type[0], "typElt"):
             if debug:
                 print(self.nom, "est une matrice")
@@ -1970,7 +1971,8 @@ class X_SIMP(X_definition):
             self.suisUnTuple = False
             typeATraduire = self.type[0]
         # Pour les types non encore implementes en Accas comme date
-        if hasattr(self, "typeXSD"):
+        if hasattr(self, "typeXSD") and self.typeXSD != None:
+            if debug : print ('traduit Type retour ---------', self.typeXSD)
             return self.typeXSD
         if not (typeATraduire in list(dictNomsDesTypes.keys())):
             # if (isinstance(typeATraduire, Accas.ASSD) or issubclass(typeATraduire, Accas.ASSD)) :
@@ -2036,10 +2038,10 @@ class X_SIMP(X_definition):
         if debug : print (' compare SIMP', self.inUnion)
         if self.label != autreMC.label: return False
         if self.inUnion == True or autreMC.inUnion == True: return False
-        if ( hasattr(self, "typeXSD")
-            and hasattr(autreMC, "typeXSD")
-            and self.typeXSD == autreMC.typeXSD
-            and self.typeXSD != None):
+        if ( hasattr(self, "nomXSD")
+            and hasattr(autreMC, "nomXSD")
+            and self.nomXSD == autreMC.nomXSD
+            and self.nomXSD != None):
             return True
         listeAComparer = ["type", "defaut", "min", "max", "val_min", "val_max"]
         if self.intoXML != None: listeAComparer.append("intoXML")
@@ -2054,10 +2056,10 @@ class X_SIMP(X_definition):
     def compareEtFusionneInto(self, autreMC, debug = False):
         if debug : print (' compare et Fusion SIMP', self.nom)
         if self.label != autreMC.label: return False
-        if ( hasattr(self, "typeXSD")
-            and hasattr(autreMC, "typeXSD")
-            and self.typeXSD == autreMC.typeXSD
-            and self.typeXSD != None):
+        if ( hasattr(self, "nomXSD")
+            and hasattr(autreMC, "nomXSD")
+            and self.nomXSD == autreMC.nomXSD
+            and self.nomXSD != None):
             return True
         listeAComparer = ["type", "val_min", "val_max"]
         for attr in listeAComparer:

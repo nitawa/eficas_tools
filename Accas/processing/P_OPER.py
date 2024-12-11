@@ -113,17 +113,15 @@ class OPER(P_ENTITE.ENTITE):
         self.checkDefinition(self.nom)
         self.txtNomComplet = ""
         self.dejaPrepareDump = False
-        self.typeXSD = typeXSD
+        self.nomXSD = nomXSD
 
-    def __call__(self, reuse=None, typeXSD = None, **args):
+    def __call__(self, reuse=None,  **args):
         """
         Construit l'objet ETAPE a partir de sa definition (self),
         puis demande la construction de ses sous-objets et du concept produit.
+        
         """
-        if typeXSD == None:
-            nomsd = self.nommage.getNomConceptResultat(self.nom)
-        else:
-            nomsd = typeXSD
+        nomsd = self.nommage.getNomConceptResultat(self.nom)
         etape = self.class_instance(oper=self, reuse=reuse, args=args)
         etape.MCBuild()
         while etape.doitEtreRecalculee == True:

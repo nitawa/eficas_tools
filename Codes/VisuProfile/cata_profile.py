@@ -6,20 +6,20 @@ from Accas import  SIMP, PROC, FACT, JDC_CATA_SINGLETON
 JdC = JDC_CATA_SINGLETON(code="ProfileNS")
 VERSION_CATALOGUE = "V_0"
 
-def def_function(profondeur, statut):
+def def_function(profondeur, statut, max = 1):
 # profondeur : profondeur de la recursivite
 # statut : obligatoire ou facultatif
 # le statut devient facultatif des le second appel
 # on enleve la recursivite pour le Shema DB
    if profondeur > 0 :
-      return FACT(statut=statut, nomXML='function',max='**',
+      return FACT(statut=statut, nomXML='function',max=max,
         name      = SIMP(statut='o', typ='TXM'),
         cpu_time  = SIMP(statut='o', typ='R', val_min=0, unite='seconds'),
         total_fraction = SIMP(statut='o', typ='R', val_min=0, unite = 'percent'),
         calls = SIMP(statut='o', typ='I', val_min=0),
         depth = SIMP(statut='o', typ='I', val_min=0),
         caller_fraction = SIMP(statut='o', typ='R', val_min=0, unite = 'percent'),
-        function = def_function( profondeur-1, 'f')
+        function = def_function( profondeur-1, 'f', '**')
       )
    else : 
       return FACT()
@@ -84,28 +84,28 @@ def def_time_profile(version) :
 def def_memory_profile(version = 'ProfileNS'):
      if version == 'XSLT' :
         return  FACT(statut ='f',
-          malloc = SIMP(statut='o', typ='I', val_min=0 ),
-          calloc = SIMP(statut='o', typ='I', val_min=0),
-          realloc = SIMP(statut='o', typ='I',val_min=0 ),
-          free = SIMP(statut='o', typ='I', val_min=0 ),
-          malloc_size  = SIMP(statut='o', typ='I', unite ="bytes", val_min=0),
-          realloc_size  = SIMP(statut='o', typ='I', unite ="bytes", val_min=0),
-          calloc_size  = SIMP(statut='o', typ='I', unite ="bytes", val_min=0),
-          peak_size  = SIMP(statut='o', typ='I', unite ="bytes", val_min=0),
+          malloc = SIMP(statut='o', typ='I', val_min=0, typeXSD='xs:long'),
+          calloc = SIMP(statut='o', typ='I', val_min=0, typeXSD='xs:long'),
+          realloc = SIMP(statut='o', typ='I',val_min=0, typeXSD='xs:long' ),
+          free = SIMP(statut='o', typ='I', val_min=0, typeXSD='xs:long' ),
+          malloc_size  = SIMP(statut='o', typ='I', unite ="bytes", val_min=0, typeXSD='xs:long'),
+          realloc_size  = SIMP(statut='o', typ='I', unite ="bytes", val_min=0, typeXSD='xs:long'),
+          calloc_size  = SIMP(statut='o', typ='I', unite ="bytes", val_min=0, typeXSD='xs:long'),
+          peak_size  = SIMP(statut='o', typ='I', unite ="bytes", val_min=0, typeXSD='xs:long'),
         )
      elif version == 'ProfileNS' :
          return  FACT(statut ='f',
            count = FACT(statut ='o',
-              malloc = SIMP(statut='o', typ='I', val_min=0 ),
-              calloc = SIMP(statut='o', typ='I', val_min=0),
-              realloc = SIMP(statut='o', typ='I',val_min=0 ),
-              free = SIMP(statut='o', typ='I', val_min=0 ),
+              malloc = SIMP(statut='o', typ='I', val_min=0, typeXSD='xs:long' ),
+              calloc = SIMP(statut='o', typ='I', val_min=0, typeXSD='xs:long'),
+              realloc = SIMP(statut='o', typ='I',val_min=0, typeXSD='xs:long' ),
+              free = SIMP(statut='o', typ='I', val_min=0, typeXSD='xs:long' ),
             ),
            allocation = FACT(statut ='o',
-              malloc_size  = SIMP(statut='o', typ='I', unite ="bytes", val_min=0),
-              realloc_size  = SIMP(statut='o', typ='I', unite ="bytes", val_min=0),
-              calloc_size  = SIMP(statut='o', typ='I', unite ="bytes", val_min=0),
-              peak_size  = SIMP(statut='o', typ='I', unite ="bytes", val_min=0),
+              malloc_size  = SIMP(statut='o', typ='I', unite ="bytes", val_min=0, typeXSD='xs:long'),
+              realloc_size  = SIMP(statut='o', typ='I', unite ="bytes", val_min=0, typeXSD='xs:long'),
+              calloc_size  = SIMP(statut='o', typ='I', unite ="bytes", val_min=0, typeXSD='xs:long'),
+              peak_size  = SIMP(statut='o', typ='I', unite ="bytes", val_min=0, typeXSD='xs:long'),
             ),
         )
      else : 

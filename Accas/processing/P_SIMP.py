@@ -60,7 +60,7 @@ class SIMP(P_ENTITE.ENTITE):
         defaut=None, min=1, max=1, homo=1, position="local", filtre=None, val_min=float("-inf"),
         val_max=float("inf"), docu="", validators=None, nomXML=None, sug=None, fenetreIhm=None,
         attribut=False, sortie="n", intoXML=None, metAJour=None, avecBlancs=False, unite=None,
-        typeXSD=None, formatGit=None, affichage=None, defautXSD = None ):
+        typeXSD=None, nomXSD = None, formatGit=None, affichage=None, defautXSD = None ):
         """
         Un mot-clé simple est caractérisé par les attributs suivants :
         - type : cet attribut est obligatoire et indique le type de valeur attendue
@@ -82,7 +82,8 @@ class SIMP(P_ENTITE.ENTITE):
         - attribut : si projection XSD sur attribut
         - creeDesObjetsDeType : type des UserASSD si siValide en cree
         - nomXML   : garder pour compatibilite
-        - typeXSD  : se projette en XSD avec un autre nom pour accepter les tirets
+        - typeXSD  : se projette en XSD avec ce type 
+        - nomXSD  : se projette en XSD avec  autre nom pour accepter les tirets
         - sortie : force l ecriture dans le fichier de sortie (utile pour Telemac)
         - affichage : Tuple contenant un nom de gridLayout, puis ligne et colonne pour l affichage
         """

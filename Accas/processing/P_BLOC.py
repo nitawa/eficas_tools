@@ -49,7 +49,7 @@ class BLOC(P_ENTITE.ENTITE):
     class_instance = P_MCBLOC.MCBLOC
     label = "BLOC"
 
-    def __init__( self, fr="", docu="", regles=(), statut="f", condition=None, ang="",  exclusif=False, typeXSD = None, **args
+    def __init__( self, fr="", docu="", regles=(), statut="f", condition=None, ang="",  exclusif=False, typeXSD = None,  **args
     ):
         """
         Un bloc est caractérisé par les attributs suivants :
@@ -63,6 +63,7 @@ class BLOC(P_ENTITE.ENTITE):
             La clé du dictionnaire est le nom du mot-clé et la valeur l'objet de
             définition correspondant. Cet attribut est initialisé avec l'argument
             args de la méthode __init__
+          - typeXSD peut valoir Fusion
 
         """
         # Initialisation des attributs
@@ -77,7 +78,7 @@ class BLOC(P_ENTITE.ENTITE):
             self.regles = (regles,)
         self.statut = statut
         self.condition = condition
-        self.typeXSD = typeXSD
+        self.typeXSD = nomXSD
         self.entites = args
         self.affecter_parente()
         self.txtNomComplet = ""
