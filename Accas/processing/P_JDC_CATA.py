@@ -180,11 +180,11 @@ class JDC_CATA(P_ENTITE.ENTITE):
         texte += "\tscript_name TEXT NOT NULL,\n"
         texte += "\tscript  TEXT NOT NULL,\n"
         texte += "\tversion  TEXT NOT NULL,\n"
-        texte += "\tPRIMARY KEY script_name);\n"
+        texte += "\tPRIMARY KEY (script_name));\n"
         texte += "CREATE TABLE IF NOT EXISTS created_table (\n"
         texte += "\tscript_name TEXT NOT NULL ,\n"
         texte += "\ttable_name  TEXT NOT NULL,\n"
-        texte += "\tCONSTRAINT fk_script_table  FOREIGN KEY (script_name) REFERENCES processing(script_name) ON DELETE CASCADE ,);\n"
+        texte += "\tCONSTRAINT fk_script_table  FOREIGN KEY (script_name) REFERENCES processing(script_name) ON DELETE CASCADE);\n"
         texte += "********* fin de creation des tables pour sauvegarder les traitements ********* \n\n"
         dPrimaryKey = {}
         dRecursif = {}
