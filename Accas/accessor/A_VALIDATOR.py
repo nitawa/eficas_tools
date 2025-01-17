@@ -43,7 +43,7 @@ class OrdList(OrdList):
 
 
 class compareAutreMC(Valid):
-    # ----------------------------
+# ----------------------------
     def __init__(self, frere=None):
         Valid.__init__(self, frere=frere)
         self.nomFrere = frere
@@ -56,7 +56,7 @@ class compareAutreMC(Valid):
 
 
 class infFrereMC(compareAutreMC):
-    # -------------------------------
+# -------------------------------
     def convert(self, valeur):
         # on sort de cardProto on a une liste
         valeur = valeur[0]
@@ -64,92 +64,55 @@ class infFrereMC(compareAutreMC):
             MCFrere = self.MCSimp.parent.getChildOrChildInBloc(self.nomFrere)
         except:
             return valeur
-        if not MCFrere:
-            return valeur
-        if MCFrere == None:
-            return valeur
-        if MCFrere.valeur == None:
-            return valeur
+        if not MCFrere: return valeur
+        if MCFrere == None: return valeur
+        if MCFrere.valeur == None: return valeur
         if MCFrere.valeur < valeur:
-            raise CataError(
-                "la valeur de " + self.nomFrere + " est inferieure a la valeur entree "
-            )
+            raise ValError( "la valeur doit etre inferieure à la valeur de " + self.nomFrere)
         return valeur
 
     def verifItem(self, valeur):
         try:
             MCFrere = self.MCSimp.parent.getChildOrChildInBloc(self.nomFrere)
-        except:
-            return valeur
-        if not MCFrere:
-            return valeur
-        if MCFrere == None:
-            return valeur
-        if MCFrere.valeur == None:
-            return valeur
+        except: return valeur
+        if not MCFrere: return valeur
+        if MCFrere == None: return valeur
+        if MCFrere.valeur == None: return valeur
         if MCFrere.valeur < valeur:
-            raise CataError(
-                "la valeur de "
-                + self.nomFrere
-                + " est inferieure a la valeur entree et doit etre superieure"
-            )
+            raise ValError( "la valeur doit etre inferieure à la valeur de " + self.nomFrere)
             return 0
         return 1
 
     def infoErreurItem(self, valeur):
-        return (
-            "la valeur de "
-            + self.nomFrere
-            + " est inferieure a la valeur entree et doit etre superieure"
-        )
+        return  ("la valeur doit etre inferieure à la valeur de " + self.nomFrere)
 
     def info(self):
-        return (
-            "la valeur de "
-            + self.nomFrere
-            + " est inferieure a la valeur entree et doit etre superieure"
-        )
+        return  ("la valeur doit etre inferieure à la valeur de " + self.nomFrere)
 
 
 class supFrereMC(compareAutreMC):
-    # --------------------------------
+# --------------------------------
     def convert(self, valeur):
         # on sort de cardProto on a une liste
         valeur = valeur[0]
         MCFrere = self.MCSimp.parent.getChildOrChildInBloc(self.nomFrere)
-        if not MCFrere:
-            return valeur
-        if MCFrere == None:
-            return valeur
+        if not MCFrere: return valeur
+        if MCFrere == None: return valeur
         if MCFrere.valeur > valeur:
-            raise CataError(
-                "la valeur de "
-                + self.nomFrere
-                + " est superieure a la valeur entree et doit etre inferieure"
-            )
+            raise ValError( "la valeur doit etre superieure à la valeur de " + self.nomFrere)
         return valeur
 
     def verifItem(self, valeur):
         MCFrere = self.MCSimp.parent.getChildOrChildInBloc(self.nomFrere)
-        if not MCFrere:
-            return 1
-        if MCFrere == None:
-            return 1
+        if not MCFrere: return 1
+        if MCFrere == None: return 1
         if MCFrere.valeur > valeur:
-            raise CataError(
-                "la valeur de "
-                + self.nomFrere
-                + " est superieure a la valeur entree et doit etre inferieure"
-            )
+            raise ValError( "la valeur doit etre superieure à la valeur de " + self.nomFrere)
             return 0
         return 1
 
     def infoErreurItem(self, valeur):
-        return (
-            "la valeur de "
-            + self.nomFrere
-            + " est superieure a la valeur entree et doit etre inferieure"
-        )
+        return ( "la valeur doit etre superieure à la valeur de " + self.nomFrere)
 
     def info(self):
-        return "la valeur de " + self.nomFrere + " est superieure a la valeur entree "
+        return ( "la valeur doit etre superieure à la valeur de " + self.nomFrere)

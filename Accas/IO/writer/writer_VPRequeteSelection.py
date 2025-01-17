@@ -49,62 +49,82 @@ class RequeteSelectionGenerator(PythonGenerator):
     extensions = (".comm",)
 
     # ----------------------------------------------------------------------------------------
-    def genereRequeteSelection(self, jdc):
+    def genereConditionSelection(self, jdc):
         debug = 0
 
-        texteRequete = "select id from JobPerformance where "
+        texteCondition = ""
         etapeSelection = jdc.etapes[0]
-        if debug:
-            print("appelle genereRequeteSelection avec jdc", jdc)
-        if debug:
-            print("etapeSelection", etapeSelection)
+        if debug: print("appelle genereRequeteSelection avec jdc", jdc)
+        if debug: print("etapeSelection", etapeSelection)
 
         # L etapeSelection n est pas valide : Tout est obligatoire or tout n est pas rempli
         # On se contente de verifier les regles d afficher les regles non valides
-        # en enelvant les motclefs invalides
+        # en enlevant les motclefs invalides
         listeRegles = etapeSelection.getRegles()
         dictObjPresents = etapeSelection.dictMcPresents(restreint="oui")
+        if debug: print("dictObjPresents", dictObjPresents)
         dictObjPresentsValides = {}
 
         for nomObj, obj in dictObjPresents.items():
-            if obj.isValid():
-                dictObjPresentsValides[nomObj] = obj
-        if debug:
-            print("dictObjPresentsValides", dictObjPresentsValides)
+            if obj.isValid(): dictObjPresentsValides[nomObj] = obj
+        if debug: print("dictObjPresentsValides", dictObjPresentsValides)
 
-        commentaire = "Les données sont insuffisantes pour générer les requetes : \n"
-        reglesOk = 1
-        texteErreurs = []
-        if len(listeRegles) > 0:
-            for regle in listeRegles:
-                if debug:
-                    print(regle)
-                texteRegle = regle.getText()
-                texteMauvais, test = regle.verif(dictObjPresentsValides)
-                if debug:
-                    print(texteMauvais, test)
-                if not test:
-                    reglesOk = 0
-                    texteErreurs.append(texteMauvais)
-        if not reglesOk:
-            return 0, commentaire, "".join(texteErreurs)
+        if len(dictObjPresentsValides) == 0:
+            texteErreurs = "Les données sont insuffisantes pour générer les requetes : \n"
+            return texteErreurs, {}
+        else : 
+            texteErreurs = ""
 
         separateur = ""
         for nomObj, obj in dictObjPresentsValides.items():
-            texteRequete += separateur
-            texteRequete += nomObj
-            if nomObj.startswith("Debut"):
-                operateur = ">"
-            elif nomObj.endswith("Fin"):
-                operateur = "<"
-            else:
-                operateur = "="
-            texteRequete += operateur
+            if nomObj.endswith("_debut") or nomObj.endswith("_fin"): continue;
+            texteCondition += separateur
+            texteCondition += nomObj + ' = '
             lesTypes = obj.getType()
-            if "TXM" in lesTypes:
-                texteRequete += "'"
-            texteRequete += str(obj.valeur)
-            if "TXM" in lesTypes:
-                texteRequete += "'"
+            if "TXM" in lesTypes: texteCondition += "'"
+            texteCondition += str(obj.valeur)
+            if "TXM" in lesTypes: texteCondition += "'"
             separateur = " and "
-        return 1, "requete generee : ", texteRequete
+        dictObj={}
+        for nomObj, obj in dictObjPresentsValides.items():
+            if nomObj.endswith("_debut") : 
+               nomGener = nomObj[0:-6]
+               if nomGener in dictObj : dictObj[nomGener] = 'lesDeux'
+               else : dictObj[nomGener] = 'debut'
+            if nomObj.endswith("_fin") : 
+               nomGener = nomObj[0:-4]
+               if nomGener in dictObj : dictObj[nomGener] = 'lesDeux'
+               else : dictObj[nomGener] = 'fin'
+        for nomGener, typCond in dictObj.items():
+            texteCondition += separateur
+            valeurFin=None 
+            ajoutQuote = False 
+            if typCond == 'fin' or typCond == 'lesDeux' : 
+               nomObj=nomGener+'_fin' 
+               obj=dictObjPresentsValides[nomObj]
+               lesTypes = obj.getType()
+               if "TXM" in lesTypes: ajoutQuote = True 
+               if typCond == 'fin' :
+                  if ajoutQuote:
+                     texteCondition += " {} < '{}' ".format(nomGener, str(obj.valeur))
+                  else : 
+                     texteCondition += " {} < {} ".format(nomGener, str(obj.valeur))
+               else : valeurFin = obj.valeur
+            if typCond == 'debut' or typCond == 'lesDeux' : 
+               nomObj=nomGener+'_debut' 
+               obj=dictObjPresentsValides[nomObj]
+               lesTypes = obj.getType()
+               if "TXM" in lesTypes: ajoutQuote = True 
+               if typCond == 'debut' :
+                  if ajoutQuote:
+                     texteCondition += " {} > '{}' ".format(nomGener, str(obj.valeur))
+                  else : 
+                     texteCondition += " {} < {} ".format(nomGener, str(obj.valeur))
+               else :
+                  if ajoutQuote:
+                     texteCondition += " {} between '{}' and '{}' ".format(nomGener, str(obj.valeur), valeurFin)
+                  else : 
+                     texteCondition += " {} between {} and {} ".format(nomGener, str(obj.valeur), valeurFin)
+    
+        print ('tttttttttttttttt', texteCondition)
+        return  texteCondition

@@ -389,7 +389,7 @@ class ENTITE(object):
         if self.nom in dPrimaryKey and not PKDefined :
             texte += "\tPRIMARY KEY ({}),\n".format(dPrimaryKey[self.nom])
         if self.nom in dUnique:
-            texteUnique = "\tCONSTRAINT UC_{} UNIQUE ({}),\n".format(self.nom,dUnique[self.nom])
+            texteUnique = "\tCONSTRAINT UC_{} UNIQUE {},\n".format(self.nom, str(dUnique[self.nom]).replace ("'",""))
             texteUnique = texteUnique.replace("'","")
             texte += texteUnique
         # on enleve la dernier ','

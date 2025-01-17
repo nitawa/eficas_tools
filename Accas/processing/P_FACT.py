@@ -256,7 +256,7 @@ class FACT(P_ENTITE.ENTITE):
                 texteDesFactTables += t2
         texteTable += textePrimaryKey
         texteTable += texteForeignKey
-        if self.nom in dUnique: texteTable += "\tCONSTRAINT UC_{} UNIQUE ({}),\n".format(self.nom,dUnique[self.nom])
+        if self.nom in dUnique: texteTable += "\tCONSTRAINT UC_{} UNIQUE {},\n".format(self.nom,str(dUnique[self.nom]).replace ("'",""))
         if self.nom in dPrimaryKey or self.nom in dForeignKey: 
            texteTable = texteTable[0:-2]
            texteTable += "\n);\n"
