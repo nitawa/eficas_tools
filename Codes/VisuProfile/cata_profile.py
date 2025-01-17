@@ -27,7 +27,8 @@ def def_function(profondeur, statut, max = 1):
 def def_run_id(version = 'ProfileNS') :
      if version == 'ProfileNS':
          return FACT(statut='o', max=1, min =1,
-             sha1 = SIMP(statut='o', typ='TXM'),
+             #sha1 = SIMP(statut='o', typ='TXM', typeXSD = 'hexBinary' ),
+             sha1 = SIMP(statut='o', typ='TXM', ),
              code_name = SIMP(statut='o', typ='TXM',),
              test_name = SIMP(statut='o', typ='TXM',),
              version = SIMP(statut='o', typ='TXM',), 

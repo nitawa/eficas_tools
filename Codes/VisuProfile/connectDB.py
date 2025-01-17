@@ -1,1 +1,1 @@
-../../InterfaceGUI/cinqC/connectDB.py
+../../InterfaceGUI/VisuProfile/connectDB.py
