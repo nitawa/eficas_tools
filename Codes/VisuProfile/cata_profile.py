@@ -64,7 +64,7 @@ def def_run_id(version = 'ProfileNS') :
 
 def def_time_profile(version) :
      if version == 'ProfileNS':
-        return FACT(statut = 'f',
+        return FACT(statut = 'f', max = 1,
            total_cpu_time  = SIMP(statut='o', typ='R', val_min=0, unite='seconds'),
            function = def_function(10, 'o')
            )
