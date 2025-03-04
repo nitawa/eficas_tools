@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import sys, os
 if os.path.dirname(os.path.abspath(__file__)) not in sys.path :
     sys.path.insert(0,os.path.dirname(os.path.abspath(__file__)))
@@ -8,12 +10,16 @@ if os.path.join ((os.path.dirname(os.path.abspath(__file__))), '..'):
 
 from connectDB import connectDB  
 
-def selectRowsInTable(nomChamp, nomTable, distinct = False, debug = False, label=None ) :
+def selectRowsInTable(nomChamp, nomTable, condition = None, distinct = False, debug = False, label=None ) :
     if debug : print ('debut selectRowsInTable')
     monConnecteur = connectDB (debug = debug)
     if debug : print ('monConnecteur', monConnecteur)
-    if distinct : instruction   = "select distinct {} from {};".format(nomChamp, nomTable)
-    else        : instruction   = "select {} from {};".format(nomChamp, nomTable)
+    if distinct : 
+       if not condition :  instruction   = "select distinct {} from {};".format(nomChamp, nomTable)
+       else : instruction = "select distinct {} from {} where {};".format(nomChamp, nomTable,condition)
+    else  :
+       if not condition :  instruction   = "select  {} from {};".format(nomChamp, nomTable)
+       else : instruction = "select distinct {} from {} where {};".format(nomChamp, nomTable,condition)
     if debug : print ('monConnecteur', monConnecteur)
     #  resultatExec = liste contenant des n uplet ((lechamp,),)
     resultatExec= monConnecteur.executeSelect(instruction, debug = debug)
@@ -30,7 +36,7 @@ def selectWithFonction(nomChamp, nomTable, fonction, debug = False ) :
     return resultatExec
 
 def executeSelect(instruction, debug = False ) :
-    if debug : print ('debut selectOrdered avec {}'.format(ordre,) )
+    if debug : print ('debut executeSelect avec {}'.format(instruction) )
     monConnecteur = connectDB (debug = debug)
     resultatExec= monConnecteur.executeSelect(instruction,  debug = debug)
     if debug : print ('resultatExec', resultatExec)
@@ -39,6 +45,7 @@ def executeSelect(instruction, debug = False ) :
 def listeDeListesToListeSimple(listeDeListes, debug = False) :
     if debug : print ('debut listeDeListesToListeSimple', listeDeListes,)
     listeRetour   = []
+    if listeDeListes == None :  return []
     for liste in listeDeListes:
         for tupleChamp in liste :
             listeRetour.append(tupleChamp)
@@ -48,25 +55,28 @@ def listeDeListesToListeSimple(listeDeListes, debug = False) :
 def cherche_sha1() :
     return selectRowsInTable ('sha1', 'Profile', distinct=True)
 
+def cherche_version() :
+    return selectRowsInTable ('version', 'Profile', distinct=True)
+
 def cherche_min_sha1() :
     return selectWithFonction ('sha1', 'Profile', 'MIN')
 
 def cherche_max_sha1() :
     return selectWithFonction ('sha1', 'Profile', 'MAX')
 
-def cherche_sha1_for_date(timestamp):
+def cherche_sha1_from_date(timestamp):
     d1=timestamp
     d2=timestamp
-    instruction = ' select sha1 from profile where timestamp between {} and {} ordered by timestamp'.format(d1, d2)
+    instruction = ' select sha1 from profile where timestamp between {} and {} order by timestamp'.format(d1, d2)
     return executeSelect(instruction)
 
-def cherche_code_name(debug = False) :
-    resultat = selectRowsInTable ('code_name', 'Profile', distinct=True, debug = debug)
+def cherche_code_name( debug = False) :
+    resultat = selectRowsInTable ('code_name', 'Profile', distinct= True, debug = debug)
     listeRetour = listeDeListesToListeSimple(resultat, debug = debug)
     return listeRetour
 
-def cherche_test_name(debug = False) :
-    resultat = selectRowsInTable ('test_name', 'Profile', distinct=True, debug = debug)
+def cherche_test_name(debug = False, condition = None , distinct = True) :
+    resultat = selectRowsInTable ('test_name', 'Profile', condition = condition, distinct=distinct, debug = debug)
     listeRetour = listeDeListesToListeSimple(resultat, debug = debug)
     return listeRetour
 
@@ -82,14 +92,23 @@ def cherche_OS():
 def cherche_procs():
     return selectRowsInTable ('procs', 'Profile', distinct=True)
 
-def cherche_host():
-    return selectRowsInTable ('host', 'Profile', distinct=True)
+def cherche_host(debug = False, condition = None , distinct = True):
+    resultat = selectRowsInTable ('host', 'Profile', condition = condition, distinct=distinct, debug = debug)
+    listeRetour = listeDeListesToListeSimple(resultat, debug = debug)
+    return listeRetour
 
-def cherche_time_profile():
-    return selectRowsInTable ('time_profile', 'Profile')
+def cherche_in_profile(rawName, debug = False, condition = None , distinct = True):
+    resultat = selectRowsInTable (rawName, 'Profile', condition = condition, distinct=distinct, debug = debug)
+    listeRetour = listeDeListesToListeSimple(resultat, debug = debug)
+    return listeRetour
 
-def cherche_name():
-    return selectRowsInTable ('name', 'time_profile')
+def cherche_name(condition, debug = False):
+    resultat = selectRowsInTable ('name', 'time_profile', condition = condition, distinct = True)
+    listeRetour = listeDeListesToListeSimple(resultat, debug = debug)
+    # comme on a une liste de liste distinct ne fonctionne pas comme prevu
+    setRetour=set(listeRetour)
+    listeRetour=list(setRetour)
+    return listeRetour
 
 def cherche_build_type():
     return selectRowsInTable ('build_type', 'Profile', distinct=True)

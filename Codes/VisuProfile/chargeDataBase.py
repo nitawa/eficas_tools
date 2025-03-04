@@ -2,16 +2,14 @@
 # -*- coding:utf-8 -*-
 import sys, os, pathlib
 
-if os.path.dirname(os.path.abspath(__file__)) not in sys.path:
-    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-if os.path.join((os.path.dirname(os.path.abspath(__file__))), ".."):
-    sys.path.insert( 0, os.path.join((os.path.dirname(os.path.abspath(__file__))), "../InterfaceGUI.cinqC"),)
+sys.path.insert(0, (os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)),'..'))))
+sys.path.insert(0, (os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)),'../..'))))
+sys.path.insert(0, (os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)),'../../..'))))
 
 from argparse import ArgumentParser, FileType
 import cata_profile_DB_XSLT_driver as mdm
 from connectDB import connectDB
 
-xsltPath = os.path.dirname(os.path.abspath(__file__))
 
 debutXML = '<?xml version="1.0" ?>\n<ns1:ProfileNS xmlns:ns1="http://chercheurs.edf.com/logiciels/ProfileNS">\n <ns1:Profile>'
 finXML ='\n  </ns1:Profile>\n</ns1:ProfileNS>'
@@ -99,7 +97,7 @@ class connectDBCharge(connectDB):
     Attention, si dans un lot de fichier, un est en erreur dans la database, le job s arrete
     """
 
-    def chargeXMLFile(self, fileName, debug=0):
+    def chargeXMLFile(self, fileName, debug=1):
     #-----------------------------------------#
         """
          appelle les fonctions qui
@@ -118,7 +116,8 @@ class connectDBCharge(connectDB):
             else :
                 self.prepareValeurs(table)
             for textInstruction in self.listeInstruction:
-                resultat = self.executeDBInstruction(textInstruction)
+                if debug : print (textInstruction)
+                resultat = self.executeInsert(textInstruction)
                 if resultat != None and resultat != []:
                    self.ident = resultat[0][0]
                 if debug :  print (self.ident)
@@ -132,14 +131,15 @@ class connectDBCharge(connectDB):
         lit le fichier XML grace a pyxb
         """
         debug=0
-        try:
+        #try:
+        if 1 :
             self.jdd = mdm.CreateFromDocument(open(fileName).read())
             self.rootElt = self.jdd.Profile[0]
             if debug : print ( self.jdd.toDOM().toprettyxml())
-        except Exception as e:
-            print("impossible de lire le fichier", fileName)
-            print("exception", e)
-            exit(2)
+        #except Exception as e:
+        #    print("impossible de lire le fichier", fileName)
+        #    print("exception", e)
+        #    exit(2)
 
 
     def prepareTableRaw(self):
@@ -193,6 +193,10 @@ class connectDBCharge(connectDB):
             textValues = debutTextValues
             for colonne in dictColumns[table]:
 
+                # En dur sur le nom de la colonne
+                # pour ne pas trop penaliser le code
+                if colonne == "name" : remplaceQuote = 1
+                else : remplaceQuote = 0
                 if debug : print ('on traite ', colonne)
                 textColumn += colonne + ', '
                 eltCol = getattr(elt,colonne)
@@ -201,10 +205,18 @@ class connectDBCharge(connectDB):
                     if debug : print ('la valeur est : ', eltCol)
                     if eltCol._AttributeMap == {} :
                         if debug : print ('type avac attribut')
-                        textValues += repr(eltCol)+", "
+                        if remplaceQuote and eltCol.find("'") :
+                           eltTemp = eltCol.replace ("'", "''")
+                           textValues += "'"+str(eltTemp)+"', "
+                        else : 
+                           textValues += repr(eltCol)+", "
                     else :
                         if debug : print ('on prend la value')
-                        textValues += repr(eltCol.value())+", "
+                        if remplaceQuote and eltCol.value().find("'"):
+                           eltTemp = eltCol.value().replace ("'", "''")
+                           textValues += "'"+str(eltTemp)+"', "
+                        else : 
+                           textValues += repr(eltCol.value())+", "
                 else :
                     print ('il faut traiter ce cas')
             textColumn = textColumn[0:-2] + ")"
@@ -225,14 +237,14 @@ if __name__ == "__main__":
     args = monParseur.parse_args()
     monConnecteur = connectDBCharge()
     for fileName in args.fileName:
-        #try:
-        if 1 :
+        try:
+        #if 1 :
             monConnecteur.chargeXMLFile(fileName)
             print ('file {} processed'.format(fileName))
-        #except Exception as e:
-        #    print ('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
-        #    print("impossible de charger", fileName)
-        #    print ('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
-        #    print("exception", e)
+        except Exception as e:
+            print ('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+            print("impossible de charger", fileName)
+            print ('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+            print("exception", e)
 
     monConnecteur.closeDB()
