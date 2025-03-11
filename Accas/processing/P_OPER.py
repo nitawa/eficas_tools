@@ -83,7 +83,7 @@ class OPER(P_ENTITE.ENTITE):
     label = "OPER"
     nommage = nommage
 
-    def __init__( self, nom, op=None, sd_prod=None, reentrant="n", repetable="o", fr="", ang="", fenetreIhm=None, docu="", regles=(), op_init=None, niveau=None, UIinfo=None, **args
+    def __init__( self, nom, op=None, sd_prod=None, reentrant="n", repetable="o", fr="", ang="", fenetreIhm=None, docu="", regles=(), op_init=None, niveau=None, nomXSD = None,UIinfo=None, **args
     ):
         """
         Méthode d'initialisation de l'objet OPER. Les arguments sont utilisés pour initialiser

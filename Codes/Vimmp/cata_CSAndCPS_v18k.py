@@ -121,7 +121,7 @@ def prepareBlocSystemType(systemType) :
     for typeMod in ('Field_based', 'Particle_based'):
         conditionType   = "ChoiceOfApproach == '" + typeMod + "'" 
         NumericalMethod = SIMP(statut='o',typ='TXM', into=dictTypModNumModNum[systemType, typeMod], 
-                               position='global', intoXML=allValueInDict(dictTypModNumModNum),ang=dicoComment_NumericalMethod[typeMod])
+                               position='global', intoXSD=allValueInDict(dictTypModNumModNum),ang=dicoComment_NumericalMethod[typeMod])
         dicoBloc = {}
         for modeleNumerique in list(dictTypModNumModNum[systemType,typeMod]):
             conditionNum = "NumericalMethod == '" + modeleNumerique + "'"
@@ -130,9 +130,9 @@ def prepareBlocSystemType(systemType) :
                 if modeleNumerique in dictCodeModeleNumerique[code]: setCode.add(code)
             # print('------------- conditionType                            -------->',conditionType)
             if setCode ==set(): setCode.add('Code Nill')
-            Solver = SIMP(statut='o', typ='TXM', into=list(setCode), intoXML=list(dictCodeModeleNumerique.keys()), ang='Choose the solver to be used (among the list)')
+            Solver = SIMP(statut='o', typ='TXM', into=list(setCode), intoXSD=list(dictCodeModeleNumerique.keys()), ang='Choose the solver to be used (among the list)')
             monNomBloc = 'bloc_ModelName_' + modeleNumerique.replace(' ','_') #les noms de blocs ne peuvent pas avoir de blanc ! 
-            if setCode !=set(): dicoBloc[monNomBloc]=BLOC(condition=conditionNum, nomXML='b_ModelName',Solver=Solver)
+            if setCode !=set(): dicoBloc[monNomBloc]=BLOC(condition=conditionNum, nomXSD='b_ModelName',Solver=Solver)
         dicoArgs['blocModelType'+typeMod] = BLOC(condition=conditionType, NumericalMethod=NumericalMethod, **dicoBloc)
         
     blocMeshRef = BLOC(condition = '( (ChoiceOfApproach == "Field_based") and (NumericalMethod == "FV") ) or '
@@ -151,7 +151,7 @@ def prepareBlocSystemType(systemType) :
     dicoArgs['blocSysGeoRef'] = blocSysGeoRef
     NumericalModel = FACT(statut='o', max= '**', Identifier=Identifier, ChoiceOfApproach=ChoiceOfApproach, ang='Define the numerical model for the component',
                           SimulatedTimeLapse=SimulatedTimeLapse, **dicoArgs)
-    return BLOC(condition=condition, nomXML='b_systemType', NumericalModel=NumericalModel)
+    return BLOC(condition=condition, nomXSD='b_systemType', NumericalModel=NumericalModel)
 
 
 #-----------------------------------
@@ -193,7 +193,7 @@ def creeBlocPourLesFichiers(laCondition, Prefixe='Empty', ListeFormats=[], Field
         nomBloc         = 'blocFormatFichier' + str(formatFich)
         typeDesFichiers = ('Fichier', formatFich + " Files (*." + formatFich + ");;All Files (*)",'Sauvegarde')
         blocCondition   = formatName + " == '" + formatFich + "'"
-        dicoArgs[NomDuFichier] = SIMP(statut='o', typ = typeDesFichiers, nomXML=NomDuFichier ,ang='Provide the file name')
+        dicoArgs[NomDuFichier] = SIMP(statut='o', typ = typeDesFichiers, nomXSD=NomDuFichier ,ang='Provide the file name')
         dicoDesBlocs[nomBloc]  = BLOC(condition = blocCondition, **dicoArgs)
     if FieldName:
         SIMPFieldName = SIMP(statut='o', typ = 'TXM',)
@@ -251,7 +251,7 @@ def prepareTermeSourceParticle(condition):
 # les differences avec prepareTermeSource sont 
 #     le type de TakenFrom
 #     le into
-# il est possible de factoriser les 2 fonctions en utilisant un intoXML mais cela
+# il est possible de factoriser les 2 fonctions en utilisant un intoXSD mais cela
 # affaiblit la possibilite de controle du XSD
 
    return BLOC (condition=condition, 
@@ -312,11 +312,11 @@ def prepareFactTurbulence(statut, ajout=None , position=None, positionChoice=Non
        #    ChoiceOfApproach  = SIMP(statut='o', typ='TXM', into=['Field_based (DNS)', 'Particle_based']),
        #    blocField         = BLOC(condition = "ChoiceOfApproach == 'Field_based (DNS)'", 
        #      NumericalMethod = SIMP(statut='o', typ='TXM', into=['FV', 'Spectral Method'], 
-       #                        intoXML=['FV', 'Spectral Method','SPH', 'Vortex Method']),
+       #                        intoXSD=['FV', 'Spectral Method','SPH', 'Vortex Method']),
        #    ),# fin bloc_Field
        #    blocNParticle     = BLOC(condition = "ChoiceOfApproach == 'Particle_based'", 
        #      NumericalMethod = SIMP(statut='o', typ='TXM', into=['SPH', 'Vortex Method'],
-       #                        intoXML=['FV', 'Spectral Method','SPH', 'Vortex Method']),
+       #                        intoXSD=['FV', 'Spectral Method','SPH', 'Vortex Method']),
        #    ),# fin bloc_N_particle
        # ), # fin bloc_no_model
    ) # fin du return de la fonction factTurbulence
@@ -418,11 +418,11 @@ def prepareFactTurbulenceScalaire(statut, position=None):
        #    ChoiceOfApproach  = SIMP(statut='o', typ='TXM', into=['Field_based (DNS)', 'Particle_based']),
        #    blocField         = BLOC(condition = "ChoiceOfApproach == 'Field_based (DNS)'", 
        #      NumericalMethod = SIMP(statut='o', typ='TXM', into=['FV', 'Spectral Method'], 
-       #                        intoXML=['FV', 'Spectral Method','SPH', 'Vortex Method']),
+       #                        intoXSD=['FV', 'Spectral Method','SPH', 'Vortex Method']),
        #    ),# fin bloc_Field
        #    blocNParticle     = BLOC(condition = "ChoiceOfApproach == 'Particle_based'", 
        #      NumericalMethod = SIMP(statut='o', typ='TXM', into=['SPH', 'Vortex Method'],
-       #                        intoXML=['FV', 'Spectral Method','SPH', 'Vortex Method']),
+       #                        intoXSD=['FV', 'Spectral Method','SPH', 'Vortex Method']),
        #    ),# fin bloc_N_particle
        # ), # fin bloc_no_model
    ) # fin du return de la fonction factTurbulence
@@ -941,7 +941,7 @@ def prepareBondedInteractions(fromWall=False):
        ),
        blocNoTopologyFile = BLOC (condition = 'DescribedWithTopologyFile == False',
            BondedInteraction = FACT (statut ='o', max ='**',
-               NatureOfBondedInteraction = SIMP(statut='o', typ='TXM', into= mesInto, intoXML = intoWall,ang='Choose the nature of bonded-interactions. \n Current choice includes bond-stretching, angle bending, torsional motion and frozen/collective motion.'),
+               NatureOfBondedInteraction = SIMP(statut='o', typ='TXM', into= mesInto, intoXSD = intoWall,ang='Choose the nature of bonded-interactions. \n Current choice includes bond-stretching, angle bending, torsional motion and frozen/collective motion.'),
                bBondStretching = BLOC ( condition = 'NatureOfBondedInteraction == "Bond stretching"',
                   TypeOfBondStretching = SIMP(statut='o', typ='TXM', into=[ 'Bond harmonic potential', 'FENE',],ang='Choose the type of bond stretching force. \n Current choice includes Bond harmonic potential or FENE model (Finitely-Extensible Non-linear Elastic).'),
 #    ------------ FENE  ------------------ 
@@ -1344,7 +1344,7 @@ def ActiveOnFlowEffect(inTemperature=True):
                 TypeOfEquationOfState = SIMP(statut='o', into =['variable density', 'compressible'], typ ='TXM',ang='Choose the type of Equation of State. \n Current choice includes Variable density or Compressible.'),
             ),
               bloc_NonEOSAndSimple=BLOC(condition = 'RelationType == "Force-Flux Relation" and ComplexFluid == False',
-                TypeOfForceFluxRelation =  SIMP(statut='o', into =['Viscosity', 'Diffusivity', 'Thermal Conductivity'], intoXML=['Viscosity', 'Diffusivity', 'Thermal Conductivity','Shear-stress closure', 'Scalar flux'], typ ='TXM', ang='Choose the type of Force-Flux Relation. \n Current choice includes Viscosity (e.g. viscous laws), Diffusivity or Thermal Conductivity.'),
+                TypeOfForceFluxRelation =  SIMP(statut='o', into =['Viscosity', 'Diffusivity', 'Thermal Conductivity'], intoXSD=['Viscosity', 'Diffusivity', 'Thermal Conductivity','Shear-stress closure', 'Scalar flux'], typ ='TXM', ang='Choose the type of Force-Flux Relation. \n Current choice includes Viscosity (e.g. viscous laws), Diffusivity or Thermal Conductivity.'),
                 blocViscosity=BLOC(condition = 'TypeOfForceFluxRelation == "Viscosity" ',
                   ViscosityLaw=SIMP(typ='TXM', statut = 'o', into=['law1', 'law2']),
                 ),
