@@ -43,10 +43,8 @@ class MonWidgetSpecifique(Ui_Selection, Groupe):
         indexLigne = 0
         for node in self.node.children:
             widget = node.getPanel(self, self.editor)
-            if (
-                hasattr(node.item.definition, "affichage")
-                and node.item.definition.affichage != None
-            ):
+            if ( hasattr(node.item.definition, "affichage")
+                and node.item.definition.affichage != None):
                 widgetMere = getattr(self, node.item.definition.affichage[0])
                 indexLigne = node.item.definition.affichage[1]
                 indexColonne = node.item.definition.affichage[2]
@@ -56,5 +54,18 @@ class MonWidgetSpecifique(Ui_Selection, Groupe):
     def searchActived(self):
         debug = 0
         if debug: print ('searchActived')
-        self.editor.afficheLabels()
-        # maListeXML =
+        self.editor.searchActived()
+
+    def redessineWidget(self,node, oldWidget):
+         widget = node.getPanel(self, self.editor)
+         if ( hasattr(node.item.definition, "affichage")):
+             widgetMere = getattr(self, node.item.definition.affichage[0])
+             widgetMere.removeWidget(oldWidget)
+             oldWidget.close()
+             indexLigne = node.item.definition.affichage[1]
+             indexColonne = node.item.definition.affichage[2]
+             widgetMere.addWidget(widget, indexLigne, indexColonne)
+       
+           
+           
+        

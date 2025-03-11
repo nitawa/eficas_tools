@@ -98,6 +98,7 @@ class supFrereMC(compareAutreMC):
         MCFrere = self.MCSimp.parent.getChildOrChildInBloc(self.nomFrere)
         if not MCFrere: return valeur
         if MCFrere == None: return valeur
+        if MCFrere.valeur == None : return valeur
         if MCFrere.valeur > valeur:
             raise ValError( "la valeur doit etre superieure à la valeur de " + self.nomFrere)
         return valeur
@@ -106,6 +107,7 @@ class supFrereMC(compareAutreMC):
         MCFrere = self.MCSimp.parent.getChildOrChildInBloc(self.nomFrere)
         if not MCFrere: return 1
         if MCFrere == None: return 1
+        if MCFrere.valeur == None : return 1
         if MCFrere.valeur > valeur:
             raise ValError( "la valeur doit etre superieure à la valeur de " + self.nomFrere)
             return 0

@@ -53,7 +53,7 @@ class FACT(P_ENTITE.ENTITE):
     label = "FACT"
 
     def __init__( self, fr="", docu="", regles=(), statut="f", defaut=None, ang="",
-        fenetreIhm=None, min=0, max=1, validators=None,  nomXSD = None, nomXML=None, **args):
+        fenetreIhm=None, min=0, max=1, validators=None,  nomXSD = None,  **args):
         """
         Un mot-clé facteur est caractérisé par les attributs suivants :
 
@@ -88,9 +88,7 @@ class FACT(P_ENTITE.ENTITE):
         self.position = None
         self.affecter_parente()
         self.fenetreIhm = fenetreIhm
-        self.nomXML = nomXML
         self.nomXSD = nomXSD
-        if nomXML and not nomXSD : self.nomXSD = nomXML
 
     def __call__(self, val, nom, parent, dicoPyxbDeConstruction=None):
         """

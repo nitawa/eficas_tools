@@ -60,14 +60,10 @@ class MonBoutonValide(QToolButton):
             texte = self.parent.node.item.object.report().report()
             deb = 1
             for l in texte.split("\n")[2:-2]:
-                if re.match("^[\t !]*$", l):
-                    continue
-                if re.match("^ *Fin Mot-cl", l):
-                    continue
-                if re.match("^ *D?but Mot-cl", l):
-                    continue
-                if re.match("^ *Mot-cl", l):
-                    continue
+                if re.match("^[\t !]*$", l): continue
+                if re.match("^ *Fin Mot-cl", l): continue
+                if re.match("^ *D?but Mot-cl", l): continue
+                if re.match("^ *Mot-cl", l): continue
                 l = l.replace("!", "")
                 if deb:
                     deb = 0

@@ -270,7 +270,7 @@ class ENTITE(object):
             if (type(self.into) not in (list, tuple)) and (
                 type(self.into) != types.FunctionType
             ):
-                self.cr.fatal(_("L'attribut 'into' doit être un tuple : %r"), self.into)
+                self.cr.fatal(_("L'attribut 'into' doit être un tuple ou une fonction : %r"), self.into)
 
     def checkPosition(self):
         """Vérifie l'attribut position."""
@@ -404,6 +404,11 @@ class ENTITE(object):
            texte += texteDesFactTables
         return texte
 
+    def chercheDefinition(self,nomChamp):
+        listeDefinition = []
+        for mc in self.entites.values():
+            if mc.nom == nomChamp : listeDefinition.append(mc)
+        return listeDefinition
 
     def dumpGitStringFormat(self):
         texte = ""
@@ -423,12 +428,10 @@ class ENTITE(object):
     def dumpStructure(self, depth=0 ):
         indent = "  " * depth
         texte = f"{indent}{self.label}: {self.nom}\n"
-        if self.label == "SIMP":
-            return texte
-        if self.label == "BLOC":
-            texte += " " + self.condition
-        if self.label == "OPER":
-            texte + " " + str(self.sd_prod) + "\n"
+        if self.label == "SIMP": return texte
+        if self.label == "BLOC": texte += " " + self.condition
+        if self.label == "OPER": texte + " " + str(self.sd_prod) + "\n"
         for c in self.entites.values():
             texte += c.dumpStructure(depth + 1)
         return texte
+

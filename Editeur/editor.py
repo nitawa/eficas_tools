@@ -107,7 +107,15 @@ class Editor:
         self.modified = False
         self.isReadOnly = False
 
-        self.readCata()
+        try : 
+        #if 1 :
+            self.readCata()
+        except Exception as e :
+            print ('----------------------------------------')
+            print ( 'lecture du catalogue impossible')
+            print ( e)
+            print ('----------------------------------------')
+            exit (1)
         if self.readercata  : self.construitJdC(jdc)
         if useFor == 'Web' :
            if not hasattr(self,'webExtension') : 

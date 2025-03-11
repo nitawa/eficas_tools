@@ -77,9 +77,10 @@ class Groupe(QWidget, FacultatifOuOptionnel):
                 fenetre.show()
 
     def afficheMots(self):
-        print ("ds afficheMots ",self.maCommande, self.node.item.nom)
+        #print ("ds afficheMots ",self.maCommande, self.node.item.nom)
         for node in self.node.children:
             # non return mais  continue car il faut tenir compte des blocs
+            # et mettre a jour les fenetres et la liste
             if node.appartientAUnNoeudPlie == True: continue
             widget = node.getPanelGroupe(self, self.maCommande)
             # print ("widget pour ", node.item.nom, widget)

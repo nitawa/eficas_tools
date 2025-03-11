@@ -210,7 +210,7 @@ class PopUpMenuNodeMinimal(object):
                 tr("Aucune documentation n'est associee a ce noeud"),
             )
             return
-        commande = self.editor.appliEficas.maConfiguration.PedfReader
+        commande = self.editor.appliEficas.maConfiguration.PdfReader
         try:
             f = open(commande, "rb")
         except:

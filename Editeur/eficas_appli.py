@@ -418,7 +418,7 @@ class EficasAppli:
                 sessionCount += 1
                 self.dictChannelType[sessionCount]='TUI'
                 return (sessionCount, 0, '')
-        except exception as e:
+        except Exception as e:
             return (sessionCount, 1000, 'impossible de donner un id : {}.format(str(e))')
 
     #---------------------------------------------------------------------------

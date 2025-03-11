@@ -26,18 +26,31 @@ from Accas.extensions.eficas_translation import tr
 
 from UiQT5.desWidgetDateVP import Ui_WidgetDateVP
 from InterfaceGUI.QT5.monWidgetSimpDate  import MonWidgetSimpDate
+from PyQt5.QtCore import QDate, QDateTime
 
 
 class MonWidgetSpecifique (Ui_WidgetDateVP, MonWidgetSimpDate):
 
     def __init__(self,node,monSimpDef,nom,objSimp,parentQt,commande):
         MonWidgetSimpDate.__init__(self,node,monSimpDef,nom,objSimp,parentQt,commande)
+        self.oldValue = None
+
+    def setValeurs(self):
+        valeur=self.node.item.getValeur()
+        if valeur == None  : return
+        self.oldValue = valeur
+        laDate = QDateTime.fromSecsSinceEpoch(valeur).toString("dd/MM/yyyy hh:mm:ss")
+        qDate = QDate.fromString(laDate.split(' ')[0],"dd/MM/yyyy")
+        self.dateEdit.setDate(qDate)
+
 
     def dateChanged(self,qDate):
         value=qDate.toTime_t()
         validite,commentaire=self.politique.recordValeur(value)
         if not(validite) :
+           self.parentQt.editor.afficheMessage('mauvaise valeur', commentaire)
            self.setValeurs()
-           print (commentaire)
         self.setValide()
-
+        if self.oldValue != value :
+           self.editor.metAJourSelection(self.label.text())
+           self.oldValue = value

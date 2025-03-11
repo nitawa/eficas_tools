@@ -33,6 +33,7 @@ class MonWidgetSpecifique(Ui_WidgetLabels,QDialog):
     Classe permettant la visualisation de texte
     """
     def __init__( self, node, editor, parentQt, fenetrePPal):
+    # ------------------------------------------------------ 
         QDialog.__init__(self)
         self.setupUi(self)
         self.setModal(True)
@@ -41,6 +42,7 @@ class MonWidgetSpecifique(Ui_WidgetLabels,QDialog):
         self.afficheMots()
 
     def afficheMots(self):
+    # --------------------
         for node in self.node.children:
             widget = node.getPanel(self, self.editor)
             # on vire ce qui est en trop dans le widget generique
@@ -52,7 +54,8 @@ class MonWidgetSpecifique(Ui_WidgetLabels,QDialog):
         # print "fin pour " , self.node.item.nom
 
     def accept(self):
-        self.editor.lanceXSLT()
+    # ---------------
+        self.editor.prepareAfficheCPU()
         super(MonWidgetSpecifique, self).accept()
 
 

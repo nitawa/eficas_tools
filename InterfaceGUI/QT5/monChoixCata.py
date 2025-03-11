@@ -29,6 +29,7 @@ class MonChoixCata(Ui_DChoixCata, QDialog):
     """ """
 
     def __init__(self, QWparent, listeCata, title=None):
+    #---------------------------------------------------
         QDialog.__init__(self, QWparent)
         self.setModal(True)
         self.setupUi(self)
@@ -42,7 +43,9 @@ class MonChoixCata(Ui_DChoixCata, QDialog):
         self.buttonCancel.clicked.connect(self.sortSansChoix)
 
     def sortSansChoix(self):
+    #-----------------------
         QDialog.reject(self)
 
     def cataChoisi(self):
+    #-----------------------
         QDialog.accept(self)

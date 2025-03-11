@@ -26,7 +26,7 @@ from UiQT5.desWidgetCBSelectionVP import Ui_WidgetSelectionVPCB
 from InterfaceGUI.QT5.monWidgetCB  import MonWidgetCBCommun
 
 
-class MonWidgetSpecifique (Ui_WidgetSelectionVPCB,MonWidgetCBCommun):
+class MonWidgetSpecifique(Ui_WidgetSelectionVPCB,MonWidgetCBCommun):
 
     def __init__(self,node,maDefinition,nom,objSimp,parentQt,commande):
         if type(maDefinition.into) ==types.FunctionType :
@@ -34,3 +34,13 @@ class MonWidgetSpecifique (Ui_WidgetSelectionVPCB,MonWidgetCBCommun):
         else :
            self.maListeDeValeur = maDefinition.into
         MonWidgetCBCommun. __init__(self,node,maDefinition,nom,objSimp,parentQt,commande)
+        if len(self.maListeDeValeur) == 1 :
+           self.CBChoix.setCurrentIndex(0)
+           self.choixSaisi()
+        self.CBChoix.currentIndexChanged.connect(self.metAJourSelection)
+
+    def  metAJourSelection(self):
+        #texte = '{} = {}'.format(self.label.text(), repr(self.node.item.valeur))
+        self.editor.metAJourSelection(self.label.text(), texteValeur=repr(self.node.item.valeur))
+        #self.editor.metAJourSelection(self.node.item.nom)
+

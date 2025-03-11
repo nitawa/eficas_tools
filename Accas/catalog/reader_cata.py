@@ -250,32 +250,25 @@ class ReaderCata(ReaderCataCommun):
                     )
                     exit()
                 try:
+                    debug = 1
                     nomCataXsd = os.path.splitext(os.path.basename(self.cataFile))[0]
-                    cataFileTrunc = os.path.splitext(
-                        os.path.basename(self.cataFile)
-                    )[0]
+                    cataFileTrunc = os.path.splitext( os.path.basename(self.cataFile))[0]
                     nomCataXsd = cataFileTrunc + "_driver"
 
                     if os.path.dirname(self.cataFile) == "":
                         pathCata = "./raw/" + nomCataXsd + ".py"
                     else:
-                        pathCata = (
-                            os.path.dirname(self.cataFile)
-                            + "/raw/"
-                            + nomCataXsd
-                            + ".py"
-                        )
+                        #pathCata = ( os.path.dirname(self.cataFile) + "/raw/" + nomCataXsd + ".py")
+                        # PN 4 fevrier --> pourquoi raw ?
+                        pathCata = ( os.path.dirname(self.cataFile) + "/" + nomCataXsd + ".py")
 
-                    self.cata.fileModeleMetier = (
-                        os.path.dirname(self.cataFile)
-                        + "/raw/"
-                        + nomCataXsd
-                        + ".xsd"
-                    )
+                    #self.cata.fileModeleMetier = ( os.path.dirname(self.cataFile) + "/raw/" + nomCataXsd + ".xsd")
+                    self.cata.fileModeleMetier = ( os.path.dirname(self.cataFile) + "/" + nomCataXsd + ".xsd")
+                   
+                    if debug : print ('nomCataXsd , pathCata ',nomCataXsd,pathCata)
                     import imp
-
                     modeleMetier = imp.load_source(nomCataXsd, pathCata)
-                    # print ('nomCataXsd , pathCata ',nomCataXsd,pathCata)
+                    if debug : print ('modeleMetier', modeleMetier)
                     try:
                         monObjetAnnotation = getattr(modeleMetier, "PNEFdico")
                         texte = monObjetAnnotation.__doc__
@@ -387,7 +380,7 @@ class ReaderCata(ReaderCataCommun):
         if cataFile == None :
            print ('No catafile')
            return
-        debug=0
+        debug=1
         if debug : print ('importCata cataFile', cataFile)
         nomCata = os.path.splitext(os.path.basename(cataFile))[0]
         repCata = os.path.abspath(os.path.dirname(cataFile))
@@ -412,8 +405,9 @@ class ReaderCata(ReaderCataCommun):
         # try: self.appliEficas.mesScripts[self.code] = __import__(mesScriptsNomFichier)
         # except: pass
 
-        try:
-        #if 1 :
+        #try:
+        print ('PN --> Attention chgt Try en if')
+        if 1 :
             #import importlib.util
             #from importlib import util
             #cataSpec = util.spec_from_file_location(nomCata, cataFile)
@@ -426,13 +420,13 @@ class ReaderCata(ReaderCataCommun):
             # a creuser
             leCata =__import__(nomCata)
             return leCata
-        except Exception as e:
-        #else :
+        #except Exception as e:
+        else :
             self.appliEficas.afficheMessage("catalog python", "unable to load catalog file")
             import traceback
-            traceback.print_exc()
-            raise EficasException(str(e))
-            exit(1) 
+            #traceback.print_exc()
+            #raise EficasException(str(e))
+            sys.exit(1) 
 
     def retrouveOrdreCata(self):
         """

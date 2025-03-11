@@ -442,15 +442,12 @@ class MCSIMP(A_OBJECT.OBJECT):
 
     def demandeUpdateOptionnels(self):
         pass
-    def setValeur(self, new_valeur, evaluation="oui"):
+
+    def setValeur(self, new_valeur):
         self.initModif()
         self.valeur = new_valeur
         self.val = new_valeur
-        if (
-            self.valeur
-            and self.waitUserAssd()
-            and not (self.waitUserAssdOrAssdMultipleEnCreation())
-        ):
+        if ( self.valeur and self.waitUserAssd() and not (self.waitUserAssdOrAssdMultipleEnCreation())):
             if type(self.valeur) in (list, tuple):
                 for v in self.valeur:
                     v.ajoutUtilisePar(self)
@@ -971,6 +968,9 @@ class MCSIMP(A_OBJECT.OBJECT):
     def initModifUp(self):
         V_MCSIMP.MCSIMP.initModifUp(self)
         CONNECTOR.Emit(self, "valid")
+
+    def initRedessine(self):
+        CONNECTOR.Emit(self, "redessine")
 
     def deleteRef(self):
         if self.valeur == None or self.valeur == []:

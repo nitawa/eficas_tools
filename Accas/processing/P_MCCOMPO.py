@@ -376,20 +376,23 @@ class MCCOMPO(P_OBJECT.OBJECT):
         if not etape:
             return {}
         for k, v in list(etape.definition.entites.items()):
-            if v.label != "SIMP":
-                continue
-            if v.position == "local":
-                continue
-            if v.position == "inGetAttribut":
-                continue
-            if v.position == "reCalculeEtape":
-                continue
-            if v.statut == "o":
-                continue
+            if v.label != "SIMP": continue
+            if v.position == "local": continue
+            if v.position == "inGetAttribut": continue
+            if v.position == "reCalculeEtape": continue
+            if v.statut == "o": continue
             obj = v(val=None, nom=k, parent=etape)
             dico[k] = obj.getValeur()
         return dico
 
+    def revalide(self, definition):
+        for v in self.mcListe:
+            if v.nature == "MCSIMP" :
+                if v.definition == definition: 
+                    v.revalide()
+            else : v.revalide(definition)    
+
+ 
     def supprime(self):
         """
         Méthode qui supprime toutes les références arrières afin que l'objet puisse

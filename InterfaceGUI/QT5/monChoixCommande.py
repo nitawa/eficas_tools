@@ -392,3 +392,7 @@ class MonChoixCommande(Ui_ChoixCommandes, QWidget):
     def setValide(self):
         # PNPN a priori pas d icone mais peut-etre a faire
         pass
+   
+    def afficheSuivant(self, num):
+        # Pour compatibilité si affichage avec VisuProfile
+        pass

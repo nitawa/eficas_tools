@@ -112,7 +112,7 @@ class OBJECT(object):
     def prepareInsertInDB(self, dictKey, dElementsRecursifs, dPrimaryKey):
         # Comme c est recursif doit etre dans Objet
         # derive pour MCSIMP et MCLIST
-        debug = 1
+        #debug = 1
         if debug:
             print("prepareInsertInDB traitement de ", self.nom)
         if self.nature in ("OPERATEUR", "PROCEDURE"):

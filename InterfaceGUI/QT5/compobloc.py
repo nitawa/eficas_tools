@@ -26,6 +26,7 @@ from InterfaceGUI.QT5 import typeNode
 
 
 class Node(browser.JDCNode, typeNode.PopUpMenuNodeMinimal):
+
     def createPopUpMenu(self):
         typeNode.PopUpMenuNodeMinimal.createPopUpMenu(self)
 

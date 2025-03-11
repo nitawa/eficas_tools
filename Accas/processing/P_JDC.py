@@ -608,6 +608,13 @@ Causes possibles :
             if hasattr(e, "sdnom") and e.sdnom == conceptName:
                 return e
 
+    def revalide(self, definition) :
+        debug = 0
+        if debug : print ('revalide ', definition)
+        for e in self.etapes:
+            e.revalide(definition)
+
+
     def _build_reserved_kw_list(self):
         """Construit la liste des mots-cles reserves (interdits pour le
         nommage des concepts)."""

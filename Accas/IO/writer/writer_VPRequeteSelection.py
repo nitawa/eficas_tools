@@ -49,7 +49,8 @@ class RequeteSelectionGenerator(PythonGenerator):
     extensions = (".comm",)
 
     # ----------------------------------------------------------------------------------------
-    def genereConditionSelection(self, jdc):
+    def genereConditionSelection(self, jdc ):
+        #debug = 1
         debug = 0
 
         texteCondition = ""
@@ -66,6 +67,10 @@ class RequeteSelectionGenerator(PythonGenerator):
         dictObjPresentsValides = {}
 
         for nomObj, obj in dictObjPresents.items():
+            if obj.valeur == 'tout' or obj.valeur == 'all' or obj.valeur == 'All' : continue
+            if obj.nom == 'performance' : continue
+            if obj.nom == 'sha1_debut' : continue
+            if obj.nom == 'sha1_fin' : continue
             if obj.isValid(): dictObjPresentsValides[nomObj] = obj
         if debug: print("dictObjPresentsValides", dictObjPresentsValides)
 
@@ -126,5 +131,4 @@ class RequeteSelectionGenerator(PythonGenerator):
                   else : 
                      texteCondition += " {} between {} and {} ".format(nomGener, str(obj.valeur), valeurFin)
     
-        print ('tttttttttttttttt', texteCondition)
         return  texteCondition

@@ -117,6 +117,8 @@ class MonWidgetCBCommun(Feuille):
         # lorsque la widget attrape le wheelevent
         event.ignore()
 
+ 
+
 
 class MonWidgetCB(Ui_WidgetCB, MonWidgetCBCommun):
     def __init__(self, node, monSimpDef, nom, objSimp, parentQt, commande):

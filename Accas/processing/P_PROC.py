@@ -46,35 +46,41 @@ class PROC(P_ENTITE.ENTITE):
 
     et les attributs d'instance suivants :
 
-    - nom   : son nom
+    - nom   : son nom A=PROC(nom='A',...). Pas d autre solution simple en python
     - op   : le numéro d'opérateur
     - reentrant : vaut 'n' ou 'o'. Indique si l'opérateur est réentrant ou pas. Un opérateur
                         réentrant peut modifier un concept d'entrée et le produire comme concept de sortie
     - repetable : vaut 'n' ou 'o'. Indique si l'opérateur est répetable ou pas. Un opérateur
                         non répétable ne doit apparaitre qu'une fois dans une exécution. C'est du ressort
                         de l'objet gérant le contexte d'exécution de vérifier cette contrainte.
+    ces 3 attributs sont principalement utilises par le superviseur
     - fr   : commentaire associé en francais
     - docu : clé de documentation associée
     - regles : liste des règles associées
     - op_init : cet attribut vaut None ou une fonction. Si cet attribut ne vaut pas None, cette
                       fonction est exécutée lors des phases d'initialisation de l'étape associée.
+                sert pour relire les comm avec des liens entre les MCSIMP
     - niveau : indique le niveau dans lequel est rangé l'opérateur. Les opérateurs peuvent etre
                      rangés par niveau. Ils apparaissent alors exclusivement dans leur niveau de rangement.
                      Si niveau vaut None, l'opérateur est rangé au niveau global.
-    - fenetreIhm : specification de la fenetre
+               une survivance de l idee que certains utilisateurs ne pouvaient  voir qu une partie des commandes 
+               Cela a ete remplace par 2 catalogues mais d autres usecase sont peut-être possible
+    - fenetreIhm : specification de la fenetre pour particulariser la widget graphique
     - entites : dictionnaire dans lequel sont stockés les sous entités de l'opérateur. Il s'agit
                       des entités de définition pour les mots-clés : FACT, BLOC, SIMP. Cet attribut
 
+    - UIinfo : permet le regroupement des commandes (par exemple MAILLAGE, GEOMETRIE...) selon une certaine categorie
+    - nomXSD : permet de changer le nom dans la projection XSD
+    - docu : pointe sur un lien vers une doc exterieure (souvent un lien HTML ou une clef)
     """
 
     class_instance = P_PROC_ETAPE.PROC_ETAPE
     label = "PROC"
 
     def __init__( self, nom, op=None, reentrant="n", repetable="o", fr="", ang="", fenetreIhm=None, docu="",
-        regles=(), op_init=None, niveau=None, UIinfo=None, **args):
+        regles=(), op_init=None, niveau=None, UIinfo=None, nomXSD=None, **args):
         """
-        Méthode d'initialisation de l'objet PROC. Les arguments sont utilisés pour initialiser
-        les attributs de meme nom
+        Méthode d'initialisation de l'objet PROC. 
         """
         self.nom = nom
         self.op = op
@@ -82,15 +88,12 @@ class PROC(P_ENTITE.ENTITE):
         self.repetable = repetable
         self.fenetreIhm = fenetreIhm
         self.fr = fr
-        # self.ang=""
         self.ang = ang
         self.docu = docu
-        if type(regles) == tuple:
-            self.regles = regles
-        else:
-            self.regles = (regles,)
-        # Attribut op_init : Fonction a appeler a la construction de l
-        # operateur sauf si == None
+        if type(regles) == tuple: self.regles = regles
+        else: self.regles = (regles,)
+
+        # Attribut op_init : Fonction a appeler a la construction de l  operateur sauf si == None
         self.op_init = op_init
         self.entites = args
         current_cata = CONTEXT.getCurrentCata()
@@ -105,6 +108,7 @@ class PROC(P_ENTITE.ENTITE):
         self.checkDefinition(self.nom)
         self.dejaPrepareDump = False
         self.txtNomComplet = ""
+        self.nomXSD = nomXSD
 
     def __call__(self, **args):
         """

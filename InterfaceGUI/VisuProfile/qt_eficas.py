@@ -23,6 +23,7 @@ from UiQT5.myMainVP import Ui_EficasVP
 from InterfaceGUI.QT5.qt_eficas import QtEficasAppli
 from PyQt5.QtWidgets import  QAction, QMessageBox
 from Accas.extensions.eficas_translation import tr
+import os
 
 
 
@@ -33,6 +34,10 @@ class QtEficasAppli(Ui_EficasVP, QtEficasAppli):
 
     def __init__(self,code='VP', salome=0, multi = 0, versionCode=None,  langue='en', GUIPath="InterfaceGUI.VisuProfile",appWeb=None):
         super().__init__(code=code, salome=salome, multi=multi, langue=langue, versionCode=versionCode, GUIPath=GUIPath)
+        self.gitDir= os.environ.get('COCAGNE_GIT_DIR')
+        if not self.gitDir :
+            print ('Il est necessaire de positionner COCAGNE_GIT_DIR dans l environnement') 
+            exit()
         self.withXSD = True
         self.GUIPath = GUIPath
         self.editorManager.getEditor()

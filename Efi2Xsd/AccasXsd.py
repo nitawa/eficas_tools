@@ -776,7 +776,7 @@ class X_compoFactoriseAmbigu(X_definition):
         # je pense qu il faut avoir le min minimum et le max maximum
         # sur l arité de l element mais du coup liste ou pas liste ?
         # A verifier avec Eric
-        # peur d un melange si intoXML
+        # peur d un melange si intoXSD
         resteATraiter = listePourFusion
         while resteATraiter != []:
             nvlListeATraiter = []
@@ -1598,8 +1598,8 @@ class X_SIMP(X_definition):
                 texteAide = self.ang
             else:
                 texteAide = self.fr
-            if self.intoXML and self.into:
-                if self.intoXML != self.into:
+            if self.intoXSD and self.into:
+                if self.intoXSD != self.into:
                     # print ('je passe la pour ', self.nom)
                     texteAide = (
                         texteAide
@@ -1729,8 +1729,8 @@ class X_SIMP(X_definition):
                 into = self.into
                 if self.intoConstant != None:
                     into = self.intoConstant
-                if self.intoXML != None:
-                    into = self.intoXML
+                if self.intoXSD != None:
+                    into = self.intoXSD
                 for val in into:
                     self.texteSimple +=  enumeration.format(val)
                 if PourTraduction:
@@ -1756,8 +1756,8 @@ class X_SIMP(X_definition):
                     into = self.into
                     if self.intoConstant != None:
                         into = self.intoConstant
-                    if self.intoXML != None:
-                        into = self.intoXML
+                    if self.intoXSD != None:
+                        into = self.intoXSD
                     for val in into:
                         self.texteSimple += enumeration.format(val)
                     if PourTraduction:
@@ -1830,8 +1830,8 @@ class X_SIMP(X_definition):
             self.texteSimple = complexChaineAvecBlancs.format(
                 self.nomDuTypePyxb, max, self.nomDuTypePyxb
             )
-            if self.intoXML != None:
-                into = self.intoXML
+            if self.intoXSD != None:
+                into = self.intoXSD
             else:
                 into = self.into
             if into == None:
@@ -1873,7 +1873,7 @@ class X_SIMP(X_definition):
         #    if self.val_max != float('inf') and self.val_max != '**' : self.texteSimple +="\t\t\t\t"+ maxInclusiveBorne.format(self.val_max)
         #    if self.into != None:
         #        into=self.into
-        #        if self.intoXML != None : into = self.intoXML
+        #        if self.intoXSD != None : into = self.intoXSD
         #        for val in into : self.texteSimple += "\t\t\t\t"+enumeration.format(val)
         #        if PourTraduction  :
         #            for val in into : print (str(val))
@@ -2044,7 +2044,7 @@ class X_SIMP(X_definition):
             and self.nomXSD != None):
             return True
         listeAComparer = ["type", "defaut", "min", "max", "val_min", "val_max"]
-        if self.intoXML != None: listeAComparer.append("intoXML")
+        if self.intoXSD != None: listeAComparer.append("intoXSD")
         else: listeAComparer.append("into")
 
         for attr in listeAComparer:
@@ -2071,14 +2071,14 @@ class X_SIMP(X_definition):
             if debug : print (val2)
             if val1 != val2: return False
 
-        if self.intoXML == None and autreMC.intoXML == None : return True
+        if self.intoXSD == None and autreMC.intoXSD == None : return True
         if self.into == None and autreMC.into == None : return True
 
         # Si l un des deux n a pas de into on ne peut pas fusionner
-        if self.intoXML != None: 
-            if autreMC.intoXML == None : return False
-            for possible in autreMC.intoXML: 
-                if possible not in self.intoXML : self.intoXML.append(possible)
+        if self.intoXSD != None: 
+            if autreMC.intoXSD == None : return False
+            for possible in autreMC.intoXSD: 
+                if possible not in self.intoXSD : self.intoXSD.append(possible)
         elif self.into != None: 
             if autreMC.into == None : return False
             for possible in autreMC.into: 

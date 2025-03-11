@@ -220,3 +220,11 @@ class MCSIMP(object):
                 traceback.print_exc()
             self.cr.fatal("Simple Keyword  : %s %s" % (tr(self.nom), e))
         return self.cr
+ 
+    def revalide(self):
+        self.state = "undetermined"
+        self.typeProto = TypeProtocol("type", typ=self.definition.type)
+        self.intoProto = IntoProtocol( "into", into=self.definition.into, val_min=self.definition.val_min, val_max=self.definition.val_max,)
+        self.cardProto = CardProtocol( "card", min=self.definition.min, max=self.definition.max)
+        self.isValid()
+

@@ -33,8 +33,6 @@ class JDCTree:
         self.appliEficas = self.editor.appliEficas
         self.childrenComplete = []
         self.plie = False
-        print (self.item.__class__)
-        print (self.item.itemNode.__class__)
         self.racine = self.item.itemNode(self, self.item)
         self.affichePremier()
 
@@ -47,11 +45,9 @@ class JDCTree:
 # -----------
 class JDCNode:
 # -------------
-    def __init__(
-        self, treeParent, item, itemExpand=False, ancien=False, creeChildren=True
-    ):
-        # -----------------------------------------------------------------------------------------
-        # print ("creation d'un noeud : ", item, " ",item.nom,"", treeParent, self)
+    def __init__( self, treeParent, item, itemExpand=False, ancien=False, creeChildren=True):
+    # -----------------------------------------------------------------------------------------
+        #print ("creation d'un noeud : ", item, " ",item.nom,"", treeParent, self)
         self.item = item
         self.vraiParent = treeParent
         self.treeParent = treeParent
@@ -66,18 +62,16 @@ class JDCNode:
         #    self.treeParent.childrenComplete.append(self)
         #    self.treeParent=self.treeParent.vraiParent
         self.treeParent.childrenComplete.append(self)
+        self.item.connect("redessine", self.onRedessine, ())
 
         self.buildChildren()
 
     def buildChildren(self):
-        # -----------------------
+    # -----------------------
         """Construit la liste des enfants de self"""
         """ Se charge de remettre les noeuds Expanded dans le meme etat """
         debug = 0
-        if debug:
-            print("*********** buildChildren ", self, self.item, self.item.nom)
-        #   import traceback
-        #   traceback.print_stack()
+        if debug: print("*********** buildChildren ", self, self.item, self.item.nom)
 
         self.listeItemExpanded = []
         self.listeItemPlie = []
@@ -105,13 +99,15 @@ class JDCNode:
             self.children.append(nouvelItem)
 
     def affichePanneau(self):
-        # -------------------------
-        # itemParent=self
-        # while not (hasattr (itemParent,'getPanel')) : itemParent=itemParent.treeParent
-        # if itemParent != self :
-        #   itemParent.affichePanneau()
-        #   return
-        debug = False
-        if debug:
-            print("dans affichePanneau pour", self.item.nom)
+    # -------------------------
+        debug = 0
+        if debug: print("dans affichePanneau pour", self.item.nom)
         self.fenetre = self.getPanel()
+
+    def onRedessine(self):
+    # -----------------------
+        debug = 0
+        if debug : print ('dans onRedessine', self.item.nom)
+        self.treeParent.widget.redessineWidget(self, self.widget)
+
+  

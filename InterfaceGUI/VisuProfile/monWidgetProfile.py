@@ -27,9 +27,10 @@ from Accas.extensions.eficas_translation import tr
 # Import des panels
 
 from PyQt5.QtWidgets import QCheckBox, QWidget, QGraphicsView, QGraphicsEllipseItem
+from PyQt5.QtWidgets import QGraphicsItem, QGraphicsScene, QGraphicsTextItem, QGraphicsPathItem
 from PyQt5.QtCore    import Qt, QSignalMapper, QPoint, QRectF, QTimer
 from PyQt5.QtChart   import QLineSeries, QChart, QChartView, QValueAxis, QCategoryAxis, QScatterSeries
-from PyQt5.QtGui     import QColor, QBrush, QPen, QPainter
+from PyQt5.QtGui     import QColor, QBrush, QPen, QPainter, QPainterPath
 
 
 tabCouleur={ 0 : (41,128,185),   1 : (46,64,83),    2 : (255,87,51),    3 : (199,00,57),
@@ -39,273 +40,236 @@ tabCouleur={ 0 : (41,128,185),   1 : (46,64,83),    2 : (255,87,51),    3 : (199
             16 : (255,153,51),  17 : (102,0,102),   18: (255, 0, 51),  19 : (102,153,204)
            }
 
-class MonPoint(QPoint):
-#-----------------------
-    def __init__(self, X,Y, laSerie, laCouleur ):
-    #--------------------------------------------
-    # laSerie est de type MaSerie
+class ClickablePoint(QGraphicsEllipseItem):
+#------------------------------------------
+    #def __init__(self, X, Y, id, label, serie, couleur):
+    def __init__(self, X, Y, id,  label):
+    #-------------------------------------
         debug = 0
-        if debug : print ('initialisation de MonPoint avec', X, Y, laSerie)
-        QPoint.__init__(self,X,Y)
+        if debug : print ('initialisation de ClickablePoint avec', X, Y, serie)
+        super().__init__(X, Y, 10, 10)
         self.X=X
         self.Y=Y
-        self.laSerie=laSerie
-        self.selectionne=False
-        self.laCouleur=laCouleur
-        self.item = None
-        if self.laSerie.maxY < Y :  self.laSerie.maxY = Y
+        self.selectionne = False
+        self.couleur = Qt.blue
+        self.label = label
+        self.id = id
+        self.setBrush(QBrush(self.couleur))
+        self.setPen(QPen(Qt.black))
+        self.setFlag(QGraphicsItem.ItemIsSelectable)
+        self.setFlag(QGraphicsItem.ItemIsMovable)
+        #self.serie=serie
+        #if self.serie.maxY < Y :  self.serie.maxY = Y
 
-        
-    def affichePoint(self):
-    #---------------------
-        debug = 0
-        if debug : print ('affiche Point',  self.X, self.Y)
-        #laCouleur = QColor(130, 1, 1, 210)
-        laCouleur = Qt.cyan
-        if not self.item :
-           self.item = QGraphicsEllipseItem(QRectF(-3, -3, 6, 6))
-           #self.item.setZValue(0)
-           pen =QPen(laCouleur)
-           pen.setWidth(3);
-           self.item.setBrush(laCouleur)
-           self.item.setPen(pen)
-           pos = self.laSerie.parent.graphe.mapToPosition(self)
+    def mousePressEvent(self, event):
+    #--------------------------------
+        print(f'Clicked on ID: {self.id}, Label: {self.label}')
+        super().mousePressEvent(event)
 
-           if not(self.item.scene()) : 
-              self.laSerie.parent.graphique.scene().addItem(self.item)
-              self.item.setPos(pos)
-              self.selectionne=True
-        else :
-          self.laSerie.parent.graphique.scene().removeItem(self.item)
-          self.item=None
-          self.selectionne=False
 
-    def reaffiche(self):
-    #---------------------
-         self.laSerie.parent.graphique.scene().removeItem(self.item)
-         self.item = None
-         self.affichePoint()
+class ClickableText(QGraphicsTextItem):
+#--------------------------------------
+    def __init__(self, text, x, y, label, graph_widget):
+        super().__init__(text)
+        self.setPos(x, y)
+        self.label = label
+        self.graph_widget = graph_widget
+        self.setDefaultTextColor(Qt.black)
+        self.setFlag(QGraphicsItem.ItemIsSelectable)
+        self.setFlag(QGraphicsItem.ItemIsMovable)
 
-class MaSerie:
-#-------------
+    def mousePressEvent(self, event):
+        self.graph_widget.toggle_column(self.label)
+        super().mousePressEvent(event)
 
-    def __init__(self, lesDonnees, label, parent):
-    #---------------------------------------------
-        debug = 0
-        #if label == 'A4' : debug = 1 
-        if debug : print ('--------------------------------------------------------------')
-        if debug : print ('init de MaSerie')
-        if debug : print ('donneesBrutes', lesDonnees)
-        if debug : print ('label', label)
-        self.donneesBrutes=lesDonnees
-        self.label=label
-        self.parent=parent
-        self.QLSerie=QLineSeries()
-        self.listePoints=[]
-        self.listeClicked=[]
-        self.maxY = -1
-        self.parent.dictLabelIdValue[label] = {}
 
-        if lesDonnees == [] : 
-           self.parent.editor.afficheMessage('pb sur les donnees de {}'.format(label), 'prevenir la maintenance')
-           return
-        donneesTriees=sorted(self.donneesBrutes, key = lambda donneesBrutes: donneesBrutes[0])
+         
+class Graphique(QGraphicsView):
+#-------------------------------
+    def __init__(self, donnees):
+        super().__init__()
+        self.scene = QGraphicsScene(self)
+        self.donnees = donnees
+        self.setScene(self.scene)
+        self.setRenderHint(QPainter.Antialiasing)
+        self.columns = {}
+        self.plot(self.donnees)
 
-        if debug : print ('donneesTriees', donneesTriees)
-        if debug : print ('liste des id', self.parent.listeId)
 
-        self.indexCouleur=self.parent.chercheIndiceCouleur()
-        self.couleur = QColor(tabCouleur[self.indexCouleur][0], tabCouleur[self.indexCouleur][1], tabCouleur[self.indexCouleur][2])
+    def plot(self, donnees, x_step = 100, y_step = 10, x_offset = 50, y_offset = 300) :  
+        # Ajout des axes avec des lignes plus épaisses
+        self.scene.addLine(x_offset, y_offset, x_offset + len(donnees) * x_step, y_offset, QPen(Qt.black, 2))  # Axe des X en bas
+        self.scene.addLine(x_offset, y_offset, x_offset, y_offset - 300, QPen(Qt.black, 2))  # Axe des Y à gauche
 
-        if debug : print ('debut du for')
-        if debug : print ('------------')
+        self.paths = {}
+        self.colors = {}
+        colorId = 0 
+        indice = 0
 
-        # les labels manquants ne sont  pas dans le .comm
+        for (label, timeValues) in donnees.items():
+            x = x_offset + indice * x_step
+            indice += 1
+            # Ajout des labels sur l'axe des X
+            text = ClickableText(label, x - 10, y_offset + 10, label, self)
+            self.scene.addItem(text)
+            # Ajout des lignes verticales pour les labels
+            line = self.scene.addLine(x, y_offset, x, y_offset - 300, QPen(Qt.lightGray, 1, Qt.DashLine))
+            self.columns[label] = [line]
 
-        rangDansLaSerie=0
-        for i in range(len(self.parent.listeId)) :
-            id=self.parent.listeId[i]
-            if debug : print ('traitement id', id, i, rangDansLaSerie)
-            if debug : print (len(donneesTriees), donneesTriees)
-            if rangDansLaSerie > len(donneesTriees) -1:
-               valeurDsLaSerie = 0
-               if debug : print ('point manquant:', label , 'pour id', id)
-               if debug : print ('plus de point dans les donnees')
-            else :
-               if debug : print (donneesTriees[rangDansLaSerie][0])
-               if donneesTriees[rangDansLaSerie][0] == str(id) : 
-                   valeurDsLaSerie=donneesTriees[rangDansLaSerie][1]
-                   rangDansLaSerie=rangDansLaSerie+1
-               else :
-                   valeurDsLaSerie=0
-                   if debug : print ('point manquant:', label , 'pour id', id)
-            monPoint = MonPoint(i+1,valeurDsLaSerie,self,self.couleur)
-            self.parent.dictLabelIdValue[label][id] = valeurDsLaSerie 
-            self.QLSerie.append(monPoint)
-            self.listePoints.append(monPoint)
-            if debug : print ('point:', rangDansLaSerie, valeurDsLaSerie, 'pour Id', id)
+            for runId, value in timeValues.items():
+                y = y_offset - value * y_step  # Ajustement pour que les valeurs soient correctes par rapport à l'axe des X
+                ellipse = ClickablePoint(x, y,  runId, label)
+                self.scene.addItem(ellipse)
+                self.columns[label].append(ellipse)
 
-        self.donneesTriees = donneesTriees
-        newPen=QPen(self.couleur, 2)
-        self.QLSerie.setPen(newPen)
-        self.QLSerie.setPointsVisible(True)
-        self.QLSerie.setName(label)
-        self.QLSerie.clicked.connect(self.pointClicked)
-        self.QLSerie.setPointLabelsVisible(True)
-        self.QLSerie.setPointLabelsFormat("@yPoint");
-        
+                if runId not in self.paths:
+                    self.paths[runId] = QPainterPath()
+                    self.paths[runId].moveTo(x, y)
+                else:
+                    self.paths[runId].lineTo(x, y)
+                if runId not in self.colors:
+                    self.colors[runId]=QColor(tabCouleur[colorId][0], tabCouleur[colorId][1],tabCouleur[colorId][2])
+                    if colorId == len(tabCouleur) :
+                       colorId = len(tabCouleur) -1
+                       self.editor.afficheMessage('Pas assez de couleurs definies',
+                          'Prevenez la maintenance',critique=False)
+                    else : colorId += 1
 
-    def pointClicked(self,point):
-    #___________________________
-        debug = 0
-        index = round(point.x())
-        index = index - 1
-        if debug : print (index)
-        if debug : print (self.listeClicked)
-        if debug : print  ('pointClicked', index, index in self.listeClicked)
-        if debug : print ('index clique ', index, ' sur la QLSerie ', self.label)
-        if index in self.listeClicked : 
-           self.listeClicked.remove(index) 
-        else : 
-           self.listeClicked.append(index) 
-           self.parent.afficheInfosForId(index)
-        if debug : print (self.listePoints) # self.QLSerie.pointsVector contient des QPoint 
-        self.listePoints[index].affichePoint()
-        if self.listePoints[index].selectionne  : self.parent.displaySelectedInBar()
+        print (self.colors)
+        # Ajout des lignes pour chaque ID
+        self.line_items = {}
+        for id, path in self.paths.items():
+            line_item = QGraphicsPathItem(path)
+            line_item.setPen(QPen(self.colors[id], 2))
+            self.scene.addItem(line_item)
+            self.line_items[id] = line_item
 
-        
+        self.update_y_axis()
+
+    def toggle_column(self, label):
+        for item in self.columns[label]:
+            item.setVisible(not item.isVisible())
+        self.update_lines()
+        self.update_y_axis()
+
+    def update_lines(self):
+        for id, path in self.paths.items():
+            new_path = QPainterPath()
+            for i, (label, values) in enumerate(self.donnees.items()):
+                if self.columns[label][0].isVisible():
+                    x = 50 + i * 100
+                    y = 300 - values[id] * 10
+                    if new_path.elementCount() == 0:
+                        new_path.moveTo(x, y)
+                    else:
+                        new_path.lineTo(x, y)
+            self.line_items[id].setPath(new_path)
+
+    def update_y_axis(self):
+        # Supprimer les anciennes graduations
+        for item in self.scene.items():
+            if isinstance(item, QGraphicsTextItem) and item.toPlainText().isdigit():
+                self.scene.removeItem(item)
+
+        # Trouver les valeurs min et max visibles
+        min_value = float('inf')
+        max_value = float('-inf')
+        for label, values in self.donnees.items():
+            if self.columns[label][0].isVisible():
+                for value in values.values():
+                    if value < min_value:
+                        min_value = value
+                    if value > max_value:
+                        max_value = value
+
+        # Ajuster l'échelle de l'axe des Y
+        y_step = 10
+        y_offset = 300
+        x_offset = 50
+        if min_value != float('inf') : min_value = int(min_value // 10 * 10)
+        else : min_value = 0
+        if max_value != float('-inf') : max_value = int(max_value // 10 * 10 + 10)
+        else : max_value = 0
+
+        for i in range(min_value, max_value + 1, 10):
+            y = y_offset - (i - min_value) * y_step
+            self.scene.addLine(x_offset - 5, y, x_offset + 5, y, QPen(Qt.black, 2))
+            text = QGraphicsTextItem(str(i))
+            text.setPos(x_offset - 30, y - 10)
+            self.scene.addItem(text)
+
+
+#    def plot(self):
+#        x_step = 100
+#        y_step = 10
+#        x_offset = 50
+#        y_offset = 300  # Ajustement pour que l'axe des X soit en bas
+#
+#        # Ajout des axes avec des lignes plus épaisses
+#        self.scene.addLine(x_offset, y_offset, x_offset + len(self.donnees) * x_step, y_offset, QPen(Qt.black, 2))  # Axe des X en bas
+#        self.scene.addLine(x_offset, y_offset, x_offset, y_offset - 300, QPen(Qt.black, 2))  # Axe des Y à gauche
+#
+#        # Ajout des graduations sur l'axe des Y
+#        for i in range(0, 31, 10):
+#            y = y_offset - i * y_step
+#            self.scene.addLine(x_offset - 5, y, x_offset + 5, y, QPen(Qt.black, 2))
+#            text = QGraphicsTextItem(str(i))
+#            text.setPos(x_offset - 30, y - 10)
+#            self.scene.addItem(text)
+#
+#        # Création des chemins pour chaque ID
+#        paths = {}
+#        colors = {'ID1': Qt.red, 'ID2': Qt.green}
+#
+#        for i, (label, values) in enumerate(self.donnees.items()):
+#            x = x_offset + i * x_step
+#            # Ajout des labels sur l'axe des X
+#            text = QGraphicsTextItem(label)
+#            text.setPos(x - 10, y_offset + 10)
+#            self.scene.addItem(text)
+#            # Ajout des lignes verticales pour les labels
+#            self.scene.addLine(x, y_offset, x, y_offset - 300, QPen(Qt.lightGray, 1, Qt.DashLine))
+#            for id, value in values.items():
+#                y = y_offset - value * y_step  # Ajustement pour que les valeurs soient correctes par rapport à l'axe des X
+#                ellipse = ClickablePoint(x, y, id, label)
+#                self.scene.addItem(ellipse)
+#
+#                if id not in paths:
+#                    paths[id] = QPainterPath()
+#                    paths[id].moveTo(x, y)
+#                else:
+#                    paths[id].lineTo(x, y)
+#
+#        # Ajout des lignes pour chaque ID
+#        for id, path in paths.items():
+#            line_item = QGraphicsPathItem(path)
+#            line_item.setPen(QPen(colors[id], 2))
+#            self.scene.addItem(line_item)
 
          
 class MonWidgetProfile(QWidget,Ui_ProfileVP):
 #--------------------------------------------
-    def __init__(self, editor, jdc, listeId, listeLabels):
-    #---------------------------------------------------
+
+    def __init__(self, editor,  listeId, listeLabels, donnees, debug = 0):
+    #---------------------------------------------------------------------
         QWidget.__init__(self,None)
         self.setupUi(self)
         self.editor=editor
-        self.jdc=jdc
         self.couleurUtilisee=-1
         self.maxY=-1
         self.widgetBar=None
-        #self.listeLabels = self.editor.getValuesOfAllMC(self.jdc,('MyProfileResultat','fonction','label'))
         self.listeLabels=listeLabels
         self.dictLabelIdValue = {}
         self.listeId=listeId
-        self.listeId.sort()
-        self.initGraphique()
-        self.inTimer=False
-
-        
-
-    def resizeEvent(self,event):
-    #---------------------------
-        if not self.inTimer:
-            self.inTimer = True
-            self.reaffichePoints()
-            # Attention si timer trop lent l affichage est mauvais
-            QTimer.singleShot(50, lambda: setattr(self, "inTimer", False))
-        super().resizeEvent(event)
-
-    def reaffichePoints(self):
-    #-------------------------
-        for laSerie in self.dictSerie.values():
-            for ind in laSerie.listeClicked:
-                laSerie.listePoints[ind].reaffiche()
-
-
-    def initGraphique(self):
-    #------------------------
-    # on considere que la serie CPU est complete on s en sert pour creer
-    #   - la liste des sha1 
-    #   - les indices de l axe des X
-        debug = 0
-        self.dictSerie={}
-        self.graphe = QChart()
-        self.minY=-1
-
-        self.axisX = QCategoryAxis()
-        self.axisY = QCategoryAxis()
-        self.axisX.setLabelsPosition(QCategoryAxis.AxisLabelsPositionOnValue)
-        self.axisX.append('0',0)
-        for i in range(len(self.listeId)):
-           self.axisX.append(str(self.listeId[i]),i+1)
-
-        aChercher='cpuTime'
-        
-        donneesCpuBrutes=self.editor.selectXY(('MyProfileResultat','sha1Id'),('MyProfileResultat','cpuTotalTime'))
-        if donneesCpuBrutes == [] : return
-        maSerieCpu = MaSerie(donneesCpuBrutes,'cpuTotalTime',self)
-        if debug : print ('serie cpu', maSerieCpu.donneesTriees)
-        self.dictSerie['cpuTotalTime']=maSerieCpu
-        self.graphe.addSeries(maSerieCpu.QLSerie)
-        # Il sera possible d affiner l echelle quand on enlevra des series
-        self.maxY = maSerieCpu.maxY
-
-        # on change les labels de l axe des x
-        self.axisX.setMin(0)
-        self.axisX.setMax(len(donneesCpuBrutes)+1)
-
-        for label in self.listeLabels:
-            if debug : print ('traitement de ', label)
-            donneesBrutes=self.editor.selectXYWhereCondition(('MyProfileResultat','sha1Id'),('MyProfileResultat','fonction'),aChercher,'label', label)
-            if debug : print ('donneesBrutes ', donneesBrutes )
-            maSerie = MaSerie(donneesBrutes,label,self)
-            self.dictSerie[label]=maSerie
-            self.graphe.addSeries(maSerie.QLSerie)
-            self.graphe.setAxisX(self.axisX, maSerie.QLSerie);
-            self.graphe.setAxisY(self.axisY, maSerie.QLSerie);
-
-        # petite preparation pour l affichage eventuel du nb de call
-        if aChercher=='cpuTime' :
-           if debug : print ('self.maxY', self.maxY)
-           self.axisY.setMin(-2)
-           self.axisY.setMax(self.maxY+30)
-           pas=round(((self.maxY+20)/10) -0.5)
-           self.axisY.append('0',0)
-           y=0
-           while y < self.maxY :
-             self.axisY.append(str(y),y)
-             y+=pas
-        else : 
-           self.axisY.setMin(-2)
-           self.axisY.setMax(110)
-           self.axisY.append('0',0)
-           self.axisY.append('25',25)
-           self.axisY.append('50',50)
-           self.axisY.append('75',75)
-           self.axisY.append('100',100)
-          
-        self.axisY.setLabelsPosition(QCategoryAxis.AxisLabelsPositionOnValue)
-        self.graphe.setAxisX(self.axisX, maSerieCpu.QLSerie);
-        self.graphe.setAxisY(self.axisY, maSerieCpu.QLSerie);
-        self.graphe.setTitle("Profiling")
-
-        # les legendes clicables
-        self.dictMarkers={}
-        self.monMapper=QSignalMapper()
-        self.monMapper.mapped[int].connect(self.markerClicked)
-        markers = self.graphe.legend().markers()
-        k=0
-        for m in markers :
-            m.clicked.connect(self.monMapper.map)
-            self.monMapper.setMapping(m,k)
-            self.dictMarkers[k]=m
-            k+=1
-
-        self.graphique = QChartView(self.graphe)
+        donnees = {
+          'Label1': {'ID1': 10, 'ID2': 20},
+          'Label2': {'ID1': 15, 'ID2': 25},
+          'Label3': {'ID1': 20, 'ID2': 30}
+        }
+        self.donnees=donnees
+        self.graphique = Graphique(donnees)
         self.GraphLayout.addWidget(self.graphique)
-        self.graphique.setRenderHint(QPainter.Antialiasing)
 
-
-
-    def chercheIndiceCouleur(self):
-    #------------------------------
-        if self.couleurUtilisee < 9 :
-           self.couleurUtilisee += 1
-           return self.couleurUtilisee
-        self.editor.afficheMessage('Pas assez de couleurs definies',
-                                    'Prevenez la maintenance',critique=False)
-        return 1
 
     def markerClicked(self,index):
     #-----------------------------

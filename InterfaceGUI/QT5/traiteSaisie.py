@@ -38,7 +38,7 @@ class SaisieValeur(object):
         validite,commentaire=self.politique.recordValeur(nouvelleValeurFormat)
         if commentaire != "" :
             if validite : self.editor.afficheCommentaire(commentaire)
-            else        : self.editor.afficheMessageQt(commentaire,'red')
+            else        : self.editor.afficheMessage(commentaire,'red')
         self.inSaisieValeur=False
         self.setValide()
 

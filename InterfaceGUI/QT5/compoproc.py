@@ -28,7 +28,6 @@ class Node(browser.JDCNode, typeNode.PopUpMenuNode):
     def getPanel(self):
         # print "getPanel de compoproc"
         from InterfaceGUI.QT5.monWidgetCommande import MonWidgetCommande
-
         return MonWidgetCommande(self, self.editor, self.item.object)
 
     def createPopUpMenu(self):

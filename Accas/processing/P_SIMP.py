@@ -58,34 +58,45 @@ class SIMP(P_ENTITE.ENTITE):
 
     def __init__( self, typ, ang="", fr="", statut="f", into=None, intoSug=None, siValide=None,
         defaut=None, min=1, max=1, homo=1, position="local", filtre=None, val_min=float("-inf"),
-        val_max=float("inf"), docu="", validators=None, nomXML=None, sug=None, fenetreIhm=None,
-        attribut=False, sortie="n", intoXML=None, metAJour=None, avecBlancs=False, unite=None,
+        val_max=float("inf"), docu="", validators=None,  sug=None, fenetreIhm=None,
+        attribut=False, sortie="n", intoXSD=None, metAJour=None, avecBlancs=False, unite=None,
         typeXSD=None, nomXSD = None, formatGit=None, affichage=None, defautXSD = None ):
         """
         Un mot-clé simple est caractérisé par les attributs suivants :
         - type : cet attribut est obligatoire et indique le type de valeur attendue
         - fr : chaîne documentaire en français
+        - ang : chaîne documentaire en anglais
         - statut : obligatoire ou facultatif ou caché ou cache avec defaut (d)
         - into : valeurs autorisées
-        - intoSug : valeurs possibles mais des valeurs autres du bon type peuvent etre entrees par l utilsateur
+        - unite : unite de la valeur si valeur physique
+        - intoSug : valeurs possibles mais des valeurs autres du bon type peuvent etre entrees par l utilsateur : sug pour suggeree
         - defaut : valeur par défaut
         - min : nombre minimal de valeurs
         - max : nombre maximal de valeurs
-        - homo : un certatin nb de choses qui il faut redispacher ailleurs (information, constant)
-        - ang : doc
-        - position : si global, le mot-clé peut-être lu n'importe où dans la commande
+        - homo : un certain nb de choses qui il faut redispacher ailleurs (information, constant)
+        - position : si global, le mot-clé peut-être lu n'importe où dans la commande, si global_jdc n'importe où dans le jdc
         - val_min : valeur minimale autorisée
         - val_max : valeur maximale autorisée
         - docu : clef sur de la documentation utilisateur
-        - sug : valeur suggere
+        - sug : valeur suggeree (idem intoSug)
         - fenetreIhm : si widget particulier
-        - attribut : si projection XSD sur attribut
+        - attribut : si projection XSD sur attribut --> a revoir
         - creeDesObjetsDeType : type des UserASSD si siValide en cree
-        - nomXML   : garder pour compatibilite
         - typeXSD  : se projette en XSD avec ce type 
-        - nomXSD  : se projette en XSD avec  autre nom pour accepter les tirets
+        - nomXSD  : se projette en XSD avec ce nom
         - sortie : force l ecriture dans le fichier de sortie (utile pour Telemac)
         - affichage : Tuple contenant un nom de gridLayout, puis ligne et colonne pour l affichage
+        - metAJour : en cas de changement de valeur met à jour 
+          exemple dans le catalogue VIMMP       
+                   MeshIdentifiers = SIMP(statut ='o', max ='**', typ = meshIdentifier,
+                   metAJour=(('ApplyOnGroups', 'self.etape.getChild("BoundaryConditions").getChild("BoundaryCondition")'),),
+                   signifie que si on change la valeur des MeshIdentifiers, il faut changer le into des BoundaryConditions.BoundaryCondition
+        - filtre : permet de restreindre les
+          exemple dans le catalogue VIMMP
+                   ApplyOnStateVariable =  SIMP (statut ='o', typ=stateVariable, max='**', homo='SansOrdreNiDoublon',
+                   filtre=( 'etape in set(self.getEtapes()) ', (('etape', None),), ), # ne faut  propose pas les variables d'état des autres composants
+        - sortie : pour Telemac, rend la sortie obligatoire meme si la valeur du mot-clef est la valeur par defaut
+        - avecBlancs : accepte les chaines de caracteres contenant un blanc : utile pour la projection XSD
         """
         # print (self)
         # import traceback
@@ -144,11 +155,9 @@ class SIMP(P_ENTITE.ENTITE):
             self.val_min = float("-inf")
         self.fenetreIhm = fenetreIhm
         self.attribut = attribut
-        self.nomXML = nomXML
         self.typeXSD = typeXSD
-        if self.nomXML and not typeXSD :  self.typeXSD = nomXML
         self.defautXSD = defautXSD
-        self.intoXML = intoXML
+        self.intoXSD = intoXSD
         self.sortie = sortie
         self.filtre = filtre
         self.avecBlancs = avecBlancs
@@ -171,9 +180,9 @@ class SIMP(P_ENTITE.ENTITE):
             not (self.avecBlancs)
             and self.max > 1
             and "TXM" in self.type
-            and self.intoXML != None
+            and self.intoXSD != None
         ):
-            for val in self.intoXML:
+            for val in self.intoXSD:
                 if val.find(" ") > -1:
                     self.avecBlancs = True
                     break
@@ -188,13 +197,14 @@ class SIMP(P_ENTITE.ENTITE):
             self.filtreVariables = []
         self.metAJour = metAJour
 
-    def changeInto(self, listeDesIntos):
+    def changeInto(self, listeDesIntos, jdc):
         self.into = listeDesIntos
-
-    def changeIntoSelonValeurs(self, mcRecepteur):
-        mcRecepteur.changeInto(self.valeurs)
+        jdc.revalide(self)
 
     def addInto(self, nvlInto):
+    # fonctionne car cette fonction est appelee dans le catalaogue
+    # et non pas depuis un appel declenché par le chgt
+    # dans un jdc
         if self.into == None:
             self.into = []
         if nvlInto in self.into:

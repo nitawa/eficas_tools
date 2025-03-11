@@ -101,7 +101,7 @@ class BaseConfiguration(object):
 
         # Valeurs par defaut
         self.pathDoc = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..","Doc"))
-        self.PdfReader = "acroread"
+        self.PdfReader = "evince"
          
         if self.code :
            nomDir = "Eficas_" + self.code

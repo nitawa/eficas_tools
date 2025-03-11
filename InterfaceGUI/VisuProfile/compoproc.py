@@ -45,8 +45,6 @@ class Node(browser.JDCNode):
         return MonWidgetCommande(self,self.editor,self.item.object)
 
 
-
-
 class ProcEtapeTreeItem(compooper.EtapeTreeItem):
     itemNode=Node
 
