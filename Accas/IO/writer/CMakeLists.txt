@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2024  EDF R&D                 
+# COPYRIGHT (C) 1991 - 2025  EDF R&D  
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -19,24 +19,11 @@
 #
 # ======================================================================
 
-
-install ( FILES __init__.py generator_python.py Formatage.py generator_aplat.py 
-               generator_dicoImbrique.py generator_dico.py generator_modification.py generator_vers3DSalome.py
-               generator_TELEMAC.py generator_map.py generator_GroupMA.py 
-          DESTINATION ${CMAKE_INSTALL_PREFIX}/generator
-        )
-
-
-
-# Installation des fichiers : CARMEL
-if (WITH_CARMEL)
-  install ( FILES generator_CARMEL3D_frequentiel.py generator_CARMEL3D_temporel.py
-            DESTINATION ${CMAKE_INSTALL_PREFIX}/generator
-          )
-endif (WITH_CARMEL)
-
-
-
+# Installation de tous les fichiers Python du repertoire
+install ( DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+          DESTINATION ${CMAKE_INSTALL_PREFIX}
+	  FILES_MATCHING PATTERN *.py
+	)
 
 ### Local Variables:
 ### mode: cmake

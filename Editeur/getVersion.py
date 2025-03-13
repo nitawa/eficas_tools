@@ -20,7 +20,7 @@
 # Management of EFICAS version numbering.
 # A version has at least major and minor numbers, for easier comparison.
 
-__version = {"major": 9, "minor": 11}
+__version = {"major": 9, "minor": 15}
 
 
 def getEficasVersion():

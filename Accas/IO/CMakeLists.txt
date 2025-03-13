@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2024  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2025  EDF R&D 
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -19,14 +19,14 @@
 #
 # ======================================================================
 
-# Installation de tous les fichiers Python, texte et images du repertoire et des sous-repertoires (sauf CVS)
-install (
-          FILES
-		changeValeur.py dictErreurs.py __init__.py inseremocle.py 
-		load.py log.py mocles.py movemocle.py parseur.py regles.py removemocle.py 
-		renamemocle.py traduitV9V10.py utils.py visiteur.py
-          DESTINATION ${CMAKE_INSTALL_PREFIX}/Traducteur
+# Installation de tous les fichiers Python du repertoire 
+install ( DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+          DESTINATION ${CMAKE_INSTALL_PREFIX}
+	  FILES_MATCHING PATTERN *.py
 	)
+
+add_subdirectory(reader)
+add_subdirectory(writer)
 
 ### Local Variables:
 ### mode: cmake
