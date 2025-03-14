@@ -1,6 +1,0 @@
-
-DEBUT(PAR_LOT='OUI',);
-
-INCLUDE(UNITE=11,);
-
-FIN();

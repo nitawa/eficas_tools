@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2025  EDF R&D 
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -19,13 +19,19 @@
 #
 # ======================================================================
 
-# Installation de tous les fichiers Python du repertoire et des sous-repertoires (sauf CVS)
+# Installation de tous les fichiers Python du repertoire 
 install ( DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
           DESTINATION ${CMAKE_INSTALL_PREFIX}
 	  FILES_MATCHING PATTERN *.py
-          PATTERN CVS EXCLUDE
 	)
 
+add_subdirectory(accessor)
+add_subdirectory(catalog)
+add_subdirectory(classes)
+add_subdirectory(extensions)
+add_subdirectory(IO)
+add_subdirectory(processing)
+add_subdirectory(validation)
 
 ### Local Variables:
 ### mode: cmake

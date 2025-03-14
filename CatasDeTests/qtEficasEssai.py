@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # Copyright (C) 2007-2021   EDF R&D
 #
@@ -33,4 +33,4 @@ sys.path.append(os.path.join(os.path.abspath(os.path.dirname(__file__)),'..'))
 import prefs
 from InterfaceQT4 import eficas_go
 print (prefs.code)
-eficas_go.lanceEficas(code=prefs.code)
+eficas_go.lanceQtEficas(code=prefs.code)

@@ -1,5 +1,0 @@
-DEBUT();
-mon_param = 2;
-m=LIRE_MAILLAGE()
-a=[1,2,3,4];b=2
-FIN();

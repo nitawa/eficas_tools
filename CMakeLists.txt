@@ -102,16 +102,8 @@ endif (NOT PYUIC5)
 
 # Definition des options de CMake
 option ( WITH_ALL_PACKAGES "Install all package files" OFF )
-option ( WITH_CARMEL       "Install CARMEL files"      OFF )
-option ( WITH_SEP          "Install SEP files"         OFF )
-option ( WITH_ZCRACKS      "Install ZCRACKS files"     OFF )
 option ( WITH_TELEMAC_CATA "Install TELEMAC files"     OFF )
 option ( IN_SALOME_CONTEXT "Configure Eficas for use in Salome" OFF )
-
-set ( _OPTIONLIST
-  WITH_CARMEL
-  WITH_TELEMAC_CATA
-  )
 
 if (WITH_ALL_PACKAGES)
   foreach ( _opt ${_OPTIONLIST} )
@@ -137,36 +129,19 @@ endif ( NOT ${_VALIDOPT} )
 
 # Parcours recursif des sous-repertoires
 add_subdirectory ( Accas )
-add_subdirectory ( Aide )
 add_subdirectory ( Editeur )
 add_subdirectory ( Efi2Xsd )
-add_subdirectory ( Extensions )
-add_subdirectory ( Ihm )
-install ( DIRECTORY InterfaceQT4 DESTINATION ${CMAKE_INSTALL_PREFIX} )
+add_subdirectory ( InterfaceGUI )
+add_subdirectory ( Tools )
 add_subdirectory ( Noyau )
 add_subdirectory ( UiQT5 )
-add_subdirectory ( Validation )
-add_subdirectory ( convert )
-add_subdirectory ( generator )
 add_subdirectory ( Traducteur )
 
 
-# Installation des fichiers : CARMEL
-if (WITH_CARMEL)
-  add_subdirectory ( Carmel3D )
-  add_subdirectory ( CarmelCND )
-  add_subdirectory ( CarmelCS )
-endif (WITH_CARMEL)
-
-
-# Installation des fichiers : ZCracks
-if (WITH_ZCRACKS)
-  add_subdirectory ( ZCracks )
-endif (WITH_ZCRACKS)
 
 # Installation des fichiers : Telemac
 if (WITH_TELEMAC_CATA)
-  add_subdirectory ( Telemac )
+  add_subdirectory ( Codes )
 endif (WITH_TELEMAC_CATA)
 
 if (BUILD_DOC)
@@ -174,8 +149,6 @@ if (BUILD_DOC)
 endif (BUILD_DOC)
 
 # Install __init__ for versioning:
-
-
 INSTALL(CODE "
   FILE(WRITE ${CMAKE_INSTALL_PREFIX}/${${PROJECT_NAME_UC}_SCRIPT_PYTHON_SALOME}/salome/eficas_tools/__init__.py
   \"__version__ = '${${PROJECT_NAME_UC}_VERSION}'\n__sha1__ = '${${PROJECT_NAME_UC}_GIT_SHA1}'\"

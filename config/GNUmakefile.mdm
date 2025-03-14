@@ -46,7 +46,7 @@ $(foreach exp,  $(subst ",,$(subst =,:=, $(subst $$PATH,$${PATH}, $(subst $$LD_L
 ## " PYXB
 PYXB_ROOT_DIR   ?=${PRODUCTS_DIR}/pyxb/install
 PYXB            ?=${PYXB_ROOT_DIR}/bin/pyxbgen
-PYXB_PYTHONPATH ?=${PYXB_ROOT_DIR}/lib/python3.6/site-packages
+PYXB_PYTHONPATH ?=${PYXB_ROOT_DIR}/lib/python3.9/site-packages
 export PYTHONPATH:=${PYXB_PYTHONPATH}:${PYTHONPATH}
 
 

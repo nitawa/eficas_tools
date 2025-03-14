@@ -1,9 +1,0 @@
-DEBUT()
-a=1
-fmt_raison='-'*80+"""
-
-   Exception erreur_Fatale interceptee
-   Raison : %s
-
-"""+'-'*80+'\n'
-FIN()

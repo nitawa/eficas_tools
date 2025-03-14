@@ -79,7 +79,7 @@
          </property>
          <property name="icon">
           <iconset>
-           <normaloff>../../../.designer/Editeur/icons/minusnode.png</normaloff>../../../.designer/Editeur/icons/minusnode.png</iconset>
+           <normaloff>icons/minusnode.png</normaloff>icons/minusnode.png</iconset>
          </property>
          <property name="iconSize">
           <size>
@@ -117,7 +117,7 @@
          </property>
          <property name="icon">
           <iconset>
-           <normaloff>../../../.designer/Editeur/icons/ast-green-ball.png</normaloff>../../../.designer/Editeur/icons/ast-green-ball.png</iconset>
+           <normaloff>icons/ast-green-ball.png</normaloff>icons/ast-green-ball.png</iconset>
          </property>
          <property name="iconSize">
           <size>
@@ -232,8 +232,8 @@
            <string>...</string>
           </property>
           <property name="icon">
-           <iconset theme="find">
-            <normaloff>../../../.designer/backup</normaloff>../../../.designer/backup</iconset>
+           <iconset>
+            <normaloff>icons/verre-loupe-icone-6087-64.png</normaloff>icons/verre-loupe-icone-6087-64.png</iconset>
           </property>
           <property name="iconSize">
            <size>
@@ -268,7 +268,7 @@
           </property>
           <property name="icon">
            <iconset>
-            <normaloff>../Editeur/icons/CleanFilter.png</normaloff>../Editeur/icons/CleanFilter.png</iconset>
+            <normaloff>icons/CleanFilter.png</normaloff>icons/CleanFilter.png</iconset>
           </property>
           <property name="iconSize">
            <size>
@@ -353,7 +353,7 @@
           <x>0</x>
           <y>0</y>
           <width>18</width>
-          <height>189</height>
+          <height>184</height>
          </rect>
         </property>
         <property name="sizePolicy">
@@ -851,7 +851,7 @@
        </property>
        <property name="icon">
         <iconset>
-         <normaloff>../../../.designer/Editeur/icons/deleteRond.png</normaloff>../../../.designer/Editeur/icons/deleteRond.png</iconset>
+         <normaloff>icons/deleteRond.png</normaloff>icons/deleteRond.png</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -887,12 +887,12 @@
   <customwidget>
    <class>MonBoutonValide</class>
    <extends>QToolButton</extends>
-   <header>monBoutonValide.h</header>
+   <header>InterfaceGUI.QT5.monBoutonValide.h</header>
   </customwidget>
   <customwidget>
    <class>MonLabelClic</class>
    <extends>QLabel</extends>
-   <header>monLabelClic.h</header>
+   <header>InterfaceGUI.QT5.monLabelClic.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

@@ -302,12 +302,12 @@
   <customwidget>
    <class>MonBoutonValide</class>
    <extends>QToolButton</extends>
-   <header>monBoutonValide.h</header>
+   <header>InterfaceGUI.QT5.monBoutonValide.h</header>
   </customwidget>
   <customwidget>
    <class>MonLabelClic</class>
    <extends>QLabel</extends>
-   <header>monLabelClic.h</header>
+   <header>InterfaceGUI.QT5.monLabelClic.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

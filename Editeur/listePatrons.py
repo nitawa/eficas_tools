@@ -1,4 +1,4 @@
-# Copyright (C) 2007-2021   EDF R&D
+# Copyright (C) 2007-2024   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -16,40 +16,38 @@
 #
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
-from __future__ import absolute_import
-try :
-    from builtins import object
-except : pass
+from builtins import object
 import os
 import re
 
-sous_menus={
-#           "OPENTURNS_STUDY" : {0:{"Essai":"Std.comm"}},
-#            "OPENTURNS_WRAPPER" : {0:{"Essai":"wrapper_exemple.comm"}},
-           }
+# To DO, ajuster les sous-menu
 
-class listePatrons(object) :
+sous_menus = {}
 
-    def __init__(self,code = "ASTER"):
-        repIni=os.path.dirname(os.path.abspath(__file__))
-        self.rep_patrons=repIni+"/Patrons/"+code
-        self.sous_menu={}
-        if code in sous_menus  :
-            self.sous_menu=sous_menus[code]
-        self.code=code
-        self.liste={}
+
+class listePatrons(object):
+    def __init__(self, code="ASTER"):
+        rep = os.path.dirname(os.path.abspath(__file__))
+        self.repPatrons = rep + "/Patrons/" + code
+        self.sous_menu = {}
+        if code in sous_menus:
+            self.sous_menu = sous_menus[code]
+        self.code = code
+        self.liste = {}
         self.traiteListe()
 
     def traiteListe(self):
-        if not (self.code in sous_menus) : return
-        if not (os.path.exists(self.rep_patrons)) : return
-        for file in os.listdir(self.rep_patrons):
+        if not (self.code in sous_menus):
+            return
+        if not (os.path.exists(self.repPatrons)):
+            return
+        for file in os.listdir(self.repPatrons):
             for i in range(len(self.sous_menu)):
-                clef=list(self.sous_menu[i].keys())[0]
-                chaine=self.sous_menu[i][clef]
-                if re.search(chaine,file) :
+                clef = list(self.sous_menu[i].keys())[0]
+                chaine = self.sous_menu[i][clef]
+                if re.search(chaine, file):
                     if clef in self.liste:
                         self.liste[clef].append(file)
-                    else :
-                        self.liste[clef]=[file]
+                    else:
+                        self.liste[clef] = [file]
                     break

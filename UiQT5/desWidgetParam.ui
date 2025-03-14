@@ -624,7 +624,7 @@ border-radius : 12px
   <customwidget>
    <class>MonBoutonValide</class>
    <extends>QToolButton</extends>
-   <header>monBoutonValide.h</header>
+   <header>InterfaceGUI.QT5.monBoutonValide.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

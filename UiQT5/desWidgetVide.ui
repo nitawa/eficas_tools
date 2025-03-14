@@ -315,7 +315,7 @@ border:0px;</string>
   <customwidget>
    <class>MonBoutonValide</class>
    <extends>QToolButton</extends>
-   <header>monBoutonValide.h</header>
+   <header>InterfaceGUI.QT5.monBoutonValide.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

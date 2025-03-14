@@ -1,4 +1,0 @@
-DEBUT();
-mon_param = 2;
-m=LIRE_MAILLAGE()
-FIN();
