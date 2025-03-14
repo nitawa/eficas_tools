@@ -244,6 +244,8 @@ class BaseConfiguration(object):
             return
         d = {}
         try:
+        #if 1 :
+        #    print (txt)
             exec(txt, d)
         except:
             titre = tr("Import du fichier de Configuration"),
@@ -256,6 +258,8 @@ class BaseConfiguration(object):
                     setattr(self, k, d[k])
                 except:
                     pass
+            if k == 'catalogues' :
+               self.catalogues = d[k]
         if self.info : print("le fichier {} de preferences utilisateurs a ete pris en compte".format(self.fichierPrefsUtilisateur))
 
     # --------------------------------------
