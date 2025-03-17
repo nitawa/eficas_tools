@@ -25,6 +25,8 @@ install ( DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 	  FILES_MATCHING PATTERN *.py
 	)
 
+add_subdirectory(Telemac)
+
 ### Local Variables:
 ### mode: cmake
 ### End:

@@ -105,6 +105,10 @@ option ( WITH_ALL_PACKAGES "Install all package files" OFF )
 option ( WITH_TELEMAC_CATA "Install TELEMAC files"     OFF )
 option ( IN_SALOME_CONTEXT "Configure Eficas for use in Salome" OFF )
 
+set ( _OPTIONLIST
+  WITH_TELEMAC_CATA
+  )
+
 if (WITH_ALL_PACKAGES)
   foreach ( _opt ${_OPTIONLIST} )
     set ( ${_opt} ON )
