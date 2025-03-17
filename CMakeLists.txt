@@ -137,7 +137,6 @@ add_subdirectory ( Editeur )
 add_subdirectory ( Efi2Xsd )
 add_subdirectory ( InterfaceGUI )
 add_subdirectory ( Tools )
-add_subdirectory ( Noyau )
 add_subdirectory ( UiQT5 )
 add_subdirectory ( Traducteur )
 
@@ -148,9 +147,9 @@ if (WITH_TELEMAC_CATA)
   add_subdirectory ( Codes )
 endif (WITH_TELEMAC_CATA)
 
-if (BUILD_DOC)
-  add_subdirectory ( Doc )
-endif (BUILD_DOC)
+#if (BUILD_DOC)
+#  add_subdirectory ( Doc )
+#endif (BUILD_DOC)
 
 # Install __init__ for versioning:
 INSTALL(CODE "
