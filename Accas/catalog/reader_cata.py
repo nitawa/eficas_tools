@@ -250,7 +250,7 @@ class ReaderCata(ReaderCataCommun):
                     )
                     exit()
                 try:
-                    debug = 1
+                    debug = 0
                     nomCataXsd = os.path.splitext(os.path.basename(self.cataFile))[0]
                     cataFileTrunc = os.path.splitext( os.path.basename(self.cataFile))[0]
                     nomCataXsd = cataFileTrunc + "_driver"
@@ -380,7 +380,7 @@ class ReaderCata(ReaderCataCommun):
         if cataFile == None :
            print ('No catafile')
            return
-        debug=1
+        debug=0
         if debug : print ('importCata cataFile', cataFile)
         nomCata = os.path.splitext(os.path.basename(cataFile))[0]
         repCata = os.path.abspath(os.path.dirname(cataFile))
@@ -405,9 +405,9 @@ class ReaderCata(ReaderCataCommun):
         # try: self.appliEficas.mesScripts[self.code] = __import__(mesScriptsNomFichier)
         # except: pass
 
-        #try:
+        try:
         print ('PN --> Attention chgt Try en if')
-        if 1 :
+        #if 1 :
             #import importlib.util
             #from importlib import util
             #cataSpec = util.spec_from_file_location(nomCata, cataFile)
@@ -420,8 +420,8 @@ class ReaderCata(ReaderCataCommun):
             # a creuser
             leCata =__import__(nomCata)
             return leCata
-        #except Exception as e:
-        else :
+        except Exception as e:
+        #else :
             self.appliEficas.afficheMessage("catalog python", "unable to load catalog file")
             import traceback
             #traceback.print_exc()
