@@ -147,7 +147,7 @@ class BaseConfiguration(object):
         self.dumpXSD = False
         self.withXSD = False
         self.afficheIhm = True
-        self.afficheUQ = True
+        self.afficheUQ = False
 
         self.readerModule = None
         self.writerModule = None
