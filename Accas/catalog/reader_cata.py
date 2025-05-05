@@ -406,7 +406,7 @@ class ReaderCata(ReaderCataCommun):
         # except: pass
 
         try:
-        print ('PN --> Attention chgt Try en if')
+        #print ('PN --> Attention chgt Try en if')
         #if 1 :
             #import importlib.util
             #from importlib import util
@@ -423,9 +423,9 @@ class ReaderCata(ReaderCataCommun):
         except Exception as e:
         #else :
             self.appliEficas.afficheMessage("catalog python", "unable to load catalog file")
-            import traceback
+            #import traceback
             #traceback.print_exc()
-            #raise EficasException(str(e))
+            raise EficasException(str(e))
             sys.exit(1) 
 
     def retrouveOrdreCata(self):
