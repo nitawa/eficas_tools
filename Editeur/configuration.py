@@ -47,7 +47,7 @@ class BaseConfiguration(object):
         self.appliEficas = appliEficas
         self.code = appliEficas.code
         self.salome = appliEficas.salome
-        self.info = self.appliEficas.info
+        self.info = True
 
         if self.salome: name = "prefs_eficas_salome.ini"
         else: name = "prefs_eficas.ini"
@@ -57,7 +57,8 @@ class BaseConfiguration(object):
         else :
             if sys.platform == 'linux' : self.repUser = os.path.join( os.path.expanduser("~"), '.config/Eficas')
             else : self.repUser = os.path.join('C:/','.config/Eficas')
-        self.fichierPrefsUtilisateur = os.path.join(self.repUser, name)
+        if self.appliEficas.prefsFile : self.fichierPrefsUtilisateur = self.appliEficas.prefsFile 
+        else : self.fichierPrefsUtilisateur = os.path.join(self.repUser, name)
 
         self.labelsStandards = ('PdfReader', 'saveDir', 'modeNouvCommande', 'afficheUQ', 'closeAutreCommande', 'closeFrameRechercheCommande', 
            'closeFrameRechercheCommandeSurPageDesCommandes', 'closeEntete', 'closeArbre', 'demandeLangue', 'suiteTelemac', 
@@ -213,7 +214,7 @@ class BaseConfiguration(object):
                 exec(txt, d)
             except:
                 titre = tr("Import du fichier de Configuration")
-                texte = "Erreur a la l execution du fichier de configuration {} ".format(str(fichierPrefsIntegrateur))
+                texte = "Erreur a l execution du fichier de configuration {} ".format(str(fichierPrefsIntegrateur))
                 self.appliEficas.afficheMessage(titre, texte)
                 return
         else : 
@@ -245,11 +246,11 @@ class BaseConfiguration(object):
         d = {}
         try:
         #if 1 :
-        #    print (txt)
+            print (txt)
             exec(txt, d)
         except:
             titre = tr("Import du fichier de Configuration"),
-            texte = "Erreur a la l execution du fichier de configuration {} ".format(str(self.fichierPrefsUtilisateur))
+            texte = "Erreur a l execution du fichier de configuration {} ".format(str(self.fichierPrefsUtilisateur))
             self.appliEficas.afficheMessage(titre, texte)
             return
         for k in d:

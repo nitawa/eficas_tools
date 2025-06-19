@@ -28,8 +28,8 @@ if sys.version_info[0] < 3:
     sys.exit()
 
 
-def lanceQtEficas(code=None, versionCode = None, multi=False, langue=None,  GUIPath='QT5', salome=0):
-# ---------------------------------------------------------------------------------------------------
+def lanceQtEficas(code=None, versionCode = None, multi=False, langue=None,  GUIPath='QT5', salome=0, prefsFile = None):
+# ---------------------------------------------------------------------------------------------------------------------
     """
       Lance l'appli EFICAS avec Ihm QT
     """
@@ -56,7 +56,7 @@ def lanceQtEficas(code=None, versionCode = None, multi=False, langue=None,  GUIP
     if pathAbso not in sys.path : sys.path.insert(0,pathAbso)
     from qt_eficas import QtEficasAppli
     app = QApplication(sys.argv)
-    Eficas = QtEficasAppli(code=code, versionCode = versionCode, salome=salome, multi=multi, langue=langue, GUIPath=GUIPath)
+    Eficas = QtEficasAppli(code=code, versionCode = versionCode, salome=salome, multi=multi, langue=langue, GUIPath=GUIPath, prefsFile = prefsFile)
 
     Eficas.show()
 

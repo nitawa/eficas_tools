@@ -234,27 +234,12 @@ def checkFich(option, opt_str, fich, parser):
 def printPours(d_pours, dec=""):
     # Les fichiers includes d'abord
     for k, v in list(d_pours.items()):
-        if k in ("pours", "comm"):
-            continue
-        print(
-            (
-                tr(
-                    "%(v_1)s include %(v_2)s : %(v_3)s",
-                    {"v_1": str(dec), "v_2": str(k), "v_3": str(v)},
-                )
-            )
-        )
+        if k in ("pours", "comm"): continue
+        print( ( tr( "%(v_1)s include %(v_2)s : %(v_3)s", {"v_1": str(dec), "v_2": str(k), "v_3": str(v)},)))
 
     if "pours" in d_pours:
         # Description de la poursuite
-        print(
-            (
-                tr(
-                    "%(v_1)s fichier poursuite: %(v_2)s",
-                    {"v_1": dec, "v_2": d_pours["pours"]["comm"]},
-                )
-            )
-        )
+        print( ( tr( "%(v_1)s fichier poursuite: %(v_2)s", {"v_1": dec, "v_2": d_pours["pours"]["comm"]},)))
         printPours(d_pours["pours"], dec=dec + "++")
 
 
@@ -284,7 +269,7 @@ def createParser():
     )
 
     parser.add_option(
-        "-p",
+        "-P",
         "--poursuite",
         type="string",
         dest="pours",
@@ -396,6 +381,15 @@ def createParser():
         type="string",
         dest="databaseName",
         help=tr("nom de la dataBase a Creer  lors du dump"),
+    )
+    parser.add_option(
+        "-p",
+        "--prefsFile", 
+        action="store", 
+        default=None,
+        type="string",
+        dest="prefsFile",
+        help=tr("nom du fichier de preference à utiliser"),
     )
 
 

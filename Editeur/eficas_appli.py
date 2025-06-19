@@ -47,9 +47,9 @@ class EficasAppli:
     Class implementing the main user interface.
     """
 
-    #-----------------------------------------------------------------------------------------------------------------------------------------------------
-    def __init__(self, code=None, versionCode=None, salome=1, multi=False, langue=None, ssCode=None, cataFile=None, GUIPath=None, appWeb=None, info= True):
-    #-----------------------------------------------------------------------------------------------------------------------------------------------------
+    #-------------------------------------------------------------------------------------------------------------------------------------------------------------
+    def __init__(self, code=None, versionCode=None, salome=1, multi=False, langue=None, ssCode=None, cataFile=None, GUIPath=None, appWeb=None, prefsFile = None ):
+    #-------------------------------------------------------------------------------------------------------------------------------------------------------------
         """
         Constructor d appli eficas. classe mere de appli-qtEficas et de appli-web eficas et utilisee sans IHM pour les
         transformations des catas en XSD, des comm en XML et de validation des donnees
@@ -75,7 +75,6 @@ class EficasAppli:
         self.dictChannelType = {} # contient le type de la session ( QT, WEB pour rediriger les messages)
         self.webEditor = None
         self.qtEditors = []
-        self.info = info
 
         version = getEficasVersion()
         self.versionEficas = "Eficas Salome " + version
@@ -92,6 +91,8 @@ class EficasAppli:
         else: self.cataFile = cataFile
         if session.d_env.versionCode != None : self.versionCode = session.d_env.versionCode
         else : self.versionCode = versionCode
+        if session.d_env.prefsFile != None : self.prefsFile = session.d_env.prefsFile
+        else: self.prefsFile = prefsFile
 
         if self.salome:
             try:
