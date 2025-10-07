@@ -25,7 +25,7 @@ from Accas.extensions.eficas_translation import tr
 from InterfaceGUI.QT5.monWidgetSimpTxt import MonWidgetSimpTxt
 from InterfaceGUI.QT5.monWidgetPlusieursBase import MonWidgetPlusieursBase
 from copy import copy, deepcopy
-from PyQt5.QtCore import Qt
+from PySide2.QtCore import Qt
 
 
 class MonWidgetCreeUserAssd(MonWidgetSimpTxt):

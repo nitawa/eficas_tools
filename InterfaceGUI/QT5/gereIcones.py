@@ -24,9 +24,9 @@ import types, os, re, sys
 import traceback
 import inspect
 
-from PyQt5.QtWidgets import QMessageBox, QFileDialog, QMenu, QPushButton, QTreeView, QListView, QAbstractItemView
-from PyQt5.QtGui import QIcon
-from PyQt5.QtCore import QFileInfo, Qt, QSize, QVariant
+from PySide2.QtWidgets import QMessageBox, QFileDialog, QMenu, QPushButton, QTreeView, QListView, QAbstractItemView
+from PySide2.QtGui import QIcon
+from PySide2.QtCore import QFileInfo, Qt, QSize, QVariant
 
 
 from Accas.extensions.eficas_translation import tr

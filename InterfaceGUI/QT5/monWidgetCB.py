@@ -29,8 +29,8 @@ from UiQT5.desWidgetCB import Ui_WidgetCB
 from InterfaceGUI.Common.politiquesValidation import PolitiqueUnique
 from InterfaceGUI.QT5.traiteSaisie import SaisieValeur
 
-from PyQt5.QtWidgets import QComboBox, QCompleter
-from PyQt5.QtCore import Qt, QEvent
+from PySide2.QtWidgets import QComboBox, QCompleter
+from PySide2.QtCore import Qt, QEvent
 
 
 class MonWidgetCBCommun(Feuille):

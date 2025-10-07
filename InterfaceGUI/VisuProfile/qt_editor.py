@@ -29,9 +29,9 @@ from copy import copy
 # Modules Eficas
 from Accas.extensions.eficas_translation import tr
 
-from PyQt5.QtWidgets import QWidget, QMessageBox
-from PyQt5.QtGui     import QPalette
-from PyQt5.QtCore    import Qt
+from PySide2.QtWidgets import QWidget, QMessageBox
+from PySide2.QtGui     import QPalette
+from PySide2.QtCore    import Qt
 
 from Editeur.editor            import Editor
 from UiQT5.editorVP            import Ui_editorVP
@@ -298,10 +298,10 @@ class QtEditor(Ui_editorVP, Editor, QWidget):
     def afficheMessage(self,titre,message,critique=True):
     #----------------------------------------------------
         if critique :
-           from PyQt5.QtWidgets import QMessageBox
+           from PySide2.QtWidgets import QMessageBox
            QMessageBox.critical(None, titre, message)
         else :
-           from PyQt5.QtWidgets import QMessageBox
+           from PySide2.QtWidgets import QMessageBox
            QMessageBox.information(None, titre, message)
 
     def afficheMessageQt(self, message, couleur=Qt.black):

@@ -25,16 +25,16 @@ from UiQT5.desWidgetCommande import Ui_WidgetCommande
 from InterfaceGUI.QT5.groupe import Groupe
 from InterfaceGUI.QT5.gereIcones import FacultatifOuOptionnel
 
-from PyQt5.QtWidgets import (
+from PySide2.QtWidgets import (
     QApplication,
     QWidget,
     QSpacerItem,
     QSizePolicy,
     QRadioButton,
 )
-from PyQt5.QtGui import QFont, QIcon
-from PyQt5.QtCore import QTimer
-from PyQt5.QtCore import Qt
+from PySide2.QtGui import QFont, QIcon
+from PySide2.QtCore import QTimer
+from PySide2.QtCore import Qt
 
 
 from Accas.extensions.eficas_translation import tr

@@ -21,7 +21,7 @@
 # Modules Eficas
 
 from UiQT5.desChoixCata import Ui_DChoixCata
-from PyQt5.QtWidgets import QDialog
+from PySide2.QtWidgets import QDialog
 from Accas.extensions.eficas_translation import tr
 
 # Import des panels

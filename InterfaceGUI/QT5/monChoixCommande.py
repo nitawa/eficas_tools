@@ -20,9 +20,9 @@
 # Modules Eficas
 
 from UiQT5.desChoixCommandes import Ui_ChoixCommandes
-from PyQt5.QtWidgets import QWidget, QButtonGroup, QRadioButton, QLabel, QPushButton, QGridLayout
-from PyQt5.QtGui import QIcon, QPixmap
-from PyQt5.QtCore import QSize, QRect
+from PySide2.QtWidgets import QWidget, QButtonGroup, QRadioButton, QLabel, QPushButton, QGridLayout
+from PySide2.QtGui import QIcon, QPixmap
+from PySide2.QtCore import QSize, QRect
 
 from Accas.extensions.eficas_translation import tr
 import os

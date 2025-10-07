@@ -18,7 +18,7 @@
 #
 
 
-from PyQt5.QtWidgets import QWidget
+from PySide2.QtWidgets import QWidget
 
 from Accas.extensions.eficas_translation import tr
 from UiQT5.desWidgetInactif import Ui_WidgetInactif

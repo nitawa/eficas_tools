@@ -20,9 +20,9 @@
 # Modules Python
 
 import types, os
-from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QApplication, QMessageBox, QScrollArea
-from PyQt5.QtCore import QTimer, QSize, Qt
+from PySide2.QtGui import QIcon
+from PySide2.QtWidgets import QApplication, QMessageBox, QScrollArea
+from PySide2.QtCore import QTimer, QSize, Qt
 
 # Modules Eficas
 from Accas.extensions.eficas_translation import tr

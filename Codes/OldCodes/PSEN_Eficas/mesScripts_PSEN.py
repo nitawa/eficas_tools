@@ -9,7 +9,7 @@ def exportToCsv(listeparam) :
       if fichier == None : return
     except :
       try :
-        from PyQt5.QtWidgets import QFileDialog, QMessageBox
+        from PySide2.QtWidgets import QFileDialog, QMessageBox
         fichier = QFileDialog.getOpenFileName()
         if fichier[0] == None : return
         fichier=fichier[0]
@@ -45,7 +45,7 @@ def importFromCsv(listeparam) :
       fn=open(fichier)
     except :
       try :
-        from PyQt5.QtWidgets import QFileDialog
+        from PySide2.QtWidgets import QFileDialog
         fichier = QFileDialog.getOpenFileName()
         if fichier[0] == None : return
         fn=open(fichier[0])

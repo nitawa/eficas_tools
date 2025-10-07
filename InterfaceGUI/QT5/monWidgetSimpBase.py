@@ -19,8 +19,8 @@
 #
 
 # Modules Eficas
-from PyQt5.QtWidgets import QLineEdit
-from PyQt5.QtCore import Qt
+from PySide2.QtWidgets import QLineEdit
+from PySide2.QtCore import Qt
 from Accas.extensions.eficas_translation import tr
 
 from InterfaceGUI.QT5.feuille import Feuille

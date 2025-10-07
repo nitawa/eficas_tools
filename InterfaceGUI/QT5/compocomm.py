@@ -33,7 +33,7 @@ class Node(browser.JDCNode, typeNode.PopUpMenuNodePartiel):
 
     def createPopUpMenu(self):
         typeNode.PopUpMenuNodePartiel.createPopUpMenu(self)
-        from PyQt5.QtWidgets import QAction
+        from PySide2.QtWidgets import QAction
 
         self.Decommente = QAction(tr("decommenter"), self.tree)
         self.Decommente.triggered.connect(self.decommenter)

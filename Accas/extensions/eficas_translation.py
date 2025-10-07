@@ -35,7 +35,7 @@ def _reformat_qstring_from_tuple(qstring, params):
     Returns a formatted string from an unformatted string
     and a tuple specifying the parameters of the string.
     """
-    from PyQt5.QtCore import QRegExp
+    from PySide2.QtCore import QRegExp
 
     reg = QRegExp("\%\.[1-9]{1,2}f")
     for p, j in zip(params, list(range(len(params)))):
@@ -90,7 +90,7 @@ def _reformat_qstring_from_dict(qstring, params):
     Returns a formatted string from an unformatted string
     and a dictionary specifying the parameters of the string.
     """
-    from PyQt5.QtCore import QRegExp
+    from PySide2.QtCore import QRegExp
 
     for p, j in zip(params, list(range(len(params)))):
         p_reg = QRegExp("\%\(" + p + "\)\.[1-9]{1,2}f")
@@ -141,7 +141,7 @@ def _reformat_qstring_from_atom(qstring, params):
     and an integer or a float specifying the parameter of
     the string.
     """
-    from PyQt5.QtCore import QRegExp
+    from PySide2.QtCore import QRegExp
 
     reg = QRegExp("\%\.[1-9]{1,2}f")
     if qstring.count("%") == 0:
@@ -262,7 +262,7 @@ def tr(string, *args):
     revoir le else pour avoir un tr sans qt
     """
     try:
-        from PyQt5.QtWidgets import QApplication
+        from PySide2.QtWidgets import QApplication
     except:
         return string
 
@@ -327,7 +327,7 @@ def tr_qt(string, *args):
     a conversion from Python to Qt string formatting
     syntax is performed."""
     string = _preprocess_atom(string)
-    from PyQt5.QtWidgets import QApplication
+    from PySide2.QtWidgets import QApplication
 
     if len(args) == 0:
         r = QApplication.translate("@default", string)

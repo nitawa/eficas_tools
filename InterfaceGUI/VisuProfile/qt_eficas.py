@@ -21,7 +21,7 @@
 
 from UiQT5.myMainVP import Ui_EficasVP
 from InterfaceGUI.QT5.qt_eficas import QtEficasAppli
-from PyQt5.QtWidgets import  QAction, QMessageBox
+from PySide2.QtWidgets import  QAction, QMessageBox
 from Accas.extensions.eficas_translation import tr
 import os
 

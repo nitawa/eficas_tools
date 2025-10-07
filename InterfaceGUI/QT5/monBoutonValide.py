@@ -20,7 +20,7 @@
 import re
 import os
 
-from PyQt5.QtWidgets import QToolButton, QToolTip
+from PySide2.QtWidgets import QToolButton, QToolTip
 from Accas.extensions.eficas_translation import tr
 
 class MonBoutonValide(QToolButton):

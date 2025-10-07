@@ -22,7 +22,7 @@
 
 
 from UiQT5.desVisu import Ui_DVisu
-from PyQt5.QtWidgets import QDialog
+from PySide2.QtWidgets import QDialog
 
 
 # Import des panels

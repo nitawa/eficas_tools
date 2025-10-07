@@ -21,8 +21,8 @@
 import  locale
 
 # Modules Eficas
-from PyQt5.QtWidgets import QLineEdit, QRadioButton
-from PyQt5.QtCore import Qt
+from PySide2.QtWidgets import QLineEdit, QRadioButton
+from PySide2.QtCore import Qt
 
 
 from Accas.extensions.eficas_translation import tr

@@ -20,7 +20,7 @@
 # Modules Python
 
 import types, os
-from PyQt5.QtCore import Qt
+from PySide2.QtCore import Qt
 
 
 # Modules Eficas

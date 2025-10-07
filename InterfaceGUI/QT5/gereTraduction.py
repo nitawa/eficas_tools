@@ -18,7 +18,7 @@
 #
 
 import os
-from PyQt5.QtWidgets import QFileDialog, QApplication
+from PySide2.QtWidgets import QFileDialog, QApplication
 from Accas.extensions.eficas_translation import tr
 
 

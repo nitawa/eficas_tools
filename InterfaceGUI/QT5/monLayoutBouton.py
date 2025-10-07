@@ -19,8 +19,8 @@
 # Modules Python
 # Modules Eficas
 
-from PyQt5.QtWidgets import QButtonGroup, QToolButton
-from PyQt5.QtGui import QIcon, QPixmap
+from PySide2.QtWidgets import QButtonGroup, QToolButton
+from PySide2.QtGui import QIcon, QPixmap
 from Accas.extensions.eficas_translation import tr
 
 

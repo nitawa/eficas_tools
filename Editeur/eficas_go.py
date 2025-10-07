@@ -34,13 +34,10 @@ def lanceQtEficas(code=None, versionCode = None, multi=False, langue=None,  GUIP
       Lance l'appli EFICAS avec Ihm QT
     """
     try:
-        from PyQt5.QtWidgets import QApplication
-    except:
-        try:
-            from PyQt6.QtWidgets import QApplication
-        except:
-            print("Please, set qt environment")
-            return
+        from PySide2.QtWidgets import QApplication
+    except ImportError:
+        print("PySide2 is not installed, please set your environment correctly")
+        return
 
     if not GUIPath in ('QT5','VisuProfile', 'QT6') :
        print ('Attention, lancement de Eficas pour QT avec GUIPath = {}'.format(GUIPath))

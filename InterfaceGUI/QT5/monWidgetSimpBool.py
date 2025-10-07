@@ -19,7 +19,7 @@
 #
 
 # Modules Eficas
-from PyQt5.QtWidgets import QRadioButton
+from PySide2.QtWidgets import QRadioButton
 from Accas.extensions.eficas_translation import tr
 
 from InterfaceGUI.QT5.feuille import Feuille

@@ -21,8 +21,8 @@
 import os
 from Accas.extensions.eficas_translation import tr
 from Editeur.editor_manager import EditorManager
-from PyQt5.QtWidgets import QFileDialog, QMessageBox
-from PyQt5.QtCore import QFileInfo
+from PySide2.QtWidgets import QFileDialog, QMessageBox
+from PySide2.QtCore import QFileInfo
 
 Dictextensions = {"MAP": ".map", "TELEMAC" :".cas"}
 

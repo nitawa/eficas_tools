@@ -41,7 +41,7 @@ if hasattr(prefs,'encoding'):
 sys.path.append(os.path.join(os.path.abspath(os.path.dirname(__file__)),'..'))
 from InterfaceQT4 import eficas_go
 
-from PyQt5.QtWidgets import QApplication
+from PySide2.QtWidgets import QApplication
 app = QApplication(sys.argv)
 # on veut ouvrir un fichier directement au lancement d'Eficas
 

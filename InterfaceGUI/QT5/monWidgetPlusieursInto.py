@@ -19,10 +19,10 @@
 #
 
 # Modules Eficas
-from PyQt5.QtWidgets import QCheckBox, QScrollBar, QFrame, QApplication, QLabel
-from PyQt5.QtWidgets import QSizePolicy, QSpacerItem
-from PyQt5.QtGui import QPalette, QFont
-from PyQt5.QtCore import Qt
+from PySide2.QtWidgets import QCheckBox, QScrollBar, QFrame, QApplication, QLabel
+from PySide2.QtWidgets import QSizePolicy, QSpacerItem
+from PySide2.QtGui import QPalette, QFont
+from PySide2.QtCore import Qt
 
 from Accas.extensions.eficas_translation import tr
 

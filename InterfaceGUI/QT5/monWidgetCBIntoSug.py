@@ -30,8 +30,8 @@ from InterfaceGUI.Common.politiquesValidation import PolitiqueUnique
 from InterfaceGUI.QT5.traiteSaisie import SaisieValeur
 from UiQT5.desWidgetCBIntoSug import Ui_WidgetCBIntoSug
 
-from PyQt5.QtWidgets import QComboBox, QCompleter
-from PyQt5.QtCore import Qt
+from PySide2.QtWidgets import QComboBox, QCompleter
+from PySide2.QtCore import Qt
 
 from InterfaceGUI.QT5.monWidgetCB import MonWidgetCBCommun
 from InterfaceGUI.QT5.monWidgetIntoSug import GereAjoutDsPossible

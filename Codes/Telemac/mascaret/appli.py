@@ -21,7 +21,7 @@ import os
 import sys
 import re
 
-from PyQt5.QtWidgets import QMessageBox 
+from PySide2.QtWidgets import QMessageBox 
 
 
 from salome.kernel import salome

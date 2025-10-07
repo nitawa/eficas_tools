@@ -24,9 +24,9 @@ import traceback
 from InterfaceGUI.QT5 import typeNode
 
 
-from PyQt5.QtWidgets import QTreeWidget, QTreeWidgetItem, QMessageBox
-from PyQt5.QtGui import QIcon
-from PyQt5.QtCore import Qt
+from PySide2.QtWidgets import QTreeWidget, QTreeWidgetItem, QMessageBox, QAbstractItemView
+from PySide2.QtGui import QIcon
+from PySide2.QtCore import Qt
 
 from Accas.extensions.eficas_translation import tr
 from InterfaceGUI.QT5.gereRegles import GereRegles
@@ -51,7 +51,7 @@ class JDCTree(QTreeWidget, GereRegles):
                 self.headerItem().setText(0, "Commande   ")
             self.setColumnWidth(0, 200)
             self.setExpandsOnDoubleClick(False)
-            self.setSelectionMode(3)
+            self.setSelectionMode(QAbstractItemView.SelectionMode.ExtendedSelection)
         else:
             QTreeWidget.__init__(self, None)
         self.item = jdc_item

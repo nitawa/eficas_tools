@@ -26,7 +26,7 @@ from Accas.extensions.eficas_translation import tr
 
 from UiQT5.desWidgetDateVP import Ui_WidgetDateVP
 from InterfaceGUI.QT5.monWidgetSimpDate  import MonWidgetSimpDate
-from PyQt5.QtCore import QDate, QDateTime
+from PySide2.QtCore import QDate, QDateTime
 
 
 class MonWidgetSpecifique (Ui_WidgetDateVP, MonWidgetSimpDate):

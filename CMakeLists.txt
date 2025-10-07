@@ -72,34 +72,7 @@ FIND_PACKAGE(Qt5LinguistTools)
 GET_TARGET_PROPERTY(QT_LRELEASE_EXECUTABLE Qt5::lrelease LOCATION)
 MARK_AS_ADVANCED(QT_LRELEASE_EXECUTABLE)
 
-# Detection de PyQt5
-if (NOT PYQT5_FOUND)
-  execute_process ( COMMAND ${PYTHON_EXECUTABLE} -c "\"import PyQt5\""
-                    RESULT_VARIABLE _res
-		    OUTPUT_VARIABLE _trashout
-		    ERROR_VARIABLE  _trasherr
-                  )
-  if (NOT _res)
-    message ( STATUS "Looking for Python package PyQt5 - found" )
-    set ( PYQT5_FOUND 1 CACHE INTERNAL "True if Python package PyQt5 is here" )
-  else (NOT _res)
-    message ( STATUS "Looking for Python package PyQt5 - not found" )
-    set ( PYQT5_FOUND 0 CACHE INTERNAL "True if Python package PyQt5 is here" )
-  endif (NOT _res)
-endif (NOT PYQT5_FOUND)
-
-if (NOT PYQT5_FOUND)
-  message ( FATAL_ERROR "Python package PyQt5 is REQUIRED" )
-endif (NOT PYQT5_FOUND)
-
-# Detection de PYUIC5
-find_program ( PYUIC5 NAMES pyuic5
-               DOC  "Path to the pyuic5 compilation tool"
-             )
-if (NOT PYUIC5)
-  message ( FATAL_ERROR "pyuic5 tool is REQUIRED" )
-endif (NOT PYUIC5)
-
+INCLUDE(UsePySideShiboken)
 # Definition des options de CMake
 option ( WITH_ALL_PACKAGES "Install all package files" OFF )
 option ( WITH_TELEMAC_CATA "Install TELEMAC files"     OFF )

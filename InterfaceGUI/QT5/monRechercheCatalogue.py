@@ -21,8 +21,8 @@
 # Modules Eficas
 
 from UiQT5.desRechercheCatalogue import Ui_desRechercheCatalogue
-from PyQt5.QtWidgets import QDialog, QCompleter
-from PyQt5.QtCore import Qt
+from PySide2.QtWidgets import QDialog, QCompleter
+from PySide2.QtCore import Qt
 
 from Accas.extensions.eficas_translation import tr
 

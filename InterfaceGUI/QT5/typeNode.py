@@ -20,7 +20,7 @@
 
 
 
-from PyQt5.QtWidgets import QAction, QMenu, QMessageBox
+from PySide2.QtWidgets import QAction, QMenu, QMessageBox
 
 from Accas.extensions.eficas_translation import tr
 import types

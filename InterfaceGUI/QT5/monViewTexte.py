@@ -24,8 +24,8 @@ import traceback
 
 from Accas.extensions.eficas_translation import tr
 
-from PyQt5.QtWidgets import QDialog, QMessageBox, QFileDialog
-from PyQt5.QtCore import QSize
+from PySide2.QtWidgets import QDialog, QMessageBox, QFileDialog
+from PySide2.QtCore import QSize
 from UiQT5.desViewTexte import Ui_dView
 
 

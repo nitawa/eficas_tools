@@ -18,8 +18,8 @@
 #
 
 
-from PyQt5.QtWidgets import QCheckBox, QWidget
-from PyQt5.QtCore import Qt
+from PySide2.QtWidgets import QCheckBox, QWidget
+from PySide2.QtCore import Qt
 
 from Accas.extensions.eficas_translation import tr
 from UiQT5.desWidgetOptionnel import Ui_WidgetOptionnel

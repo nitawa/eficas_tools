@@ -21,10 +21,10 @@
 import os
 
 try:
-    from PyQt5.QtCore import QTranslator
+    from PySide2.QtCore import QTranslator
     code_translator = QTranslator()
     eficas_translator = QTranslator()
-    from PyQt5.QtWidgets import QApplication
+    from PySide2.QtWidgets import QApplication
 except:
     code_translator = None
     eficas_translator = None

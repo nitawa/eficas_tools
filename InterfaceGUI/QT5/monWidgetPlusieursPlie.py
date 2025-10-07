@@ -19,9 +19,9 @@
 #
 import types, re
 
-from PyQt5.QtWidgets import QFrame
-from PyQt5.QtCore import QTimer, QSize, Qt
-from PyQt5.QtGui import QIcon, QBrush, QColor
+from PySide2.QtWidgets import QFrame
+from PySide2.QtCore import QTimer, QSize, Qt
+from PySide2.QtGui import QIcon, QBrush, QColor
 
 from Accas.extensions.eficas_translation import tr
 

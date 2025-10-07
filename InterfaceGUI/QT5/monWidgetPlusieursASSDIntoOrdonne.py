@@ -23,7 +23,7 @@ from Accas.extensions.eficas_translation import tr
 from InterfaceGUI.QT5.monWidgetPlusieursIntoOrdonne import MonWidgetPlusieursIntoOrdonne
 from InterfaceGUI.Common.politiquesValidation import PolitiquePlusieurs
 
-from PyQt5.QtWidgets import QScrollBar
+from PySide2.QtWidgets import QScrollBar
 
 
 class MonWidgetPlusieursASSDIntoOrdonne(MonWidgetPlusieursIntoOrdonne):

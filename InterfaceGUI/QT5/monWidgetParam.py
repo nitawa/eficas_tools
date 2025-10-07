@@ -22,8 +22,8 @@ import types
 
 from UiQT5.desWidgetParam import Ui_WidgetParam
 from InterfaceGUI.QT5.gereIcones import FacultatifOuOptionnel
-from PyQt5.QtWidgets import QWidget, QMessageBox
-from PyQt5.QtGui import QIcon
+from PySide2.QtWidgets import QWidget, QMessageBox
+from PySide2.QtGui import QIcon
 
 from Accas.extensions.eficas_translation import tr
 from Accas.extensions.eficas_exception import EficasException

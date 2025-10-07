@@ -20,9 +20,9 @@
 #
 import os, sys
 
-from PyQt5.QtWidgets import QApplication, QMainWindow, QGridLayout, QBoxLayout, QMenu, QAction, QMessageBox
-from PyQt5.QtGui import QIcon
-from PyQt5.QtCore import Qt, QSize
+from PySide2.QtWidgets import QApplication, QMainWindow, QGridLayout, QBoxLayout, QMenu, QAction, QMessageBox
+from PySide2.QtGui import QIcon
+from PySide2.QtCore import Qt, QSize
 
 
 from Editeur import session
@@ -90,18 +90,18 @@ class QtEficasAppli(EficasAppli, Ui_Eficas, QMainWindow):
 
         if hasattr(self, "frameEntete"):
             self.myQtab.removeTab(0)
-            self.blEnteteGlob = QBoxLayout(2, self.frameEntete)
+            self.blEnteteGlob = QBoxLayout(QBoxLayout.TopToBottom, self.frameEntete)
             self.blEnteteGlob.setSpacing(0)
             self.blEnteteGlob.setContentsMargins(0, 0, 0, 0)
 
-            self.blEntete = QBoxLayout(0)
-            self.blEntete.insertWidget(0, self.toolBar)
-            self.blEntete.insertWidget(0, self.menubar)
-            self.blEnteteGlob.insertLayout(0, self.blEntete)
+            self.blEntete = QBoxLayout(QBoxLayout.LeftToRight)
+            self.blEntete.insertWidget(QBoxLayout.LeftToRight, self.toolBar)
+            self.blEntete.insertWidget(QBoxLayout.LeftToRight, self.menubar)
+            self.blEnteteGlob.insertLayout(QBoxLayout.LeftToRight, self.blEntete)
 
         if self.maConfiguration.boutonDsMenuBar:
-            self.blEnteteCommmande = QBoxLayout(0)
-            self.blEnteteCommmande.insertWidget(0, self.toolBarCommande)
+            self.blEnteteCommmande = QBoxLayout(QBoxLayout.LeftToRight)
+            self.blEnteteCommmande.insertWidget(QBoxLayout.LeftToRight, self.toolBarCommande)
             self.toolBarCommande.setIconSize(QSize(96, 96))
             self.blEnteteGlob.insertLayout(-1, self.blEnteteCommmande)
         else:

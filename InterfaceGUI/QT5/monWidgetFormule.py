@@ -20,9 +20,9 @@
 from UiQT5.desWidgetFormule import Ui_WidgetFormule
 from InterfaceGUI.QT5.gereIcones import FacultatifOuOptionnel
 
-from PyQt5.QtWidgets import QWidget
-from PyQt5.QtGui import QIcon
-from PyQt5.QtCore import Qt
+from PySide2.QtWidgets import QWidget
+from PySide2.QtGui import QIcon
+from PySide2.QtCore import Qt
 
 
 from Accas.extensions.eficas_translation import tr
