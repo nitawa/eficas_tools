@@ -296,7 +296,7 @@ class MonWidgetCommande(Ui_WidgetCommande, Groupe):
     def rendVisible(self, fenetre):
         #print ('je passe dans rendVisible')
         QApplication.processEvents()
-        #fenetre.setFocus(7)
+        #fenetre.setFocus(Qt.OtherFocusReason)
         self.editor.fenetreCentraleAffichee.scrollAreaCommandes.ensureWidgetVisible(fenetre)
 
     def afficheCatalogue(self):

@@ -26,7 +26,7 @@ import inspect
 
 from PySide2.QtWidgets import QMessageBox, QFileDialog, QMenu, QPushButton, QTreeView, QListView, QAbstractItemView
 from PySide2.QtGui import QIcon
-from PySide2.QtCore import QFileInfo, Qt, QSize, QVariant
+from PySide2.QtCore import QFileInfo, Qt, QSize
 
 
 from Accas.extensions.eficas_translation import tr

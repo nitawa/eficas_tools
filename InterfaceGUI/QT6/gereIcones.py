@@ -26,7 +26,7 @@ import inspect
 
 from PyQt6.QtWidgets import QMessageBox, QFileDialog, QMenu, QPushButton, QTreeView, QListView, QAbstractItemView
 from PyQt6.QtGui import QIcon
-from PyQt6.QtCore import QFileInfo, Qt, QSize, QVariant
+from PyQt6.QtCore import QFileInfo, Qt, QSize
 
 
 from Accas.extensions.eficas_translation import tr
