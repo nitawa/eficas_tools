@@ -115,7 +115,8 @@ class Editor:
             print ( 'lecture du catalogue impossible')
             print ( e)
             print ('----------------------------------------')
-            exit (1)
+            if not self.appliEficas.salome :  exit (1)
+            else : return
         if self.readercata  : self.construitJdC(jdc)
         if useFor == 'Web' :
            if not hasattr(self,'webExtension') : 

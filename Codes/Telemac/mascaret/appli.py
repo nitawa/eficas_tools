@@ -24,12 +24,12 @@ import re
 from PyQt5.QtWidgets import QMessageBox 
 
 
-import salome
+from salome.kernel import salome
 import SalomePyQt
 sgPyQt = SalomePyQt.SalomePyQt()
 
-from salome.kernel.logger import Logger
-from salome.kernel import termcolor
+from salome.kernel.salome.kernel.logger import Logger
+from salome.kernel.salome.kernel import termcolor
 logger = Logger("salome.hydro.mascaret.eficas.appli",
                 color = termcolor.GREEN_FG)
 

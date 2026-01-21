@@ -42,15 +42,15 @@ class QtEficasAppli(EficasAppli, Ui_Eficas, QMainWindow):
     manages the main window and connect qt
     """
 
-    #----------------------------------------------------------------------------------------------------------------------------------------------
-    def __init__(self, code=None, versionCode=None, salome=1, multi=False, langue=None, ssCode=None, cataFile=None, GUIPath="QT5", appWeb = None, parent = None):
-    #----------------------------------------------------------------------------------------------------------------------------------------------
+    #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    def __init__(self, code=None, versionCode=None, salome=1, multi=False, langue=None, ssCode=None, cataFile=None, GUIPath="QT5", appWeb = None, parent = None, prefsFile=None):
+    #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         """
         Constructor
         """
         QMainWindow.__init__(self,parent)
         Ui_Eficas.__init__(self)
-        EficasAppli.__init__( self, code, versionCode, salome, multi, langue,  ssCode, cataFile, GUIPath, appWeb)
+        EficasAppli.__init__( self, code, versionCode, salome, multi, langue,  ssCode, cataFile, GUIPath, appWeb, prefsFile)
         self.setupUi(self)
         
         self.editorManager = QtEditorManager(self)

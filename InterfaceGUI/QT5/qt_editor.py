@@ -30,6 +30,7 @@ import traceback
 
 # Modules Eficas
 from Accas.extensions.eficas_translation import tr
+from Accas.extensions import localisation
 from Editeur import session
 from InterfaceGUI.Common import comploader
 from InterfaceGUI.Common import objecttreeitem
