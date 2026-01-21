@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #            maConfiguration MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 2007-2021  EDF R&D                  
+# COPYRIGHT (C) 2007-2026  EDF R&D                  
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#  Copyright (C) 2012-2013 EDF
+#  Copyright (C) 2012-2026 EDF
 #
 #  This file is part of SALOME HYDRO module.
 #

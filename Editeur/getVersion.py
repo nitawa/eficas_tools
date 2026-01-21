@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2007-2024   EDF R&D
+# Copyright (C) 2007-2026   EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -20,7 +20,7 @@
 # Management of EFICAS version numbering.
 # A version has at least major and minor numbers, for easier comparison.
 
-__version = {"major": 9, "minor": 15}
+__version = {"major": 10, "minor": 0}
 
 
 def getEficasVersion():

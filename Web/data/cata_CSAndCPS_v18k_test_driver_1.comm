@@ -1,1 +1,78 @@
-../../Codes/Vimmp/cata_CSAndCPS_v18k_test_driver_1.comm
+Diameter=dynamicVariable()
+Mass=dynamicVariable()
+Position=dynamicVariable()
+Velocity=dynamicVariable()
+A=userDPD()
+num=modeleNumDuCompo()
+time=simulatedTime()
+geom=systemGeometryId()
+cube=shapeIdentifier()
+
+SpatialAspects(SystemGeometry=_F(SystemGeometryId=geom,
+                                 Shape=_F(ShapeIdentifier=(cube,),
+                                          ShapeNature='Typical Geometry',
+                                          Box='Cube',
+                                          Size_Of_Bounding_Box=(10.0,10.0,10.0,),),),);
+
+TemporalAspects(Simulated_Time_Laps=_F(name=time,
+                                       initialTime=0.0,
+                                       finalTime=1.0,
+                                       timeDiscretization='Constant Time Step',
+                                       constantTimeStep=0.01,),);
+
+test=Component(SystemType='Classical particle system',
+               PhysicalDescription=_F(Particles=_F(ParticleNature='Dissipative Particle',
+                                                   ParticleName=A,
+                                                   InitialNumberOfParticles=3000,
+                                                   BondedParticles=False,),
+                                      AmbiantMediaInteraction=_F(MomentumExchange=_F(withMomentumExchange=False,),
+                                                                 MassExchange=_F(withMassExchange=False,),
+                                                                 EnergyExchange=_F(withEnergyExchange=False,),
+                                                                 AmbientInducedProcesses=_F(withAmbientInducedProcesses=False,),
+                                                                 AdditionalSamplingOfAmbientMedia=_F(
+                                                                                       withAdditionalSamplingOfAmbientMedia=False,),),
+                                      ParticleParticleInteraction=_F(BondedInteractions=_F(BondedParticles=False,),
+                                                                     ActionsAtDistance=_F(withActionsAtDistance=True,
+                                                                                          TypeOfActionAtDistance=\
+                                                                                                           'Inter-surface forces',
+                                                                                          TypeInterSurfaceForce='Soft_Potential',
+                                                                                          GrootWarrenRepulsion=25.0,
+                                                                                          GrootWarrenCutoff=1.0,
+                                                                                          DragCoefficient=4.5,
+                                                                                          DragForceCutoff=1.0,
+                                                                                          ParticlesPairs=(A,A,),),
+                                                                     ContactPhenomena=_F(withContactPhenomena=False,),),
+                                      ParticleWallInteraction=_F(withParticleWallInteraction=False,),
+                                      ConstraintsAndReducedStatisticalDescription=_F(Constraint=_F(TypeOfConstraint=('Time marching equilibrium',),),),
+                                      StateVector=_F(ParticleDiameter=_F(Diameter=Diameter,
+                                                                         ToSimulate=True,
+                                                                         Initialisation=_F(InitialisationType='ByValue',
+                                                                                           ParticleIdentifier=A,
+                                                                                           Value=1.0,
+                                                                                           SourceTerm=False,),),
+                                                     ParticleMass=_F(Mass=Mass,
+                                                                     ToSimulate=True,
+                                                                     Initialisation=_F(InitialisationType='ByValue',
+                                                                                       ParticleIdentifier=A,
+                                                                                       Value=1.0,
+                                                                                       SourceTerm=False,),),
+                                                     ParticlePosition=_F(Position=Position,
+                                                                         ToSimulate=True,
+                                                                         Initialisation=_F(InitialisationType='Not needed',),),
+                                                     ParticleVelocity=_F(Velocity=Velocity,
+                                                                         ToSimulate=True,
+                                                                         Initialisation=_F(InitialisationType='Not needed',
+                                                                                           SourceTerm=False,),),),),
+               NumericalModel=_F(Identifier=num,
+                                 SimulatedTimeLapse=time,
+                                 ChoiceOfApproach='Particle_based',
+                                 NumericalMethod='DPD',
+                                 Solver='LAMMPS',
+                                 SysGeoIdentifiers=(geom,),),
+               BoundaryConditions=_F(BoundaryCondition=_F(TypeOfBoundaryCondition='Periodicity',
+                                                          ApplyOnShapes=(cube,),
+                                                          ApplyOnStateVariable=(Position,Velocity,),
+                                                          Direction='XYZ',
+                                                          ApplyOnAllsParticle=True,),),);
+#VERSION_CATALOGUE:VimmpV16:FIN VERSION_CATALOGUE
+#CHECKSUM:3d9d13bcdb93c30ca5ee4e499e32eb49  -:FIN CHECKSUM
