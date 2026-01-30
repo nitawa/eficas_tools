@@ -19,13 +19,11 @@
 #
 # ======================================================================
 
-
 set ( _PYFILES )
 macro ( eficas_compile_ui uifile )
   get_filename_component ( _file_we ${uifile} NAME_WE )
   set ( _pyfile "${_file_we}.py" )
   if (SALOME_USE_PYSIDE)
-    SALOME_SETUP_PYSIDE_UIC_RCC
     set ( _main_py "${CMAKE_CURRENT_BINARY_DIR}/${_file_we}_main.py" )
     configure_file(
       ${CMAKE_CURRENT_SOURCE_DIR}/ui_py.in
@@ -54,7 +52,6 @@ macro ( eficas_compile_ui_2 uifile )
   get_filename_component ( _file_we ${uifile} NAME_WE )
   set ( _pyfile "${_file_we}.py" )
   if(SALOME_USE_PYSIDE)
-    SALOME_SETUP_PYSIDE_UIC_RCC
     add_custom_command ( OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${_pyfile}
                          COMMAND ${PYSIDE2_PYUIC_EXECUTABLE} -o ${CMAKE_CURRENT_BINARY_DIR}/${_pyfile} ${CMAKE_CURRENT_SOURCE_DIR}/${uifile}
                          COMMAND sed -i -e "'s/\\(QtCore\\.QMetaObject\\.connectSlotsByName(WidgetFactPlie)\\)/#\\1/'" ${CMAKE_CURRENT_BINARY_DIR}/${_pyfile}
