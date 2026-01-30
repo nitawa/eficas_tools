@@ -21,7 +21,10 @@ import os
 import sys
 import re
 
-from PyQt5.QtWidgets import QMessageBox 
+if 'SALOME_USE_PYSIDE' in os.environ:
+    from PySide2.QtWidgets import QMessageBox
+else:
+    from PyQt5.QtWidgets import QMessageBox 
 
 
 from salome.kernel import salome

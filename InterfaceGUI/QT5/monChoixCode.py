@@ -23,9 +23,16 @@
 
 import os, sys, re
 from UiQT5.desChoixCode import Ui_ChoixCode
-from PyQt5.QtWidgets import QDialog, QRadioButton, QGroupBox, QButtonGroup
-from PyQt5.QtGui import QPalette
-from PyQt5.QtCore import QProcess, QFileInfo, Qt, QSize
+if 'SALOME_USE_PYSIDE' in os.environ:
+    from PySide2.QtWidgets import QDialog, QRadioButton, QGroupBox, QButtonGroup
+    from PySide2.QtGui import QPalette
+    from PySide2.QtCore import QProcess, QFileInfo, Qt, QSize
+    usePySide = True
+else:
+    from PyQt5.QtWidgets import QDialog, QRadioButton, QGroupBox, QButtonGroup
+    from PyQt5.QtGui import QPalette
+    from PyQt5.QtCore import QProcess, QFileInfo, Qt, QSize
+    usePySide = False
 
 listeCode = ("Telemac", "ReacteurNumerique", "Adao", "A", "B")
 
@@ -40,7 +47,10 @@ class MonChoixCode(Ui_ChoixCode, QDialog):
     """
 
     def __init__(self, appliEficas=None):
-        QDialog.__init__(self, parent=appliEficas, flags=Qt.Window)
+        if usePySide:
+            QDialog.__init__(self, parent=appliEficas, f=Qt.Window)
+        else:
+            QDialog.__init__(self, parent=appliEficas, flags=Qt.Window)
         self.setModal(True)
         self.setupUi(self)
         self.appliEficas = appliEficas

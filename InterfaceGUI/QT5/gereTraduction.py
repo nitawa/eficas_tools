@@ -18,7 +18,10 @@
 #
 
 import os
-from PyQt5.QtWidgets import QFileDialog, QApplication
+if 'SALOME_USE_PYSIDE' in os.environ:
+    from PySide2.QtWidgets import QFileDialog, QApplication
+else:
+    from PyQt5.QtWidgets import QFileDialog, QApplication
 from Accas.extensions.eficas_translation import tr
 
 

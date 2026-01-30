@@ -21,8 +21,13 @@
 # Modules Eficas
 
 from UiQT5.desRecherche import Ui_desRecherche
-from PyQt5.QtWidgets import QDialog
-from PyQt5.QtCore import Qt
+import os
+if 'SALOME_USE_PYSIDE' in os.environ:
+    from PySide2.QtWidgets import QDialog
+    from PySide2.QtCore import Qt
+else:
+    from PyQt5.QtWidgets import QDialog
+    from PyQt5.QtCore import Qt
 
 
 # Import des panels

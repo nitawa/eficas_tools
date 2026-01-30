@@ -41,8 +41,10 @@ if hasattr(prefs,'encoding'):
 
 sys.path.append(os.path.join(os.path.abspath(os.path.dirname(__file__)),'..'))
 from InterfaceQT4 import eficas_go
-
-from PyQt5.QtWidgets import QApplication
+if 'SALOME_USE_PYSIDE' in os.environ:
+    from PySide2.QtWidgets import QApplication
+else:
+    from PyQt5.QtWidgets import QApplication
 app = QApplication(sys.argv)
 #for badf in ('t2d_bridge.cas','t2d_estu_gir.cas' ):
 #for f in ('t2d_bj78.cas',):

@@ -20,7 +20,10 @@
 # Modules Python
 
 import types, os
-from PyQt5.QtCore import Qt
+if 'SALOME_USE_PYSIDE' in os.environ:
+    from PySide2.QtCore import Qt
+else:
+    from PyQt5.QtCore import Qt
 
 
 # Modules Eficas

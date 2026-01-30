@@ -20,9 +20,13 @@
 # Modules Python
 # Modules Eficas
 
-
+import os
 from UiQT5.desVisu import Ui_DVisu
-from PyQt5.QtWidgets import QDialog
+
+if 'SALOME_USE_PYSIDE' in os.environ:
+    from PySide2.QtWidgets import QDialog
+else:
+    from PyQt5.QtWidgets import QDialog
 
 
 # Import des panels

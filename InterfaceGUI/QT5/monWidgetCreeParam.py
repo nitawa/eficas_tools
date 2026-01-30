@@ -24,8 +24,12 @@ pattern_name = re.compile(r"^[^\d\W]\w*\Z")
 
 # Modules Eficas
 
-from PyQt5.QtWidgets import QDialog, QMessageBox
-from PyQt5.QtCore import Qt
+if 'SALOME_USE_PYSIDE' in os.environ:
+    from PySide2.QtWidgets import QDialog, QMessageBox
+    from PySide2.QtCore import Qt
+else:
+    from PyQt5.QtWidgets import QDialog, QMessageBox
+    from PyQt5.QtCore import Qt
 from Accas.extensions.eficas_translation import tr
 from UiQT5.desWidgetCreeParam import Ui_desWidgetCreeParam
 

@@ -20,8 +20,12 @@
 
 import os
 
-from PyQt5.QtWidgets import QLabel, QFrame
-from PyQt5.QtCore import QEvent
+if 'SALOME_USE_PYSIDE' in os.environ:
+    from PySide2.QtWidgets import QLabel, QFrame
+    from PySide2.QtCore import QEvent
+else:
+    from PyQt5.QtWidgets import QLabel, QFrame
+    from PyQt5.QtCore import QEvent
 #from Accas.extensions.eficas_translation import tr
 
 

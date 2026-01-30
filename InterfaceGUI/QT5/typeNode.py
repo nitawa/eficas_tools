@@ -20,7 +20,11 @@
 
 
 
-from PyQt5.QtWidgets import QAction, QMenu, QMessageBox
+import os
+if 'SALOME_USE_PYSIDE' in os.environ:
+    from PySide2.QtWidgets import QAction, QMenu, QMessageBox
+else:
+    from PyQt5.QtWidgets import QAction, QMenu, QMessageBox
 
 from Accas.extensions.eficas_translation import tr
 import types

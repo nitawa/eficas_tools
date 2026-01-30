@@ -19,8 +19,13 @@
 # Modules Python
 # Modules Eficas
 
-from PyQt5.QtWidgets import QWidget
-from PyQt5.QtCore import Qt
+import os
+if 'SALOME_USE_PYSIDE' in os.environ:
+    from PySide2.QtWidgets import QWidget
+    from PySide2.QtCore import Qt
+else:
+    from PyQt5.QtWidgets import QWidget
+    from PyQt5.QtCore import Qt
 
 from desWidgetCommentaire import Ui_WidgetCommentaire
 from InterfaceGUI.QT5.gereIcones import FacultatifOuOptionnel

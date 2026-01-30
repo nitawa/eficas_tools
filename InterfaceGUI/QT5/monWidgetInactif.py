@@ -17,13 +17,15 @@
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
 
-
-from PyQt5.QtWidgets import QWidget
+import os
+if 'SALOME_USE_PYSIDE' in os.environ:
+    from PySide2.QtWidgets import QWidget
+else:
+    from PyQt5.QtWidgets import QWidget
 
 from Accas.extensions.eficas_translation import tr
 from UiQT5.desWidgetInactif import Ui_WidgetInactif
 import Accas
-import os
 
 
 # Import des panels

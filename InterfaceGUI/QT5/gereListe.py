@@ -21,10 +21,14 @@
 import types, os
 import traceback
 
-
-from PyQt5.QtWidgets import QLineEdit, QLabel, QFileDialog, QMessageBox
-from PyQt5.QtCore import QEvent, Qt, QTimer
-from PyQt5.QtGui import QIcon, QPalette
+if 'SALOME_USE_PYSIDE' in os.environ:
+    from PySide2.QtWidgets import QLineEdit, QLabel, QFileDialog, QMessageBox
+    from PySide2.QtCore import QEvent, Qt, QTimer
+    from PySide2.QtGui import QIcon, QPalette
+else:
+    from PyQt5.QtWidgets import QLineEdit, QLabel, QFileDialog, QMessageBox
+    from PyQt5.QtCore import QEvent, Qt, QTimer
+    from PyQt5.QtGui import QIcon, QPalette
 
 from Accas.extensions.eficas_translation import tr
 from InterfaceGUI.QT5.monViewTexte import ViewText

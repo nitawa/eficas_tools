@@ -19,7 +19,11 @@
 #
 
 # Modules Eficas
-from PyQt5.QtWidgets import QRadioButton
+import os
+if 'SALOME_USE_PYSIDE' in os.environ:
+    from PySide2.QtWidgets import QRadioButton
+else:
+    from PyQt5.QtWidgets import QRadioButton
 from Accas.extensions.eficas_translation import tr
 
 from InterfaceGUI.QT5.feuille import Feuille

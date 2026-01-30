@@ -19,99 +19,137 @@
 #
 # ======================================================================
 
+
 set ( _PYFILES )
 macro ( eficas_compile_ui uifile )
   get_filename_component ( _file_we ${uifile} NAME_WE )
   set ( _pyfile "${_file_we}.py" )
-  add_custom_command ( OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${_pyfile}
-                       COMMAND ${PYUIC5} ARGS -x -o ${CMAKE_CURRENT_BINARY_DIR}/${_pyfile} ${CMAKE_CURRENT_SOURCE_DIR}/${uifile}
-                       MAIN_DEPENDENCY ${CMAKE_CURRENT_SOURCE_DIR}/${uifile}
-                       COMMENT "Compiling ${uifile}"
-                     )
+  if (SALOME_USE_PYSIDE)
+    SALOME_SETUP_PYSIDE_UIC_RCC
+    set ( _main_py "${CMAKE_CURRENT_BINARY_DIR}/${_file_we}_main.py" )
+    configure_file(
+      ${CMAKE_CURRENT_SOURCE_DIR}/ui_py.in
+      ${_main_py}
+      @ONLY
+      NEWLINE_STYLE UNIX
+    )
+    # Generate the python file and append the __main__ block
+    add_custom_command (
+      OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${_pyfile}
+      COMMAND ${PYSIDE2_PYUIC_EXECUTABLE} -o ${CMAKE_CURRENT_BINARY_DIR}/${_pyfile} ${CMAKE_CURRENT_SOURCE_DIR}/${uifile}
+      COMMAND ${CMAKE_COMMAND} -E cat ${_main_py} >> ${CMAKE_CURRENT_BINARY_DIR}/${_pyfile}
+      MAIN_DEPENDENCY ${CMAKE_CURRENT_SOURCE_DIR}/${uifile}
+      COMMENT "Compiling ${uifile} with pyside2-uic and appending __main__ block"
+    )
+  else(SALOME_USE_PYSIDE)
+    add_custom_command ( OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${_pyfile}
+                         COMMAND ${PYUIC5} ARGS -x -o ${CMAKE_CURRENT_BINARY_DIR}/${_pyfile} ${CMAKE_CURRENT_SOURCE_DIR}/${uifile}
+                         MAIN_DEPENDENCY ${CMAKE_CURRENT_SOURCE_DIR}/${uifile}
+                         COMMENT "Compiling ${uifile}")
+  endif(SALOME_USE_PYSIDE)
   list ( APPEND _PYFILES ${CMAKE_CURRENT_BINARY_DIR}/${_pyfile} )
 endmacro ( eficas_compile_ui )
 
 macro ( eficas_compile_ui_2 uifile )
   get_filename_component ( _file_we ${uifile} NAME_WE )
   set ( _pyfile "${_file_we}.py" )
-  add_custom_command ( OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${_pyfile}
-                       COMMAND ${PYUIC5} ARGS -x -o ${CMAKE_CURRENT_BINARY_DIR}/${_pyfile} ${CMAKE_CURRENT_SOURCE_DIR}/${uifile}
-                       COMMAND sed -i -e "'s/\\(QtCore\\.QMetaObject\\.connectSlotsByName(WidgetFactPlie)\\)/#\\1/'" ${CMAKE_CURRENT_BINARY_DIR}/${_pyfile}
-                       MAIN_DEPENDENCY ${CMAKE_CURRENT_SOURCE_DIR}/${uifile}
-                       COMMENT "Compiling ${uifile}"
-                     )
+  if(SALOME_USE_PYSIDE)
+    SALOME_SETUP_PYSIDE_UIC_RCC
+    add_custom_command ( OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${_pyfile}
+                         COMMAND ${PYSIDE2_PYUIC_EXECUTABLE} -o ${CMAKE_CURRENT_BINARY_DIR}/${_pyfile} ${CMAKE_CURRENT_SOURCE_DIR}/${uifile}
+                         COMMAND sed -i -e "'s/\\(QtCore\\.QMetaObject\\.connectSlotsByName(WidgetFactPlie)\\)/#\\1/'" ${CMAKE_CURRENT_BINARY_DIR}/${_pyfile}
+                         MAIN_DEPENDENCY ${CMAKE_CURRENT_SOURCE_DIR}/${uifile}
+                         COMMENT "Compiling ${uifile}"
+                       )
+  else(SALOME_USE_PYSIDE)
+    add_custom_command ( OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${_pyfile}
+                         COMMAND ${PYUIC5} ARGS -x -o ${CMAKE_CURRENT_BINARY_DIR}/${_pyfile} ${CMAKE_CURRENT_SOURCE_DIR}/${uifile}
+                         COMMAND sed -i -e "'s/\\(QtCore\\.QMetaObject\\.connectSlotsByName(WidgetFactPlie)\\)/#\\1/'" ${CMAKE_CURRENT_BINARY_DIR}/${_pyfile}
+                         MAIN_DEPENDENCY ${CMAKE_CURRENT_SOURCE_DIR}/${uifile}
+                         COMMENT "Compiling ${uifile}"
+                       )
+  endif(SALOME_USE_PYSIDE)
+
   list ( APPEND _PYFILES ${CMAKE_CURRENT_BINARY_DIR}/${_pyfile} )
 endmacro ( eficas_compile_ui_2 )
 
-eficas_compile_ui ( myMain.ui )
-eficas_compile_ui ( desBaseWidget.ui )
-eficas_compile_ui ( desChoixCata.ui )
-eficas_compile_ui ( desChoixCode.ui )
-eficas_compile_ui ( desChoixCommandes.ui )
-eficas_compile_ui ( desChoixLangue.ui )
-eficas_compile_ui ( desRecherche.ui )
-eficas_compile_ui ( desRechercheCatalogue.ui )
-eficas_compile_ui ( desSelectVal.ui )
-eficas_compile_ui ( desViewTexte.ui )
-eficas_compile_ui ( desViewRegles.ui )
-eficas_compile_ui ( desVisu.ui )
-eficas_compile_ui ( desWidgetCreeParam.ui )
-eficas_compile_ui ( desWidgetCommande.ui )
-eficas_compile_ui ( desWidgetFormule.ui )
-eficas_compile_ui ( desWidgetOptionnel.ui )
-eficas_compile_ui ( desGroupeOptionnel.ui )
-eficas_compile_ui ( Tuple2.ui )
-eficas_compile_ui ( Tuple3.ui )
-eficas_compile_ui ( Tuple4.ui )
-eficas_compile_ui ( Tuple5.ui )
-eficas_compile_ui ( Tuple6.ui )
-eficas_compile_ui ( Tuple7.ui )
-eficas_compile_ui ( Tuple8.ui )
-eficas_compile_ui ( Tuple9.ui )
-eficas_compile_ui ( Tuple10.ui )
-eficas_compile_ui ( desPBOptionnelMT.ui )
-#
-eficas_compile_ui ( desWidgetBloc.ui )
-eficas_compile_ui ( desWidgetCB.ui )
-eficas_compile_ui ( desWidgetCBIntoSug.ui )
-eficas_compile_ui ( desWidgetCommentaire.ui )
-eficas_compile_ui ( desWidgetDate.ui )
-eficas_compile_ui ( desWidgetFact.ui )
-eficas_compile_ui ( desWidgetFactPlie.ui )
-eficas_compile_ui ( desWidgetFactTableau.ui )
-eficas_compile_ui ( desWidgetHeure.ui )
-eficas_compile_ui ( desWidgetInactif.ui )
-eficas_compile_ui ( desWidgetInformation.ui )
-eficas_compile_ui ( desWidgetIntoSug.ui )
-eficas_compile_ui ( desWidgetMatrice.ui )
-eficas_compile_ui ( desWidgetNiveauFact.ui )
-eficas_compile_ui ( desWidgetParam.ui )
-eficas_compile_ui ( desWidgetPlusieursBase.ui )
-eficas_compile_ui ( desWidgetPlusieursInto.ui )
-eficas_compile_ui ( desWidgetPlusieursIntoOrdonne.ui )
-eficas_compile_ui ( desWidgetPlusieursTuple.ui )
-eficas_compile_ui ( desWidgetPlusieursPlie.ui )
-eficas_compile_ui ( desWidgetRadioButton.ui ) 
-eficas_compile_ui ( desWidget4a6RadioButton.ui )
-eficas_compile_ui ( desWidgetSDCOInto.ui )
-eficas_compile_ui ( desWidgetSimpBase.ui )
-eficas_compile_ui ( desWidgetSimpBool.ui )
-eficas_compile_ui ( desWidgetSimpComplexe.ui )
-eficas_compile_ui ( desWidgetSimpFichier.ui )
-eficas_compile_ui ( desWidgetSimpSalome.ui )
-eficas_compile_ui ( desWidgetSimpTxt.ui )
-eficas_compile_ui ( desWidgetTableau.ui )
-eficas_compile_ui ( desWidgetTuple2.ui )
-eficas_compile_ui ( desWidgetTuple3.ui )
-eficas_compile_ui ( desWidgetTuple4.ui )
-eficas_compile_ui ( desWidgetTuple5.ui )
-eficas_compile_ui ( desWidgetTuple6.ui )
-eficas_compile_ui ( desWidgetTuple7.ui )
-eficas_compile_ui ( desWidgetTuple8.ui )
-eficas_compile_ui ( desWidgetTuple9.ui )
-eficas_compile_ui ( desWidgetTuple10.ui )
-eficas_compile_ui ( desWidgetUniqueSDCO.ui )
-eficas_compile_ui ( desWidgetVide.ui )
+set(UI_FILES
+  myMain.ui
+  desBaseWidget.ui
+  desChoixCata.ui
+  desChoixCode.ui
+  desChoixCommandes.ui
+  desChoixLangue.ui
+  desRecherche.ui
+  desRechercheCatalogue.ui
+  desSelectVal.ui
+  desViewTexte.ui
+  desViewRegles.ui
+  desVisu.ui
+  desWidgetCreeParam.ui
+  desWidgetCommande.ui
+  desWidgetFormule.ui
+  desWidgetOptionnel.ui
+  desGroupeOptionnel.ui
+  Tuple2.ui
+  Tuple3.ui
+  Tuple4.ui
+  Tuple5.ui
+  Tuple6.ui
+  Tuple7.ui
+  Tuple8.ui
+  Tuple9.ui
+  Tuple10.ui
+  desPBOptionnelMT.ui
+
+  desWidgetBloc.ui
+  desWidgetCB.ui
+  desWidgetCBIntoSug.ui
+  desWidgetCommentaire.ui
+  desWidgetDate.ui
+  desWidgetFact.ui
+  desWidgetFactPlie.ui
+  desWidgetFactTableau.ui
+  desWidgetHeure.ui
+  desWidgetInactif.ui
+  desWidgetInformation.ui
+  desWidgetIntoSug.ui
+  desWidgetMatrice.ui
+  desWidgetNiveauFact.ui
+  desWidgetParam.ui
+  desWidgetPlusieursBase.ui
+  desWidgetPlusieursInto.ui
+  desWidgetPlusieursIntoOrdonne.ui
+  desWidgetPlusieursTuple.ui
+  desWidgetPlusieursPlie.ui
+  desWidgetRadioButton.ui
+  desWidget4a6RadioButton.ui
+  desWidgetSDCOInto.ui
+  desWidgetSimpBase.ui
+  desWidgetSimpBool.ui
+  desWidgetSimpComplexe.ui
+  desWidgetSimpFichier.ui
+  desWidgetSimpSalome.ui
+  desWidgetSimpTxt.ui
+  desWidgetTableau.ui
+  desWidgetTuple2.ui
+  desWidgetTuple3.ui
+  desWidgetTuple4.ui
+  desWidgetTuple5.ui
+  desWidgetTuple6.ui
+  desWidgetTuple7.ui
+  desWidgetTuple8.ui
+  desWidgetTuple9.ui
+  desWidgetTuple10.ui
+  desWidgetUniqueSDCO.ui
+  desWidgetVide.ui
+)
+
+foreach(uifile ${UI_FILES})
+  set(UI_CLASS ${uifile})
+  string(REPLACE ".ui" "" UI_CLASS ${UI_CLASS})
+  eficas_compile_ui(${uifile})
+endforeach()
 
 add_custom_target ( CompileUI ALL DEPENDS ${_PYFILES}
                     COMMENT "Built UI files"

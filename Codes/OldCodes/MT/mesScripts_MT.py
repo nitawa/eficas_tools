@@ -15,7 +15,11 @@ def view_ligne_arbre(listeparam) :
     visu_arbre.visualize()
 
 def import_zone_MT(listeparam):
-    from PyQt5.QtWidgets import QFileDialog
+    import os
+    if 'SALOME_USE_PYSIDE' in os.environ:
+         from PySide2.QtWidgets import QFileDialog
+    else:
+         from PyQt5.QtWidgets import QFileDialog
     
     # selection fichier
     fn = QFileDialog.getOpenFileName()

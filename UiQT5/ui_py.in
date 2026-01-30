@@ -1,0 +1,9 @@
+if __name__ == "__main__":
+    import sys
+    from PySide2.QtWidgets import QApplication, QWidget
+    app = QApplication(sys.argv)
+    @UI_CLASS@ = QWidget()
+    ui = Ui_@UI_CLASS@()
+    ui.setupUi(@UI_CLASS@)
+    @UI_CLASS@.show()
+    sys.exit(app.exec_())

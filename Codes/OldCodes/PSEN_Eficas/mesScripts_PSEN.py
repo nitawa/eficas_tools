@@ -1,19 +1,17 @@
+import os
+if 'SALOME_USE_PYSIDE' in os.environ:
+else:
+ from PyQt5.QtWidgets import QFileDialog, QMessageBox
 def exportToCsv(listeparam) :
     texte=""
     editor= listeparam[0]
     item  = listeparam[1]
     fn=None
     try :
-      from PyQt4.QtGui import QFileDialog, QMessageBox
       fichier = QFileDialog.getOpenFileName()
-      if fichier == None : return
-    except :
-      try :
-        from PyQt5.QtWidgets import QFileDialog, QMessageBox
-        fichier = QFileDialog.getOpenFileName()
-        if fichier[0] == None : return
-        fichier=fichier[0]
-      except:
+      if fichier[0] == None : return
+      fichier=fichier[0]
+    except:
         pass
 
     nouvelleVal=[]
@@ -45,7 +43,6 @@ def importFromCsv(listeparam) :
       fn=open(fichier)
     except :
       try :
-        from PyQt5.QtWidgets import QFileDialog
         fichier = QFileDialog.getOpenFileName()
         if fichier[0] == None : return
         fn=open(fichier[0])

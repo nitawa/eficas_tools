@@ -20,8 +20,12 @@
 import  os, sys
 
 # Modules Eficas
-from PyQt5.QtGui import QIcon
-from PyQt5.QtCore import QSize
+if 'SALOME_USE_PYSIDE' in os.environ:
+    from PySide2.QtGui import QIcon
+    from PySide2.QtCore import QSize
+else:
+    from PyQt5.QtGui import QIcon
+    from PyQt5.QtCore import QSize
 from Accas.extensions.eficas_translation import tr
 
 from UiQT5.desWidgetSimpFichier import Ui_WidgetSimpFichier

@@ -23,7 +23,11 @@ from Accas.extensions.eficas_translation import tr
 from InterfaceGUI.QT5.monWidgetSimpTxt import MonWidgetSimpTxt
 from InterfaceGUI.QT5.monWidgetPlusieursBase import MonWidgetPlusieursBase
 from copy import copy, deepcopy
-from PyQt5.QtCore import Qt
+import os
+if 'SALOME_USE_PYSIDE' in os.environ:
+    from PySide2.QtCore import Qt
+else:
+    from PyQt5.QtCore import Qt
 
 
 class MonWidgetPlusieursCreeUserAssd(MonWidgetPlusieursBase):

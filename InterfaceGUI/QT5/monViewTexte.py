@@ -24,8 +24,12 @@ import traceback
 
 from Accas.extensions.eficas_translation import tr
 
-from PyQt5.QtWidgets import QDialog, QMessageBox, QFileDialog
-from PyQt5.QtCore import QSize
+if 'SALOME_USE_PYSIDE' in os.environ:
+    from PySide2.QtWidgets import QDialog, QMessageBox, QFileDialog
+    from PySide2.QtCore import QSize
+else:
+    from PyQt5.QtWidgets import QDialog, QMessageBox, QFileDialog
+    from PyQt5.QtCore import QSize
 from UiQT5.desViewTexte import Ui_dView
 
 

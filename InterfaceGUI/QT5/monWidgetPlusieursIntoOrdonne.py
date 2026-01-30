@@ -31,9 +31,14 @@ from InterfaceGUI.QT5.gereListe import LECustom
 from InterfaceGUI.QT5.gereListe import MonLabelListeClic
 from Accas.extensions.eficas_translation import tr
 
-from PyQt5.QtWidgets import QFrame, QApplication, QScrollBar
-from PyQt5.QtCore import QTimer, QSize, Qt
-from PyQt5.QtGui import QIcon, QPalette
+if 'SALOME_USE_PYSIDE' in os.environ:
+    from PySide2.QtWidgets import QFrame, QApplication, QScrollBar
+    from PySide2.QtCore import QTimer, QSize, Qt
+    from PySide2.QtGui import QIcon, QPalette
+else:
+    from PyQt5.QtWidgets import QFrame, QApplication, QScrollBar
+    from PyQt5.QtCore import QTimer, QSize, Qt
+    from PyQt5.QtGui import QIcon, QPalette
 
 
 class MonWidgetPlusieursIntoOrdonne(

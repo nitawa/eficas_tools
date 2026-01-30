@@ -19,9 +19,14 @@
 #
 
 import os
-from PyQt5.QtWidgets import QFrame, QApplication, QFrame, QWidget
-from PyQt5.QtGui import QIcon
-from PyQt5.QtCore import QSize, Qt, QTimer
+if 'SALOME_USE_PYSIDE' in os.environ:
+    from PySide2.QtWidgets import QFrame, QApplication, QFrame, QWidget
+    from PySide2.QtGui import QIcon
+    from PySide2.QtCore import QSize, Qt, QTimer
+else:
+    from PyQt5.QtWidgets import QFrame, QApplication, QFrame, QWidget
+    from PyQt5.QtGui import QIcon
+    from PyQt5.QtCore import QSize, Qt, QTimer
 
 from Accas.extensions.eficas_translation import tr
 

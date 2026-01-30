@@ -25,16 +25,31 @@ from UiQT5.desWidgetCommande import Ui_WidgetCommande
 from InterfaceGUI.QT5.groupe import Groupe
 from InterfaceGUI.QT5.gereIcones import FacultatifOuOptionnel
 
-from PyQt5.QtWidgets import (
-    QApplication,
-    QWidget,
-    QSpacerItem,
-    QSizePolicy,
-    QRadioButton,
-)
-from PyQt5.QtGui import QFont, QIcon
-from PyQt5.QtCore import QTimer
-from PyQt5.QtCore import Qt
+import os
+if 'SALOME_USE_PYSIDE' in os.environ:
+    from PySide2.QtWidgets import (
+        QApplication,
+        QWidget,
+        QSpacerItem,
+        QSizePolicy,
+        QRadioButton,
+    )
+    from PySide2.QtGui import QFont, QIcon
+    from PySide2.QtCore import QTimer
+    from PySide2.QtCore import Qt
+    qOFR= Qt.OtherFocusReason
+else:
+    from PyQt5.QtWidgets import (
+        QApplication,
+        QWidget,
+        QSpacerItem,
+        QSizePolicy,
+        QRadioButton,
+    )
+    from PyQt5.QtGui import QFont, QIcon
+    from PyQt5.QtCore import QTimer
+    from PyQt5.QtCore import Qt
+    qOFR = 7
 
 
 from Accas.extensions.eficas_translation import tr
@@ -145,7 +160,7 @@ class MonWidgetCommande(Ui_WidgetCommande, Groupe):
         # print "dans donnePremier"
         QApplication.processEvents()
         if self.listeAffichageWidget != []:
-            self.listeAffichageWidget[0].setFocus(7)
+            self.listeAffichageWidget[0].setFocus(qOFR)
         QApplication.processEvents()
         # print self.focusWidget()
 
@@ -170,7 +185,7 @@ class MonWidgetCommande(Ui_WidgetCommande, Groupe):
             i = self.listeAffichageWidget.index(f)
         if (i == len(self.listeAffichageWidget) - 1) and next and not self.inhibe:
             try:
-                self.listeAffichageWidget[1].setFocus(7)
+                self.listeAffichageWidget[1].setFocus(qOFR)
                 w = self.focusWidget()
                 self.inhibe = 1
                 w.focusPreviousChild()
@@ -185,14 +200,14 @@ class MonWidgetCommande(Ui_WidgetCommande, Groupe):
                 self.editor.fenetreCentraleAffichee.scrollArea.ensureWidgetVisible(
                     self.listeAffichageWidget[-1]
                 )
-            self.listeAffichageWidget[-2].setFocus(7)
+            self.listeAffichageWidget[-2].setFocus(qOFR)
             self.inhibe = 1
             w = self.focusWidget()
             w.focusNextChild()
             self.inhibe = 0
             return True
         if i == 0 and next == True and not self.inhibe:
-            self.listeAffichageWidget[0].setFocus(7)
+            self.listeAffichageWidget[0].setFocus(qOFR)
             self.inhibe = 1
             w = self.focusWidget()
             w.focusNextChild()
@@ -200,7 +215,7 @@ class MonWidgetCommande(Ui_WidgetCommande, Groupe):
             return True
         if i > 0 and next == False and not self.inhibe:
             if isinstance(self.listeAffichageWidget[i - 1], QRadioButton):
-                self.listeAffichageWidget[i - 1].setFocus(7)
+                self.listeAffichageWidget[i - 1].setFocus(qOFR)
                 return True
         return QWidget.focusNextPrevChild(self, next)
 
@@ -224,7 +239,7 @@ class MonWidgetCommande(Ui_WidgetCommande, Groupe):
             next = 0
         # self.f=next
         try:
-            self.listeAffichageWidget[next].setFocus(7)
+            self.listeAffichageWidget[next].setFocus(qOFR)
         except:
             pass
 
@@ -295,7 +310,7 @@ class MonWidgetCommande(Ui_WidgetCommande, Groupe):
     def rendVisible(self, fenetre):
         #print ('je passe dans rendVisible')
         QApplication.processEvents()
-        #fenetre.setFocus(7)
+        #fenetre.setFocus(qOFR)
         self.editor.fenetreCentraleAffichee.scrollAreaCommandes.ensureWidgetVisible(fenetre)
 
     def afficheCatalogue(self):

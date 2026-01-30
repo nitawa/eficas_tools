@@ -19,8 +19,10 @@
 #
 import re
 import os
-
-from PyQt5.QtWidgets import QToolButton, QToolTip
+if 'SALOME_USE_PYSIDE' in os.environ:
+    from PySide2.QtWidgets import QToolButton, QToolTip
+else:
+    from PyQt5.QtWidgets import QToolButton, QToolTip
 from Accas.extensions.eficas_translation import tr
 
 class MonBoutonValide(QToolButton):

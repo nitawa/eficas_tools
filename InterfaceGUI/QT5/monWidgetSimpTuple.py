@@ -18,7 +18,11 @@
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
 
-from PyQt5.QtCore import Qt
+import os
+if 'SALOME_USE_PYSIDE' in os.environ:
+    from PySide2.QtCore import Qt
+else:
+    from PyQt5.QtCore import Qt
 
 # Modules Eficas
 from Accas.extensions.eficas_translation import tr

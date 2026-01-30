@@ -22,8 +22,12 @@ import types,os
 import traceback
 
 from Accas.extensions.eficas_translation import tr
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QDialog
+if 'SALOME_USE_PYSIDE' in os.environ:
+    from PySide2.QtCore import Qt
+    from PySide2.QtWidgets import QDialog
+else:
+    from PyQt5.QtCore import Qt
+    from PyQt5.QtWidgets import QDialog
 from UiQT5.desWidgetLabels import Ui_WidgetLabels
 
 # ---------------------------------------------- #

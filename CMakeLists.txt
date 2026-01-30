@@ -36,6 +36,10 @@ ELSE()
   MESSAGE(FATAL_ERROR "We absolutely need the Salome CMake configuration files, please define CONFIGURATION_ROOT_DIR !")
 ENDIF()
 
+# Use PySide2/Shiboken2 or PyQt5/SIP5
+# ===================================
+SET (SALOME_USE_PYSIDE $ENV{SALOME_USE_PYSIDE} CACHE BOOL "Use PySide or PyQt")
+
 # Detection de Python
 find_package ( PythonInterp  REQUIRED )
 if (PYTHONINTERP_FOUND)
@@ -49,8 +53,8 @@ print ('%d.%d' % ( sys.version_info[0], sys.version_info[1] ))
   get_source_file_property ( PYSCRIPT_LOC ${tmpPyScript} LOCATION )
   execute_process ( COMMAND ${PYTHON_EXECUTABLE} ${PYSCRIPT_LOC}
                     OUTPUT_VARIABLE PYTHON_VERSION
-		    #ERROR_QUIET
-		    OUTPUT_STRIP_TRAILING_WHITESPACE )
+                    #ERROR_QUIET
+                    OUTPUT_STRIP_TRAILING_WHITESPACE )
   file ( REMOVE ${tmpPyScript} )
 endif (PYTHONINTERP_FOUND)
 message ( STATUS "Using Python version ${PYTHON_VERSION}" )
@@ -72,34 +76,35 @@ FIND_PACKAGE(Qt5LinguistTools)
 GET_TARGET_PROPERTY(QT_LRELEASE_EXECUTABLE Qt5::lrelease LOCATION)
 MARK_AS_ADVANCED(QT_LRELEASE_EXECUTABLE)
 
-# Detection de PyQt5
-if (NOT PYQT5_FOUND)
-  execute_process ( COMMAND ${PYTHON_EXECUTABLE} -c "\"import PyQt5\""
-                    RESULT_VARIABLE _res
-		    OUTPUT_VARIABLE _trashout
-		    ERROR_VARIABLE  _trasherr
-                  )
-  if (NOT _res)
-    message ( STATUS "Looking for Python package PyQt5 - found" )
-    set ( PYQT5_FOUND 1 CACHE INTERNAL "True if Python package PyQt5 is here" )
-  else (NOT _res)
-    message ( STATUS "Looking for Python package PyQt5 - not found" )
-    set ( PYQT5_FOUND 0 CACHE INTERNAL "True if Python package PyQt5 is here" )
-  endif (NOT _res)
-endif (NOT PYQT5_FOUND)
+IF(SALOME_USE_PYSIDE)
+  INCLUDE(UsePySide)
+ELSE(SALOME_USE_PYSIDE)
+  # Detection de PyQt5
+  if (NOT PYQT5_FOUND)
+    execute_process ( COMMAND ${PYTHON_EXECUTABLE} -c "\"import PyQt5\""
+                      RESULT_VARIABLE _res
+                      OUTPUT_VARIABLE _trashout
+                      ERROR_VARIABLE  _trasherr)
+    if (NOT _res)
+      message ( STATUS "Looking for Python package PyQt5 - found" )
+      set ( PYQT5_FOUND 1 CACHE INTERNAL "True if Python package PyQt5 is here" )
+    else (NOT _res)
+      message ( STATUS "Looking for Python package PyQt5 - not found" )
+      set ( PYQT5_FOUND 0 CACHE INTERNAL "True if Python package PyQt5 is here" )
+    endif (NOT _res)
+  endif (NOT PYQT5_FOUND)
+  if (NOT PYQT5_FOUND)
+    message ( FATAL_ERROR "Python package PyQt5 is REQUIRED" )
+  endif (NOT PYQT5_FOUND)
 
-if (NOT PYQT5_FOUND)
-  message ( FATAL_ERROR "Python package PyQt5 is REQUIRED" )
-endif (NOT PYQT5_FOUND)
-
-# Detection de PYUIC5
-find_program ( PYUIC5 NAMES pyuic5
-               DOC  "Path to the pyuic5 compilation tool"
-             )
-if (NOT PYUIC5)
-  message ( FATAL_ERROR "pyuic5 tool is REQUIRED" )
-endif (NOT PYUIC5)
-
+  # Detection de PYUIC5
+  find_program ( PYUIC5 NAMES pyuic5
+                 DOC  "Path to the pyuic5 compilation tool")
+  if (NOT PYUIC5)
+    message ( FATAL_ERROR "pyuic5 tool is REQUIRED" )
+  endif (NOT PYUIC5)
+ENDIF(SALOME_USE_PYSIDE)
+  
 # Definition des options de CMake
 option ( WITH_ALL_PACKAGES "Install all package files" OFF )
 option ( WITH_TELEMAC_CATA "Install TELEMAC files"     OFF )

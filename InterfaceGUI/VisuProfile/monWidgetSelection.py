@@ -17,8 +17,13 @@
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
 # Modules Python
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QWidget
+import os
+if 'SALOME_USE_PYSIDE' in os.environ:
+    from PySide2.QtCore import Qt
+    from PySide2.QtWidgets import QWidget
+else:
+    from PyQt5.QtCore import Qt
+    from PyQt5.QtWidgets import QWidget
 
 
 # Modules Eficas

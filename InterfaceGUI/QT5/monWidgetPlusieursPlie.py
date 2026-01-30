@@ -17,11 +17,16 @@
 #
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
-import types, re
+import types, re, os
 
-from PyQt5.QtWidgets import QFrame
-from PyQt5.QtCore import QTimer, QSize, Qt
-from PyQt5.QtGui import QIcon, QBrush, QColor
+if 'SALOME_USE_PYSIDE' in os.environ:
+    from PySide2.QtWidgets import QFrame
+    from PySide2.QtCore import QTimer, QSize, Qt
+    from PySide2.QtGui import QIcon, QBrush, QColor
+else:
+   from PyQt5.QtWidgets import QFrame
+   from PyQt5.QtCore import QTimer, QSize, Qt
+   from PyQt5.QtGui import QIcon, QBrush, QColor
 
 from Accas.extensions.eficas_translation import tr
 

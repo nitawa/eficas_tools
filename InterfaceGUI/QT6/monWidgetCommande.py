@@ -25,21 +25,32 @@ from UiQT6.desWidgetCommande import Ui_WidgetCommande
 from InterfaceGUI.QT6.groupe import Groupe
 from InterfaceGUI.QT6.gereIcones import FacultatifOuOptionnel
 
-from PyQt6.QtWidgets import (
-    QApplication,
-    QWidget,
-    QSpacerItem,
-    QSizePolicy,
-    QRadioButton,
-)
-from PyQt6.QtGui import QFont, QIcon
-from PyQt6.QtCore import QTimer
-from PyQt6.QtCore import Qt
+import os
+if 'SALOME_USE_PYSIDE' in os.environ:
+    from PySide2.QtWidgets import (
+        QApplication,
+        QWidget,
+        QSpacerItem,
+        QSizePolicy,
+        QRadioButton,
+    )
+    from PySide2.QtGui import QFont, QIcon
+    from PySide2.QtCore import QTimer, Qt
+else:
+    from PyQt6.QtWidgets import (
+        QApplication,
+        QWidget,
+        QSpacerItem,
+        QSizePolicy,
+        QRadioButton,
+    )
+    from PyQt6.QtGui import QFont, QIcon
+    from PyQt6.QtCore import QTimer
+    from PyQt6.QtCore import Qt
 
 
 from Accas.extensions.eficas_translation import tr
 import Accas
-import os
 
 
 # Import des panels

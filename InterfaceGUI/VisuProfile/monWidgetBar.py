@@ -22,10 +22,17 @@
 
 from desWidgetBar import Ui_BarVP
 
-from PyQt5.QtWidgets import QDialog
-from PyQt5.QtChart   import QBarSet, QChart, QChartView, QBarSeries, QBarCategoryAxis, QValueAxis
-from PyQt5.QtCore    import Qt
-from PyQt5.QtGui     import QPainter
+import os
+if 'SALOME_USE_PYSIDE' in os.environ:
+    from PySide2.QtWidgets import QDialog
+    from PySide2.QtCharts import QBarSet, QChart, QChartView, QBarSeries, QBarCategoryAxis, QValueAxis
+    from PySide2.QtCore    import Qt
+    from PySide2.QtGui     import QPainter
+else:
+    from PyQt5.QtWidgets import QDialog
+    from PyQt5.QtChart   import QBarSet, QChart, QChartView, QBarSeries, QBarCategoryAxis, QValueAxis
+    from PyQt5.QtCore    import Qt
+    from PyQt5.QtGui     import QPainter
 
 
 

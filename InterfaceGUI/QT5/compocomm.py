@@ -33,8 +33,11 @@ class Node(browser.JDCNode, typeNode.PopUpMenuNodePartiel):
 
     def createPopUpMenu(self):
         typeNode.PopUpMenuNodePartiel.createPopUpMenu(self)
-        from PyQt5.QtWidgets import QAction
-
+        import os
+        if 'SALOME_USE_PYSIDE' in os.environ:
+            from PySide2.QtWidgets import QAction
+        else:
+            from PyQt5.QtWidgets import QAction
         self.Decommente = QAction(tr("decommenter"), self.tree)
         self.Decommente.triggered.connect(self.decommenter)
         self.Decommente.setStatusTip(tr("Decommente la commande "))

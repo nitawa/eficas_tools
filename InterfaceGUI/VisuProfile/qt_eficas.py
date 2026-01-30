@@ -19,11 +19,15 @@
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
 
+import os
 from UiQT5.myMainVP import Ui_EficasVP
 from InterfaceGUI.QT5.qt_eficas import QtEficasAppli
-from PyQt5.QtWidgets import  QAction, QMessageBox
+if 'SALOME_USE_PYSIDE' in os.environ:
+    from PySide2.QtWidgets import  QAction, QMessageBox
+else:
+    from PyQt5.QtWidgets import  QAction, QMessageBox
 from Accas.extensions.eficas_translation import tr
-import os
+
 
 
 

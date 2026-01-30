@@ -18,9 +18,14 @@
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
 
+import os
 # Modules Eficas
-from PyQt5.QtWidgets import QLineEdit
-from PyQt5.QtCore import Qt
+if 'SALOME_USE_PYSIDE' in os.environ:
+    from PySide2.QtWidgets import QLineEdit
+    from PySide2.QtCore import Qt
+else:
+    from PyQt5.QtWidgets import QLineEdit
+    from PyQt5.QtCore import Qt
 from Accas.extensions.eficas_translation import tr
 
 from InterfaceGUI.QT5.feuille import Feuille

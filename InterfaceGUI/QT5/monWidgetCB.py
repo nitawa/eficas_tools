@@ -29,8 +29,12 @@ from UiQT5.desWidgetCB import Ui_WidgetCB
 from InterfaceGUI.Common.politiquesValidation import PolitiqueUnique
 from InterfaceGUI.QT5.traiteSaisie import SaisieValeur
 
-from PyQt5.QtWidgets import QComboBox, QCompleter
-from PyQt5.QtCore import Qt, QEvent
+if 'SALOME_USE_PYSIDE' in os.environ:
+    from PySide2.QtWidgets import QComboBox, QCompleter
+    from PySide2.QtCore import Qt, QEvent
+else:
+    from PyQt5.QtWidgets import QComboBox, QCompleter
+    from PyQt5.QtCore import Qt, QEvent
 
 
 class MonWidgetCBCommun(Feuille):

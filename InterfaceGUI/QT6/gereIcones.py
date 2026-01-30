@@ -24,9 +24,14 @@ import types, os, re, sys
 import traceback
 import inspect
 
-from PyQt6.QtWidgets import QMessageBox, QFileDialog, QMenu, QPushButton, QTreeView, QListView, QAbstractItemView
-from PyQt6.QtGui import QIcon
-from PyQt6.QtCore import QFileInfo, Qt, QSize, QVariant
+if 'SALOME_USE_PYSIDE' in os.environ:
+    from PySide2.QtWidgets import QMessageBox, QFileDialog, QMenu, QPushButton, QTreeView, QListView, QAbstractItemView
+    from PySide2.QtGui import QIcon
+    from PySide2.QtCore import QFileInfo, Qt, QSize
+else:
+    from PyQt6.QtWidgets import QMessageBox, QFileDialog, QMenu, QPushButton, QTreeView, QListView, QAbstractItemView
+    from PyQt6.QtGui import QIcon
+    from PyQt6.QtCore import QFileInfo, Qt, QSize, QVariant
 
 
 from Accas.extensions.eficas_translation import tr

@@ -21,7 +21,11 @@
 # Modules Eficas
 
 from UiQT5.desChoixCata import Ui_DChoixCata
-from PyQt5.QtWidgets import QDialog
+import os
+if 'SALOME_USE_PYSIDE' in os.environ:
+    from PySide2.QtWidgets import QDialog
+else:
+    from PyQt5.QtWidgets import QDialog
 from Accas.extensions.eficas_translation import tr
 
 # Import des panels

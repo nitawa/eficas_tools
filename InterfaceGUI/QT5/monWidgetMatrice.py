@@ -28,10 +28,16 @@ from Accas.extensions.eficas_exception import EficasException
 
 from UiQT5.desWidgetMatrice import Ui_desWidgetMatrice
 
-from PyQt5.QtCore import QSize, Qt
-from PyQt5.QtWidgets import QTableWidgetItem, QTableWidget
-from PyQt5.QtGui import QIcon, QColor
-from PyQt5.QtWidgets import QMessageBox
+if 'SALOME_USE_PYSIDE' in os.environ:
+    from PySide2.QtCore import QSize, Qt
+    from PySide2.QtWidgets import QTableWidgetItem, QTableWidget
+    from PySide2.QtGui import QIcon, QColor
+    from PySide2.QtWidgets import QMessageBox
+else:
+    from PyQt5.QtCore import QSize, Qt
+    from PyQt5.QtWidgets import QTableWidgetItem, QTableWidget
+    from PyQt5.QtGui import QIcon, QColor
+    from PyQt5.QtWidgets import QMessageBox
 
 
 class MonWidgetMatrice(Ui_desWidgetMatrice, Feuille):

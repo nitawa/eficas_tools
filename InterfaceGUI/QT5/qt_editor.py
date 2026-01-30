@@ -22,9 +22,14 @@
 import types, sys, os, re
 import subprocess
 
-from PyQt5.QtWidgets import QWidget, QMessageBox, QFileDialog, QApplication, QSplitter, QLabel
-from PyQt5.QtGui     import QPalette, QFont
-from PyQt5.QtCore    import QProcess, QFileInfo, QTimer, Qt, QDir, QSize, QProcessEnvironment
+if 'SALOME_USE_PYSIDE' in os.environ:
+    from PySide2.QtWidgets import QWidget, QMessageBox, QFileDialog, QApplication, QSplitter, QLabel
+    from PySide2.QtGui     import QPalette, QFont
+    from PySide2.QtCore    import QProcess, QFileInfo, QTimer, Qt, QDir, QSize, QProcessEnvironment
+else:
+    from PyQt5.QtWidgets import QWidget, QMessageBox, QFileDialog, QApplication, QSplitter, QLabel
+    from PyQt5.QtGui     import QPalette, QFont
+    from PyQt5.QtCore    import QProcess, QFileInfo, QTimer, Qt, QDir, QSize, QProcessEnvironment
 
 import traceback
 

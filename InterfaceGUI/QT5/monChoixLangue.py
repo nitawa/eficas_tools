@@ -24,9 +24,14 @@
 import os, sys, re
 from  UiQT5.desChoixLangue import Ui_ChoixLangue
 
-from PyQt5.QtWidgets import QDialog, QRadioButton, QGroupBox, QButtonGroup
-from PyQt5.QtGui import QPalette
-from PyQt5.QtCore import QProcess, QFileInfo, Qt, QSize
+if 'SALOME_USE_PYSIDE' in os.environ:
+    from PySide2.QtWidgets import QDialog, QRadioButton, QGroupBox, QButtonGroup
+    from PySide2.QtGui import QPalette
+    from PySide2.QtCore import QProcess, QFileInfo, Qt, QSize
+else:
+    from PyQt5.QtWidgets import QDialog, QRadioButton, QGroupBox, QButtonGroup
+    from PyQt5.QtGui import QPalette
+    from PyQt5.QtCore import QProcess, QFileInfo, Qt, QSize
 
 
 # Import des panels

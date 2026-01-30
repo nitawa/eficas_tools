@@ -19,10 +19,15 @@
 # Modules Python
 # Modules Eficas
 
-
-from PyQt5.QtWidgets import QCheckBox, QWidget, QLabel, QPushButton
-from PyQt5.QtCore import Qt, QRect
-from PyQt5.QtGui import QPalette
+import os
+if 'SALOME_USE_PYSIDE' in os.environ:
+    from PySide2.QtWidgets import QCheckBox, QWidget, QLabel, QPushButton
+    from PySide2.QtCore import Qt, QRect
+    from PySide2.QtGui import QPalette
+else:
+    from PyQt5.QtWidgets import QCheckBox, QWidget, QLabel, QPushButton
+    from PyQt5.QtCore import Qt, QRect
+    from PyQt5.QtGui import QPalette
 
 from Accas.extensions.eficas_translation import tr
 from UiQT5.desGroupeOptionnel import Ui_groupeOptionnel

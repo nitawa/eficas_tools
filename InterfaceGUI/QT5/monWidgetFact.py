@@ -17,8 +17,13 @@
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
 
-from PyQt5.QtCore import Qt, QTimer
-from PyQt5.QtWidgets import QWidget
+import os
+if 'SALOME_USE_PYSIDE' in os.environ:
+    from PySide2.QtCore import Qt, QTimer
+    from PySide2.QtWidgets import QWidget
+else:
+    from PyQt5.QtCore import Qt, QTimer
+    from PyQt5.QtWidgets import QWidget
 
 from InterfaceGUI.QT5.groupe import Groupe
 from UiQT5.desWidgetFact import Ui_WidgetFact

@@ -26,11 +26,19 @@ from UiQT5.desWidgetProfile  import Ui_ProfileVP
 from Accas.extensions.eficas_translation import tr
 # Import des panels
 
-from PyQt5.QtWidgets import QCheckBox, QWidget, QGraphicsView, QGraphicsEllipseItem
-from PyQt5.QtWidgets import QGraphicsItem, QGraphicsScene, QGraphicsTextItem, QGraphicsPathItem
-from PyQt5.QtCore    import Qt, QSignalMapper, QPoint, QRectF, QTimer
-from PyQt5.QtChart   import QLineSeries, QChart, QChartView, QValueAxis, QCategoryAxis, QScatterSeries
-from PyQt5.QtGui     import QColor, QBrush, QPen, QPainter, QPainterPath
+import os
+if 'SALOME_USE_PYSIDE' in os.environ:
+    from PySide2.QtWidgets import QCheckBox, QWidget, QGraphicsView, QGraphicsEllipseItem
+    from PySide2.QtWidgets import QGraphicsItem, QGraphicsScene, QGraphicsTextItem, QGraphicsPathItem
+    from PySide2.QtCore    import Qt, QSignalMapper, QPoint, QRectF, QTimer
+    from PySide2.QtCharts import QLineSeries, QChart, QChartView, QValueAxis, QCategoryAxis, QScatterSeries
+    from PySide2.QtGui     import QColor, QBrush, QPen, QPainter, QPainterPath
+else:
+    from PyQt5.QtWidgets import QCheckBox, QWidget, QGraphicsView, QGraphicsEllipseItem
+    from PyQt5.QtWidgets import QGraphicsItem, QGraphicsScene, QGraphicsTextItem, QGraphicsPathItem
+    from PyQt5.QtCore    import Qt, QSignalMapper, QPoint, QRectF, QTimer
+    from PyQt5.QtChart   import QLineSeries, QChart, QChartView, QValueAxis, QCategoryAxis, QScatterSeries
+    from PyQt5.QtGui     import QColor, QBrush, QPen, QPainter, QPainterPath
 
 
 tabCouleur={ 0 : (41,128,185),   1 : (46,64,83),    2 : (255,87,51),    3 : (199,00,57),

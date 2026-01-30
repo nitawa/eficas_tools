@@ -21,7 +21,10 @@
 import types, os
 
 # Modules Eficas
-from PyQt5.QtWidgets import QWidget
+if 'SALOME_USE_PYSIDE' in os.environ:
+    from PySide2.QtWidgets import QWidget
+else:
+    from PyQt5.QtWidgets import QWidget
 from Accas.extensions.eficas_translation import tr
 
 from UiQT5.desWidgetInformation import Ui_WidgetInformative

@@ -23,9 +23,15 @@
 from UiQT5.desSelectVal import Ui_DSelVal
 from Accas.extensions.eficas_translation import tr
 
-from PyQt5.QtWidgets import QDialog, QFileDialog, QMessageBox
-from PyQt5.QtCore import QTimer, Qt
-from PyQt5.QtGui import QPalette
+import os
+if 'SALOME_USE_PYSIDE' in os.environ:
+    from PySide2.QtWidgets import QDialog, QFileDialog, QMessageBox
+    from PySide2.QtCore import QTimer, Qt
+    from PySide2.QtGui import QPalett
+else:
+    from PyQt5.QtWidgets import QDialog, QFileDialog, QMessageBox
+    from PyQt5.QtCore import QTimer, Qt
+    from PyQt5.QtGui import QPalette
 
 
 class DSelVal(Ui_DSelVal, QDialog):
